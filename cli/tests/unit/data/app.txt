@@ -1,2 +1,0 @@
-ID         MEM   CPUS  TASKS  HEALTH  DEPLOYMENT  CONTAINER  CMD         
-/test-app  16.0  0.1    1/1    ---       ---        mesos    sleep 1000  
