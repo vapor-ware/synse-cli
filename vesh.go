@@ -25,7 +25,12 @@ func main() {
     cli.StringFlag{
       EnvVar: "VESH_CONFIG_FILE",
       Name: "config, c",
-      Usage: "Path to config file",
+      Usage: "Path to config `file`",
+    },
+    cli.StringFlag{
+      EnvVar: "VESH_HOST",
+      Name: "host, h",
+      Usage: "Address of `Vapor Host`",
     },
   }
 
