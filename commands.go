@@ -1,18 +1,17 @@
 package main
 
 import (
-  "fmt"
-  "os"
-  "net/http"
   "github.com/urfave/cli"
 )
+
+var clearNotificationsID string
 
 var Commands = []cli.Command{
   {
     Name: "status",
     Aliases: []string{"stat"},
     Usage: "Get the status of the current deployment",
-    Action:, //TBD
+    //Action:, TBD
   },
   {
     Name: "assets",
@@ -27,13 +26,13 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List hostnames",
             Category: "hostname",
-            Action: cmdListHostname(c *cli.Context),
+            Action: cmdListHostname,
           },
           {
             Name: "get",
             Usage: "Get hostname for specific `device`",
             Category: "hostname",
-            Action: cmdGetHostname(c *cli.Context),
+            Action: cmdGetHostname,
           },
         },
       },
@@ -46,22 +45,21 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List power status",
             Category: "power",
-            Action: cmdListPower(c *cli.Context),
+            Action: cmdListPower,
           },
           {
             Name: "get",
             Usage: "Get power status for specific `device`",
             Category: "power",
-            Action: cmdGetPower(c *cli.Context),
+            Action: cmdGetPower,
           },
           {
             Name: "set",
             Usage: "Change the power status `on/off/cycle`",
             Category: "power",
-            Destination: &powerSet,
-            Action: cmdSetPower(c *cli.Context, powerSet string),
+            Action: cmdSetPower,
           },
-        }
+        },
       },
       {
         Name: "fan",
@@ -72,13 +70,13 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List fans speeds",
             Category: "fans",
-            Action: cmdListFan(c *cli.Context),
+            Action: cmdListFan,
           },
           {
             Name: "get",
             Usage: "Get fan speed for specific `device`",
             Category: "fans",
-            Action: cmdGetFan(c *cli.Context),
+            Action: cmdGetFan,
           },
         },
       },
@@ -91,13 +89,13 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List temperatures",
             Category: "temperature",
-            Action: cmdListTemp(c *cli.Context),
+            Action: cmdListTemp,
           },
           {
             Name: "get",
             Usage: "Get temperature for specific `device`",
             Category: "temperature",
-            Action: cmdGetTemp(c *cli.Context),
+            Action: cmdGetTemp,
           },
         },
       },
@@ -110,14 +108,13 @@ var Commands = []cli.Command{
             Name: "set",
             Usage: "Set the boot target for specific `device`. Can be `pxe` `hdd` or `no-override`",
             Category: "boot-target",
-            Value: &bootTargetValue,
-            Action: cmdSetBootTarget(c *cli.Context, bootTargetValue string),
+            Action: cmdSetBootTarget,
           },
           {
             Name: "get",
             Usage: "Get current boot target for specific `device`",
             Category: "boot-target",
-            Action: cmdGetBootTarget(c *cli.Context),
+            Action: cmdGetBootTarget,
           },
         },
       },
@@ -130,35 +127,33 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List LED status",
             Category: "lights",
-            Action: cmdListLed(c *cli.Context),
+            Action: cmdListLed,
           },
           {
             Name: "get",
             Usage: "Get LED status for specific `device`",
             Category: "lights",
-            Action: cmdGetLed(c *cli.Context),
+            Action: cmdGetLed,
           },
           {
             Name: "set",
             Usage: "Change the status for a specific LED `on/off/blink`",
             Category: "lights",
-            Destination: &ledSet,
-            Action: cmdSetLed(c *cli.Context, ledSet string),
+            Action: cmdSetLed,
           },
           {
             Name: "blink",
             Usage: "Blink specific `LED`",
             Category: "lights",
-            Action: cmdBlinkled(c *cli.Context),
+            Action: cmdBlinkled,
           },
           {
             Name: "color",
             Usage: "Set a specific `LED` to `color`",
             Category: "lights",
-            Destination: &ledColor,
-            Action: cmdColorLed(c *cli.Context, ledColor string),
+            Action: cmdColorLed,
           },
-        }
+        },
       },
       {
         Name: "location",
@@ -169,29 +164,138 @@ var Commands = []cli.Command{
             Name: "set",
             Usage: "Set the geographic location for specific `device`",
             Category: "location",
-            Value: &bootTargetValue,
-            Action: cmdSetBootTarget(c *cli.Context, bootTargetValue string),
+            Action: cmdSetBootTarget,
           },
           {
             Name: "get",
             Usage: "Get current geographic location of a specific `device`",
             Category: "location",
-            Action: cmdGetBootTarget(c *cli.Context),
+            Action: cmdGetBootTarget,
           },
           {
             Name: "map",
             Usage: "Plot the geographic location of a specific `device` on a mapping service",
             Category: "location",
-            Action: cmdMapLocation(c *cli.Context),
+            Action: cmdMapLocation,
           },
         },
       },
       {
-        Name: "find"
+        Name: "find",
         Usage: "Blink the LEDs on a specific `device` for 10 seconds to locate it",
         Category: "assets",
-        Action: cmdFindDevice(c *cli.Context),
+        Action: cmdFindDevice,
       },
     },
-  }
+  },
+  {
+    Name: "zones",
+    Usage: "List available zones",
+    //Action:, TBD
+  },
+  {
+    Name: "racks",
+    Usage: "List available racks within a given `zone` (or all zones if none is specified)",
+    //Action:, TBD
+  },
+  {
+    Name: "health",
+    Usage: "Check health for a given `zone`, `rack`, or `device`",
+    //Action:, TBD
+  },
+  {
+    Name: "notifications",
+    Usage: "List notifications for a given `zone`, `rack`, or `device`",
+    //Action:, TBD
+    Subcommands: []cli.Command{
+      {
+        Name: "clear",
+        Usage: "Clear notifications (`all` or `id`)",
+        Flags: []cli.Flag{
+          cli.StringFlag{
+            Name: "all",
+            Usage: "Clear all notifications",
+          },
+          cli.StringFlag{
+            Name: "id",
+            Usage: "Clear notifications for a specific `id`",
+            Destination: &clearNotificationsID,
+          },
+        },
+      },
+    },
+  },
+  {
+    Name: "load",
+    Usage: "Get the load by specific metric",
+    Category: "load",
+    //Action:, TBD
+    Subcommands: []cli.Command{
+      {
+        Name: "power",
+        Usage: "Show power consumption",
+        Category: "load",
+        Action: cmdShowPowerLoad,
+      },
+      {
+        Name: "memory",
+        Usage: "Show memory usage",
+        Category: "load",
+        Action: cmdShowMemoryLoad,
+      },
+      {
+        Name: "power",
+        Usage: "Show temprature",
+        Category: "load",
+        Action: cmdShowTempratureLoad,
+      },
+      {
+        Name: "cpu",
+        Usage: "Show cpu usage",
+        Category: "load",
+        Action: cmdShowCPULoad,
+      },
+      {
+        Name: "application",
+        Usage: "Show load by application",
+        Category: "load",
+        Action: cmdShowApplicationLoad,
+      },
+    },
+  },
+  {
+    Name: "provision",
+    Usage: "Get (un)provisioned servers and provision new servers",
+    Category: "provision",
+    Subcommands: []cli.Command{
+      {
+        Name: "provision-new",
+        Usage: "Provision unprovisioned `server`s",
+        Category: "provision",
+        Action: cmdProvisionNew,
+      },
+      {
+        Name: "deprovision",
+        Usage: "deprovision previously provisioned `server`s",
+        Category: "provision",
+        Action: cmdDeprovision,
+      },
+      {
+        Name: "list",
+        Usage: "list provisioned or deprovisioned `server`s",
+        Category: "provision",
+        Action: cmdProvisionList,
+        Flags: []cli.Flag{
+          cli.StringFlag{
+            Name: "provisioned",
+            Usage: "list provisioned servers",
+          },
+          cli.StringFlag{
+            Name: "unprovisioned",
+            Usage: "list unprovisioned servers",
+          },
+        },
+      },
+    },
+  },
 }
