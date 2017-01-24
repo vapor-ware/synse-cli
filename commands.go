@@ -228,7 +228,6 @@ var Commands = []cli.Command{
   {
     Name: "load",
     Usage: "Get the load by specific metric",
-    Category: "load",
     //Action:, TBD
     Subcommands: []cli.Command{
       {
@@ -266,7 +265,6 @@ var Commands = []cli.Command{
   {
     Name: "provision",
     Usage: "Get (un)provisioned servers and provision new servers",
-    Category: "provision",
     Subcommands: []cli.Command{
       {
         Name: "provision-new",
