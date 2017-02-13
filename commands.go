@@ -11,7 +11,12 @@ var Commands = []cli.Command{
     Name: "status",
     Aliases: []string{"stat"},
     Usage: "Get the status of the current deployment",
-    //Action:, TBD
+    Action: test,
+  },
+  {
+    Name: "scan",
+    Usage: "Get the status of the current deployment",
+    Action: CliScan,
   },
   {
     Name: "assets",
@@ -267,20 +272,20 @@ var Commands = []cli.Command{
     Usage: "Get (un)provisioned servers and provision new servers",
     Subcommands: []cli.Command{
       {
-        Name: "provision-new",
-        Usage: "Provision unprovisioned `server`s",
+        Name: "new",
+        Usage: "Provision unprovisioned servers",
         Category: "provision",
         Action: cmdProvisionNew,
       },
       {
         Name: "deprovision",
-        Usage: "deprovision previously provisioned `server`s",
+        Usage: "deprovision previously provisioned servers",
         Category: "provision",
         Action: cmdDeprovision,
       },
       {
         Name: "list",
-        Usage: "list provisioned or deprovisioned `server`s",
+        Usage: "list provisioned or deprovisioned servers",
         Category: "provision",
         Action: cmdProvisionList,
         Flags: []cli.Flag{
