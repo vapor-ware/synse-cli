@@ -1,24 +1,37 @@
-package main
+package commands
 
 import (
   "github.com/urfave/cli"
+  "github.com/vapor-ware/vesh/client"
 )
-
-var clearNotificationsID string
 
 var Commands = []cli.Command{
   {
     Name: "status",
     Aliases: []string{"stat"},
     Usage: "Get the status of the current deployment",
-    Action: test,
+    Action: func (c *cli.Context) error {
+      req := client.New()
+      err := TestAPI(req)
+      if err != nil {
+        return err
+      }
+      return nil
+    },
   },
   {
     Name: "scan",
     Usage: "Get the status of the current deployment",
-    Action: CliScan,
+    Action: func (c *cli.Context) error {
+      req := client.New()
+      err := Scan(req)
+      if err != nil {
+        return err
+      }
+      return nil
+    },
   },
-  {
+/*  {
     Name: "assets",
     Usage: "Manage and get information about physical devices",
     Subcommands: []cli.Command{
@@ -300,5 +313,5 @@ var Commands = []cli.Command{
         },
       },
     },
-  },
+  },*/
 }
