@@ -6,7 +6,7 @@ import (
   "reflect"
 
   "github.com/vapor-ware/vesh/client"
-  
+
   "github.com/olekukonko/tablewriter"
 )
 
@@ -47,7 +47,7 @@ func Scan(vc *client.VeshClient) error {
   stPtr := reflect.ValueOf(&otherthingy.Devices)
   stotherPtr := stPtr.Elem()
   table := tablewriter.NewWriter(os.Stdout)
-  table.SetHeader([]string{"Device", "Device Type"})
+  table.SetHeader([]string{"Device ID", "Device Type"})
   data := make([][]string, stotherPtr.Len())
   for i := 0; i < stotherPtr.Len(); i ++ {
     data[i] = make([]string, 2)
