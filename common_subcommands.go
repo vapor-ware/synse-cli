@@ -1,46 +1,12 @@
 package main
 
 import (
-  "os"
-  "fmt"
-  "strconv"
-  "net/http"
 
   "github.com/urfave/cli"
-  "github.com/dghubble/sling"
 )
 
-func constructUrl() string {
-  var vaporBase = fmt.Sprint(os.Getenv("VESH_HOST"))
-  var vaporPort = strconv.Itoa(5000)
-  var defaultPath = "opendcre/1.3/" //Add a version number here
-  var CompleteBase = fmt.Sprintf("http://%s:%i/%s", vaporBase, vaporPort, defaultPath)
-  fmt.Println(CompleteBase)
-  return CompleteBase
-}
+func cmdScan()   {
 
-type VeshClient struct {
-  sling *sling.Sling
-}
-
-func NewVeshClient(client *http.Client) *VeshClient {
-  cb := constructUrl()
-  return &VeshClient{
-    sling: sling.New().Client(client).Base(cb),
-  }
-}
-
-func CliScan(c *cli.Context)  {
-  fmt.Println(constructUrl)
-  client := new(VeshClient)
-  client.cmdScan()
-  fmt.Println("nope")
-}
-
-func (client *VeshClient) cmdScan()   {
-  //client := new(VeshClient)
-  resp, err := client.sling.New().Get("scan").Request()
-  fmt.Println(resp, err)
 }
 
 func test()  {

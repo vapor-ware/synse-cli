@@ -2,6 +2,9 @@ package main
 
 import (
   "os"
+
+  "github.com/vapor-ware/vesh/commands"
+
   "github.com/urfave/cli"
 )
 
@@ -11,7 +14,7 @@ func main() {
   app.Usage = "Vapor Edge Shell"
   app.Version = "0.0.1"
 
-  app.Commands = Commands
+  app.Commands = commands.Commands
   //app.CommandNotFound = commands.CommandNotFound
 
   app.Flags = []cli.Flag {
