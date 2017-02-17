@@ -10,14 +10,17 @@ import (
   "github.com/olekukonko/tablewriter"
 )
 
-const scanpath = "scan"
+const Scanpath = "scan"
 
 type scanResponse struct {
   Racks []struct {
     Boards []struct {
       BoardID string `json:"board_id"`
+      Hostnames []string `json:"hostnames"`
+      IPAddresses []string `json:"ip_addresses"`
       Devices []struct {
         DeviceID string `json:"device_id"`
+        DeviceInfo string `json:"device_info"`
         DeviceType string `json:"device_type"`
       } `json:"devices"`
     } `json:"boards"`
@@ -33,21 +36,22 @@ func walkBoards(sr *scanResponse) {
 
 }
 
-func Scan(vc *client.VeshClient) error {
+func Scan(vc *client.VeshClient) (*scanResponse, error) {
   status := &scanResponse{}
-  resp, err := vc.Sling.New().Get(scanpath).ReceiveSuccess(status)
+  resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
   if err != nil {
-    return err
+    return resp, err
   }
   if resp.StatusCode != http.StatusOK {
-    return err
+    return resp, err
   }
   fmt.Println("API reported status ok")
   otherthingy := status.Racks[0].Boards[2]
   stPtr := reflect.ValueOf(&otherthingy.Devices)
   stotherPtr := stPtr.Elem()
   table := tablewriter.NewWriter(os.Stdout)
-  table.SetHeader([]string{"Device ID", "Device Type"})
+  table.SetHeader([]string{"Device ID", "Device Info", "Device Type"})
+  table.SetBorder(false)
   data := make([][]string, stotherPtr.Len())
   for i := 0; i < stotherPtr.Len(); i ++ {
     data[i] = make([]string, 2)
@@ -59,7 +63,7 @@ func Scan(vc *client.VeshClient) error {
   }
   table.AppendBulk(data)
   table.Render()
-  return nil
+  return *status
 }
 
 func writetable()  {
