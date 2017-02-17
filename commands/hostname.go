@@ -5,7 +5,7 @@ import (
   "reflect"
 
   "github.com/vapor-ware/vesh/client"
-  "github.com/vapor-ware/vesh/utils"
+  //"github.com/vapor-ware/vesh/utils"
 
   "github.com/olekukonko/tablewriter"
 )
@@ -21,30 +21,37 @@ func ListHostnames(vc *client.VeshClient) error {
   table := tablewriter.NewWriter(os.Stdout)
   table.SetHeader([]string{"Board ID", "Hostnames", "IP Addesses"})
   table.SetBorder(false)
-  status := &hostname{}
+  //status := &hostname{}
   scanresult, scanerr := Scan(vc)
-  scanPtr:= reflect.ValueOf(&scanresult.Racks)
+  scanPtr := reflect.ValueOf(&scanresult.Racks)
   racksPtr := scanPtr.Elem()
   racks := make([]string, 0)
   boards := make([]string, 0)
   for i := 0; i < racksPtr.Len(); i++ {
-    racks := append(racks, racksPtr.Field(i).String())
+    rackIDPtr := reflect.ValueOf(&scanresult.Racks[i].RackID)
+    rackIDValuePtr := rackIDPtr.Elem()
+    racks = append(racks, rackIDValuePtr.String())
   }
   for j := range racks {
     for k := range boards {
-      boardsPtr := reflect.ValueOf(&scanresult.Racks[j].Boards[k].Hostnames)
-      boardsValuePtr := boardsPtr.Elem()
+      hostnamePtr := reflect.ValueOf(&scanresult.Racks[j].Boards[k].Hostnames)
+      hostnameValuePtr := hostnamePtr.Elem()
+      ipaddressPtr := reflect.ValueOf(&scanresult.Racks[j].Boards[k].IPAddresses)
+      ipaddressValuePtr := ipaddressPtr.Elem()
       hostnames := make([]string, 0)
-      hostnames = append(hostnames, boardsValuePtr.Field(j).String())
-      ipaddresstostring, err := utils.StructToSingleSlice(&scanresult.Racks[j].Boards[k].IPAddresses)
-      //ipaddresses := make([]string, 0)
-      //ipaddresses = append(ipaddresses, ipaddresstostring)
-      for l := range ipaddresstostring {
-        fulltablerow := append(hostnames, ipaddresstostring[l]...)
+      hostnames = append(hostnames, hostnameValuePtr.Field(j).String())
+      ipaddresses := make([]string, 0)
+      ipaddresses = append(ipaddresses, ipaddressValuePtr.Field(j).String())
+      tablerow := make([]string, 0)
+      for l := range hostnames {
+        tablerow = append(tablerow, hostnames[l])
       }
-      table.Append(fulltablerow)
+      for m := range ipaddresses {
+        tablerow = append(tablerow, ipaddresses[m])
+      }
+      table.Append(tablerow)
     }
   }
   table.Render()
-  return nil
+  return scanerr //fix this return
 }
