@@ -24,7 +24,7 @@ var Commands = []cli.Command{
     Usage: "Get the status of the current deployment",
     Action: func (c *cli.Context) error {
       req := client.New()
-      err := Scan(req)
+      _, err := Scan(req)
       if err != nil {
         return err
       }
