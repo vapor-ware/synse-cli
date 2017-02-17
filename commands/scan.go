@@ -40,10 +40,10 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
   status := &scanResponse{}
   resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
   if err != nil {
-    return resp, err
+    return status, err
   }
   if resp.StatusCode != http.StatusOK {
-    return resp, err
+    return status, err
   }
   fmt.Println("API reported status ok")
   otherthingy := status.Racks[0].Boards[2]
@@ -54,7 +54,7 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
   table.SetBorder(false)
   data := make([][]string, stotherPtr.Len())
   for i := 0; i < stotherPtr.Len(); i ++ {
-    data[i] = make([]string, 2)
+    data[i] = make([]string, 3)
     stPtr2 := reflect.ValueOf(&otherthingy.Devices[i])
     stotherPtr2 := stPtr2.Elem()
     for j := 0; j < stotherPtr2.NumField(); j++ {
@@ -63,7 +63,7 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
   }
   table.AppendBulk(data)
   table.Render()
-  return *status
+  return status, nil
 }
 
 func writetable()  {
