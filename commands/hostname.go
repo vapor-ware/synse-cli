@@ -1,7 +1,7 @@
 package commands
 import (
   "os"
-  //"fmt"
+  "fmt"
   "reflect"
 
   "github.com/vapor-ware/vesh/client"
@@ -19,39 +19,45 @@ type hostname struct {
 
 func ListHostnames(vc *client.VeshClient) error {
   table := tablewriter.NewWriter(os.Stdout)
-  table.SetHeader([]string{"Board ID", "Hostnames", "IP Addesses"})
+  table.SetHeader([]string{"Hostnames", "IP Addesses", "Board ID",})
   table.SetBorder(false)
+  //table.SetFooter([]string{"", "", "I hate Thomas"})
   //status := &hostname{}
   scanresult, scanerr := Scan(vc)
-  scanPtr := reflect.ValueOf(&scanresult.Racks)
-  racksPtr := scanPtr.Elem()
+  racksPtr := reflect.ValueOf(&scanresult.Racks)
+  racksValuePtr := racksPtr.Elem()
   racks := make([]string, 0)
-  boards := make([]string, 0)
-  for i := 0; i < racksPtr.Len(); i++ {
+  for i := 0; i < racksValuePtr.Len(); i++ {
     rackIDPtr := reflect.ValueOf(&scanresult.Racks[i].RackID)
     rackIDValuePtr := rackIDPtr.Elem()
     racks = append(racks, rackIDValuePtr.String())
-  }
-  for j := range racks {
-    for k := range boards {
-      hostnamePtr := reflect.ValueOf(&scanresult.Racks[j].Boards[k].Hostnames)
+    boardsPtr := reflect.ValueOf(&scanresult.Racks[i].Boards)
+    boardsValuePtr := boardsPtr.Elem()
+    for n := 0; n < boardsValuePtr.Len(); n++ {
+      boardsIDPtr := reflect.ValueOf(&scanresult.Racks[i].Boards[n].BoardID)
+      boardsIDValuePtr := boardsIDPtr.Elem()
+      boards := make([]string, 0)
+      boards = append(boards, boardsIDValuePtr.String())
+      hostnamePtr := reflect.ValueOf(&scanresult.Racks[i].Boards[n].Hostnames)
       hostnameValuePtr := hostnamePtr.Elem()
-      ipaddressPtr := reflect.ValueOf(&scanresult.Racks[j].Boards[k].IPAddresses)
+      ipaddressPtr := reflect.ValueOf(&scanresult.Racks[i].Boards[n].IPAddresses)
       ipaddressValuePtr := ipaddressPtr.Elem()
       hostnames := make([]string, 0)
-      hostnames = append(hostnames, hostnameValuePtr.Field(j).String())
+      hostnames = append(hostnames, hostnameValuePtr.String())
       ipaddresses := make([]string, 0)
-      ipaddresses = append(ipaddresses, ipaddressValuePtr.Field(j).String())
+      ipaddresses = append(ipaddresses, ipaddressValuePtr.String())
       tablerow := make([]string, 0)
-      for l := range hostnames {
-        tablerow = append(tablerow, hostnames[l])
+      for l := range scanresult.Racks[i].Boards[n].Hostnames {
+        tablerow = append(tablerow, scanresult.Racks[i].Boards[n].Hostnames[l])
       }
-      for m := range ipaddresses {
-        tablerow = append(tablerow, ipaddresses[m])
+      for m := range scanresult.Racks[i].Boards[n].IPAddresses {
+        tablerow = append(tablerow, scanresult.Racks[i].Boards[n].IPAddresses[m])
       }
+      tablerow = append(tablerow, boards[0])
       table.Append(tablerow)
     }
   }
+  fmt.Println(len(racks))
   table.Render()
   return scanerr //fix this return
 }
