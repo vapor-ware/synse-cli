@@ -21,7 +21,7 @@ var Commands = []cli.Command{
   },
   {
     Name: "scan",
-    Usage: "Get the status of the current deployment",
+    Usage: "Scan the infrastructure and display device summary",
     Action: func (c *cli.Context) error {
       req := client.New()
       _, err := Scan(req)

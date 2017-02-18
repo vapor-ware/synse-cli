@@ -66,6 +66,18 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
   return status, nil
 }
 
+func ScanOnly(vc *client.VeshClient) (*scanResponse, error) {
+  status := &scanResponse{}
+  resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
+  if err != nil {
+    return nil, err
+  }
+  if resp.StatusCode != http.StatusOK {
+    return status, err
+  }
+  return status, nil
+}
+
 func writetable()  {
 
 }

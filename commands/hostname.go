@@ -1,7 +1,7 @@
 package commands
 import (
   "os"
-  "fmt"
+  //"fmt"
   "reflect"
 
   "github.com/vapor-ware/vesh/client"
@@ -23,7 +23,7 @@ func ListHostnames(vc *client.VeshClient) error {
   table.SetBorder(false)
   //table.SetFooter([]string{"", "", "I hate Thomas"})
   //status := &hostname{}
-  scanresult, scanerr := Scan(vc)
+  scanresult, scanerr := ScanOnly(vc)
   racksPtr := reflect.ValueOf(&scanresult.Racks)
   racksValuePtr := racksPtr.Elem()
   racks := make([]string, 0)
@@ -57,7 +57,7 @@ func ListHostnames(vc *client.VeshClient) error {
       table.Append(tablerow)
     }
   }
-  fmt.Println(len(racks))
+  //fmt.Println(len(racks))
   table.Render()
   return scanerr //fix this return
 }
