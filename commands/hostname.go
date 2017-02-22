@@ -1,7 +1,7 @@
 package commands
 import (
   "os"
-  //"fmt"
+  "fmt"
   "reflect"
 
   "github.com/vapor-ware/vesh/client"
@@ -10,9 +10,9 @@ import (
   "github.com/olekukonko/tablewriter"
 )
 
-const hostnamepath = "boot_target/"
+const hostnamepath = "host_info/"
 
-type hostname struct {
+type hostnameResponse struct {
   Hostname []string `json:"hostnames"`
   IPAddress []string `json:"ip_addresses"`
 }
@@ -60,4 +60,34 @@ func ListHostnames(vc *client.VeshClient) error {
   //fmt.Println(len(racks))
   table.Render()
   return scanerr //fix this return
+}
+
+func GetHostname(vc *client.VeshClient, rack_id, board_id, device_id string) ([]string, error) {
+  responseData := &hostnameResponse{}
+  _, err := vc.Sling.New().Path(hostnamepath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData)
+  tableline := make([]string, 0)
+  tableline = append(tableline, responseData.Hostname...)
+  tableline = append(tableline, responseData.IPAddress...)
+  if err != nil {
+    return nil, err
+  }
+  return tableline, err
+}
+
+func PrintGetHostname(vc *client.VeshClient, rack_id, board_id, device_id string, raw bool) error {
+  table := tablewriter.NewWriter(os.Stdout)
+  table.SetHeader([]string{"Hostnames", "IP Addesses"})
+  table.SetBorder(false)
+  tablerow, err := GetHostname(vc, rack_id, board_id, device_id)
+  if err != nil {
+    return err
+  }
+  if raw == true {
+    fmt.Println(tablerow)
+    return nil
+  }
+  table.Append(tablerow)
+  table.Render()
+  return nil
+
 }

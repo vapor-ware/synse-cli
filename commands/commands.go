@@ -57,7 +57,24 @@ var Commands = []cli.Command{
             Name: "get",
             Usage: "Get hostname for specific `device`",
             Category: "hostname",
-            Action: nil,
+            Flags: []cli.Flag{
+              cli.BoolFlag{
+                Name: "raw",
+                Usage: "Only output a space separated list of hostnames and IP addresses",
+              },
+            },
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() {
+                err := PrintGetHostname(req, "rack_whatever", c.Args().Get(0), "system", c.Bool("raw")) //stop hardcoding this. Lookup?
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
         },
       },
@@ -70,7 +87,18 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List power status",
             Category: "power",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() == false {
+                err := PrintListPower(req)
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
           {
             Name: "get",
