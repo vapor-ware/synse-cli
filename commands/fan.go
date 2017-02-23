@@ -95,7 +95,7 @@ func GetFan(vc *client.VeshClient, rack_id, board_id string) ([][]string, error)
         return nil, err
       }
       tablerow := make([]string, 0)
-      tablerow = append(tablerow, device_id, responseData.Health, strconv.FormatFloat(responseData.SpeedRPM, 'G', -1, 64))
+      tablerow = append(tablerow, rack_id, board_id, device_id, responseData.Health, strconv.FormatFloat(responseData.SpeedRPM, 'G', -1, 64))
       tablerow = append(tablerow, responseData.States...)
       fulltable = append(fulltable, nil)
       fulltable[totalruns] = make([]string, 0)
@@ -108,11 +108,11 @@ func GetFan(vc *client.VeshClient, rack_id, board_id string) ([][]string, error)
 
 func PrintGetFan(vc *client.VeshClient, rack_id, board_id string) error {
   table := tablewriter.NewWriter(os.Stdout)
-  table.SetHeader([]string{"Device", "Health", "Speed (RPM)", "States"})
+  table.SetHeader([]string{"Rack", "Board", "Device", "Health", "Speed (RPM)", "States"})
   table.SetBorder(false)
   table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
   table.SetCenterSeparator("|")
-  table.SetAutoMergeCells(false)
+  table.SetAutoMergeCells(true)
   fanStatus, _ := GetFan(vc, rack_id, board_id) // Add error reporting
   table.AppendBulk(fanStatus)
   table.Render()
