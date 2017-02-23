@@ -30,4 +30,4 @@ _testmain.go
 vendor/
 
 # `go build` binary
-vesh
+/vesh
