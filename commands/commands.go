@@ -186,13 +186,35 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List temperatures",
             Category: "temperature",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() != true {
+                err := PrintListTemp(req)
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
           {
             Name: "get",
             Usage: "Get temperature for specific `device`",
             Category: "temperature",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() == true {
+                err := PrintGetTemp(req, c.Args().Get(0), c.Args().Get(1))
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
         },
       },

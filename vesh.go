@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/vapor-ware/vesh/commands"
+	"github.com/vapor-ware/vesh/client"
 
 	"github.com/urfave/cli"
 )
@@ -30,7 +31,9 @@ func main() {
 		cli.StringFlag{
 			EnvVar: "VESH_HOST",
 			Name:   "host",
+			Value:	"demo.vapor.io", // This is temporary
 			Usage:  "Address of `Vapor Host`",
+			Destination: &client.VeshHostPtr,
 		},
 	}
 
