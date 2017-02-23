@@ -104,13 +104,35 @@ var Commands = []cli.Command{
             Name: "get",
             Usage: "Get power status for specific `device`",
             Category: "power",
-            Action: nil,
+            Action: func (c *cli.Context) error{
+              req := client.New()
+              if c.Args().Present() == true {
+                err := PrintGetPower(req, c.Args().Get(0), c.Args().Get(1))
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
           {
             Name: "set",
             Usage: "Change the power status `on/off/cycle`",
             Category: "power",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() == true {
+                err := PrintSetPower(req, c.Args().Get(0), c.Args().Get(1), c.Args().Get(2)) // Consider breaking some of these out into flags
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
         },
       },
