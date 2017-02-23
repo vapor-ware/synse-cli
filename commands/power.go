@@ -79,7 +79,7 @@ func GetPower(vc *client.VeshClient, rack_id, board_id string) ([]string, error)
 
 func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
   table := tablewriter.NewWriter(os.Stdout)
-  table.SetHeader([]string{"Rack", "Board", "Input Power", "Over Current?", "Power Ok?", "PowerStatus"})
+  table.SetHeader([]string{"Rack", "Board", "Input Power", "Over Current?", "Power Ok?", "Power Status"})
   table.SetBorder(false)
   table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
   table.SetCenterSeparator("|")
