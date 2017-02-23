@@ -10,7 +10,6 @@ import (
 
   "github.com/olekukonko/tablewriter"
   "github.com/sethgrid/multibar"
-  //"github.com/buger/goterm"
 )
 
 const temperaturepath = "temperature/"
