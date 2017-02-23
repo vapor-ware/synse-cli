@@ -1,14 +1,16 @@
 package client
 import (
-  "os"
+  //"os"
   "fmt"
   "strconv"
 
   "github.com/dghubble/sling"
 )
 
+var VeshHostPtr = ""
+
 func constructUrl() string {
-  var vaporBase = fmt.Sprint(os.Getenv("VESH_HOST"))
+  var vaporBase = fmt.Sprint(VeshHostPtr)
   var vaporPort = strconv.Itoa(5000)
   var defaultPath = "opendcre/1.3/" //Add a version number here
   var CompleteBase = fmt.Sprintf("http://%s:%s/%s", vaporBase, vaporPort, defaultPath)
