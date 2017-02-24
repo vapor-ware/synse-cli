@@ -1,6 +1,8 @@
 package commands
 
 import (
+  "strconv" // I don't like having to use this here
+
   "github.com/urfave/cli"
   "github.com/vapor-ware/vesh/client"
 )
@@ -227,13 +229,37 @@ var Commands = []cli.Command{
             Name: "set",
             Usage: "Set the boot target for specific `device`. Can be `pxe` `hdd` or `no-override`",
             Category: "boot-target",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() == true {
+                rack, _ := strconv.Atoi(c.Args().Get(0)) // This kind of thing should be done in the specific command
+                board, _ := strconv.Atoi(c.Args().Get(1))// Ditto
+                err := SetCurrentBootTarget(req, rack, board, c.Args().Get(2)) // Consider breaking some of these out into flags
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
           {
             Name: "get",
             Usage: "Get current boot target for specific `device`",
             Category: "boot-target",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() == true {
+                err := PrintGetCurrentBootTarget(req, c.Args().Get(0), c.Args().Get(1))
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
         },
       },
