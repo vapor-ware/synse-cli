@@ -76,7 +76,7 @@ func PrintListTemp(vc *client.VeshClient) error {
   table.SetBorder(false)
   table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
   table.SetCenterSeparator("|")
-  table.SetAlignment(tablewriter.ALIGN_CENTER)
+  table.SetAlignment(tablewriter.ALIGN_LEFT)
   table.SetAutoMergeCells(false)
   fmt.Println("Polling temperatures. This may take some time...")
   tempList, _ := ListTemp(vc) // Add error reporting
