@@ -18,16 +18,23 @@ type boottargetresponse struct {
 	status string `json:"status"`
 }
 
-func GetCurrentBootTarget(vc *client.VeshClient, rack_id int, board_id int) error {
+func GetCurrentBootTarget(vc *client.VeshClient, rack_id int, board_id int) (string, error) {
 	status := &boottargetresponse{}
 	resp, err := vc.Sling.New().Path(bootpath).Path(strconv.Itoa(rack_id) + "/").Path(strconv.Itoa(board_id) + "/").Get(bootdevicetype).ReceiveSuccess(status)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return err
+		return "", err
 	}
-	fmt.Println(status.Target)
+	return status.Target, nil
+}
+
+func PrintGetCurrentBootTarget(vc *client.VeshClient, rack_id, board_id string) error {
+	rackidint, _ := strconv.Atoi(rack_id)
+	boardidint, _ := strconv.Atoi(board_id)
+	bootTarget, _ := GetCurrentBootTarget(vc, rackidint, boardidint)
+	fmt.Println(bootTarget)
 	return nil
 }
 
