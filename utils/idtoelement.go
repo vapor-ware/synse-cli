@@ -53,3 +53,35 @@ func BoardIDtoElem(board_id int) (int) {
   }
   return 0
 }
+
+/*
+Given a Device ID, will return the *first encountered* index of that
+device in the `scanResponse` struct. WARNING: This may not be
+consistent betweenscans!
+
+This is a temporary measure until UUID's are implemented.
+*/
+
+func DeviceIDtoElem(device_id int) (int) {
+  scanResponse, scanerr := UtilScanOnly() // Add error reporting
+  if scanerr != nil {
+    return 0
+  }
+  deviceidstring := strconv.Itoa(device_id)
+  scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
+  scanResponseValuePtr := scanResponsePtr.Elem()
+  for i := 0; i < scanResponseValuePtr.Len(); i++ {
+    boardsPtr := reflect.ValueOf(&scanResponse.Racks[i].Boards)
+    boardsValuePtr := boardsPtr.Elem()
+    for j := 0; j < boardsValuePtr.Len(); j++ {
+      devicePtr := reflect.ValueOf(&scanResponse.Racks[i].Boards[j].Devices)
+      deviceValuePtr := boardsPtr.Elem()
+      for k := 0; k < deviceValuePtr.Len(); k++ {
+        if scanResponse.Racks[i].Boards[j].Devices[k].DeviceID == deviceidstring {
+          return k
+        }
+      }
+    }
+  }
+  return 0
+}
