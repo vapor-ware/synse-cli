@@ -21,8 +21,8 @@ func ListHostnames(vc *client.VeshClient) error {
   table := tablewriter.NewWriter(os.Stdout)
   table.SetHeader([]string{"Hostnames", "IP Addesses", "Board ID",})
   table.SetBorder(false)
-  //table.SetFooter([]string{"", "", "I hate Thomas"})
-  //status := &hostname{}
+  table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+  table.SetCenterSeparator("|")
   scanresult, scanerr := ScanOnly(vc)
   racksPtr := reflect.ValueOf(&scanresult.Racks)
   racksValuePtr := racksPtr.Elem()
@@ -78,6 +78,8 @@ func PrintGetHostname(vc *client.VeshClient, rack_id, board_id, device_id string
   table := tablewriter.NewWriter(os.Stdout)
   table.SetHeader([]string{"Hostnames", "IP Addesses"})
   table.SetBorder(false)
+  table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+  table.SetCenterSeparator("|")
   tablerow, err := GetHostname(vc, rack_id, board_id, device_id)
   if err != nil {
     return err

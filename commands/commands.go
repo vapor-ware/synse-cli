@@ -272,29 +272,93 @@ var Commands = []cli.Command{
             Name: "list",
             Usage: "List LED status",
             Category: "lights",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() != true {
+                err := PrintListLights(req)
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
           {
             Name: "get",
             Usage: "Get LED status for specific `device`",
             Category: "lights",
-            Action: nil,
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() == true {
+                err := PrintGetLight(req, c.Args().Get(0), c.Args().Get(1))
+                if err != nil {
+                  return err
+                }
+                return nil
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
           {
             Name: "set",
             Usage: "Change the status for a specific LED `on/off/blink`",
             Category: "lights",
-            Action: nil,
+            Flags: []cli.Flag{
+              cli.StringFlag{
+                Name: "state",
+                Usage: "Set state to `on/off/blink`",
+              },
+              cli.StringFlag{
+                Name: "color",
+                Usage: "Set LED to `color` (3 byte base 16 hex)",
+              },
+              cli.StringFlag{
+                Name: "blink",
+                Usage: "Set LED blink to `blink` or `steady`",
+              },
+            },
+            Action: func (c *cli.Context) error {
+              req := client.New()
+              if c.Args().Present() == true {
+                rack, _ := strconv.Atoi(c.Args().Get(0)) // This kind of thing should be done in the specific command
+                board, _ := strconv.Atoi(c.Args().Get(1))// Ditto
+                switch {
+                case c.String("state") != "":
+                  err := PrintSetLight(req, rack, board, c.String("state"), "state") // Consider breaking some of these out into flags
+                  if err != nil {
+                    return err
+                  }
+                  return nil
+                case c.String("color") != "":
+                  err := PrintSetLight(req, rack, board, c.String("color"), "color") // Consider breaking some of these out into flags
+                  if err != nil {
+                    return err
+                  }
+                  return nil
+                case c.String("blink") != "":
+                  err := PrintSetLight(req, rack, board, c.String("blink"), "blink") // Consider breaking some of these out into flags
+                  if err != nil {
+                    return err
+                  }
+                  return nil
+                }
+              }
+              cli.ShowSubcommandHelp(c)
+              return nil // Fix this. Restructure error checking and responses.
+            },
           },
           {
             Name: "blink",
-            Usage: "Blink specific `LED`",
+            Usage: "Blink specific `LED` (alias for '--blink true') (NOT YET IMPLEMENTED)",
             Category: "lights",
             Action: nil,
           },
           {
             Name: "color",
-            Usage: "Set a specific `LED` to `color`",
+            Usage: "Set a specific `LED` to `color` (alias for '--color <hex>') (NOT YET IMPLEMENTED)", // Consider removing
             Category: "lights",
             Action: nil,
           },
@@ -302,7 +366,7 @@ var Commands = []cli.Command{
       },
       {
         Name: "location",
-        Usage: "Get the physical location of a `device`",
+        Usage: "Get the physical location of a `device` (NOT YET IMPLEMENTED)",
         Category: "assets",
         Subcommands: []cli.Command{
           {
@@ -335,22 +399,22 @@ var Commands = []cli.Command{
   },
   {
     Name: "zones",
-    Usage: "List available zones",
+    Usage: "List available zones (NOT YET IMPLEMENTED)",
     //Action:, TBD
   },
   {
     Name: "racks",
-    Usage: "List available racks within a given `zone` (or all zones if none is specified)",
+    Usage: "List available racks within a given `zone` (or all zones if none is specified) (NOT YET IMPLEMENTED)",
     //Action:, TBD
   },
   {
     Name: "health",
-    Usage: "Check health for a given `zone`, `rack`, or `device`",
+    Usage: "Check health for a given `zone`, `rack`, or `device` (NOT YET IMPLEMENTED)",
     //Action:, TBD
   },
   {
     Name: "notifications",
-    Usage: "List notifications for a given `zone`, `rack`, or `device`",
+    Usage: "List notifications for a given `zone`, `rack`, or `device` (NOT YET IMPLEMENTED)",
     //Action:, TBD
     Subcommands: []cli.Command{
       {
@@ -372,7 +436,7 @@ var Commands = []cli.Command{
   },
   {
     Name: "load",
-    Usage: "Get the load by specific metric",
+    Usage: "Get the load by specific metric (NOT YET IMPLEMENTED)",
     //Action:, TBD
     Subcommands: []cli.Command{
       {
@@ -409,7 +473,7 @@ var Commands = []cli.Command{
   },
   {
     Name: "provision",
-    Usage: "Get (un)provisioned servers and provision new servers",
+    Usage: "Get (un)provisioned servers and provision new servers (NOT YET IMPLEMENTED)",
     Subcommands: []cli.Command{
       {
         Name: "new",
