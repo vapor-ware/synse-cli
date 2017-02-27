@@ -75,7 +75,7 @@ func DeviceIDtoElem(device_id int) (int) {
     boardsValuePtr := boardsPtr.Elem()
     for j := 0; j < boardsValuePtr.Len(); j++ {
       devicePtr := reflect.ValueOf(&scanResponse.Racks[i].Boards[j].Devices)
-      deviceValuePtr := boardsPtr.Elem()
+      deviceValuePtr := devicePtr.Elem()
       for k := 0; k < deviceValuePtr.Len(); k++ {
         if scanResponse.Racks[i].Boards[j].Devices[k].DeviceID == deviceidstring {
           return k

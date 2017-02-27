@@ -61,7 +61,6 @@ func ListTemp(vc *client.VeshClient) ([][]string, error) {
           fulltable = append(fulltable, nil)
           fulltable[totalruns] = make([]string, 0)
           fulltable[totalruns] = append(fulltable[totalruns], tablerow...)
-          polling(totalruns)
           totalruns ++
         }
       }
