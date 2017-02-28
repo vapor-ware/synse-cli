@@ -17,6 +17,7 @@ func main() {
 
 	app.Commands = commands.Commands
 	//app.CommandNotFound = commands.CommandNotFound
+	app.EnableBashCompletion = true
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
