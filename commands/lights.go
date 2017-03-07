@@ -120,8 +120,8 @@ func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 
 func SetLight(vc *client.VeshClient, rack_id, board_id, light_status string) (string, error) {
 	responseData := &lightsResponse{}
-	resp, err := vc.Sling.New().Path(lightspath).Path(rack_id + "/").Path(board_id + "/").Path(device_id + "/").Get(light_status).ReceiveSuccess(responseData) // Add error reporting
-	if resp.StatusCode != 200 {                                                                                                                                // This is not what I meant by "error reporting"
+	resp, err := vc.Sling.New().Path(lightspath).Path(rack_id + "/").Path(board_id + "/").Path(lightsdevicetype + "/").Get(light_status).ReceiveSuccess(responseData) // Add error reporting
+	if resp.StatusCode != 200 { // This is not what I meant by "error reporting"
 		return "", err
 	}
 	return responseData.State, err
@@ -130,17 +130,17 @@ func SetLight(vc *client.VeshClient, rack_id, board_id, light_status string) (st
 func PrintSetLight(vc *client.VeshClient, rack_id int, board_id int, light_input, light_command string) error {
 	switch light_command {
 	case "state":
-		light_action := fmt.Sprintf("%s", "status")
+		light_action := fmt.Sprintf("%s", light_input)
 		status, err := SetLight(vc, strconv.Itoa(rack_id), strconv.Itoa(board_id), light_action)
 		fmt.Println(status)
 		return err
 	case "color":
-		light_action := fmt.Sprintf("status/%s/%s", light_command, light_input) // Might need this to be a nonstring input
+		light_action := fmt.Sprintf("state/%s/%s", light_command, light_input) // Might need this to be a nonstring input
 		status, err := SetLight(vc, strconv.Itoa(rack_id), strconv.Itoa(board_id), light_action)
 		fmt.Println(status)
 		return err
 	case "blink":
-		light_action := fmt.Sprintf("status/%s/%s", "blink_state", light_input)
+		light_action := fmt.Sprintf("state/%s/%s", "blink_state", light_input)
 		status, err := SetLight(vc, strconv.Itoa(rack_id), strconv.Itoa(board_id), light_action)
 		fmt.Println(status)
 		return err
