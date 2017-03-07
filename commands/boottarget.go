@@ -40,7 +40,7 @@ func PrintGetCurrentBootTarget(vc *client.VeshClient, rack_id, board_id string) 
 
 func SetCurrentBootTarget(vc *client.VeshClient, rack_id int, board_id int, boot_target string) error {
 	status := &boottargetresponse{}
-	resp, err := vc.Sling.New().Path(bootpath).Path(strconv.Itoa(rack_id) + "/").Path(strconv.Itoa(board_id) + "/").Path(bootdevicetype).Get(boot_target).ReceiveSuccess(status)
+	resp, err := vc.Sling.New().Path(bootpath).Path(strconv.Itoa(rack_id) + "/").Path(strconv.Itoa(board_id) + "/").Path(bootdevicetype + "/").Get(boot_target).ReceiveSuccess(status)
 	if err != nil {
 		return err
 	}
