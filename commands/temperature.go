@@ -22,6 +22,8 @@ type temperatureResponse struct {
 	TemperatureC float64  `json:"temperature_c"`
 }
 
+// ListTemp iterates over the complete list of devices and returns health,
+// states, and temperature (celcius) for each `temperature` device type.
 func ListTemp(vc *client.VeshClient) ([][]string, error) {
 	scanResponse, _ := utils.UtilScanOnly() // Add error reporting
 	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
@@ -70,6 +72,9 @@ func ListTemp(vc *client.VeshClient) ([][]string, error) {
 	return fulltable, nil
 }
 
+// PrintListTemp takes the output from ListTemp and pretty prints it into a table.
+// Multiple temperature readings are grouped by board, then by rack. Table format
+// is set to not auto merge duplicate entries.
 func PrintListTemp(vc *client.VeshClient) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Device", "Temperature in C"})
@@ -86,6 +91,8 @@ func PrintListTemp(vc *client.VeshClient) error {
 	return nil
 }
 
+// GetTemp takes a rack and board id as a locator and returns the device id
+// health, temperature (celcius), and states for that board.
 func GetTemp(vc *client.VeshClient, rack_id, board_id string) ([][]string, error) {
 	scanResponse, scanerr := utils.UtilScanOnly() // Add error reporting
 	rackidint, _ := strconv.Atoi(rack_id)
@@ -114,6 +121,8 @@ func GetTemp(vc *client.VeshClient, rack_id, board_id string) ([][]string, error
 	return fulltable, scanerr
 }
 
+// PrintGetTemp takes the output of GetTemp and pretty prints it in table form.
+// Multiple entries are merged.
 func PrintGetTemp(vc *client.VeshClient, rack_id, board_id string) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Device", "Health", "Temperature in C", "States"})
