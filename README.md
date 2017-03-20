@@ -26,3 +26,14 @@ GLOBAL OPTIONS:
    --help, -h              show help
    --version, -v           print the version
 ```
+
+**TO DO**:
+- [ ] Error handling
+- [ ] Comments and documentation
+- [ ] Configuration from file
+- [ ] Debug mode
+- [ ] "Second order" features
+  - [ ] Notifications
+  - [ ] Health
+  - [ ] Provision
+  - [ ] Load
