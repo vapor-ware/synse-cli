@@ -15,6 +15,11 @@ import (
 
 const Scanpath = "scan"
 
+// scanResponse struct holds the response values from a `/scan` operation.
+// While it does not contain the complete set of information available, it does
+// contain a complete list of the available assets, including racks and boards.
+// The structure mirrors the json struture of response from `/scan` and values
+// are assigned to appropriate sub structs.
 type scanResponse struct {
 	Racks []struct {
 		Boards []struct {
@@ -31,14 +36,25 @@ type scanResponse struct {
 	} `json:"racks"`
 }
 
+// TODO: walkRacks is not yet implemented.
 func walkRacks(sr *scanResponse) {
 
 }
 
+// TODO: walkBoards is not yet implemented.
 func walkBoards(sr *scanResponse) {
 
 }
 
+// Scan polls the infrastructure (using the `/scan` endpoint) and assigns the
+// responses to the appropriate fields in the scanResponse struct. Because the
+// json response contains multiple nested levels of data, each level is walked
+// to populate "bottom level" data.
+//
+// Because walking the full tree can take some time, a progress bar is displayed
+// during the scan process.
+// NOTE: Printing output is part of this function. To access scan results
+// internally, utils.UtilScanOnly should be used.
 func Scan(vc *client.VeshClient) (*scanResponse, error) {
 	status := &scanResponse{}
 	resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
@@ -89,6 +105,8 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
 	return status, nil
 }
 
+// ScanOnly returns the results of a scan without any formatting or printing.
+// NOTE: This function may be removed in favor of util.UtilScanOnly.
 func ScanOnly(vc *client.VeshClient) (*scanResponse, error) {
 	status := &scanResponse{}
 	resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
