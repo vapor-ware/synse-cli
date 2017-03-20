@@ -1,15 +1,6 @@
 // Package commands provides the skeleton structure for the
 // commands, subcmmands, and flags available to the cli. It also provides
 // basic input parsing and error checking.
-package commands
-
-import (
-	"strconv" // I don't like having to use this here
-
-	"github.com/urfave/cli"
-	"github.com/vapor-ware/vesh/client"
-)
-
 /*
 Commands defines the commands, subcommands, and flags used in app.Cli to form
 the structure of the CLI. Definitions, usage strings, help text, and flags are
@@ -22,7 +13,7 @@ the definitions given below are included in the commands package in this directo
 Unless otherwise stated, each command definition should contain the following:
 
 	command:
-	
+
 		- Data struct:
 
 			This data struct usually forms the definition of returned data from a
@@ -79,6 +70,14 @@ everywhere.
 Unless otherwise specified all errors should be fatal since each command
 is stateless and called once during each run.
 */
+package commands
+
+import (
+	"strconv" // I don't like having to use this here
+
+	"github.com/urfave/cli"
+	"github.com/vapor-ware/vesh/client"
+)
 
 // Commands provides the global list of commands to app.cli.
 // Definitions, usage information, and executed functions are given.
