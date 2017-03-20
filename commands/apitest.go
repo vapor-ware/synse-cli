@@ -13,6 +13,7 @@ type APIStatus struct {
 	Status string `json:"status"`
 }
 
+// TestAPI checks the "../<testpath>" endpoint and returns the status returned.
 func TestAPI(vc *client.VeshClient) error {
 	status := &APIStatus{}
 	resp, err := vc.Sling.New().Get(testpath).ReceiveSuccess(status)
