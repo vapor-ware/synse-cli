@@ -23,6 +23,8 @@ type powerResponse struct {
 	PowerStatus string  `json:"power_status"`
 }
 
+// ListPower iterates over the complete list of devices and returns input power,
+// over current, power ok, and power status for each `power` device type.
 func ListPower(vc *client.VeshClient) ([][]string, error) {
 	scanResponse, _ := ScanOnly(vc) // Add error reporting
 	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
@@ -61,6 +63,9 @@ func ListPower(vc *client.VeshClient) ([][]string, error) {
 	//return nil, scanerr //fix with proper error
 }
 
+// PrintListPower takes the output from ListPower and pretty prints it into a table.
+// Multiple lights are grouped by board, then by rack. Table format is set to
+// auto merge duplicate entries.
 func PrintListPower(vc *client.VeshClient) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Input Power", "Power Ok?"})
@@ -74,6 +79,8 @@ func PrintListPower(vc *client.VeshClient) error {
 	return nil
 }
 
+// GetPower takes a rack and board id as a locator and returns the device id
+// and state of power for that board.
 func GetPower(vc *client.VeshClient, rack_id, board_id string) ([]string, error) {
 	responseData := &powerResponse{}
 	resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
@@ -85,6 +92,8 @@ func GetPower(vc *client.VeshClient, rack_id, board_id string) ([]string, error)
 	return tablerow, nil
 }
 
+// PrintGetPower takes the output of GetPower and pretty prints it in table form.
+// Multiple entries are not merged.
 func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Input Power", "Over Current?", "Power Ok?", "Power Status"})
@@ -98,6 +107,10 @@ func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
 	return err // Add error reporting
 }
 
+// SetPower takes a rack and board id as a locator as well as a power status
+// string. The power status of the corresponding "power" device is set to the
+// given power status.
+// Options are: "on", "off", "cycle"
 func SetPower(vc *client.VeshClient, rack_id, board_id, power_status string) (string, error) {
 	responseData := &powerResponse{}
 	resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Path(device_id + "/").Get(power_status).ReceiveSuccess(responseData) // Add error reporting
@@ -110,6 +123,8 @@ func SetPower(vc *client.VeshClient, rack_id, board_id, power_status string) (st
 	return responseData.PowerStatus, err
 }
 
+// PrintSetPower takes the output of SetPower and pretty prints whether the
+// status was changed successfully.
 func PrintSetPower(vc *client.VeshClient, rack_id, board_id, power_status string) error {
 	status, err := SetPower(vc, rack_id, board_id, power_status)
 	if err == nil && status == "cycle" {

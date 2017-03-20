@@ -1,3 +1,6 @@
+// Package commands provides the skeleton structure for the
+// commands, subcmmands, and flags available to the cli. It also provides
+// basic input parsing and error checking.
 package commands
 
 import (
@@ -7,6 +10,78 @@ import (
 	"github.com/vapor-ware/vesh/client"
 )
 
+/*
+Commands defines the commands, subcommands, and flags used in app.Cli to form
+the structure of the CLI. Definitions, usage strings, help text, and flags are
+deligated to app.Cli. The `Action:` field gives the function called when each
+command is run.
+
+Commands are broken up into separate files by category matching the category listed
+in their descriptions. Top level commands accessible to the user, and matching
+the definitions given below are included in the commands package in this directory.
+Unless otherwise stated, each command definition should contain the following:
+
+	command:
+	
+		- Data struct:
+
+			This data struct usually forms the definition of returned data from a
+			querying function call. Typically it matches the `json` fields returned
+			from the HTTP GET request. When a request is made, the response is stored
+			in a copy of this struct and pointers are used by the command functions
+			to access the data.
+
+		- Listing function:
+
+			Most commands have some form of a "list" function that returns most (or all)
+			of the elements being queried for that the given backend contains. For
+			example running `assets fan list` will return information on all fans on
+			all boards and racks.
+
+		- Geting/Setting function(s):
+
+			Most commands also contain a specific "get" function that returns
+			information about a specific device. Typically, depending on the type of
+			device, and how nested it is, a specific device is given by the rack and
+			board id on which it is located (as well as the `device_type` that
+			corresponds to the device being queried). These commands may or may not
+			have the advantage of not requiring a full device list to be built by
+			walking the tree, thereby saving return time.
+			If the field in question allows bi-directional interaction a second
+			form of this function may be present. This "set" function allows the value
+			fields within this device to be set. Like the "get" command it takes a
+			specifier, usually in the form of a rack and board id. It may also take
+			one or more values to be set. Which values are possible, and in what order
+			they should appear are typically given in the "Usage:" string for the
+			specific command.
+
+		- Printing functions:
+
+			Unless otherwise specified, the functions for each command do not print
+			their output. Each command should have an accompanying "print" function
+			that will take the output of the corresponding command and format it
+			properly, then print it to stdout. A tablewriter is typically used to
+			organize multiple rows of data. Unless otherwise specified tables are
+			formatted as close to Markdown table format as possible. Some functions
+			may also have a `--raw` output mode, which will print the output with
+			minimal formatting. By separating printing from a command itself, commands
+			can be used internally without presenting to the user.
+
+Typically the `Action:` field below runs a wrapper function that does minimal
+input and error parsing before calling the associated "print" function. The
+"print" function is responsible for printing output to the user, only errors
+(if any) are returned to the calling function.
+
+NOTE: Some commands may use a progress bar to specify progress during long
+queries (usually walking a device tree). This is experimental and not implemented
+everywhere.
+
+Unless otherwise specified all errors should be fatal since each command
+is stateless and called once during each run.
+*/
+
+// Commands provides the global list of commands to app.cli.
+// Definitions, usage information, and executed functions are given.
 var Commands = []cli.Command{
 	{
 		Name:    "status",
