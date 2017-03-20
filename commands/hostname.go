@@ -18,7 +18,13 @@ type hostnameResponse struct {
 	IPAddress []string `json:"ip_addresses"`
 }
 
+// ListHostnames iterates over the complete list of boards and returns the
+// hostname(s) and ip address(es) associated with each, given from the top
+// level "hostnames" and "ip addresses" fields. Since a given board may have
+// multiple hostnames and/or ip addresses, all given values for each field are
+// returned.
 func ListHostnames(vc *client.VeshClient) error {
+	// BUG(timfall): The printing should be broken out into a seperate function.
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Hostnames", "IP Addesses", "Board ID"})
 	table.SetBorder(false)
@@ -63,6 +69,8 @@ func ListHostnames(vc *client.VeshClient) error {
 	return scanerr //fix this return
 }
 
+// GetHostname takes a rack and board id as a locator and returns the hostnames
+// and ip addresses of that board.
 func GetHostname(vc *client.VeshClient, rack_id, board_id, device_id string) ([]string, error) {
 	responseData := &hostnameResponse{}
 	_, err := vc.Sling.New().Path(hostnamepath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData)
@@ -75,6 +83,7 @@ func GetHostname(vc *client.VeshClient, rack_id, board_id, device_id string) ([]
 	return tableline, err
 }
 
+// PrintGetHostname takes the output of GetHostname and pretty prints it in table form.
 func PrintGetHostname(vc *client.VeshClient, rack_id, board_id, device_id string, raw bool) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Hostnames", "IP Addesses"})

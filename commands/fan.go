@@ -21,6 +21,12 @@ type fanResponse struct {
 	States   []string `json:"states"`
 }
 
+// ListFan iterates over the complete list of devices and returns health,
+// speed (rpm), and state of each `fan_speed` device type. Since there may
+// be multiple fans per board, each board is also iterated over for each
+// device of type `fan_speed`.
+// Future types may need to be added to this list to accomidate different
+// types of fan data.
 func ListFan(vc *client.VeshClient) ([][]string, error) {
 	scanResponse, _ := utils.UtilScanOnly() // Add error reporting
 	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
@@ -63,6 +69,9 @@ func ListFan(vc *client.VeshClient) ([][]string, error) {
 	return fulltable, nil
 }
 
+// PrintListFan takes the output from ListFan and pretty prints it into a table.
+// Multiple fans are grouped by board, then by rack. Table format is set to not
+// auto merge duplicate entries.
 func PrintListFan(vc *client.VeshClient) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Device", "Fan Speed"})
@@ -77,6 +86,8 @@ func PrintListFan(vc *client.VeshClient) error {
 	return nil
 }
 
+// GetFan takes a rack and board id as a locator and returns the health,
+// speed (rpm), and state of all fans on that board.
 func GetFan(vc *client.VeshClient, rack_id, board_id string) ([][]string, error) {
 	scanResponse, scanerr := utils.UtilScanOnly() // Add error reporting
 	rackidint, _ := strconv.Atoi(rack_id)
@@ -105,6 +116,8 @@ func GetFan(vc *client.VeshClient, rack_id, board_id string) ([][]string, error)
 	return fulltable, scanerr
 }
 
+// PrintGetFan takes the output of GetFan and pretty prints it in table form.
+// Multiple entries are merged.
 func PrintGetFan(vc *client.VeshClient, rack_id, board_id string) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Device", "Health", "Speed (RPM)", "States"})
