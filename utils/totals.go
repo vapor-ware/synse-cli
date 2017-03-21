@@ -4,6 +4,8 @@ import (
 	"reflect"
 )
 
+// TotalElemsNum returns the total number of devices in the infrastructure.
+// Useful for getting totals when iterating over elements.
 func TotalElemsNum() int {
 	scanResponse, _ := UtilScanOnly() // Add error checking
 	var total = 0
