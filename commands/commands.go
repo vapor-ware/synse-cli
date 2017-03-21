@@ -1,4 +1,4 @@
-// Package commands provides the skeleton structure for the
+// Commands provides the skeleton structure for the
 // commands, subcmmands, and flags available to the cli. It also provides
 // basic input parsing and error checking.
 /*
