@@ -1,11 +1,10 @@
 package utils
 
 import (
-  "reflect"
-  //"strconv"
+	"reflect"
+	//"strconv"
 
-  "github.com/urfave/cli"
-
+	"github.com/urfave/cli"
 )
 
 // InputCheckType validates the type of arguments passed to commands. It takes
@@ -16,24 +15,24 @@ import (
 // for arguments passed to commands. It is still experimental and currently
 // does not work.
 func InputCheckType(c *cli.Context, arg_number, flag_number int, expected_type string) (bool, error) {
-  if arg_number != 0 {
-    input_type := reflect.TypeOf(c.Args().Get(arg_number))
+	if arg_number != 0 {
+		input_type := reflect.TypeOf(c.Args().Get(arg_number))
 		switch {
 		case expected_type == input_type.String():
 			return true, nil
 		case expected_type != input_type.String():
 			return false, nil
 		}
-  }
-  if flag_number != 0 {
-    input_type := reflect.TypeOf(c.Args().Get(flag_number))
+	}
+	if flag_number != 0 {
+		input_type := reflect.TypeOf(c.Args().Get(flag_number))
 		switch {
 		case expected_type == input_type.String():
 			return true, nil
 		case expected_type != input_type.String():
 			return false, nil
 		}
-  }
+	}
 	return false, nil // Add actual error here
 }
 

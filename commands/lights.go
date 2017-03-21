@@ -139,7 +139,7 @@ func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 func SetLight(vc *client.VeshClient, rack_id, board_id, light_status string) (string, error) {
 	responseData := &lightsResponse{}
 	resp, err := vc.Sling.New().Path(lightspath).Path(rack_id + "/").Path(board_id + "/").Path(lightsdevicetype + "/").Get(light_status).ReceiveSuccess(responseData) // TODO: Add error reporting
-	if resp.StatusCode != 200 { // This is not what I meant by "error reporting"
+	if resp.StatusCode != 200 {                                                                                                                                       // This is not what I meant by "error reporting"
 		return "", err
 	}
 	return responseData.State, err
