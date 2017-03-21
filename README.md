@@ -37,3 +37,4 @@ GLOBAL OPTIONS:
   - [ ] Health
   - [ ] Provision
   - [ ] Load
+- [ ] Colors?
