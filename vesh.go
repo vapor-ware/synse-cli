@@ -15,6 +15,8 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Main creates a new instance of cli.app (using https://github.com/urfave/cli)
+// and sets the default configuration.
 func main() {
 	app := cli.NewApp()
 	app.Name = "vesh"
