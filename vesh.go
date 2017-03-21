@@ -1,3 +1,9 @@
+// Vesh provides a cli to vapor.io infrastructure. Specifically it allows access
+// to the openDCRE (http://www.vapor.io/opendcre/) REST API for running commands
+// against connected infrastructure and devices.
+//
+// For usage information please see the help text or the README in this
+// repository.
 package main
 
 import (
