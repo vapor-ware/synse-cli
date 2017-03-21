@@ -10,7 +10,6 @@ Given a Rack ID, will return the index of that rack in the
 `scanResponse` struct. WARNING: This may not be consistent between
 scans!
 */
-
 func RackIDtoElem(rack_id int) int {
 	scanResponse, scanerr := UtilScanOnly() // Add error reporting
 	if scanerr != nil {
@@ -30,11 +29,10 @@ func RackIDtoElem(rack_id int) int {
 /*
 Given a Board ID, will return the *first encountered* index of that
 board in the `scanResponse` struct. WARNING: This may not be
-consistent betweenscans!
+consistent between scans!
 
 This is a temporary measure until UUID's are implemented.
 */
-
 func BoardIDtoElem(board_id int) int {
 	scanResponse, scanerr := UtilScanOnly() // Add error reporting
 	if scanerr != nil {
@@ -58,11 +56,10 @@ func BoardIDtoElem(board_id int) int {
 /*
 Given a Device ID, will return the *first encountered* index of that
 device in the `scanResponse` struct. WARNING: This may not be
-consistent betweenscans!
+consistent between scans!
 
 This is a temporary measure until UUID's are implemented.
 */
-
 func DeviceIDtoElem(device_id int) int {
 	scanResponse, scanerr := UtilScanOnly() // Add error reporting
 	if scanerr != nil {
