@@ -10,7 +10,7 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/sethgrid/multibar"
+	"github.com/gosuri/uiprogress"
 )
 
 const powerpath = "power/"
@@ -32,9 +32,10 @@ func ListPower(vc *client.VeshClient) ([][]string, error) {
 	fulltable := make([][]string, 0)
 	totalruns := 0
 	totaltouched := 0
-	progressBar, _ := multibar.New()
-	go progressBar.Listen()
-	polling := progressBar.MakeBar(utils.TotalElemsNum(), "Polling power states") // Should use total number of boards since we're assuming only one 'power' device per board
+	uiprogress.Start()
+	progressBar:= uiprogress.AddBar(utils.TotalElemsNum())
+	progressBar.AppendCompleted()
+	progressBar.PrependElapsed()
 	for i := 0; i < scanResponseValuePtr.Len(); i++ {
 		boardsPtr := reflect.ValueOf(&scanResponse.Racks[i].Boards)
 		boardsValuePtr := boardsPtr.Elem()
@@ -45,7 +46,7 @@ func ListPower(vc *client.VeshClient) ([][]string, error) {
 			board_id := scanResponse.Racks[i].Boards[j].BoardID
 			tablerow = append(tablerow, rack_id)
 			tablerow = append(tablerow, scanResponse.Racks[i].Boards[j].BoardID) // Switch this to the variable
-			polling(totaltouched)
+			progressBar.Incr()
 			responseData := &powerResponse{}
 			resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
 			if resp.StatusCode != 200 {                                                                                                      // This is not what I meant by "error reporting"
