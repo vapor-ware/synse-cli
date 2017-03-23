@@ -10,7 +10,7 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/sethgrid/multibar"
+	"github.com/gosuri/uiprogress"
 )
 
 const Scanpath = "scan"
@@ -66,9 +66,8 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
 	}
 	fmt.Println("API reported status ok")
 	totaltouched := 0
-	progressBar, _ := multibar.New()
-	go progressBar.Listen()
-	polling := progressBar.MakeBar(utils.TotalElemsNum(), "Polling infrastructure")
+	uiprogress.Start()
+	progressBar := uiprogress.AddBar(utils.TotalElemsNum())
 	data := make([][]string, 10000)
 	racksPtr := reflect.ValueOf(&status.Racks)
 	racksValuePtr := racksPtr.Elem()
@@ -88,7 +87,7 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
 				tablerow = append(tablerow, rack_id, board_id)
 				for l := 0; l < deviceValuePtr.NumField(); l++ {
 					tablerow = append(tablerow, deviceValuePtr.Field(l).String())
-					polling(totaltouched)
+					progressBar.Incr()
 				}
 				data[totaltouched] = append(data[totaltouched], tablerow...)
 				totaltouched++
