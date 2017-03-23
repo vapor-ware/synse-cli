@@ -10,7 +10,7 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/sethgrid/multibar"
+	"github.com/gosuri/uiprogress"
 )
 
 const temperaturepath = "temperature/"
@@ -31,9 +31,8 @@ func ListTemp(vc *client.VeshClient) ([][]string, error) {
 	fulltable := make([][]string, 0)
 	totalruns := 0
 	totaltouched := 0
-	progressBar, _ := multibar.New()
-	go progressBar.Listen()
-	polling := progressBar.MakeBar(utils.TotalElemsNum(), "Polling temperatures")
+	uiprogress.Start()
+	progressBar := uiprogress.AddBar(utils.TotalElemsNum())
 	for i := 0; i < scanResponseValuePtr.Len(); i++ {
 		boardsPtr := reflect.ValueOf(&scanResponse.Racks[i].Boards)
 		boardsValuePtr := boardsPtr.Elem()
@@ -52,7 +51,7 @@ func ListTemp(vc *client.VeshClient) ([][]string, error) {
 					tablerow = append(tablerow, rack_id)
 					tablerow = append(tablerow, board_id)
 					tablerow = append(tablerow, device_id)
-					polling(totaltouched)
+					progressBar.Incr()
 					responseData := &temperatureResponse{}
 					resp, err := vc.Sling.New().Path("read/").Path(temperaturepath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
 					if resp.StatusCode != 200 {                                                                                                                          // This is not what I meant by "error reporting"
