@@ -79,6 +79,7 @@ func ListTemp(vc *client.VeshClient) ([][]string, error) {
 			}
 		}
 	}
+	uiprogress.Stop()
 	return fulltable, nil
 }
 

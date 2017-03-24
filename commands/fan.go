@@ -72,6 +72,7 @@ func ListFan(vc *client.VeshClient) ([][]string, error) {
 			}
 		}
 	}
+	uiprogress.Stop()
 	return fulltable, nil
 }
 
