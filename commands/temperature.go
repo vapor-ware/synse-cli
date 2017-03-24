@@ -6,6 +6,8 @@ import (
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
+
+	"github.com/gosuri/uiprogress"
 )
 
 const temperaturepath = "temperature/"
@@ -54,7 +56,6 @@ func GetTemp(vc *client.VeshClient, res utils.Result) (TempResult, error) {
 	}
 
 	return TempResult{res, temp}, nil
->>>>>>> Refactored temperature
 }
 
 // PrintListTemp takes the output from ListTemp and pretty prints it into a table.

@@ -5,6 +5,8 @@ import (
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
+
+	"github.com/gosuri/uiprogress"
 )
 
 const powerpath = "power/"
@@ -54,7 +56,6 @@ func GetPower(vc *client.VeshClient, res utils.Result) (*PowerDetails, error) {
 	}
 
 	return power, nil
->>>>>>> Refactored power
 }
 
 // PrintListPower takes the output from ListPower and pretty prints it into a table.
