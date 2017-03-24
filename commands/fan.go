@@ -6,8 +6,6 @@ import (
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
-
-	"github.com/gosuri/uiprogress"
 )
 
 const fanpath = "fan/"
@@ -20,8 +18,8 @@ type FanDetails struct {
 }
 
 type FanResult struct {
-	res         utils.Result
-	fan         *FanDetails
+	utils.Result
+	*FanDetails
 }
 
 // ListFan iterates over the complete list of devices and returns health,
@@ -39,10 +37,7 @@ func ListFan(vc *client.VeshClient, filter func(res utils.Result) bool) ([]FanRe
 		devices = append(devices, res)
 	}
 
-	uiprogress.Start()
-	progressBar := uiprogress.AddBar(len(devices))
-	progressBar.AppendCompleted()
-	progressBar.PrependElapsed()
+	progressBar := utils.ProgressBar(len(devices))
 
 	for _, res := range devices {
 		fan, _ := GetFan(vc, res)
@@ -55,7 +50,7 @@ func ListFan(vc *client.VeshClient, filter func(res utils.Result) bool) ([]FanRe
 
 func GetFan(vc *client.VeshClient, res utils.Result) (*FanDetails, error) {
 	fan := &FanDetails{}
-	path := fmt.Sprintf("%s/%s/%s", res.Rack.RackID, res.Board.BoardID, res.Device.DeviceID)
+	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)
 	_, err := vc.Sling.New().Path(fanpath).Get(path).ReceiveSuccess(fan)
 	if err != nil {
 		return fan, err
@@ -69,7 +64,7 @@ func GetFan(vc *client.VeshClient, res utils.Result) (*FanDetails, error) {
 // auto merge duplicate entries.
 func PrintListFan(vc *client.VeshClient) error {
 	filter := func(res utils.Result) bool {
-		return res.Device.DeviceType == fandevicetype
+		return res.DeviceType == fandevicetype
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "Fan Speed"}
@@ -79,11 +74,11 @@ func PrintListFan(vc *client.VeshClient) error {
 
 	for _, res := range fanList {
 			data = append(data, []string{
-				res.res.Rack.RackID,
-				res.res.Board.BoardID,
-				res.res.Device.DeviceID,
-				res.res.Device.DeviceInfo,
-				fmt.Sprintf("%.0f", res.fan.SpeedRPM)})
+				res.RackID,
+				res.BoardID,
+				res.DeviceID,
+				res.DeviceInfo,
+				fmt.Sprintf("%.0f", res.SpeedRPM)})
 	}
 
 	utils.TableOutput(header, data)
@@ -95,7 +90,7 @@ func PrintListFan(vc *client.VeshClient) error {
 // Multiple entries are not merged.
 func PrintGetFan(vc *client.VeshClient, rack_id, board_id string) error {
 	filter := func(res utils.Result) bool {
-		return res.Device.DeviceType == fandevicetype && res.Rack.RackID == rack_id && res.Board.BoardID == board_id
+		return res.DeviceType == fandevicetype && res.RackID == rack_id && res.BoardID == board_id
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "Health", "Speed (RPM)", "States"}
@@ -105,13 +100,13 @@ func PrintGetFan(vc *client.VeshClient, rack_id, board_id string) error {
 
 	for _, res := range fanList {
 		data = append(data, []string{
-			res.res.Rack.RackID,
-			res.res.Board.BoardID,
-			res.res.Device.DeviceID,
-			res.res.Device.DeviceInfo,
-			res.fan.Health,
-			fmt.Sprintf("%.0f", res.fan.SpeedRPM),
-			strings.Join(res.fan.States, ",")})
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			res.Health,
+			fmt.Sprintf("%.0f", res.SpeedRPM),
+			strings.Join(res.States, ",")})
 	}
 
 	utils.TableOutput(header, data)
