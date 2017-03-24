@@ -64,11 +64,11 @@ func Scan(vc *client.VeshClient) error {
 
 	for res := range utils.FilterDevices(filter) {
 		data = append(data, []string{
-			res.Rack.RackID,
-			res.Board.BoardID,
-			res.Device.DeviceID,
-			res.Device.DeviceInfo,
-			res.Device.DeviceType})
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			res.DeviceType})
 	}
 
 	header := []string{"Rack", "Board", "Device ID", "Device Info", "Device Type"}

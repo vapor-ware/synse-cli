@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/gosuri/uiprogress"
 )
 
 func TableOutput(header []string, data [][]string) {
@@ -15,4 +16,13 @@ func TableOutput(header []string, data [][]string) {
 	table.SetAutoMergeCells(false)
 	table.AppendBulk(data)
 	table.Render()
+}
+
+func ProgressBar(length int) *uiprogress.Bar {
+	uiprogress.Start()
+	progressBar:= uiprogress.AddBar(length)
+	progressBar.AppendCompleted()
+	progressBar.PrependElapsed()
+
+	return progressBar
 }
