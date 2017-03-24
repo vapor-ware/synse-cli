@@ -9,28 +9,28 @@ import (
 
 // I DON'T LIKE THIS AT ALL
 
-const Scanpath = "scan"
+// const Scanpath = "scan"
 
 // scanResponse struct holds the response values from a `/scan` operation.
 // While it does not contain the complete set of information available, it does
 // contain a complete list of the available assets, including racks and boards.
 // The structure mirrors the json struture of response from `/scan` and values
 // are assigned to appropriate sub structs.
-type scanResponse struct {
-	Racks []struct {
-		Boards []struct {
-			BoardID     string   `json:"board_id"`
-			Hostnames   []string `json:"hostnames"`
-			IPAddresses []string `json:"ip_addresses"`
-			Devices     []struct {
-				DeviceID   string `json:"device_id"`
-				DeviceInfo string `json:"device_info"`
-				DeviceType string `json:"device_type"`
-			} `json:"devices"`
-		} `json:"boards"`
-		RackID string `json:"rack_id"`
-	} `json:"racks"`
-}
+// type scanResponse struct {
+// 	Racks []struct {
+// 		Boards []struct {
+// 			BoardID     string   `json:"board_id"`
+// 			Hostnames   []string `json:"hostnames"`
+// 			IPAddresses []string `json:"ip_addresses"`
+// 			Devices     []struct {
+// 				DeviceID   string `json:"device_id"`
+// 				DeviceInfo string `json:"device_info"`
+// 				DeviceType string `json:"device_type"`
+// 			} `json:"devices"`
+// 		} `json:"boards"`
+// 		RackID string `json:"rack_id"`
+// 	} `json:"racks"`
+// }
 
 // UtilScanOnly polls the infrastructure (using the `/scan` endpoint) and assigns the
 // responses to the appropriate fields in the scanResponse struct. Because the
