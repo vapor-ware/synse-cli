@@ -2,111 +2,115 @@ package commands
 
 import (
 	"fmt"
-	"os"
-	"reflect"
-	"strconv"
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
-
-	"github.com/olekukonko/tablewriter"
-	"github.com/gosuri/uiprogress"
 )
 
 const powerpath = "power/"
 const device_id = "power"
 
-type powerResponse struct {
+type PowerDetails struct {
 	InputPower  float64 `json:"input_power"`
 	OverCurrent bool    `json:"over_current"`
 	PowerOK     bool    `json:"power_ok"`
 	PowerStatus string  `json:"power_status"`
 }
 
+type PowerResult struct {
+	utils.Result
+	*PowerDetails
+}
+
 // ListPower iterates over the complete list of devices and returns input power,
 // over current, power ok, and power status for each `power` device type.
-func ListPower(vc *client.VeshClient) ([][]string, error) {
-	uiprogress.Start()
-	progressBar:= uiprogress.AddBar(utils.TotalElemsNum())
-	progressBar.AppendCompleted()
-	progressBar.PrependElapsed()
-	scanResponse, _ := ScanOnly(vc) // Add error reporting
-	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
-	scanResponseValuePtr := scanResponsePtr.Elem()
-	fulltable := make([][]string, 0)
-	totalruns := 0
-	totaltouched := 0
-	for i := 0; i < scanResponseValuePtr.Len(); i++ {
-		boardsPtr := reflect.ValueOf(&scanResponse.Racks[i].Boards)
-		boardsValuePtr := boardsPtr.Elem()
-		totaltouched++
-		for j := 0; j < boardsValuePtr.Len(); j++ {
-			tablerow := make([]string, 0)
-			rack_id := scanResponse.Racks[i].RackID
-			board_id := scanResponse.Racks[i].Boards[j].BoardID
-			tablerow = append(tablerow, rack_id)
-			tablerow = append(tablerow, scanResponse.Racks[i].Boards[j].BoardID) // Switch this to the variable
-			responseData := &powerResponse{}
-			resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
-			if resp.StatusCode != 200 {                                                                                                      // This is not what I meant by "error reporting"
-				return nil, err
-			}
-			tablerow = append(tablerow, strconv.FormatFloat(responseData.InputPower, 'G', -1, 64))
-			tablerow = append(tablerow, strconv.FormatBool(responseData.PowerOK))
-			fulltable = append(fulltable, nil)
-			fulltable[totalruns] = make([]string, 0)
-			fulltable[totalruns] = append(fulltable[totalruns], tablerow...)
-			progressBar.Incr()
-			totalruns++
-		}
+func ListPower(vc *client.VeshClient, filter func(res utils.Result) bool) ([]PowerResult, error) {
+	var devices []utils.Result
+
+	var data []PowerResult
+
+	for res := range utils.FilterDevices(filter) {
+		devices = append(devices, res)
 	}
+
+	progressBar := utils.ProgressBar(len(devices))
+
+	for _, res := range devices {
+		power, _ := GetPower(vc, res)
+		data = append(data, PowerResult{ res, power })
+		progressBar.Incr()
+	}
+
 	uiprogress.Stop()
-	return fulltable, nil
-	//return nil, scanerr //fix with proper error
+	return data, nil
+}
+
+func GetPower(vc *client.VeshClient, res utils.Result) (*PowerDetails, error) {
+	power := &PowerDetails{}
+	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)
+	_, err := vc.Sling.New().Path(powerpath).Get(path).ReceiveSuccess(power)
+	if err != nil {
+		return power, err
+	}
+
+	return power, nil
+>>>>>>> Refactored power
 }
 
 // PrintListPower takes the output from ListPower and pretty prints it into a table.
 // Multiple lights are grouped by board, then by rack. Table format is set to not
 // auto merge duplicate entries.
 func PrintListPower(vc *client.VeshClient) error {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Rack", "Board", "Input Power", "Power Ok?"})
-	table.SetBorder(false)
-	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
-	table.SetAutoMergeCells(false)
-	powerList, _ := ListPower(vc) // Add error reporting
-	table.AppendBulk(powerList)
-	table.Render()
-	return nil
-}
-
-// GetPower takes a rack and board id as a locator and returns the device id
-// and state of power for that board.
-func GetPower(vc *client.VeshClient, rack_id, board_id string) ([]string, error) {
-	responseData := &powerResponse{}
-	resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
-	if resp.StatusCode != 200 {                                                                                                      // This is not what I meant by "error reporting"
-		return nil, err
+	filter := func(res utils.Result) bool {
+		return res.DeviceType == device_id
 	}
-	tablerow := make([]string, 0)
-	tablerow = append(tablerow, rack_id, board_id, strconv.FormatFloat(responseData.InputPower, 'G', -1, 64), strconv.FormatBool(responseData.OverCurrent), strconv.FormatBool(responseData.PowerOK), responseData.PowerStatus)
-	return tablerow, nil
+
+	header := []string{"Rack", "Board", "Name", "Input Power", "Power Ok?"}
+	powerList, _ := ListPower(vc, filter)
+
+	var data [][]string
+
+	for _, res := range powerList {
+			data = append(data, []string{
+				res.RackID,
+				res.BoardID,
+				res.DeviceInfo,
+				fmt.Sprintf("%.2f", res.InputPower),
+				fmt.Sprintf("%t", res.PowerOK)})
+	}
+
+	utils.TableOutput(header, data)
+
+	return nil
 }
 
 // PrintGetPower takes the output of GetPower and pretty prints it in table form.
 // Multiple entries are not merged.
 func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Rack", "Board", "Input Power", "Over Current?", "Power Ok?", "Power Status"})
-	table.SetBorder(false)
-	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
-	table.SetAlignment(tablewriter.ALIGN_CENTER)
-	tablerow, err := GetPower(vc, rack_id, board_id)
-	table.Append(tablerow)
-	table.Render()
-	return err // Add error reporting
+	filter := func(res utils.Result) bool {
+		return res.DeviceType == device_id && res.RackID == rack_id && res.BoardID == board_id
+	}
+
+	header := []string{"Rack", "Board", "Device", "Name", "Input Power", "Over Current?", "Power Ok?", "Power Status"}
+	powerList, _ := ListPower(vc, filter) // Add error reporting
+
+	var data [][]string
+
+	for _, res := range powerList {
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			fmt.Sprintf("%.2f", res.InputPower),
+			fmt.Sprintf("%t", res.OverCurrent),
+			fmt.Sprintf("%t", res.PowerOK),
+			res.PowerStatus})
+	}
+
+	utils.TableOutput(header, data)
+
+	return nil
 }
 
 // SetPower takes a rack and board id as a locator as well as a power status
@@ -114,7 +118,7 @@ func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
 // given power status.
 // Options are: "on", "off", "cycle"
 func SetPower(vc *client.VeshClient, rack_id, board_id, power_status string) (string, error) {
-	responseData := &powerResponse{}
+	responseData := &PowerDetails{}
 	resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Path(device_id + "/").Get(power_status).ReceiveSuccess(responseData) // Add error reporting
 	if resp.StatusCode != 200 {                                                                                                                               // This is not what I meant by "error reporting"
 		return "", err
