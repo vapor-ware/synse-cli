@@ -1,8 +1,6 @@
 package commands
 
 import (
-	"net/http"
-
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
 )
