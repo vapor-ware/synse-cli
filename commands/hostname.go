@@ -71,6 +71,7 @@ func ListHostnames(vc *client.VeshClient) error {
 		}
 	}
 	//fmt.Println(len(racks))
+	uiprogress.Stop()
 	table.Render()
 	return scanerr //fix this return
 }

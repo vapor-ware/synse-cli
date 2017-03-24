@@ -74,6 +74,7 @@ func ListLights(vc *client.VeshClient) ([][]string, error) {
 			}
 		}
 	}
+	uiprogress.Stop()
 	return fulltable, nil
 }
 
