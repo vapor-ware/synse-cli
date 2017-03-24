@@ -7,10 +7,10 @@ import (
 	"reflect"
 
 	"github.com/vapor-ware/vesh/client"
-	"github.com/vapor-ware/vesh/utils"
+	//"github.com/vapor-ware/vesh/utils"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/gosuri/uiprogress"
+	//"github.com/gosuri/uiprogress"
 )
 
 const Scanpath = "scan"
@@ -56,6 +56,10 @@ func walkBoards(sr *scanResponse) {
 // NOTE: Printing output is part of this function. To access scan results
 // internally, utils.UtilScanOnly should be used.
 func Scan(vc *client.VeshClient) (*scanResponse, error) {
+	// uiprogress.Start()
+	// progressBar := uiprogress.AddBar(utils.TotalElemsNum())
+	// progressBar.AppendCompleted()
+	// progressBar.PrependElapsed()
 	status := &scanResponse{}
 	resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
 	if err != nil {
@@ -66,8 +70,6 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
 	}
 	fmt.Println("API reported status ok")
 	totaltouched := 0
-	uiprogress.Start()
-	progressBar := uiprogress.AddBar(utils.TotalElemsNum())
 	data := make([][]string, 10000)
 	racksPtr := reflect.ValueOf(&status.Racks)
 	racksValuePtr := racksPtr.Elem()
@@ -87,7 +89,7 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
 				tablerow = append(tablerow, rack_id, board_id)
 				for l := 0; l < deviceValuePtr.NumField(); l++ {
 					tablerow = append(tablerow, deviceValuePtr.Field(l).String())
-					progressBar.Incr()
+					// progressBar.Incr()
 				}
 				data[totaltouched] = append(data[totaltouched], tablerow...)
 				totaltouched++

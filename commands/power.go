@@ -26,16 +26,16 @@ type powerResponse struct {
 // ListPower iterates over the complete list of devices and returns input power,
 // over current, power ok, and power status for each `power` device type.
 func ListPower(vc *client.VeshClient) ([][]string, error) {
+	uiprogress.Start()
+	progressBar:= uiprogress.AddBar(utils.TotalElemsNum())
+	progressBar.AppendCompleted()
+	progressBar.PrependElapsed()
 	scanResponse, _ := ScanOnly(vc) // Add error reporting
 	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
 	scanResponseValuePtr := scanResponsePtr.Elem()
 	fulltable := make([][]string, 0)
 	totalruns := 0
 	totaltouched := 0
-	uiprogress.Start()
-	progressBar:= uiprogress.AddBar(utils.TotalElemsNum())
-	progressBar.AppendCompleted()
-	progressBar.PrependElapsed()
 	for i := 0; i < scanResponseValuePtr.Len(); i++ {
 		boardsPtr := reflect.ValueOf(&scanResponse.Racks[i].Boards)
 		boardsValuePtr := boardsPtr.Elem()
@@ -46,7 +46,6 @@ func ListPower(vc *client.VeshClient) ([][]string, error) {
 			board_id := scanResponse.Racks[i].Boards[j].BoardID
 			tablerow = append(tablerow, rack_id)
 			tablerow = append(tablerow, scanResponse.Racks[i].Boards[j].BoardID) // Switch this to the variable
-			progressBar.Incr()
 			responseData := &powerResponse{}
 			resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
 			if resp.StatusCode != 200 {                                                                                                      // This is not what I meant by "error reporting"
@@ -57,6 +56,7 @@ func ListPower(vc *client.VeshClient) ([][]string, error) {
 			fulltable = append(fulltable, nil)
 			fulltable[totalruns] = make([]string, 0)
 			fulltable[totalruns] = append(fulltable[totalruns], tablerow...)
+			progressBar.Incr()
 			totalruns++
 		}
 	}
@@ -65,7 +65,7 @@ func ListPower(vc *client.VeshClient) ([][]string, error) {
 }
 
 // PrintListPower takes the output from ListPower and pretty prints it into a table.
-// Multiple lights are grouped by board, then by rack. Table format is set to
+// Multiple lights are grouped by board, then by rack. Table format is set to not
 // auto merge duplicate entries.
 func PrintListPower(vc *client.VeshClient) error {
 	table := tablewriter.NewWriter(os.Stdout)
@@ -73,7 +73,7 @@ func PrintListPower(vc *client.VeshClient) error {
 	table.SetBorder(false)
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
-	table.SetAutoMergeCells(true)
+	table.SetAutoMergeCells(false)
 	powerList, _ := ListPower(vc) // Add error reporting
 	table.AppendBulk(powerList)
 	table.Render()
