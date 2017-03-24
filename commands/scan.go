@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"reflect"
 
 	"github.com/vapor-ware/vesh/client"
-	//"github.com/vapor-ware/vesh/utils"
 
+	"github.com/fatih/structs"
 	"github.com/olekukonko/tablewriter"
-	//"github.com/gosuri/uiprogress"
 )
 
 const Scanpath = "scan"
@@ -21,19 +19,25 @@ const Scanpath = "scan"
 // The structure mirrors the json struture of response from `/scan` and values
 // are assigned to appropriate sub structs.
 type scanResponse struct {
-	Racks []struct {
-		Boards []struct {
-			BoardID     string   `json:"board_id"`
-			Hostnames   []string `json:"hostnames"`
-			IPAddresses []string `json:"ip_addresses"`
-			Devices     []struct {
-				DeviceID   string `json:"device_id"`
-				DeviceInfo string `json:"device_info"`
-				DeviceType string `json:"device_type"`
-			} `json:"devices"`
-		} `json:"boards"`
-		RackID string `json:"rack_id"`
-	} `json:"racks"`
+	Racks []Rack `json:"racks"`
+}
+
+type Rack struct {
+	Boards []Board `json:"boards"`
+	RackID string `json:"rack_id"`
+}
+
+type Board struct {
+	BoardID     string   `json:"board_id"`
+	Hostnames   []string `json:"hostnames"`
+	IPAddresses []string `json:"ip_addresses"`
+	Devices     []Device `json:"devices"`
+}
+
+type Device struct {
+	DeviceID   string `json:"device_id"`
+	DeviceInfo string `json:"device_info"`
+	DeviceType string `json:"device_type"`
 }
 
 // TODO: walkRacks is not yet implemented.
@@ -56,10 +60,6 @@ func walkBoards(sr *scanResponse) {
 // NOTE: Printing output is part of this function. To access scan results
 // internally, utils.UtilScanOnly should be used.
 func Scan(vc *client.VeshClient) (*scanResponse, error) {
-	// uiprogress.Start()
-	// progressBar := uiprogress.AddBar(utils.TotalElemsNum())
-	// progressBar.AppendCompleted()
-	// progressBar.PrependElapsed()
 	status := &scanResponse{}
 	resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
 	if err != nil {
@@ -69,40 +69,32 @@ func Scan(vc *client.VeshClient) (*scanResponse, error) {
 		return status, err
 	}
 	fmt.Println("API reported status ok")
-	totaltouched := 0
-	data := make([][]string, 10000)
-	racksPtr := reflect.ValueOf(&status.Racks)
-	racksValuePtr := racksPtr.Elem()
-	for i := 0; i < racksValuePtr.Len(); i++ {
-		boardsPtr := reflect.ValueOf(&status.Racks[i].Boards)
-		boardsValuePtr := boardsPtr.Elem()
-		for j := 0; j < boardsValuePtr.Len(); j++ {
-			devicesPtr := reflect.ValueOf(&status.Racks[i].Boards[j].Devices)
-			devicesValuePtr := devicesPtr.Elem()
-			for k := 0; k < devicesValuePtr.Len(); k++ {
-				devicePtr := reflect.ValueOf(&status.Racks[i].Boards[j].Devices[i])
-				deviceValuePtr := devicePtr.Elem()
-				tablerow := make([]string, 0)
-				data = append(data, nil)
-				rack_id := status.Racks[i].RackID
-				board_id := status.Racks[i].Boards[j].BoardID
-				tablerow = append(tablerow, rack_id, board_id)
-				for l := 0; l < deviceValuePtr.NumField(); l++ {
-					tablerow = append(tablerow, deviceValuePtr.Field(l).String())
-					// progressBar.Incr()
-				}
-				data[totaltouched] = append(data[totaltouched], tablerow...)
-				totaltouched++
+
+	var data [][]string
+
+	for _, rack := range structs.New(status).Field("Racks").Value().([]Rack) {
+		for _, board := range structs.New(rack).Field("Boards").Value().([]Board) {
+			for _, device := range structs.New(board).Field("Devices").Value().([]Device) {
+				data = append(data, []string{
+					rack.RackID,
+					board.BoardID,
+					device.DeviceID,
+					device.DeviceInfo,
+					device.DeviceType})
 			}
 		}
 	}
+
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Rack", "Board", "Device ID", "Device Info", "Device Type"})
+	table.SetHeader([]string{
+		"Rack", "Board", "Device ID", "Device Info", "Device Type"})
 	table.SetBorder(false)
-	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	table.SetBorders(tablewriter.Border{
+		Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
 	table.AppendBulk(data)
 	table.Render()
+
 	return status, nil
 }
 
