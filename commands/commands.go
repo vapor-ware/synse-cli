@@ -100,7 +100,7 @@ var Commands = []cli.Command{
 		Usage: "Scan the infrastructure and display device summary",
 		Action: func(c *cli.Context) error {
 			req := client.New()
-			_, err := Scan(req)
+			err := Scan(req)
 			if err != nil {
 				return err
 			}
