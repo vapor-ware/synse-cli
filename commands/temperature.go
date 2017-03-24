@@ -25,14 +25,22 @@ type temperatureResponse struct {
 // ListTemp iterates over the complete list of devices and returns health,
 // states, and temperature (celcius) for each `temperature` device type.
 func ListTemp(vc *client.VeshClient) ([][]string, error) {
+	uiprogress.Start()
+	progressBar := uiprogress.AddBar(utils.TotalElemsNum())
+	progressBar.AppendCompleted()
+	progressBar.PrependElapsed()
+	progressBar.PrependFunc(func (b *uiprogress.Bar) string {
+		return "Requesting data"
+	})
 	scanResponse, _ := utils.UtilScanOnly() // Add error reporting
+	progressBar.PrependFunc(func (b *uiprogress.Bar) string {
+		return "Building output"
+	})
 	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
 	scanResponseValuePtr := scanResponsePtr.Elem()
 	fulltable := make([][]string, 0)
 	totalruns := 0
 	totaltouched := 0
-	uiprogress.Start()
-	progressBar := uiprogress.AddBar(utils.TotalElemsNum())
 	for i := 0; i < scanResponseValuePtr.Len(); i++ {
 		boardsPtr := reflect.ValueOf(&scanResponse.Racks[i].Boards)
 		boardsValuePtr := boardsPtr.Elem()
@@ -43,7 +51,11 @@ func ListTemp(vc *client.VeshClient) ([][]string, error) {
 			for k := 0; k < devicesValuePtr.Len(); k++ {
 				deviceTypePtr := reflect.ValueOf(&scanResponse.Racks[i].Boards[j].Devices[k].DeviceType)
 				deviceTypeValuePtr := deviceTypePtr.Elem()
+				// progressBar.PrependFunc(func (b *uiprogress.Bar) string {
+				// 	return "Checking device: " + deviceTypeValuePtr.String()
+				// })
 				totaltouched++
+				progressBar.Incr()
 				if deviceTypeValuePtr.String() == temperaturedevicetype { // This may need to be expanded to other types
 					tablerow := make([]string, 0)
 					rack_id := scanResponse.Racks[i].RackID // Maybe move this up to the "rack" loop
@@ -51,7 +63,6 @@ func ListTemp(vc *client.VeshClient) ([][]string, error) {
 					tablerow = append(tablerow, rack_id)
 					tablerow = append(tablerow, board_id)
 					tablerow = append(tablerow, device_id)
-					progressBar.Incr()
 					responseData := &temperatureResponse{}
 					resp, err := vc.Sling.New().Path("read/").Path(temperaturepath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
 					if resp.StatusCode != 200 {                                                                                                                          // This is not what I meant by "error reporting"
@@ -121,14 +132,14 @@ func GetTemp(vc *client.VeshClient, rack_id, board_id string) ([][]string, error
 }
 
 // PrintGetTemp takes the output of GetTemp and pretty prints it in table form.
-// Multiple entries are merged.
+// Multiple entries are not merged.
 func PrintGetTemp(vc *client.VeshClient, rack_id, board_id string) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Device", "Health", "Temperature in C", "States"})
 	table.SetBorder(false)
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
-	table.SetAutoMergeCells(true)
+	table.SetAutoMergeCells(false)
 	tempStatus, _ := GetTemp(vc, rack_id, board_id) // Add error reporting
 	table.AppendBulk(tempStatus)
 	table.Render()

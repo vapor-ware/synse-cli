@@ -10,6 +10,7 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/gosuri/uiprogress"
 )
 
 const lightspath = "led/"
@@ -30,6 +31,10 @@ type lightsResponse struct {
 // NOTE: Currently only Chamber LED's support blink state and color. No error
 // checking is done on this at the moment.
 func ListLights(vc *client.VeshClient) ([][]string, error) {
+	uiprogress.Start()
+	progressBar:= uiprogress.AddBar(utils.TotalElemsNum())
+	progressBar.AppendCompleted()
+	progressBar.PrependElapsed()
 	scanResponse, _ := utils.UtilScanOnly() // Add error reporting
 	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
 	scanResponseValuePtr := scanResponsePtr.Elem()
@@ -44,6 +49,7 @@ func ListLights(vc *client.VeshClient) ([][]string, error) {
 			for k := 0; k < devicesValuePtr.Len(); k++ {
 				deviceTypePtr := reflect.ValueOf(&scanResponse.Racks[i].Boards[j].Devices[k].DeviceType)
 				deviceTypeValuePtr := deviceTypePtr.Elem()
+				progressBar.Incr()
 				if deviceTypeValuePtr.String() == lightsdevicetype { // This may need to be expanded to other types
 					tablerow := make([]string, 0)
 					rack_id := scanResponse.Racks[i].RackID
@@ -119,14 +125,14 @@ func GetLight(vc *client.VeshClient, rack_id, board_id string) ([][]string, erro
 }
 
 // PrintGetLight takes the output of GetLight and pretty prints it in table form.
-// Multiple entries are merged.
+// Multiple entries are not merged.
 func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Rack", "Board", "Device", "LED State"})
 	table.SetBorder(false)
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
-	table.SetAutoMergeCells(true)
+	table.SetAutoMergeCells(false)
 	lightStatus, _ := GetLight(vc, rack_id, board_id) // Add error reporting
 	table.AppendBulk(lightStatus)
 	table.Render()
