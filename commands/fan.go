@@ -2,13 +2,11 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
 
-	"github.com/olekukonko/tablewriter"
 	"github.com/gosuri/uiprogress"
 )
 
