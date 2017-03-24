@@ -132,18 +132,12 @@ var Commands = []cli.Command{
 					{
 						Name:      "get",
 						Usage:     "Get hostname for specific `device`",
-						ArgsUsage: "<board id>", // TODO: Waiting for unique identifiers
+						ArgsUsage: "<rack id> <board id>",
 						Category:  "hostname",
-						Flags: []cli.Flag{
-							cli.BoolFlag{
-								Name:  "raw",
-								Usage: "Only output a space separated list of hostnames and IP addresses",
-							},
-						},
 						Action: func(c *cli.Context) error {
 							req := client.New()
 							if c.Args().Present() {
-								err := PrintGetHostname(req, "rack_whatever", c.Args().Get(0), "system", c.Bool("raw")) // TODO: stop hardcoding this. Lookup?
+								err := PrintGetHostname(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
 									return err
 								}
