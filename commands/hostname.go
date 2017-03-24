@@ -6,9 +6,10 @@ import (
 	"reflect"
 
 	"github.com/vapor-ware/vesh/client"
-	//"github.com/vapor-ware/vesh/utils"
+	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/gosuri/uiprogress"
 )
 
 const hostnamepath = "host_info/"
@@ -25,6 +26,10 @@ type hostnameResponse struct {
 // returned.
 func ListHostnames(vc *client.VeshClient) error {
 	// BUG(timfall): The printing should be broken out into a seperate function.
+	uiprogress.Start()
+	progressBar:= uiprogress.AddBar(utils.TotalElemsNum())
+	progressBar.AppendCompleted()
+	progressBar.PrependElapsed()
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Hostnames", "IP Addesses", "Board ID"})
 	table.SetBorder(false)
@@ -61,6 +66,7 @@ func ListHostnames(vc *client.VeshClient) error {
 				tablerow = append(tablerow, scanresult.Racks[i].Boards[n].IPAddresses[m])
 			}
 			tablerow = append(tablerow, boards[0])
+			progressBar.Incr()
 			table.Append(tablerow)
 		}
 	}
