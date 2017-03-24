@@ -37,7 +37,7 @@ func ListPower(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Pow
 
 	for _, res := range devices {
 		power, _ := GetPower(vc, res)
-		data = append(data, PowerResult{ res, power })
+		data = append(data, PowerResult{res, power})
 		progressBar.Incr()
 	}
 
@@ -71,12 +71,12 @@ func PrintListPower(vc *client.VeshClient) error {
 	var data [][]string
 
 	for _, res := range powerList {
-			data = append(data, []string{
-				res.RackID,
-				res.BoardID,
-				res.DeviceInfo,
-				fmt.Sprintf("%.2f", res.InputPower),
-				fmt.Sprintf("%t", res.PowerOK)})
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceInfo,
+			fmt.Sprintf("%.2f", res.InputPower),
+			fmt.Sprintf("%t", res.PowerOK)})
 	}
 
 	utils.TableOutput(header, data)
