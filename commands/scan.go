@@ -24,7 +24,7 @@ type scanResponse struct {
 
 type Rack struct {
 	Boards []Board `json:"boards"`
-	RackID string `json:"rack_id"`
+	RackID string  `json:"rack_id"`
 }
 
 type Board struct {

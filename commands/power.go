@@ -60,6 +60,7 @@ func ListPower(vc *client.VeshClient) ([][]string, error) {
 			totalruns++
 		}
 	}
+	uiprogress.Stop()
 	return fulltable, nil
 	//return nil, scanerr //fix with proper error
 }
