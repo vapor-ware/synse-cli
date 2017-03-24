@@ -2,15 +2,12 @@ package commands
 
 import (
 	"fmt"
-	"os"
-	"reflect"
 	"strconv"
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/gosuri/uiprogress"
-	"github.com/olekukonko/tablewriter"
 )
 
 const lightspath = "led/"
