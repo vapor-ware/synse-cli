@@ -3,8 +3,8 @@ package utils
 import (
 	"os"
 
-	"github.com/olekukonko/tablewriter"
 	"github.com/gosuri/uiprogress"
+	"github.com/olekukonko/tablewriter"
 )
 
 func TableOutput(header []string, data [][]string) {
@@ -20,7 +20,7 @@ func TableOutput(header []string, data [][]string) {
 
 func ProgressBar(length int) *uiprogress.Bar {
 	uiprogress.Start()
-	progressBar:= uiprogress.AddBar(length)
+	progressBar := uiprogress.AddBar(length)
 	progressBar.AppendCompleted()
 	progressBar.PrependElapsed()
 
