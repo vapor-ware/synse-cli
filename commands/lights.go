@@ -10,16 +10,20 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/gosuri/uiprogress"
 )
 
 const lightspath = "led/"
 const lightsdevicetype = "led"
 
-type lightsResponse struct {
+type LightsDetails struct {
 	State      string `json:"led_state"`
 	BlinkState string `json:"blink_state"`
 	Color      int16  `json:"color"`
+}
+
+type LightsResult struct {
+	utils.Result
+	*LightsDetails
 }
 
 // ListLights iterates over the complete list of devices and returns blink state,
@@ -30,113 +34,88 @@ type lightsResponse struct {
 // types of led data.
 // NOTE: Currently only Chamber LED's support blink state and color. No error
 // checking is done on this at the moment.
-func ListLights(vc *client.VeshClient) ([][]string, error) {
-	uiprogress.Start()
-	progressBar:= uiprogress.AddBar(utils.TotalElemsNum())
-	progressBar.AppendCompleted()
-	progressBar.PrependElapsed()
-	scanResponse, _ := utils.UtilScanOnly() // Add error reporting
-	scanResponsePtr := reflect.ValueOf(&scanResponse.Racks)
-	scanResponseValuePtr := scanResponsePtr.Elem()
-	fulltable := make([][]string, 0)
-	totalruns := 0
-	for i := 0; i < scanResponseValuePtr.Len(); i++ {
-		boardsPtr := reflect.ValueOf(&scanResponse.Racks[i].Boards)
-		boardsValuePtr := boardsPtr.Elem()
-		for j := 0; j < boardsValuePtr.Len(); j++ {
-			devicePtr := reflect.ValueOf(&scanResponse.Racks[i].Boards[j].Devices)
-			devicesValuePtr := devicePtr.Elem()
-			for k := 0; k < devicesValuePtr.Len(); k++ {
-				deviceTypePtr := reflect.ValueOf(&scanResponse.Racks[i].Boards[j].Devices[k].DeviceType)
-				deviceTypeValuePtr := deviceTypePtr.Elem()
-				progressBar.Incr()
-				if deviceTypeValuePtr.String() == lightsdevicetype { // This may need to be expanded to other types
-					tablerow := make([]string, 0)
-					rack_id := scanResponse.Racks[i].RackID
-					board_id := scanResponse.Racks[i].Boards[j].BoardID
-					device_id := scanResponse.Racks[i].Boards[j].Devices[k].DeviceID
-					tablerow = append(tablerow, rack_id)
-					tablerow = append(tablerow, board_id)
-					tablerow = append(tablerow, device_id)
-					responseData := &lightsResponse{}
-					resp, err := vc.Sling.New().Path(lightspath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
-					if resp.StatusCode != 200 {                                                                                                       // This is not what I meant by "error reporting"
-						fmt.Println(vc)
-						fmt.Println(resp)
-						return nil, err
-					}
-					tablerow = append(tablerow, responseData.State)
-					fulltable = append(fulltable, nil)
-					fulltable[totalruns] = make([]string, 0)
-					fulltable[totalruns] = append(fulltable[totalruns], tablerow...)
-					totalruns++
-				}
-			}
-		}
+func ListLights(vc *client.VeshClient, filter func(res utils.Result) bool) ([]LightsResult, error) {
+	var devices []utils.Result
+
+	var data []LightsResult
+
+	for res := range utils.FilterDevices(filter) {
+		devices = append(devices, res)
 	}
+
+	progressBar := utils.ProgressBar(len(devices))
+
+	for _, res := range devices {
+		lights, _ := GetLights(vc, res)
+		data = append(data, lights)
+		progressBar.Incr()
+	}
+
 	uiprogress.Stop()
-	return fulltable, nil
+	return data, nil
+}
+
+func GetLights(vc *client.VeshClient, res utils.Result) (LightsResult, error) {
+	lights := &LightsDetails{}
+	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)
+	_, err := vc.Sling.New().Path(lightspath).Get(path).ReceiveSuccess(lights)
+	if err != nil {
+		return LightsResult{res, lights}, err
+	}
+
+	return LightsResult{res, lights}, nil
 }
 
 // PrintListLights takes the output from ListLights and pretty prints it into a table.
 // Multiple lights are grouped by board, then by rack. Table format is set to not
 // auto merge duplicate entries.
 func PrintListLights(vc *client.VeshClient) error {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Rack", "Board", "Device", "LED State"})
-	table.SetBorder(false)
-	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
-	table.SetAutoMergeCells(false)
-	fmt.Println("Polling light states. This may take some time...")
-	lightList, _ := ListLights(vc) // Add error reporting
-	table.AppendBulk(lightList)
-	table.Render()
-	return nil
-}
-
-// GetLight takes a rack and board id as a locator and returns the device id
-// and state of all lights on that board.
-func GetLight(vc *client.VeshClient, rack_id, board_id string) ([][]string, error) {
-	scanResponse, scanerr := utils.UtilScanOnly() // Add error reporting
-	rackidint, _ := strconv.Atoi(rack_id)
-	boardidint, _ := strconv.Atoi(board_id)
-	devicePtr := reflect.ValueOf(&scanResponse.Racks[utils.RackIDtoElem(rackidint)].Boards[utils.BoardIDtoElem(boardidint)].Devices)
-	deviceValuePtr := devicePtr.Elem()
-	fulltable := make([][]string, 0)
-	totalruns := 0
-	for i := 0; i < deviceValuePtr.Len(); i++ {
-		if scanResponse.Racks[utils.RackIDtoElem(rackidint)].Boards[utils.BoardIDtoElem(boardidint)].Devices[i].DeviceType == lightsdevicetype {
-			device_id := scanResponse.Racks[utils.RackIDtoElem(rackidint)].Boards[utils.BoardIDtoElem(boardidint)].Devices[i].DeviceID
-			responseData := &lightsResponse{}
-			resp, err := vc.Sling.New().Path(lightspath).Path(rack_id + "/").Path(board_id + "/").Get(device_id).ReceiveSuccess(responseData) // Add error reporting
-			if resp.StatusCode != 200 {                                                                                                       // This is not what I meant by "error reporting"
-				return nil, err
-			}
-			tablerow := make([]string, 0)
-			tablerow = append(tablerow, rack_id, board_id, device_id)
-			tablerow = append(tablerow, responseData.State)
-			fulltable = append(fulltable, nil)
-			fulltable[totalruns] = make([]string, 0)
-			fulltable[totalruns] = append(fulltable[totalruns], tablerow...)
-			totalruns++
-		}
+	filter := func(res utils.Result) bool {
+		return res.DeviceType == lightsdevicetype
 	}
-	return fulltable, scanerr
+
+	header := []string{"Rack", "Board", "Device", "Name", "LED State"}
+	lightsList, _ := ListLights(vc, filter)
+
+	var data [][]string
+
+	for _, res := range lightsList {
+			data = append(data, []string{
+				res.RackID,
+				res.BoardID,
+				res.DeviceID,
+				res.DeviceInfo,
+				res.State})
+	}
+
+	utils.TableOutput(header, data)
+
+	return nil
 }
 
 // PrintGetLight takes the output of GetLight and pretty prints it in table form.
 // Multiple entries are not merged.
 func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Rack", "Board", "Device", "LED State"})
-	table.SetBorder(false)
-	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
-	table.SetAutoMergeCells(false)
-	lightStatus, _ := GetLight(vc, rack_id, board_id) // Add error reporting
-	table.AppendBulk(lightStatus)
-	table.Render()
+	filter := func(res utils.Result) bool {
+		return res.DeviceType == lightsdevicetype && res.RackID == rack_id && res.BoardID == board_id
+	}
+
+	header := []string{"Rack", "Board", "Device", "Name", "LED State"}
+	lightsList, _ := ListLights(vc, filter)
+
+	var data [][]string
+
+	for _, res := range lightsList {
+			data = append(data, []string{
+				res.RackID,
+				res.BoardID,
+				res.DeviceID,
+				res.DeviceInfo,
+				res.State})
+	}
+
+	utils.TableOutput(header, data)
+
 	return nil
 }
 
@@ -144,7 +123,7 @@ func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 // The status of the matching light is set to the passed light status.
 // Options are: `--state [on/off]`, `--color <color hex>`, `--blink [on/off]`.
 func SetLight(vc *client.VeshClient, rack_id, board_id, light_status string) (string, error) {
-	responseData := &lightsResponse{}
+	responseData := &LightsDetails{}
 	resp, err := vc.Sling.New().Path(lightspath).Path(rack_id + "/").Path(board_id + "/").Path(lightsdevicetype + "/").Get(light_status).ReceiveSuccess(responseData) // TODO: Add error reporting
 	if resp.StatusCode != 200 {                                                                                                                                       // This is not what I meant by "error reporting"
 		return "", err
