@@ -41,7 +41,7 @@ func ListFan(vc *client.VeshClient, filter func(res utils.Result) bool) ([]FanRe
 
 	for _, res := range devices {
 		fan, _ := GetFan(vc, res)
-		data = append(data, FanResult{ res, fan })
+		data = append(data, FanResult{res, fan})
 		progressBar.Incr()
 	}
 
@@ -73,12 +73,12 @@ func PrintListFan(vc *client.VeshClient) error {
 	var data [][]string
 
 	for _, res := range fanList {
-			data = append(data, []string{
-				res.RackID,
-				res.BoardID,
-				res.DeviceID,
-				res.DeviceInfo,
-				fmt.Sprintf("%.0f", res.SpeedRPM)})
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			fmt.Sprintf("%.0f", res.SpeedRPM)})
 	}
 
 	utils.TableOutput(header, data)

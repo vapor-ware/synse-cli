@@ -80,12 +80,12 @@ func PrintListLights(vc *client.VeshClient) error {
 	var data [][]string
 
 	for _, res := range lightsList {
-			data = append(data, []string{
-				res.RackID,
-				res.BoardID,
-				res.DeviceID,
-				res.DeviceInfo,
-				res.State})
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			res.State})
 	}
 
 	utils.TableOutput(header, data)
@@ -106,12 +106,12 @@ func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 	var data [][]string
 
 	for _, res := range lightsList {
-			data = append(data, []string{
-				res.RackID,
-				res.BoardID,
-				res.DeviceID,
-				res.DeviceInfo,
-				res.State})
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			res.State})
 	}
 
 	utils.TableOutput(header, data)

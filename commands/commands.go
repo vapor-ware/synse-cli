@@ -299,10 +299,10 @@ var Commands = []cli.Command{
 				Category: "assets",
 				Subcommands: []cli.Command{
 					{
-						Name:     "set",
-						Usage:    "Set the boot target for specific `device`. Can be `pxe` `hdd` or `no-override`",
+						Name:      "set",
+						Usage:     "Set the boot target for specific `device`. Can be `pxe` `hdd` or `no-override`",
 						ArgsUsage: "<rack id> <board id> <pxe/hdd/no-override>",
-						Category: "boot-target",
+						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
 							req := client.New()
 							if c.Args().Present() == true {
@@ -319,10 +319,10 @@ var Commands = []cli.Command{
 						},
 					},
 					{
-						Name:     "get",
-						Usage:    "Get current boot target for specific `device`",
+						Name:      "get",
+						Usage:     "Get current boot target for specific `device`",
 						ArgsUsage: "<rack id> <board id>",
-						Category: "boot-target",
+						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
 							req := client.New()
 							if c.Args().Present() == true {
@@ -361,10 +361,10 @@ var Commands = []cli.Command{
 						},
 					},
 					{
-						Name:     "get",
-						Usage:    "Get LED status for specific `device`",
+						Name:      "get",
+						Usage:     "Get LED status for specific `device`",
 						ArgsUsage: "<rack id> <board id>",
-						Category: "lights",
+						Category:  "lights",
 						Action: func(c *cli.Context) error {
 							req := client.New()
 							if c.Args().Present() == true {
@@ -427,18 +427,18 @@ var Commands = []cli.Command{
 						},
 					},
 					{
-						Name:     "blink",
-						Usage:    "Blink specific `LED` (alias for '--blink true') (NOT YET IMPLEMENTED)",
+						Name:      "blink",
+						Usage:     "Blink specific `LED` (alias for '--blink true') (NOT YET IMPLEMENTED)",
 						ArgsUsage: "<rack id> <board id> <device id> <true/false>",
-						Category: "lights",
-						Action:   nil,
+						Category:  "lights",
+						Action:    nil,
 					},
 					{
-						Name:     "color",
-						Usage:    "Set a specific `LED` to `color` (alias for '--color <hex>') (NOT YET IMPLEMENTED)", // Consider removing
+						Name:      "color",
+						Usage:     "Set a specific `LED` to `color` (alias for '--color <hex>') (NOT YET IMPLEMENTED)", // Consider removing
 						ArgsUsage: "<rack id> <board id> <device id> <color>",
-						Category: "lights",
-						Action:   nil,
+						Category:  "lights",
+						Action:    nil,
 					},
 				},
 			},

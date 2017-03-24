@@ -71,11 +71,11 @@ func PrintListTemp(vc *client.VeshClient) error {
 	var data [][]string
 
 	for _, res := range tempList {
-			data = append(data, []string{
-				res.RackID,
-				res.BoardID,
-				res.DeviceInfo,
-				fmt.Sprintf("%.2f", res.TemperatureC)})
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceInfo,
+			fmt.Sprintf("%.2f", res.TemperatureC)})
 	}
 
 	utils.TableOutput(header, data)

@@ -27,7 +27,7 @@ func ListHostnames(vc *client.VeshClient) error {
 			strings.Join(res.IPAddresses, ",")})
 	}
 
-	header := []string{"Rack", "Board", "Hostnames", "IP Addesses", }
+	header := []string{"Rack", "Board", "Hostnames", "IP Addesses"}
 	utils.TableOutput(header, data)
 
 	return nil
