@@ -37,14 +37,15 @@ func ListFan(vc *client.VeshClient, filter func(res utils.Result) bool) ([]FanRe
 		devices = append(devices, res)
 	}
 
-	progressBar := utils.ProgressBar(len(devices))
+	progressBar, pbWriter := utils.ProgressBar(len(devices), "Polling Fans")
 
 	for _, res := range devices {
 		fan, _ := GetFan(vc, res)
 		data = append(data, FanResult{res, fan})
-		progressBar.Incr()
+		progressBar.Incr(1)
 	}
 
+	utils.ProgressBarStop(pbWriter)
 	return data, nil
 }
 
@@ -67,7 +68,7 @@ func PrintListFan(vc *client.VeshClient) error {
 		return res.DeviceType == fandevicetype
 	}
 
-	header := []string{"Rack", "Board", "Device", "Name", "Fan Speed"}
+	header := []string{"Rack", "Board", "Device", "Name", "Fan Speed (RPM)"}
 	fanList, _ := ListFan(vc, filter)
 
 	var data [][]string

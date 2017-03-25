@@ -6,8 +6,6 @@ import (
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
-
-	"github.com/gosuri/uiprogress"
 )
 
 const lightspath = "led/"
@@ -41,15 +39,15 @@ func ListLights(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Li
 		devices = append(devices, res)
 	}
 
-	progressBar := utils.ProgressBar(len(devices))
+	progressBar, pbWriter := utils.ProgressBar(len(devices), "Polling Lights")
 
 	for _, res := range devices {
 		lights, _ := GetLights(vc, res)
 		data = append(data, lights)
-		progressBar.Incr()
+		progressBar.Incr(1)
 	}
 
-	uiprogress.Stop()
+	utils.ProgressBarStop(pbWriter)
 	return data, nil
 }
 
