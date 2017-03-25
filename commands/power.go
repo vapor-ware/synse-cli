@@ -5,8 +5,6 @@ import (
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
-
-	"github.com/gosuri/uiprogress"
 )
 
 const powerpath = "power/"
@@ -35,15 +33,15 @@ func ListPower(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Pow
 		devices = append(devices, res)
 	}
 
-	progressBar := utils.ProgressBar(len(devices))
+	progressBar, pbWriter := utils.ProgressBar(len(devices), "Polling Power States")
 
 	for _, res := range devices {
 		power, _ := GetPower(vc, res)
 		data = append(data, PowerResult{res, power})
-		progressBar.Incr()
+		progressBar.Incr(1)
 	}
 
-	uiprogress.Stop()
+	utils.ProgressBarStop(pbWriter)
 	return data, nil
 }
 
@@ -66,7 +64,7 @@ func PrintListPower(vc *client.VeshClient) error {
 		return res.DeviceType == device_id
 	}
 
-	header := []string{"Rack", "Board", "Name", "Input Power", "Power Ok?"}
+	header := []string{"Rack", "Board", "Name", "Input Power (W)", "Power Ok?"}
 	powerList, _ := ListPower(vc, filter)
 
 	var data [][]string

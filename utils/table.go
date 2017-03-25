@@ -1,10 +1,11 @@
 package utils
 
 import (
+	//"fmt"
 	"os"
 
-	"github.com/gosuri/uiprogress"
 	"github.com/olekukonko/tablewriter"
+	"github.com/vbauerster/mpb"
 )
 
 func TableOutput(header []string, data [][]string) {
@@ -18,11 +19,18 @@ func TableOutput(header []string, data [][]string) {
 	table.Render()
 }
 
-func ProgressBar(length int) *uiprogress.Bar {
-	uiprogress.Start()
-	progressBar := uiprogress.AddBar(length)
-	progressBar.AppendCompleted()
-	progressBar.PrependElapsed()
+func ProgressBar(length int, title string) (*mpb.Bar, *mpb.Progress) {
+	length64 := int64(length)
+	bar := mpb.New()
+	progressBar := bar.AddBar(length64)
+	progressBar.AppendETA(4, mpb.DwidthSync|mpb.DextraSpace)
+	progressBar.AppendPercentage(5, 0)
+	progressBar.PrependName(title+":", len(title), mpb.DwidthSync)
+	progressBar.PrependElapsed(5, mpb.DextraSpace)
 
-	return progressBar
+	return progressBar, bar
+}
+
+func ProgressBarStop(pb *mpb.Progress) {
+	pb.Stop()
 }
