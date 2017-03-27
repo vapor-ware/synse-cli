@@ -22,6 +22,7 @@ func main() {
 	app.Name = "vesh"
 	app.Usage = "Vapor Edge Shell"
 	app.Version = "0.0.1"
+	app.Author = "Tim Fall <tim@vapor.io>"
 
 	app.Commands = commands.Commands
 	//app.CommandNotFound = commands.CommandNotFound
