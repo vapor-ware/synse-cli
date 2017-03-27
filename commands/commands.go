@@ -408,23 +408,23 @@ var Commands = []cli.Command{
 						},
 						Action: func(c *cli.Context) error {
 							req := client.New()
-							if c.Args().Present() == true {
+							if c.Args().Present() == true && c.NArg() == 2 {
 								rack, _ := strconv.Atoi(c.Args().Get(0))  // This kind of thing should be done in the specific command
 								board, _ := strconv.Atoi(c.Args().Get(1)) // Ditto
 								switch {
-								case c.String("state") != "":
+								case c.IsSet("state") == true:
 									err := PrintSetLight(req, rack, board, c.String("state"), "state") // Consider breaking some of these out into flags
 									if err != nil {
 										return err
 									}
 									return nil
-								case c.String("color") != "":
+								case c.IsSet("color"):
 									err := PrintSetLight(req, rack, board, c.String("color"), "color") // Consider breaking some of these out into flags
 									if err != nil {
 										return err
 									}
 									return nil
-								case c.String("blink") != "":
+								case c.IsSet("blink"):
 									err := PrintSetLight(req, rack, board, c.String("blink"), "blink") // Consider breaking some of these out into flags
 									if err != nil {
 										return err
