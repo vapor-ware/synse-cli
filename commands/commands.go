@@ -74,9 +74,13 @@ package commands
 
 import (
 	"strconv" // I don't like having to use this here
+	"fmt"
+
+	"github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/vesh/client"
+
 )
 
 // Commands provides the global list of commands to app.cli.
@@ -136,15 +140,21 @@ var Commands = []cli.Command{
 						Category:  "hostname",
 						Action: func(c *cli.Context) error {
 							req := client.New()
-							if c.Args().Present() {
+							format := []string{"%s", "%x"}
+							errFormat := utils.InputCheckFormat(c, format)
+							if c.Args().Present() && errFormat == nil {
 								err := PrintGetHostname(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if errFormat != nil {
+								fmt.Println(errFormat)
+								cli.ShowSubcommandHelp(c)
+							}
+							return errFormat // Fix this. Restructure error checking and responses.
 						},
 					},
 				},
