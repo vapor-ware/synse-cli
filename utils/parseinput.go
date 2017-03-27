@@ -3,6 +3,7 @@ package utils
 import (
 	"reflect"
 	//"strconv"
+	"fmt"
 
 	"github.com/urfave/cli"
 )
@@ -37,3 +38,18 @@ func InputCheckType(c *cli.Context, arg_number, flag_number int, expected_type s
 }
 
 //func InputCheckContent(c *cli.Context, )
+
+func InputCheckFormat(c *cli.Context, format []string) error {
+	var input = make([]string, c.NArg())
+	var output string
+	for i := 0; i < c.NArg(); i++ {
+		input[i] = c.Args().Get(i)
+	}
+	for r := 0; r < len(input); r++ {
+		_, err := fmt.Sscanf(input[r], format[r], &output)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
