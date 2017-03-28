@@ -48,16 +48,19 @@ func FilterDevices(fn func(Result) bool) (chan Result, error) {
 	c := make(chan Result)
 
 	tempchan, err := GetDevices() // FIXME: This should be nested in the function
-	go func() {
-		for res := range tempchan {
-			if fn(res) {
-				c <- Result{res.Rack, res.Board, res.Device}
+	if err == nil {
+		go func() {
+			for res := range tempchan {
+				if fn(res) {
+					c <- Result{res.Rack, res.Board, res.Device}
+				}
 			}
-		}
 
-		close(c)
-	}()
+			close(c)
+		}()
+	}
 
+	close(c)
 	return c, err
 }
 
