@@ -6,13 +6,13 @@ jobs:
         environment:
           VESH_HOST: core.vapor.io
 
-    working_directory: /go/src/github.com/vapor-ware/vesh-cli
+    working_directory: /go/src/github.com/vapor-ware/vesh
 
     steps:
       - checkout
       - run:
           name: "Installing Dependencies"
-          command: go get -v -u
+          command: go get -v
       - run:
           name: "Getting builder"
           command: |
