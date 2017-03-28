@@ -60,7 +60,6 @@ func FilterDevices(fn func(Result) bool) (chan Result, error) {
 		}()
 	}
 
-	close(c)
 	return c, err
 }
 
