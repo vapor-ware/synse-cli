@@ -94,6 +94,7 @@ var Commands = []cli.Command{
 			req := client.New()
 			err := TestAPI(req)
 			if err != nil {
+				fmt.Println(err)
 				return err
 			}
 			return nil
@@ -106,6 +107,7 @@ var Commands = []cli.Command{
 			req := client.New()
 			err := Scan(req)
 			if err != nil {
+				fmt.Println(err)
 				return err
 			}
 			return nil
@@ -128,6 +130,7 @@ var Commands = []cli.Command{
 							req := client.New()
 							err := ListHostnames(req)
 							if err != nil {
+								fmt.Println(err)
 								return err
 							}
 							return nil
@@ -173,6 +176,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() == false {
 								err := PrintListPower(req)
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -191,6 +195,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() == true {
 								err := PrintGetPower(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -209,6 +214,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() == true {
 								err := PrintSetPower(req, c.Args().Get(0), c.Args().Get(1), c.Args().Get(2)) // Consider breaking some of these out into flags
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -233,6 +239,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() != true {
 								err := PrintListFan(req)
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -251,6 +258,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() == true {
 								err := PrintGetFan(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -275,6 +283,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() != true {
 								err := PrintListTemp(req)
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -293,6 +302,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() == true {
 								err := PrintGetTemp(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -320,6 +330,7 @@ var Commands = []cli.Command{
 								board, _ := strconv.Atoi(c.Args().Get(1))                      // Ditto
 								err := SetCurrentBootTarget(req, rack, board, c.Args().Get(2)) // Consider breaking some of these out into flags
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -338,6 +349,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() == true {
 								err := PrintGetCurrentBootTarget(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -362,6 +374,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() != true {
 								err := PrintListLights(req)
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -380,6 +393,7 @@ var Commands = []cli.Command{
 							if c.Args().Present() == true {
 								err := PrintGetLight(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
+									fmt.Println(err)
 									return err
 								}
 								return nil
@@ -415,18 +429,21 @@ var Commands = []cli.Command{
 								case c.IsSet("state") == true:
 									err := PrintSetLight(req, rack, board, c.String("state"), "state") // Consider breaking some of these out into flags
 									if err != nil {
+										fmt.Println(err)
 										return err
 									}
 									return nil
 								case c.IsSet("color"):
 									err := PrintSetLight(req, rack, board, c.String("color"), "color") // Consider breaking some of these out into flags
 									if err != nil {
+										fmt.Println(err)
 										return err
 									}
 									return nil
 								case c.IsSet("blink"):
 									err := PrintSetLight(req, rack, board, c.String("blink"), "blink") // Consider breaking some of these out into flags
 									if err != nil {
+										fmt.Println(err)
 										return err
 									}
 									return nil
