@@ -29,7 +29,8 @@ func ListTemp(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Temp
 
 	var data []TempResult
 
-	for res := range utils.FilterDevices(filter) {
+	fil, err := utils.FilterDevices(filter)
+	for res := range fil {
 		devices = append(devices, res)
 	}
 
@@ -42,7 +43,7 @@ func ListTemp(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Temp
 	}
 
 	utils.ProgressBarStop(pbWriter)
-	return data, nil
+	return data, err
 }
 
 func GetTemp(vc *client.VeshClient, res utils.Result) (TempResult, error) {

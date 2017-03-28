@@ -44,11 +44,12 @@ type Result struct {
 	Device
 }
 
-func FilterDevices(fn func(Result) bool) chan Result {
+func FilterDevices(fn func(Result) bool) (chan Result, error) {
 	c := make(chan Result)
 
+	tempchan, err := GetDevices() // FIXME: This should be nested in the function
 	go func() {
-		for res := range GetDevices() {
+		for res := range tempchan {
 			if fn(res) {
 				c <- Result{res.Rack, res.Board, res.Device}
 			}
@@ -57,20 +58,20 @@ func FilterDevices(fn func(Result) bool) chan Result {
 		close(c)
 	}()
 
-	return c
+	return c, err
 }
 
-func GetDevices() chan Result {
+func GetDevices() (chan Result, error) {
 	c := make(chan Result)
 
 	vc := client.New()
 	status := &scanResponse{}
 	resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
 	if err != nil {
-		panic(fmt.Sprintf("status: %s\nerror: %s\n", status, err))
+		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		panic(fmt.Sprintf("status: %s\nerror: %s\n", status, err))
+		return nil, err
 	}
 	fmt.Println("API reported status ok")
 
@@ -86,5 +87,5 @@ func GetDevices() chan Result {
 		close(c)
 	}()
 
-	return c
+	return c, nil
 }

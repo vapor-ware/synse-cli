@@ -33,7 +33,8 @@ func ListFan(vc *client.VeshClient, filter func(res utils.Result) bool) ([]FanRe
 
 	var data []FanResult
 
-	for res := range utils.FilterDevices(filter) {
+	fil, err := utils.FilterDevices(filter)
+	for res := range fil {
 		devices = append(devices, res)
 	}
 
@@ -46,7 +47,7 @@ func ListFan(vc *client.VeshClient, filter func(res utils.Result) bool) ([]FanRe
 	}
 
 	utils.ProgressBarStop(pbWriter)
-	return data, nil
+	return data, err
 }
 
 func GetFan(vc *client.VeshClient, res utils.Result) (*FanDetails, error) {
