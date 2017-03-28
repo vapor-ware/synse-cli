@@ -35,7 +35,8 @@ func ListLights(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Li
 
 	var data []LightsResult
 
-	for res := range utils.FilterDevices(filter) {
+	fil, err := utils.FilterDevices(filter)
+	for res := range fil {
 		devices = append(devices, res)
 	}
 
@@ -48,7 +49,7 @@ func ListLights(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Li
 	}
 
 	utils.ProgressBarStop(pbWriter)
-	return data, nil
+	return data, err
 }
 
 func GetLights(vc *client.VeshClient, res utils.Result) (LightsResult, error) {

@@ -29,7 +29,8 @@ func ListPower(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Pow
 
 	var data []PowerResult
 
-	for res := range utils.FilterDevices(filter) {
+	fil, err := utils.FilterDevices(filter)
+	for res := range fil {
 		devices = append(devices, res)
 	}
 
@@ -42,7 +43,7 @@ func ListPower(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Pow
 	}
 
 	utils.ProgressBarStop(pbWriter)
-	return data, nil
+	return data, err
 }
 
 func GetPower(vc *client.VeshClient, res utils.Result) (*PowerDetails, error) {
