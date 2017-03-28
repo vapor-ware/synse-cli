@@ -34,6 +34,9 @@ func ListFan(vc *client.VeshClient, filter func(res utils.Result) bool) ([]FanRe
 	var data []FanResult
 
 	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return data, err
+	}
 	for res := range fil {
 		devices = append(devices, res)
 	}
@@ -70,7 +73,10 @@ func PrintListFan(vc *client.VeshClient) error {
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "Fan Speed (RPM)"}
-	fanList, _ := ListFan(vc, filter)
+	fanList, err := ListFan(vc, filter)
+	if err != nil {
+		return err
+	}
 
 	var data [][]string
 
@@ -85,7 +91,7 @@ func PrintListFan(vc *client.VeshClient) error {
 
 	utils.TableOutput(header, data)
 
-	return nil
+	return err
 }
 
 // PrintGetFan takes the output of GetFan and pretty prints it in table form.

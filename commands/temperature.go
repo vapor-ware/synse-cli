@@ -30,6 +30,9 @@ func ListTemp(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Temp
 	var data []TempResult
 
 	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return data, err
+	}
 	for res := range fil {
 		devices = append(devices, res)
 	}
@@ -66,7 +69,10 @@ func PrintListTemp(vc *client.VeshClient) error {
 	}
 
 	header := []string{"Rack", "Board", "Name", "Temperature in C"}
-	tempList, _ := ListTemp(vc, filter)
+	tempList, err := ListTemp(vc, filter)
+	if err != nil {
+		return err
+	}
 
 	var data [][]string
 
