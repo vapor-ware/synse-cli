@@ -19,7 +19,8 @@ func ListHostnames(vc *client.VeshClient) error {
 		return res.DeviceType == "system"
 	}
 
-	for res := range utils.FilterDevices(filter) {
+	fil, err := utils.FilterDevices(filter)
+	for res := range fil {
 		data = append(data, []string{
 			res.RackID,
 			res.BoardID,
@@ -30,7 +31,7 @@ func ListHostnames(vc *client.VeshClient) error {
 	header := []string{"Rack", "Board", "Hostnames", "IP Addesses"}
 	utils.TableOutput(header, data)
 
-	return nil
+	return err
 }
 
 // PrintGetHostname takes the output of GetHostname and pretty prints it in table form.
@@ -41,7 +42,8 @@ func PrintGetHostname(vc *client.VeshClient, rack_id, board_id string) error {
 		return res.DeviceType == "system" && res.RackID == rack_id && res.BoardID == board_id
 	}
 
-	for res := range utils.FilterDevices(filter) {
+	fil, err := utils.FilterDevices(filter)
+	for res := range fil {
 		data = append(data, []string{
 			strings.Join(res.Hostnames, ","),
 			strings.Join(res.IPAddresses, ",")})
@@ -50,5 +52,5 @@ func PrintGetHostname(vc *client.VeshClient, rack_id, board_id string) error {
 	header := []string{"Hostnames", "IP Addesses"}
 	utils.TableOutput(header, data)
 
-	return nil
+	return err
 }
