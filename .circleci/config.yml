@@ -1,0 +1,23 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: golang:latest
+        environment:
+          VESH_HOST: core.vapor.io
+
+    working_directory: /go/src/github.com/vapor-ware/vesh-cli
+
+    steps:
+      - checkout
+      - run:
+          name: "Installing Dependencies"
+          command: go get -v -u
+      - run:
+          name: "Getting builder"
+          command: |
+            go get -v github.com/mitchellh/gox
+            go get -v github.com/tcnksm/ghr
+      - run:
+          name: "Building"
+          command: gox --output="$(CIRCLE_ARTIFACTS)/{{.Dir}}_{{.OS}}_{{.Arch}}" -os='!windows' -osarch='!darwin/386'
