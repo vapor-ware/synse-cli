@@ -106,6 +106,7 @@ var Commands = []cli.Command{
 		Action: func(c *cli.Context) error {
 			req := client.New()
 			err := Scan(req)
+			fmt.Println(err)
 			if err != nil {
 				fmt.Println(err)
 				return err

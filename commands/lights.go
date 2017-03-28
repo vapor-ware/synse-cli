@@ -36,6 +36,9 @@ func ListLights(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Li
 	var data []LightsResult
 
 	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return data, err
+	}
 	for res := range fil {
 		devices = append(devices, res)
 	}
@@ -72,7 +75,10 @@ func PrintListLights(vc *client.VeshClient) error {
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "LED State"}
-	lightsList, _ := ListLights(vc, filter)
+	lightsList, err := ListLights(vc, filter)
+	if err != nil {
+		return err
+	}
 
 	var data [][]string
 
@@ -98,7 +104,10 @@ func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "LED State"}
-	lightsList, _ := ListLights(vc, filter)
+	lightsList, err := ListLights(vc, filter)
+	if err != nil {
+		return err
+	}
 
 	var data [][]string
 
