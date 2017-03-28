@@ -30,6 +30,9 @@ func ListPower(vc *client.VeshClient, filter func(res utils.Result) bool) ([]Pow
 	var data []PowerResult
 
 	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return data, nil
+	}
 	for res := range fil {
 		devices = append(devices, res)
 	}
@@ -66,7 +69,10 @@ func PrintListPower(vc *client.VeshClient) error {
 	}
 
 	header := []string{"Rack", "Board", "Name", "Input Power (W)", "Power Ok?"}
-	powerList, _ := ListPower(vc, filter)
+	powerList, err := ListPower(vc, filter)
+	if err != nil {
+		return err
+	}
 
 	var data [][]string
 
@@ -92,7 +98,10 @@ func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "Input Power", "Over Current?", "Power Ok?", "Power Status"}
-	powerList, _ := ListPower(vc, filter) // Add error reporting
+	powerList, err := ListPower(vc, filter)
+	if err != nil {
+		return err
+	}
 
 	var data [][]string
 

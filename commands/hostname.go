@@ -7,6 +7,7 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 )
 
+// FIXME: Break printing back out into another function
 // ListHostnames iterates over the complete list of boards and returns the
 // hostname(s) and ip address(es) associated with each, given from the top
 // level "hostnames" and "ip addresses" fields. Since a given board may have
@@ -20,6 +21,9 @@ func ListHostnames(vc *client.VeshClient) error {
 	}
 
 	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return err
+	}
 	for res := range fil {
 		data = append(data, []string{
 			res.RackID,
@@ -34,6 +38,7 @@ func ListHostnames(vc *client.VeshClient) error {
 	return err
 }
 
+// FIXME: Break getting back out into another function
 // PrintGetHostname takes the output of GetHostname and pretty prints it in table form.
 func PrintGetHostname(vc *client.VeshClient, rack_id, board_id string) error {
 	var data [][]string
@@ -43,6 +48,9 @@ func PrintGetHostname(vc *client.VeshClient, rack_id, board_id string) error {
 	}
 
 	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return err
+	}
 	for res := range fil {
 		data = append(data, []string{
 			strings.Join(res.Hostnames, ","),

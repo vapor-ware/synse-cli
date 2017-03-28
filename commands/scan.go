@@ -61,6 +61,9 @@ func Scan(vc *client.VeshClient) error {
 	}
 
 	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return err
+	}
 	for res := range fil {
 		data = append(data, []string{
 			res.RackID,
@@ -73,9 +76,6 @@ func Scan(vc *client.VeshClient) error {
 	header := []string{"Rack", "Board", "Device ID", "Device Info", "Device Type"}
 	utils.TableOutput(header, data)
 
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
