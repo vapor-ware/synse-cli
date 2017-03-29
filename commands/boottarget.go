@@ -22,12 +22,13 @@ type boottargetresponse struct {
 // current set boot target for the `system` device.
 func GetCurrentBootTarget(vc *client.VeshClient, rack_id int, board_id int) (string, error) {
 	status := &boottargetresponse{}
-	resp, err := vc.Sling.New().Path(bootpath).Path(strconv.Itoa(rack_id) + "/").Path(strconv.Itoa(board_id) + "/").Get(bootdevicetype).ReceiveSuccess(status)
+	failure := new(client.ErrorResponse)
+	resp, err := vc.Sling.New().Path(bootpath).Path(strconv.Itoa(rack_id) + "/").Path(strconv.Itoa(board_id) + "/").Get(bootdevicetype).Receive(status, failure)
 	if err != nil {
 		return "", err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return "", err
+		return failure.Message, err
 	}
 	return status.Target, nil
 }
@@ -37,7 +38,10 @@ func GetCurrentBootTarget(vc *client.VeshClient, rack_id int, board_id int) (str
 func PrintGetCurrentBootTarget(vc *client.VeshClient, rack_id, board_id string) error {
 	rackidint, _ := strconv.Atoi(rack_id)
 	boardidint, _ := strconv.Atoi(board_id)
-	bootTarget, _ := GetCurrentBootTarget(vc, rackidint, boardidint)
+	bootTarget, err := GetCurrentBootTarget(vc, rackidint, boardidint)
+	if err != nil {
+		return err
+	}
 	fmt.Println(bootTarget)
 	return nil
 }
