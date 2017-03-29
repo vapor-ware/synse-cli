@@ -32,6 +32,11 @@ type VeshClient struct {
 	Sling *sling.Sling
 }
 
+type ErrorResponse struct { // FIXME: This should go somewhere else
+	HttpCode int `json:"http_code"`
+	Message string `json:"message"`
+}
+
 // New constructs a new instance of VeshClient after calling constructUrl to
 // contruct the base.
 func New() *VeshClient {
