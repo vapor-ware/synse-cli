@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"net/http"
+	"errors"
 
 	"github.com/vapor-ware/vesh/client"
 
@@ -44,21 +45,37 @@ type Result struct {
 	Device
 }
 
-func FilterDevices(fn func(Result) bool) (chan Result, error) {
+type FilterFunc struct {
+	Result
+	Path string // FIXME: This shouldn't be here. It should mainstreamed as it is different from DeviceType
+	FilterFn func(r Result) bool
+}
+
+func FilterDevices(ff *FilterFunc) (chan Result, error) {
 	c := make(chan Result)
+	errChan := make(chan error)
+	fn := ff.FilterFn
 
 	tempchan, err := GetDevices() // FIXME: This should be nested in the function
 	if err == nil {
-		go func() {
+		go func()  {
+			var success bool // FIXME: I think there's a better way to do this. Channel length == 0 ?
 			for res := range tempchan {
 				if fn(res) {
+					success = true
 					c <- Result{res.Rack, res.Board, res.Device}
 				}
+			}
+			if !success {
+				errChan <- DeviceNotFoundErr(ff.Result)
+				fmt.Println(errChan)
+				panic("balls")
 			}
 
 			close(c)
 		}()
 	}
+	err = <-errChan
 
 	return c, err
 }
@@ -68,12 +85,13 @@ func GetDevices() (chan Result, error) {
 
 	vc := client.New()
 	status := &scanResponse{}
-	resp, err := vc.Sling.New().Get(Scanpath).ReceiveSuccess(status)
+	failure := new(client.ErrorResponse)
+	resp, err := vc.Sling.New().Get(Scanpath).Receive(status, failure)
 	if err != nil {
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, err
+		return nil, errors.New(fmt.Sprint(failure))
 	}
 	fmt.Println("API reported status ok")
 
