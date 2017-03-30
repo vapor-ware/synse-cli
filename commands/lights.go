@@ -30,7 +30,7 @@ type LightsResult struct {
 // types of led data.
 // NOTE: Currently only Chamber LED's support blink state and color. No error
 // checking is done on this at the moment.
-func ListLights(vc *client.VeshClient, filter func(res utils.Result) bool) ([]LightsResult, error) {
+func ListLights(vc *client.VeshClient, filter *utils.FilterFunc) ([]LightsResult, error) {
 	var devices []utils.Result
 
 	var data []LightsResult
@@ -70,7 +70,10 @@ func GetLights(vc *client.VeshClient, res utils.Result) (LightsResult, error) {
 // Multiple lights are grouped by board, then by rack. Table format is set to not
 // auto merge duplicate entries.
 func PrintListLights(vc *client.VeshClient) error {
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.Path = lightspath
+	filter.DeviceType = lightsdevicetype
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == lightsdevicetype
 	}
 
@@ -99,7 +102,12 @@ func PrintListLights(vc *client.VeshClient) error {
 // PrintGetLight takes the output of GetLight and pretty prints it in table form.
 // Multiple entries are not merged.
 func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.Path = lightspath
+	filter.DeviceType = lightsdevicetype
+	filter.RackID = rack_id
+	filter.BoardID = board_id
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == lightsdevicetype && res.RackID == rack_id && res.BoardID == board_id
 	}
 
