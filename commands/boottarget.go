@@ -23,7 +23,7 @@ type boottargetresponse struct {
 func GetCurrentBootTarget(vc *client.VeshClient, rack_id int, board_id int) (string, error) {
 	status := &boottargetresponse{}
 	failure := new(client.ErrorResponse)
-	resp, err := vc.Sling.New().Path(bootpath).Path(strconv.Itoa(rack_id) + "/").Path(strconv.Itoa(board_id) + "/").Get(bootdevicetype).Receive(status, failure)
+	resp, err := vc.Sling.New().Path(bootpath).Path(strconv.Itoa(rack_id)+"/").Path(strconv.Itoa(board_id)+"/").Get(bootdevicetype).Receive(status, failure)
 	if err != nil {
 		return "", err
 	}

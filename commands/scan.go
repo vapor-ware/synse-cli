@@ -56,7 +56,8 @@ func walkBoards(sr *scanResponse) {
 func Scan(vc *client.VeshClient) error {
 	var data [][]string
 
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.FilterFn = func(res utils.Result) bool {
 		return true
 	}
 

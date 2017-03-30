@@ -24,7 +24,7 @@ type TempResult struct {
 
 // ListTemp iterates over the complete list of devices and returns health,
 // states, and temperature (celcius) for each `temperature` device type.
-func ListTemp(vc *client.VeshClient, filter func(res utils.Result) bool) ([]TempResult, error) {
+func ListTemp(vc *client.VeshClient, filter *utils.FilterFunc) ([]TempResult, error) {
 	var devices []utils.Result
 
 	var data []TempResult
@@ -64,7 +64,10 @@ func GetTemp(vc *client.VeshClient, res utils.Result) (TempResult, error) {
 // Multiple temperature readings are grouped by board, then by rack. Table format
 // is set to not auto merge duplicate entries.
 func PrintListTemp(vc *client.VeshClient) error {
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.Path = lightspath
+	filter.DeviceType = lightsdevicetype
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == temperaturedevicetype
 	}
 
@@ -92,7 +95,12 @@ func PrintListTemp(vc *client.VeshClient) error {
 // PrintGetTemp takes the output of GetTemp and pretty prints it in table form.
 // Multiple entries are not merged.
 func PrintGetTemp(vc *client.VeshClient, rack_id, board_id string) error {
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.Path = temperaturepath
+	filter.DeviceType = temperaturedevicetype
+	filter.RackID = rack_id
+	filter.BoardID = board_id
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == temperaturedevicetype && res.RackID == rack_id && res.BoardID == board_id
 	}
 

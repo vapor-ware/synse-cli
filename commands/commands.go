@@ -73,14 +73,13 @@ is stateless and called once during each run.
 package commands
 
 import (
-	"strconv" // I don't like having to use this here
 	"fmt"
+	"strconv" // I don't like having to use this here
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/urfave/cli"
-
 )
 
 // Commands provides the global list of commands to app.cli.

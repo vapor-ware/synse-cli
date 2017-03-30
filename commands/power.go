@@ -24,7 +24,7 @@ type PowerResult struct {
 
 // ListPower iterates over the complete list of devices and returns input power,
 // over current, power ok, and power status for each `power` device type.
-func ListPower(vc *client.VeshClient, filter func(res utils.Result) bool) ([]PowerResult, error) {
+func ListPower(vc *client.VeshClient, filter *utils.FilterFunc) ([]PowerResult, error) {
 	var devices []utils.Result
 
 	var data []PowerResult
@@ -64,7 +64,10 @@ func GetPower(vc *client.VeshClient, res utils.Result) (*PowerDetails, error) {
 // Multiple lights are grouped by board, then by rack. Table format is set to not
 // auto merge duplicate entries.
 func PrintListPower(vc *client.VeshClient) error {
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.Path = powerpath
+	filter.DeviceType = device_id
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == device_id
 	}
 
@@ -93,7 +96,12 @@ func PrintListPower(vc *client.VeshClient) error {
 // PrintGetPower takes the output of GetPower and pretty prints it in table form.
 // Multiple entries are not merged.
 func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.Path = powerpath
+	filter.DeviceType = device_id
+	filter.RackID = rack_id
+	filter.BoardID = board_id
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == device_id && res.RackID == rack_id && res.BoardID == board_id
 	}
 
