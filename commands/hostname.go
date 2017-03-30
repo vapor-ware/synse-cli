@@ -16,7 +16,8 @@ import (
 func ListHostnames(vc *client.VeshClient) error {
 	var data [][]string
 
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == "system"
 	}
 
@@ -43,7 +44,8 @@ func ListHostnames(vc *client.VeshClient) error {
 func PrintGetHostname(vc *client.VeshClient, rack_id, board_id string) error {
 	var data [][]string
 
-	filter := func(res utils.Result) bool {
+	filter := &utils.FilterFunc{}
+	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == "system" && res.RackID == rack_id && res.BoardID == board_id
 	}
 
