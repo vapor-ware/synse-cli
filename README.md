@@ -28,7 +28,7 @@ GLOBAL OPTIONS:
 ```
 
 **TO DO**:
-- [ ] Error handling
+- [x] Error handling
 - [ ] Comments and documentation
 - [ ] Configuration from file
 - [ ] Debug mode
