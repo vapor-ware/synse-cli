@@ -1,3 +1,6 @@
+[![buddy pipeline](https://app.buddy.works/timfall/vesh/pipelines/pipeline/45662/badge.svg?token=3ae6c804af4fdb5947b58ba1c544c232bf8d28f6e6d2b07321added2d1cc0bad "buddy pipeline")](https://app.buddy.works/timfall/vesh/pipelines/pipeline/45662)
+[![CircleCI](https://circleci.com/gh/vapor-ware/vesh.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3)](https://circleci.com/gh/vapor-ware/vesh)
+
 ```shell
 NAME:
    vesh - Vapor Edge Shell
