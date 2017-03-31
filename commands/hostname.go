@@ -26,6 +26,9 @@ func ListHostnames(vc *client.VeshClient) error {
 		return err
 	}
 	for res := range fil {
+		if res.Error != nil {
+			return res.Error
+		}
 		data = append(data, []string{
 			res.RackID,
 			res.BoardID,
@@ -54,6 +57,9 @@ func PrintGetHostname(vc *client.VeshClient, rack_id, board_id string) error {
 		return err
 	}
 	for res := range fil {
+		if res.Error != nil {
+			return res.Error
+		}
 		data = append(data, []string{
 			strings.Join(res.Hostnames, ","),
 			strings.Join(res.IPAddresses, ",")})
