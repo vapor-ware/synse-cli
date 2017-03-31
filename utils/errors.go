@@ -29,7 +29,7 @@ func DeviceNotFoundErr(res Result) error {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return errors.New(fmt.Sprintf("%+v\n%+v", failure.HttpCode, failure.Message))
+		return errors.New(fmt.Sprintf("Error Code: %+v\nError: %+v", failure.HttpCode, failure.Message))
 	}
 	return nil
 }
