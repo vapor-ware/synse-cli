@@ -66,6 +66,9 @@ func Scan(vc *client.VeshClient) error {
 		return err
 	}
 	for res := range fil {
+		if res.Error != nil {
+			return res.Error
+		}
 		data = append(data, []string{
 			res.RackID,
 			res.BoardID,
