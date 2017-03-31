@@ -51,9 +51,13 @@ type FilterFunc struct {
 	FilterFn func(r Result) bool
 }
 
-func FilterDevices(ff *FilterFunc) (chan Result, error) {
-	c := make(chan Result)
-	errChan := make(chan error)
+type ResultError struct {
+	Result
+	Error error
+}
+
+func FilterDevices(ff *FilterFunc) (chan ResultError, error) {
+	c := make(chan ResultError)
 	fn := ff.FilterFn
 
 	tempchan, err := GetDevices() // FIXME: This should be nested in the function
@@ -63,19 +67,17 @@ func FilterDevices(ff *FilterFunc) (chan Result, error) {
 			for res := range tempchan {
 				if fn(res) {
 					success = true
-					c <- Result{res.Rack, res.Board, res.Device}
+					c <- ResultError{Result{res.Rack, res.Board, res.Device}, nil}
 				}
 			}
 			if !success {
-				errChan <- DeviceNotFoundErr(ff.Result)
-				fmt.Println(errChan)
-				panic("balls")
+				var res Result
+				c <- ResultError{res, DeviceNotFoundErr(ff.Result)}
 			}
 
 			close(c)
 		}()
 	}
-	err = <-errChan
 
 	return c, err
 }

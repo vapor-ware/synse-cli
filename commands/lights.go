@@ -40,7 +40,10 @@ func ListLights(vc *client.VeshClient, filter *utils.FilterFunc) ([]LightsResult
 		return data, err
 	}
 	for res := range fil {
-		devices = append(devices, res)
+		if res.Error != nil {
+			return data, res.Error
+		}
+		devices = append(devices, res.Result)
 	}
 
 	progressBar, pbWriter := utils.ProgressBar(len(devices), "Polling Lights")
