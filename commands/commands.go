@@ -192,7 +192,9 @@ var Commands = []cli.Command{
 						Category:  "power",
 						Action: func(c *cli.Context) error {
 							req := client.New()
-							if c.Args().Present() == true {
+							format := []string{"%s", "%x"}
+							errFormat := utils.InputCheckFormat(c, format)
+							if c.Args().Present() == true && errFormat == nil {
 								err := PrintGetPower(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
 									fmt.Println(err)
@@ -255,7 +257,9 @@ var Commands = []cli.Command{
 						Category:  "fans",
 						Action: func(c *cli.Context) error {
 							req := client.New()
-							if c.Args().Present() == true {
+							format := []string{"%s", "%x"}
+							errFormat := utils.InputCheckFormat(c, format)
+							if c.Args().Present() == true && errFormat == nil {
 								err := PrintGetFan(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
 									fmt.Println(err)
@@ -299,7 +303,9 @@ var Commands = []cli.Command{
 						Category:  "temperature",
 						Action: func(c *cli.Context) error {
 							req := client.New()
-							if c.Args().Present() == true {
+							format := []string{"%s", "%x"}
+							errFormat := utils.InputCheckFormat(c, format)
+							if c.Args().Present() == true && errFormat == nil {
 								err := PrintGetTemp(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
 									fmt.Println(err)
@@ -346,7 +352,9 @@ var Commands = []cli.Command{
 						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
 							req := client.New()
-							if c.Args().Present() == true {
+							format := []string{"%s", "%x"}
+							errFormat := utils.InputCheckFormat(c, format)
+							if c.Args().Present() == true && errFormat == nil {
 								err := PrintGetCurrentBootTarget(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
 									fmt.Println(err)
@@ -390,7 +398,9 @@ var Commands = []cli.Command{
 						Category:  "lights",
 						Action: func(c *cli.Context) error {
 							req := client.New()
-							if c.Args().Present() == true {
+							format := []string{"%s", "%x"}
+							errFormat := utils.InputCheckFormat(c, format)
+							if c.Args().Present() == true && errFormat == nil {
 								err := PrintGetLight(req, c.Args().Get(0), c.Args().Get(1))
 								if err != nil {
 									fmt.Println(err)
