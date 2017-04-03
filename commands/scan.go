@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
 )
 
@@ -53,7 +52,7 @@ func walkBoards(sr *scanResponse) {
 // during the scan process.
 // NOTE: Printing output is part of this function. To access scan results
 // internally, utils.UtilScanOnly should be used.
-func Scan(vc *client.VeshClient) error {
+func Scan() error {
 	var data [][]string
 
 	filter := &utils.FilterFunc{}
@@ -81,8 +80,4 @@ func Scan(vc *client.VeshClient) error {
 	utils.TableOutput(header, data)
 
 	return nil
-}
-
-func writetable() {
-
 }
