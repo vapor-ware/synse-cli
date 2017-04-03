@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"fmt"
-	"strings"
-	"net/http"
 	"errors"
+	"fmt"
+	"net/http"
+	"strings"
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
