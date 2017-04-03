@@ -31,3 +31,6 @@ vendor/
 
 # `go build` binary
 /vesh
+
+# Shell autocompletion
+/*_autocomplete
