@@ -24,7 +24,7 @@ type PowerResult struct {
 
 // ListPower iterates over the complete list of devices and returns input power,
 // over current, power ok, and power status for each `power` device type.
-func ListPower(vc *client.VeshClient, filter *utils.FilterFunc) ([]PowerResult, error) {
+func ListPower(filter *utils.FilterFunc) ([]PowerResult, error) {
 	var devices []utils.Result
 
 	var data []PowerResult
@@ -43,7 +43,7 @@ func ListPower(vc *client.VeshClient, filter *utils.FilterFunc) ([]PowerResult, 
 	progressBar, pbWriter := utils.ProgressBar(len(devices), "Polling Power States")
 
 	for _, res := range devices {
-		power, _ := GetPower(vc, res)
+		power, _ := GetPower(res)
 		data = append(data, PowerResult{res, power})
 		progressBar.Incr(1)
 	}
@@ -52,10 +52,10 @@ func ListPower(vc *client.VeshClient, filter *utils.FilterFunc) ([]PowerResult, 
 	return data, err
 }
 
-func GetPower(vc *client.VeshClient, res utils.Result) (*PowerDetails, error) {
+func GetPower(res utils.Result) (*PowerDetails, error) {
 	power := &PowerDetails{}
 	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)
-	_, err := vc.Sling.New().Path(powerpath).Get(path).ReceiveSuccess(power)
+	_, err := client.New().Path(powerpath).Get(path).ReceiveSuccess(power)
 	if err != nil {
 		return power, err
 	}
@@ -66,7 +66,7 @@ func GetPower(vc *client.VeshClient, res utils.Result) (*PowerDetails, error) {
 // PrintListPower takes the output from ListPower and pretty prints it into a table.
 // Multiple lights are grouped by board, then by rack. Table format is set to not
 // auto merge duplicate entries.
-func PrintListPower(vc *client.VeshClient) error {
+func PrintListPower() error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = device_id
 	filter.FilterFn = func(res utils.Result) bool {
@@ -74,7 +74,7 @@ func PrintListPower(vc *client.VeshClient) error {
 	}
 
 	header := []string{"Rack", "Board", "Name", "Input Power (W)", "Power Ok?"}
-	powerList, err := ListPower(vc, filter)
+	powerList, err := ListPower(filter)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func PrintListPower(vc *client.VeshClient) error {
 
 // PrintGetPower takes the output of GetPower and pretty prints it in table form.
 // Multiple entries are not merged.
-func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
+func PrintGetPower(rack_id, board_id string) error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = device_id
 	filter.RackID = rack_id
@@ -107,7 +107,7 @@ func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "Input Power", "Over Current?", "Power Ok?", "Power Status"}
-	powerList, err := ListPower(vc, filter)
+	powerList, err := ListPower(filter)
 	if err != nil {
 		return err
 	}
@@ -135,9 +135,11 @@ func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
 // string. The power status of the corresponding "power" device is set to the
 // given power status.
 // Options are: "on", "off", "cycle"
-func SetPower(vc *client.VeshClient, rack_id, board_id, power_status string) (string, error) {
+func SetPower(rack_id, board_id, power_status string) (string, error) {
 	responseData := &PowerDetails{}
-	resp, err := vc.Sling.New().Path(powerpath).Path(rack_id + "/").Path(board_id + "/").Path(device_id + "/").Get(power_status).ReceiveSuccess(responseData) // Add error reporting
+	path := fmt.Sprintf("%s/%s/%s/%s/", powerpath, rack_id, board_id, device_id)
+	resp, err := client.New().Path(path).Get(
+		power_status).ReceiveSuccess(responseData) // Add error reporting
 	if resp.StatusCode != 200 {                                                                                                                               // This is not what I meant by "error reporting"
 		return "", err
 	}
@@ -149,8 +151,8 @@ func SetPower(vc *client.VeshClient, rack_id, board_id, power_status string) (st
 
 // PrintSetPower takes the output of SetPower and pretty prints whether the
 // status was changed successfully.
-func PrintSetPower(vc *client.VeshClient, rack_id, board_id, power_status string) error {
-	status, err := SetPower(vc, rack_id, board_id, power_status)
+func PrintSetPower(rack_id, board_id, power_status string) error {
+	status, err := SetPower(rack_id, board_id, power_status)
 	if err == nil && status == "cycle" {
 		fmt.Printf("Power successfully %sd\n", status)
 	}

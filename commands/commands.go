@@ -74,9 +74,7 @@ package commands
 
 import (
 	"fmt"
-	"strconv" // I don't like having to use this here
 
-	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/urfave/cli"
@@ -90,26 +88,14 @@ var Commands = []cli.Command{
 		Aliases: []string{"stat"},
 		Usage:   "Get the status of the current deployment",
 		Action: func(c *cli.Context) error {
-			req := client.New()
-			err := TestAPI(req)
-			if err != nil {
-				fmt.Println(err)
-				return err
-			}
-			return nil
+			return utils.CommandHandler(c, TestAPI())
 		},
 	},
 	{
 		Name:  "scan",
 		Usage: "Scan the infrastructure and display device summary",
 		Action: func(c *cli.Context) error {
-			req := client.New()
-			err := Scan(req)
-			fmt.Println(err)
-			if err != nil {
-				return err
-			}
-			return nil
+			return utils.CommandHandler(c, Scan())
 		},
 	},
 	{
@@ -126,13 +112,7 @@ var Commands = []cli.Command{
 						Usage:    "List hostnames",
 						Category: "hostname",
 						Action: func(c *cli.Context) error {
-							req := client.New()
-							err := ListHostnames(req)
-							if err != nil {
-								fmt.Println(err)
-								return err
-							}
-							return nil
+							return utils.CommandHandler(c, ListHostnames())
 						},
 					},
 					{
@@ -141,16 +121,11 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "hostname",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							format := []string{"%s", "%x"}
 							errFormat := utils.InputCheckFormat(c, format)
 							if c.Args().Present() && errFormat == nil {
-								err := PrintGetHostname(req, c.Args().Get(0), c.Args().Get(1))
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									PrintGetHostname(c.Args().Get(0), c.Args().Get(1)))
 							}
 							if errFormat != nil {
 								fmt.Println(errFormat)
@@ -171,14 +146,8 @@ var Commands = []cli.Command{
 						Usage:    "List power status",
 						Category: "power",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							if c.Args().Present() == false {
-								err := PrintListPower(req)
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c, PrintListPower())
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -190,16 +159,11 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board_id>",
 						Category:  "power",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							format := []string{"%s", "%x"}
 							errFormat := utils.InputCheckFormat(c, format)
 							if c.Args().Present() == true && errFormat == nil {
-								err := PrintGetPower(req, c.Args().Get(0), c.Args().Get(1))
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									PrintGetPower(c.Args().Get(0), c.Args().Get(1)))
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -211,14 +175,12 @@ var Commands = []cli.Command{
 						ArgsUsage: "<on/off/cycle>",
 						Category:  "power",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							if c.Args().Present() == true {
-								err := PrintSetPower(req, c.Args().Get(0), c.Args().Get(1), c.Args().Get(2)) // Consider breaking some of these out into flags
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									PrintSetPower(
+										c.Args().Get(0),
+										c.Args().Get(1),
+										c.Args().Get(2)))
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -236,14 +198,8 @@ var Commands = []cli.Command{
 						Usage:    "List fans speeds",
 						Category: "fans",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							if c.Args().Present() != true {
-								err := PrintListFan(req)
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c, PrintListFan())
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -255,16 +211,11 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "fans",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							format := []string{"%s", "%x"}
 							errFormat := utils.InputCheckFormat(c, format)
 							if c.Args().Present() == true && errFormat == nil {
-								err := PrintGetFan(req, c.Args().Get(0), c.Args().Get(1))
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									PrintGetFan(c.Args().Get(0), c.Args().Get(1)))
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -282,14 +233,8 @@ var Commands = []cli.Command{
 						Usage:    "List temperatures",
 						Category: "temperature",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							if c.Args().Present() != true {
-								err := PrintListTemp(req)
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c, PrintListTemp())
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -301,16 +246,11 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "temperature",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							format := []string{"%s", "%x"}
 							errFormat := utils.InputCheckFormat(c, format)
 							if c.Args().Present() == true && errFormat == nil {
-								err := PrintGetTemp(req, c.Args().Get(0), c.Args().Get(1))
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									PrintGetTemp(c.Args().Get(0), c.Args().Get(1)))
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -329,16 +269,12 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id> <pxe/hdd/no-override>",
 						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							if c.Args().Present() == true {
-								rack, _ := strconv.Atoi(c.Args().Get(0))                       // This kind of thing should be done in the specific command
-								board, _ := strconv.Atoi(c.Args().Get(1))                      // Ditto
-								err := SetCurrentBootTarget(req, rack, board, c.Args().Get(2)) // Consider breaking some of these out into flags
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									SetCurrentBootTarget(
+										c.Args().Get(0),
+										c.Args().Get(1),
+										c.Args().Get(2)))
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -350,16 +286,11 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							format := []string{"%s", "%x"}
 							errFormat := utils.InputCheckFormat(c, format)
 							if c.Args().Present() == true && errFormat == nil {
-								err := PrintGetCurrentBootTarget(req, c.Args().Get(0), c.Args().Get(1))
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									PrintGetCurrentBootTarget(c.Args().Get(0), c.Args().Get(1)))
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -377,14 +308,8 @@ var Commands = []cli.Command{
 						Usage:    "List LED status",
 						Category: "lights",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							if c.Args().Present() != true {
-								err := PrintListLights(req)
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c, PrintListLights())
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -396,16 +321,11 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "lights",
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							format := []string{"%s", "%x"}
 							errFormat := utils.InputCheckFormat(c, format)
 							if c.Args().Present() == true && errFormat == nil {
-								err := PrintGetLight(req, c.Args().Get(0), c.Args().Get(1))
-								if err != nil {
-									fmt.Println(err)
-									return err
-								}
-								return nil
+								return utils.CommandHandler(c,
+									PrintGetLight(c.Args().Get(0), c.Args().Get(1)))
 							}
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
@@ -430,32 +350,23 @@ var Commands = []cli.Command{
 							},
 						},
 						Action: func(c *cli.Context) error {
-							req := client.New()
 							if c.Args().Present() == true && c.NArg() == 2 {
-								rack, _ := strconv.Atoi(c.Args().Get(0))  // This kind of thing should be done in the specific command
-								board, _ := strconv.Atoi(c.Args().Get(1)) // Ditto
+								rack := c.Args().Get(0)
+								board := c.Args().Get(1)
 								switch {
 								case c.IsSet("state") == true:
-									err := PrintSetLight(req, rack, board, c.String("state"), "state") // Consider breaking some of these out into flags
-									if err != nil {
-										fmt.Println(err)
-										return err
-									}
-									return nil
+									return utils.CommandHandler(c,
+										PrintSetLight(
+											rack,
+											board,
+											c.String("state"),
+											"state"))
 								case c.IsSet("color"):
-									err := PrintSetLight(req, rack, board, c.String("color"), "color") // Consider breaking some of these out into flags
-									if err != nil {
-										fmt.Println(err)
-										return err
-									}
-									return nil
+									return utils.CommandHandler(c,
+										PrintSetLight(rack, board, c.String("color"), "color")) // Consider breaking some of these out into flags
 								case c.IsSet("blink"):
-									err := PrintSetLight(req, rack, board, c.String("blink"), "blink") // Consider breaking some of these out into flags
-									if err != nil {
-										fmt.Println(err)
-										return err
-									}
-									return nil
+									return utils.CommandHandler(c,
+										PrintSetLight(rack, board, c.String("blink"), "blink")) // Consider breaking some of these out into flags
 								}
 							}
 							cli.ShowSubcommandHelp(c)
