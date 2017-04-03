@@ -111,7 +111,6 @@ func PrintListFan(vc *client.VeshClient) error {
 // Multiple entries are not merged.
 func PrintGetFan(vc *client.VeshClient, rack_id, board_id string) error {
 	filter := &utils.FilterFunc{}
-	filter.Path = fanpath
 	filter.DeviceType = fandevicetype
 	filter.RackID = rack_id
 	filter.BoardID = board_id
