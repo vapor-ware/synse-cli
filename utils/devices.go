@@ -47,7 +47,6 @@ type Result struct {
 
 type FilterFunc struct {
 	Result
-	Path     string // FIXME: This shouldn't be here. It should mainstreamed as it is different from DeviceType
 	FilterFn func(r Result) bool
 }
 

@@ -74,7 +74,6 @@ func GetLights(vc *client.VeshClient, res utils.Result) (LightsResult, error) {
 // auto merge duplicate entries.
 func PrintListLights(vc *client.VeshClient) error {
 	filter := &utils.FilterFunc{}
-	filter.Path = lightspath
 	filter.DeviceType = lightsdevicetype
 	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == lightsdevicetype
@@ -106,7 +105,6 @@ func PrintListLights(vc *client.VeshClient) error {
 // Multiple entries are not merged.
 func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 	filter := &utils.FilterFunc{}
-	filter.Path = lightspath
 	filter.DeviceType = lightsdevicetype
 	filter.RackID = rack_id
 	filter.BoardID = board_id
