@@ -14,6 +14,7 @@ import (
 
 // Empty variable to store the content of the VESH_HOST env variable.
 var VeshHostPtr = ""
+var theClient *sling.Sling
 
 // constructUrl builds the full url string from the host base, endpoint type
 // (openDCRE), and API version number. Endpoint paths can be extended off of
@@ -27,21 +28,15 @@ func constructUrl() string {
 	return CompleteBase
 }
 
-// VeshClient extends https://github.com/dghubble/sling
-type VeshClient struct {
-	Sling *sling.Sling
-}
-
 type ErrorResponse struct { // FIXME: This should go somewhere else
 	HttpCode int    `json:"http_code"`
 	Message  string `json:"message"`
 }
 
-// New constructs a new instance of VeshClient after calling constructUrl to
-// contruct the base.
-func New() *VeshClient {
-	cb := constructUrl()
-	return &VeshClient{
-		Sling: sling.New().Base(cb),
+func New() *sling.Sling {
+	if theClient == nil {
+		theClient = sling.New().Base(constructUrl())
 	}
+
+	return theClient.New()
 }
