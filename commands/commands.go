@@ -107,7 +107,6 @@ var Commands = []cli.Command{
 			err := Scan(req)
 			fmt.Println(err)
 			if err != nil {
-				fmt.Println(err)
 				return err
 			}
 			return nil
