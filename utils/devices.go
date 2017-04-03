@@ -84,10 +84,9 @@ func FilterDevices(ff *FilterFunc) (chan ResultError, error) {
 func GetDevices() (chan Result, error) {
 	c := make(chan Result)
 
-	vc := client.New()
 	status := &scanResponse{}
 	failure := new(client.ErrorResponse)
-	resp, err := vc.Sling.New().Get(Scanpath).Receive(status, failure)
+	resp, err := client.New().Get(Scanpath).Receive(status, failure)
 	if err != nil {
 		return nil, err
 	}

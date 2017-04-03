@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/utils"
@@ -30,7 +29,7 @@ type LightsResult struct {
 // types of led data.
 // NOTE: Currently only Chamber LED's support blink state and color. No error
 // checking is done on this at the moment.
-func ListLights(vc *client.VeshClient, filter *utils.FilterFunc) ([]LightsResult, error) {
+func ListLights(filter *utils.FilterFunc) ([]LightsResult, error) {
 	var devices []utils.Result
 
 	var data []LightsResult
@@ -49,7 +48,7 @@ func ListLights(vc *client.VeshClient, filter *utils.FilterFunc) ([]LightsResult
 	progressBar, pbWriter := utils.ProgressBar(len(devices), "Polling Lights")
 
 	for _, res := range devices {
-		lights, _ := GetLights(vc, res)
+		lights, _ := GetLights(res)
 		data = append(data, lights)
 		progressBar.Incr(1)
 	}
@@ -58,10 +57,10 @@ func ListLights(vc *client.VeshClient, filter *utils.FilterFunc) ([]LightsResult
 	return data, err
 }
 
-func GetLights(vc *client.VeshClient, res utils.Result) (LightsResult, error) {
+func GetLights(res utils.Result) (LightsResult, error) {
 	lights := &LightsDetails{}
 	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)
-	_, err := vc.Sling.New().Path(lightspath).Get(path).ReceiveSuccess(lights)
+	_, err := client.New().Path(lightspath).Get(path).ReceiveSuccess(lights)
 	if err != nil {
 		return LightsResult{res, lights}, err
 	}
@@ -72,7 +71,7 @@ func GetLights(vc *client.VeshClient, res utils.Result) (LightsResult, error) {
 // PrintListLights takes the output from ListLights and pretty prints it into a table.
 // Multiple lights are grouped by board, then by rack. Table format is set to not
 // auto merge duplicate entries.
-func PrintListLights(vc *client.VeshClient) error {
+func PrintListLights() error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = lightsdevicetype
 	filter.FilterFn = func(res utils.Result) bool {
@@ -80,7 +79,7 @@ func PrintListLights(vc *client.VeshClient) error {
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "LED State"}
-	lightsList, err := ListLights(vc, filter)
+	lightsList, err := ListLights(filter)
 	if err != nil {
 		return err
 	}
@@ -103,7 +102,7 @@ func PrintListLights(vc *client.VeshClient) error {
 
 // PrintGetLight takes the output of GetLight and pretty prints it in table form.
 // Multiple entries are not merged.
-func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
+func PrintGetLight(rack_id, board_id string) error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = lightsdevicetype
 	filter.RackID = rack_id
@@ -113,7 +112,7 @@ func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "LED State"}
-	lightsList, err := ListLights(vc, filter)
+	lightsList, err := ListLights(filter)
 	if err != nil {
 		return err
 	}
@@ -137,9 +136,12 @@ func PrintGetLight(vc *client.VeshClient, rack_id, board_id string) error {
 // SetLight takes a rack and board id as a locater, as well as a light status.
 // The status of the matching light is set to the passed light status.
 // Options are: `--state [on/off]`, `--color <color hex>`, `--blink [on/off]`.
-func SetLight(vc *client.VeshClient, rack_id, board_id, light_status string) (string, error) {
+func SetLight(rack_id, board_id, light_status string) (string, error) {
 	responseData := &LightsDetails{}
-	resp, err := vc.Sling.New().Path(lightspath).Path(rack_id + "/").Path(board_id + "/").Path(lightsdevicetype + "/").Get(light_status).ReceiveSuccess(responseData) // TODO: Add error reporting
+	path := fmt.Sprintf("%s/%s/%s/%s/",
+		lightspath, rack_id, board_id, lightsdevicetype)
+	resp, err := client.New().Path(path).Get(
+			light_status).ReceiveSuccess(responseData) // TODO: Add error reporting
 	if resp.StatusCode != 200 {                                                                                                                                       // This is not what I meant by "error reporting"
 		return "", err
 	}
@@ -158,21 +160,21 @@ func SetLight(vc *client.VeshClient, rack_id, board_id, light_status string) (st
 // presence of the corresponding flag. For example, the command type "state"
 // is given by the flag "--state". The state is given as the argument to this
 // flag.
-func PrintSetLight(vc *client.VeshClient, rack_id int, board_id int, light_input, light_command string) error {
+func PrintSetLight(rack_id, board_id, light_input, light_command string) error {
 	switch light_command {
 	case "state":
 		light_action := fmt.Sprintf("%s", light_input)
-		status, err := SetLight(vc, strconv.Itoa(rack_id), strconv.Itoa(board_id), light_action)
+		status, err := SetLight(rack_id, board_id, light_action)
 		fmt.Println(status)
 		return err
 	case "color":
 		light_action := fmt.Sprintf("state/%s/%s", light_command, light_input) // Might need this to be a nonstring input
-		status, err := SetLight(vc, strconv.Itoa(rack_id), strconv.Itoa(board_id), light_action)
+		status, err := SetLight(rack_id, board_id, light_action)
 		fmt.Println(status)
 		return err
 	case "blink":
 		light_action := fmt.Sprintf("state/%s/%s", "blink_state", light_input)
-		status, err := SetLight(vc, strconv.Itoa(rack_id), strconv.Itoa(board_id), light_action)
+		status, err := SetLight(rack_id, board_id, light_action)
 		fmt.Println(status)
 		return err
 	}
