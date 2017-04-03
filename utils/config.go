@@ -1,52 +1,45 @@
 package utils
 
 import (
-	"fmt"
+	// "errors"
+	// "fmt"
+	// "net/http"
+	//
+	// "github.com/vapor-ware/vesh/client"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	VaporHost      string `string:"vesh_host"`
-	Debug          bool   `bool:"debug"`
+	VeshHost string `string:"vesh_host"`
+	Debug bool
 	ConfigFilePath string
 }
 
-var VaporHost = ""
-var DebugFlag = false
-var ConfigFilePath = ""
+func GetConfig() (*Config, error) {
+	v := viper.New()
+	_ = readConfigFile(v)
+	config, err := getConfigValuesFromFile(v)
+	return config, err
+}
 
-func ConstructConfig() error {
-	config := new(Config)
-	v, err := readConfigFromFile()
+func readConfigFile(v *viper.Viper) error {
+	viper.SetConfigName(".vesh")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("$HOME/")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
 	if err != nil {
 		return err
 	}
-	err = v.Unmarshal(config)
-	if err != nil {
-		return err
-	}
-	switch {
-	case config.VaporHost != "" && VaporHost == "":
-		VaporHost = config.VaporHost
-	case config.Debug && !DebugFlag:
-		DebugFlag = config.Debug
-	case config.ConfigFilePath != "" && ConfigFilePath == "":
-		ConfigFilePath = config.ConfigFilePath
-	}
-	fmt.Println("populated config", VaporHost, DebugFlag, ConfigFilePath, config)
 	return nil
 }
 
-func readConfigFromFile() (*viper.Viper, error) {
-	v := viper.New()
-	v.SetConfigName(".vesh")
-	v.SetConfigType("yaml")
-	v.AddConfigPath(".")      // Try local first
-	v.AddConfigPath("$HOME/") // Then try home
-	err := v.ReadInConfig()
+func getConfigValuesFromFile(v *viper.Viper) (*Config, error) {
+	var config Config
+	err := viper.Unmarshal(&config)
 	if err != nil {
-		return v, err
+		return &config, err
 	}
-	return v, nil
+	return &config, nil
 }
