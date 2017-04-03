@@ -68,7 +68,6 @@ func GetPower(vc *client.VeshClient, res utils.Result) (*PowerDetails, error) {
 // auto merge duplicate entries.
 func PrintListPower(vc *client.VeshClient) error {
 	filter := &utils.FilterFunc{}
-	filter.Path = powerpath
 	filter.DeviceType = device_id
 	filter.FilterFn = func(res utils.Result) bool {
 		return res.DeviceType == device_id
@@ -100,7 +99,6 @@ func PrintListPower(vc *client.VeshClient) error {
 // Multiple entries are not merged.
 func PrintGetPower(vc *client.VeshClient, rack_id, board_id string) error {
 	filter := &utils.FilterFunc{}
-	filter.Path = powerpath
 	filter.DeviceType = device_id
 	filter.RackID = rack_id
 	filter.BoardID = board_id
