@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
-	"errors"
 
 	"github.com/vapor-ware/vesh/client"
 
@@ -47,7 +47,7 @@ type Result struct {
 
 type FilterFunc struct {
 	Result
-	Path string // FIXME: This shouldn't be here. It should mainstreamed as it is different from DeviceType
+	Path     string // FIXME: This shouldn't be here. It should mainstreamed as it is different from DeviceType
 	FilterFn func(r Result) bool
 }
 
@@ -62,7 +62,7 @@ func FilterDevices(ff *FilterFunc) (chan ResultError, error) {
 
 	tempchan, err := GetDevices() // FIXME: This should be nested in the function
 	if err == nil {
-		go func()  {
+		go func() {
 			var success bool // FIXME: I think there's a better way to do this. Channel length == 0 ?
 			for res := range tempchan {
 				if fn(res) {
