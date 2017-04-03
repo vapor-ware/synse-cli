@@ -1,9 +1,9 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
-	"errors"
 
 	"github.com/vapor-ware/vesh/client"
 )
