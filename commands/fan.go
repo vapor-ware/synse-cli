@@ -110,13 +110,13 @@ func PrintListFan() error {
 
 // PrintGetFan takes the output of GetFan and pretty prints it in table form.
 // Multiple entries are not merged.
-func PrintGetFan(rack_id, board_id string) error {
+func PrintGetFan(args utils.GetDeviceArgs) error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = fandevicetype
-	filter.RackID = rack_id
-	filter.BoardID = board_id
+	filter.RackID = args.RackID
+	filter.BoardID = args.BoardID
 	filter.FilterFn = func(res utils.Result) bool {
-		return res.DeviceType == fandevicetype && res.RackID == rack_id && res.BoardID == board_id
+		return res.DeviceType == fandevicetype && res.RackID == args.RackID && res.BoardID == args.BoardID
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "Health", "Speed (RPM)", "States"}

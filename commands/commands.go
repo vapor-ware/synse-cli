@@ -73,11 +73,8 @@ is stateless and called once during each run.
 package commands
 
 import (
-	"fmt"
-
 	"github.com/vapor-ware/vesh/utils"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -122,17 +119,14 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "hostname",
 						Action: func(c *cli.Context) error {
-							format := []string{"%s", "%x"}
-							errFormat := utils.InputCheckFormat(c, format)
-							if c.Args().Present() && errFormat == nil {
-								return utils.CommandHandler(c,
-									PrintGetHostname(c.Args().Get(0), c.Args().Get(1)))
+							theArgs := utils.GetDeviceArgs{
+								RackID: c.Args().Get(0),
+								BoardID: c.Args().Get(1),
 							}
-							if errFormat != nil {
-								fmt.Println(errFormat)
-								cli.ShowSubcommandHelp(c)
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
 							}
-							return errFormat // Fix this. Restructure error checking and responses.
+							return utils.CommandHandler(c, PrintGetHostname(theArgs))
 						},
 					},
 				},
@@ -147,11 +141,7 @@ var Commands = []cli.Command{
 						Usage:    "List power status",
 						Category: "power",
 						Action: func(c *cli.Context) error {
-							if c.Args().Present() == false {
-								return utils.CommandHandler(c, PrintListPower())
-							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							return utils.CommandHandler(c, PrintListPower())
 						},
 					},
 					{
@@ -160,14 +150,14 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board_id>",
 						Category:  "power",
 						Action: func(c *cli.Context) error {
-							format := []string{"%s", "%x"}
-							errFormat := utils.InputCheckFormat(c, format)
-							if c.Args().Present() == true && errFormat == nil {
-								return utils.CommandHandler(c,
-									PrintGetPower(c.Args().Get(0), c.Args().Get(1)))
+							theArgs := utils.GetDeviceArgs{
+								RackID: c.Args().Get(0),
+								BoardID: c.Args().Get(1),
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
+							}
+							return utils.CommandHandler(c, PrintGetPower(theArgs))
 						},
 					},
 					{
@@ -176,15 +166,17 @@ var Commands = []cli.Command{
 						ArgsUsage: "<on/off/cycle>",
 						Category:  "power",
 						Action: func(c *cli.Context) error {
-							if c.Args().Present() == true {
-								return utils.CommandHandler(c,
-									PrintSetPower(
-										c.Args().Get(0),
-										c.Args().Get(1),
-										c.Args().Get(2)))
+							theArgs := utils.SetPowerArgs{
+								GetDeviceArgs: utils.GetDeviceArgs{
+									RackID: c.Args().Get(0),
+									BoardID: c.Args().Get(1),
+								},
+								Value: c.Args().Get(2),
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
+							}
+							return utils.CommandHandler(c, PrintSetPower(theArgs))
 						},
 					},
 				},
@@ -199,11 +191,7 @@ var Commands = []cli.Command{
 						Usage:    "List fans speeds",
 						Category: "fans",
 						Action: func(c *cli.Context) error {
-							if c.Args().Present() != true {
-								return utils.CommandHandler(c, PrintListFan())
-							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							return utils.CommandHandler(c, PrintListFan())
 						},
 					},
 					{
@@ -212,14 +200,14 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "fans",
 						Action: func(c *cli.Context) error {
-							format := []string{"%s", "%x"}
-							errFormat := utils.InputCheckFormat(c, format)
-							if c.Args().Present() == true && errFormat == nil {
-								return utils.CommandHandler(c,
-									PrintGetFan(c.Args().Get(0), c.Args().Get(1)))
+							theArgs := utils.GetDeviceArgs{
+								RackID: c.Args().Get(0),
+								BoardID: c.Args().Get(1),
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
+							}
+							return utils.CommandHandler(c, PrintGetFan(theArgs))
 						},
 					},
 				},
@@ -234,11 +222,7 @@ var Commands = []cli.Command{
 						Usage:    "List temperatures",
 						Category: "temperature",
 						Action: func(c *cli.Context) error {
-							if c.Args().Present() != true {
-								return utils.CommandHandler(c, PrintListTemp())
-							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							return utils.CommandHandler(c, PrintListTemp())
 						},
 					},
 					{
@@ -247,14 +231,14 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "temperature",
 						Action: func(c *cli.Context) error {
-							format := []string{"%s", "%x"}
-							errFormat := utils.InputCheckFormat(c, format)
-							if c.Args().Present() == true && errFormat == nil {
-								return utils.CommandHandler(c,
-									PrintGetTemp(c.Args().Get(0), c.Args().Get(1)))
+							theArgs := utils.GetDeviceArgs{
+								RackID: c.Args().Get(0),
+								BoardID: c.Args().Get(1),
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
+							}
+							return utils.CommandHandler(c, PrintGetTemp(theArgs))
 						},
 					},
 				},
@@ -270,15 +254,17 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id> <pxe/hdd/no-override>",
 						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
-							if c.Args().Present() == true {
-								return utils.CommandHandler(c,
-									SetCurrentBootTarget(
-										c.Args().Get(0),
-										c.Args().Get(1),
-										c.Args().Get(2)))
+							theArgs := utils.SetBootTargetArgs{
+								GetDeviceArgs: utils.GetDeviceArgs{
+									RackID: c.Args().Get(0),
+									BoardID: c.Args().Get(1),
+								},
+								Value: c.Args().Get(2),
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
+							}
+							return utils.CommandHandler(c, SetCurrentBootTarget(theArgs))
 						},
 					},
 					{
@@ -287,14 +273,15 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
-							format := []string{"%s", "%x"}
-							errFormat := utils.InputCheckFormat(c, format)
-							if c.Args().Present() == true && errFormat == nil {
-								return utils.CommandHandler(c,
-									PrintGetCurrentBootTarget(c.Args().Get(0), c.Args().Get(1)))
+							theArgs := utils.GetDeviceArgs{
+								RackID: c.Args().Get(0),
+								BoardID: c.Args().Get(1),
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
+							}
+							return utils.CommandHandler(
+									c, PrintGetCurrentBootTarget(theArgs))
 						},
 					},
 				},
@@ -309,11 +296,7 @@ var Commands = []cli.Command{
 						Usage:    "List LED status",
 						Category: "lights",
 						Action: func(c *cli.Context) error {
-							if c.Args().Present() != true {
-								return utils.CommandHandler(c, PrintListLights())
-							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							return utils.CommandHandler(c, PrintListLights())
 						},
 					},
 					{
@@ -322,21 +305,14 @@ var Commands = []cli.Command{
 						ArgsUsage: "<rack id> <board id>",
 						Category:  "lights",
 						Action: func(c *cli.Context) error {
-							format := []string{"%s", "%x"}
-							errFormat := utils.InputCheckFormat(c, format)
-							if c.Args().Present() == true && errFormat == nil {
-								return utils.CommandHandler(c,
-									PrintGetLight(c.Args().Get(0), c.Args().Get(1)))
+							theArgs := utils.GetDeviceArgs{
+								RackID: c.Args().Get(0),
+								BoardID: c.Args().Get(1),
 							}
-
-							if errFormat != nil {
-								log.WithFields(log.Fields{
-									"problem": errFormat,
-								}).Error("invalid arguments")
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
 							}
-
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							return utils.CommandHandler(c, PrintGetLight(theArgs))
 						},
 					},
 					{
@@ -358,27 +334,19 @@ var Commands = []cli.Command{
 							},
 						},
 						Action: func(c *cli.Context) error {
-							if c.Args().Present() == true && c.NArg() == 2 {
-								rack := c.Args().Get(0)
-								board := c.Args().Get(1)
-								switch {
-								case c.IsSet("state") == true:
-									return utils.CommandHandler(c,
-										PrintSetLight(
-											rack,
-											board,
-											c.String("state"),
-											"state"))
-								case c.IsSet("color"):
-									return utils.CommandHandler(c,
-										PrintSetLight(rack, board, c.String("color"), "color")) // Consider breaking some of these out into flags
-								case c.IsSet("blink"):
-									return utils.CommandHandler(c,
-										PrintSetLight(rack, board, c.String("blink"), "blink")) // Consider breaking some of these out into flags
-								}
+							theArgs := utils.SetLightsArgs{
+								GetDeviceArgs: utils.GetDeviceArgs{
+									RackID: c.Args().Get(0),
+									BoardID: c.Args().Get(1),
+								},
+								State: c.String("state"),
+								Color: c.String("color"),
+								Blink: c.String("blink"),
 							}
-							cli.ShowSubcommandHelp(c)
-							return nil // Fix this. Restructure error checking and responses.
+							if err := utils.InputValid(c, theArgs); err != nil {
+								return err
+							}
+							return utils.CommandHandler(c, PrintSetLight(theArgs))
 						},
 					},
 					{
