@@ -5,10 +5,11 @@
 package client
 
 import (
-	//"os"
 	"fmt"
-	"strconv"
+	"net/http"
+	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/dghubble/sling"
 )
 
@@ -21,10 +22,10 @@ var theClient *sling.Sling
 // this base.
 func constructUrl() string {
 	var vaporBase = fmt.Sprint(VeshHostPtr)
-	var vaporPort = strconv.Itoa(5000)
+	var vaporPort = 5000
 	var defaultPath = "opendcre/1.3/" //Add a version number here
-	var CompleteBase = fmt.Sprintf("http://%s:%s/%s", vaporBase, vaporPort, defaultPath)
-	//fmt.Println(CompleteBase) For bug testing only
+	var CompleteBase = fmt.Sprintf(
+		"http://%s:%d/%s", vaporBase, vaporPort, defaultPath)
 	return CompleteBase
 }
 
@@ -33,9 +34,47 @@ type ErrorResponse struct { // FIXME: This should go somewhere else
 	Message  string `json:"message"`
 }
 
+type LogMiddleware struct {
+	c http.Client
+}
+
+func track(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s", name, elapsed)
+}
+
+func (d LogMiddleware) Do(req *http.Request) (*http.Response, error) {
+	log.WithFields(log.Fields{
+		"method": req.Method,
+		"url":    fmt.Sprintf("%v", req.URL),
+		// We're not doing anything with headers or forms yet. Once we do, turn
+		// these on.
+		// ----
+		// "header": fmt.Sprintf("%v", req.Header),
+		// "form": fmt.Sprintf("%v", req.Form),
+	}).Debug("request: start")
+
+	start := time.Now()
+	resp, err := d.c.Do(req)
+	elapsed := time.Since(start)
+
+	status := ""
+	if resp != nil {
+		status = resp.Status
+	}
+
+	log.WithFields(log.Fields{
+		"duration": elapsed,
+		"url":      fmt.Sprintf("%v", req.URL),
+		"status":   status,
+	}).Debug("request: complete")
+
+	return resp, err
+}
+
 func New() *sling.Sling {
 	if theClient == nil {
-		theClient = sling.New().Base(constructUrl())
+		theClient = sling.New().Doer(&LogMiddleware{}).Base(constructUrl())
 	}
 
 	return theClient.New()
