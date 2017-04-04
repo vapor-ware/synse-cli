@@ -138,11 +138,16 @@ func PrintGetLight(rack_id, board_id string) error {
 // Options are: `--state [on/off]`, `--color <color hex>`, `--blink [on/off]`.
 func SetLight(rack_id, board_id, light_status string) (string, error) {
 	responseData := &LightsDetails{}
-	path := fmt.Sprintf("%s/%s/%s/%s/",
-		lightspath, rack_id, board_id, lightsdevicetype)
-	resp, err := client.New().Path(path).Get(
-			light_status).ReceiveSuccess(responseData) // TODO: Add error reporting
-	if resp.StatusCode != 200 {                                                                                                                                       // This is not what I meant by "error reporting"
+	path := fmt.Sprintf("%s/%s/%s/",
+		rack_id, board_id, lightsdevicetype)
+	resp, err := client.New().Path(lightspath).Path(path).Get(
+		light_status).ReceiveSuccess(responseData)
+
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode != 200 { // This is not what I meant by "error reporting"
 		return "", err
 	}
 	return responseData.State, err
