@@ -1,81 +1,78 @@
 package utils
 
 import (
+	// "errors"
 	"fmt"
-	"reflect"
-	"strings"
+	// "net/http"
+	//
+	"github.com/vapor-ware/vesh/client"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/fatih/structs"
-	"github.com/spf13/viper"
 	"github.com/urfave/cli"
+	"github.com/spf13/viper"
 )
 
-type config struct {
-	VaporHost string
-	Debug     bool
-	Config    string
+type Config struct {
+	VeshHost string `string:"vesh_host"`
+	Debug bool	`bool:"debug"`
+	ConfigFilePath string
 }
 
-var Config config
+func NewConfig(cli *cli.Context) error {
+	config = new(Config struct)
+	config, err = configFromDefault()
+	config, err = configFromFile()
+	config, err = configFromEnv(cli *cli.Context)
+}
 
-func ConstructConfig(c *cli.Context) error {
-	v := readConfigFromFile()
+func configFromFile() error {
+	return &(GetConfig())
+}
 
-	v.RegisterAlias("VaporHost", "vapor_host") // FIXME: This is really hacky, but works for now
-
-	err := v.Unmarshal(&Config)
-	if err != nil {
-		return err
-	}
-
-	s := structs.New(&Config)
-	for _, name := range c.GlobalFlagNames() {
-		if !c.IsSet(name) {
-			continue
-		}
-
-		field := s.Field(strings.Replace(strings.Title(name), "-", "", -1))
-
-		val := reflect.ValueOf(c.Generic(name)).Elem()
-
-		var err error
-		if val.Kind() == reflect.Bool {
-			err = field.Set(val.Bool())
-		} else {
-			err = field.Set(val.String())
-		}
-
-		if err != nil {
-			fmt.Println("%v", err)
+func EvaluatePriority(cli *cli.Context) (*Config, error) {
+	c := new(Config struct)
+	envValues := cli.GlobalFlagNames()
+	configValues := viper.AllSettings()
+	for _, val := range envValues {
+		switch configValues.InConfig(val) {
+		case true:
+			if envValues.GlobalIsSet(val) {
+				// c.val = envValues
+			}
+			else if configValues.IsSet(val) {
+				c.val = configValues.Get(val)
+			}
+		case false:
+			fmt.Println(val)
 		}
 	}
-
-	log.WithFields(log.Fields{
-		"config": Config,
-	}).Debug("final config")
-
 	return nil
 }
 
-// We don't care about being unable to read in the config as it is a non-terminal state.
-// Log the issue as debug and move on.
-func readConfigFromFile() *viper.Viper {
+
+func GetConfig() (*Config, error) {
 	v := viper.New()
-	v.SetConfigName(".vesh")
-	v.SetConfigType("yaml")
-	v.AddConfigPath(".")      // Try local first
-	v.AddConfigPath("$HOME/") // Then try home
+	_ = readConfigFile(v)
+	config, err := getConfigValuesFromFile(v)
+	return config, err
+}
 
-	// Defaults
-	v.SetDefault("VaporHost", "demo.vapor.io")
+func readConfigFile(v *viper.Viper) error {
+	viper.SetConfigName(".vesh")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("$HOME/")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-	v.ReadInConfig()
-
-	log.WithFields(log.Fields{
-		"file":     v.ConfigFileUsed(),
-		"settings": v.AllSettings(),
-	}).Debug("loading config")
-
-	return v
+func getConfigValuesFromFile(v *viper.Viper) (*Config, error) {
+	var config Config
+	err := viper.Unmarshal(&config)
+	if err != nil {
+		return &config, err
+	}
+	return &config, nil
 }
