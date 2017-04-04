@@ -102,13 +102,13 @@ func PrintListLights() error {
 
 // PrintGetLight takes the output of GetLight and pretty prints it in table form.
 // Multiple entries are not merged.
-func PrintGetLight(args utils.GetDeviceArgs) error {
+func PrintGetLight(rack_id, board_id string) error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = lightsdevicetype
-	filter.RackID = args.RackID
-	filter.BoardID = args.BoardID
+	filter.RackID = rack_id
+	filter.BoardID = board_id
 	filter.FilterFn = func(res utils.Result) bool {
-		return res.DeviceType == lightsdevicetype && res.RackID == args.RackID && res.BoardID == args.BoardID
+		return res.DeviceType == lightsdevicetype && res.RackID == rack_id && res.BoardID == board_id
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "LED State"}
@@ -141,7 +141,7 @@ func SetLight(rack_id, board_id, light_status string) (string, error) {
 	path := fmt.Sprintf("%s/%s/%s/",
 		rack_id, board_id, lightsdevicetype)
 	resp, err := client.New().Path(lightspath).Path(path).Get(
-		light_status).ReceiveSuccess(responseData) // TODO: Add error reporting
+		light_status).ReceiveSuccess(responseData)
 
 	if err != nil {
 		return "", err
@@ -150,7 +150,6 @@ func SetLight(rack_id, board_id, light_status string) (string, error) {
 	if resp.StatusCode != 200 { // This is not what I meant by "error reporting"
 		return "", err
 	}
-
 	return responseData.State, err
 }
 
@@ -166,27 +165,23 @@ func SetLight(rack_id, board_id, light_status string) (string, error) {
 // presence of the corresponding flag. For example, the command type "state"
 // is given by the flag "--state". The state is given as the argument to this
 // flag.
-// func PrintSetLight(rack_id, board_id, light_input, light_command string) error {
-func PrintSetLight(args utils.SetLightsArgs) error {
-	if args.State != "" {
-		status, err := SetLight(args.RackID, args.BoardID, args.State)
+func PrintSetLight(rack_id, board_id, light_input, light_command string) error {
+	switch light_command {
+	case "state":
+		light_action := fmt.Sprintf("%s", light_input)
+		status, err := SetLight(rack_id, board_id, light_action)
+		fmt.Println(status)
+		return err
+	case "color":
+		light_action := fmt.Sprintf("state/%s/%s", light_command, light_input) // Might need this to be a nonstring input
+		status, err := SetLight(rack_id, board_id, light_action)
+		fmt.Println(status)
+		return err
+	case "blink":
+		light_action := fmt.Sprintf("state/%s/%s", "blink_state", light_input)
+		status, err := SetLight(rack_id, board_id, light_action)
 		fmt.Println(status)
 		return err
 	}
-
-	if args.Color != "" {
-		light_action := fmt.Sprintf("state/color/%s", args.Color) // Might need this to be a nonstring input
-		status, err := SetLight(args.RackID, args.BoardID, light_action)
-		fmt.Println(status)
-		return err
-	}
-
-	if args.Blink != "" {
-		light_action := fmt.Sprintf("state/blink_state/%s", args.Blink)
-		status, err := SetLight(args.RackID, args.BoardID, light_action)
-		fmt.Println(status)
-		return err
-	}
-
-	return nil
+	return nil // Add the correct error response
 }
