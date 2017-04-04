@@ -7,7 +7,7 @@ import (
 )
 
 type Config struct {
-	VaporHost       string `string:"vesh_host"`
+	VaporHost      string `string:"vesh_host"`
 	Debug          bool   `bool:"debug"`
 	ConfigFilePath string
 }
@@ -42,7 +42,7 @@ func readConfigFromFile() (*viper.Viper, error) {
 	v := viper.New()
 	v.SetConfigName(".vesh")
 	v.SetConfigType("yaml")
-	v.AddConfigPath(".") // Try local first
+	v.AddConfigPath(".")      // Try local first
 	v.AddConfigPath("$HOME/") // Then try home
 	err := v.ReadInConfig()
 	if err != nil {
