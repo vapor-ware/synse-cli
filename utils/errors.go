@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/vapor-ware/vesh/client"
 	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/vesh/client"
 )
 
 func DeviceNotFoundErr(res Result) error {
@@ -34,7 +34,6 @@ func DeviceNotFoundErr(res Result) error {
 	}
 	return nil
 }
-
 
 func CommandHandler(c *cli.Context, err error) error {
 	if err != nil {

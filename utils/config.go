@@ -1,78 +1,52 @@
 package utils
 
 import (
-	// "errors"
 	"fmt"
-	// "net/http"
-	//
-	"github.com/vapor-ware/vesh/client"
 
-	"github.com/urfave/cli"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	VeshHost string `string:"vesh_host"`
-	Debug bool	`bool:"debug"`
+	VaporHost       string `string:"vesh_host"`
+	Debug          bool   `bool:"debug"`
 	ConfigFilePath string
 }
 
-func NewConfig(cli *cli.Context) error {
-	config = new(Config struct)
-	config, err = configFromDefault()
-	config, err = configFromFile()
-	config, err = configFromEnv(cli *cli.Context)
-}
+var VaporHost = ""
+var DebugFlag = false
+var ConfigFilePath = ""
 
-func configFromFile() error {
-	return &(GetConfig())
-}
-
-func EvaluatePriority(cli *cli.Context) (*Config, error) {
-	c := new(Config struct)
-	envValues := cli.GlobalFlagNames()
-	configValues := viper.AllSettings()
-	for _, val := range envValues {
-		switch configValues.InConfig(val) {
-		case true:
-			if envValues.GlobalIsSet(val) {
-				// c.val = envValues
-			}
-			else if configValues.IsSet(val) {
-				c.val = configValues.Get(val)
-			}
-		case false:
-			fmt.Println(val)
-		}
-	}
-	return nil
-}
-
-
-func GetConfig() (*Config, error) {
-	v := viper.New()
-	_ = readConfigFile(v)
-	config, err := getConfigValuesFromFile(v)
-	return config, err
-}
-
-func readConfigFile(v *viper.Viper) error {
-	viper.SetConfigName(".vesh")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
+func ConstructConfig() error {
+	config := new(Config)
+	v, err := readConfigFromFile()
 	if err != nil {
 		return err
 	}
+	err = v.Unmarshal(config)
+	if err != nil {
+		return err
+	}
+	switch {
+	case config.VaporHost != "" && VaporHost == "":
+		VaporHost = config.VaporHost
+	case config.Debug && !DebugFlag:
+		DebugFlag = config.Debug
+	case config.ConfigFilePath != "" && ConfigFilePath == "":
+		ConfigFilePath = config.ConfigFilePath
+	}
+	fmt.Println("populated config", VaporHost, DebugFlag, ConfigFilePath, config)
 	return nil
 }
 
-func getConfigValuesFromFile(v *viper.Viper) (*Config, error) {
-	var config Config
-	err := viper.Unmarshal(&config)
+func readConfigFromFile() (*viper.Viper, error) {
+	v := viper.New()
+	v.SetConfigName(".vesh")
+	v.SetConfigType("yaml")
+	v.AddConfigPath(".") // Try local first
+	v.AddConfigPath("$HOME/") // Then try home
+	err := v.ReadInConfig()
 	if err != nil {
-		return &config, err
+		return v, err
 	}
-	return &config, nil
+	return v, nil
 }
