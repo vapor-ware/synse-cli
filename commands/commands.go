@@ -531,20 +531,31 @@ var Commands = []cli.Command{
 		},
 	},
 	{
-		Name: "shell-completion"
-		Usage: "Generate shell completion scripts for bash or zsh"
+		Name: "shell-completion",
+		Usage: "Generate shell completion scripts for bash or zsh",
 		Hidden: true,
-		Action: nil,
+		Action: func (c *cli.Context) error {
+			switch {
+			case c.IsSet("bash") && c.IsSet("zsh"):
+				// return utils.CommandHandler(c, utils.GenerateShellCompletion)
+				fmt.Println("Can't do both") // FIXME: Once we figure out how to handle this
+				return nil
+			case c.IsSet("bash"):
+				return utils.CommandHandler(c, utils.GenerateShellCompletion("bash"))
+			case c.IsSet("zsh"):
+				return utils.CommandHandler(c, utils.GenerateShellCompletion("zsh"))
+			}
+			cli.ShowSubcommandHelp(c)
+			return nil
+		},
 		Flags: []cli.Flag{
 			cli.BoolFlag{
 				Name: "bash",
 				Usage: "bash completion",
-				Hidden: true,
 			},
 			cli.BoolFlag{
 				Name: "zsh",
 				Usage: "zsh completion",
-				Hidden: true,
 			},
 		},
 	},
