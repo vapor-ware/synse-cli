@@ -2,19 +2,34 @@ package utils
 
 import (
 	// "errors"
-	// "fmt"
+	"fmt"
 	// "net/http"
 	//
-	// "github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/vesh/client"
 
+	"github.com/urfave/cli"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
 	VeshHost string `string:"vesh_host"`
-	Debug bool
+	Debug bool	`bool:"debug"`
 	ConfigFilePath string
 }
+
+func NewConfig(cli *cli.Context) error {
+	config = new(Config struct)
+	config, err = configFromDefault()
+	config, err = configFromFile()
+	config, err = configFromEnv(cli *cli.Context)
+}
+
+func configFromFile() error {
+	return &(GetConfig())
+}
+
+func EvaluatePriority()
+
 
 func GetConfig() (*Config, error) {
 	v := viper.New()
