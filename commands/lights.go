@@ -172,17 +172,21 @@ func PrintSetLight(args utils.SetLightsArgs) error {
 		status, err := SetLight(args.RackID, args.BoardID, args.State)
 		fmt.Println(status)
 		return err
-	} else if args.Color != "" {
+	}
+
+	if args.Color != "" {
 		light_action := fmt.Sprintf("state/color/%s", args.Color) // Might need this to be a nonstring input
 		status, err := SetLight(args.RackID, args.BoardID, light_action)
 		fmt.Println(status)
 		return err
-	} else if args.Blink != "" {
+	}
+
+	if args.Blink != "" {
 		light_action := fmt.Sprintf("state/blink_state/%s", args.Blink)
 		status, err := SetLight(args.RackID, args.BoardID, light_action)
 		fmt.Println(status)
 		return err
-	} else {
-		return nil
 	}
+
+	return nil
 }
