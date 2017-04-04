@@ -138,9 +138,9 @@ func PrintGetLight(args utils.GetDeviceArgs) error {
 // Options are: `--state [on/off]`, `--color <color hex>`, `--blink [on/off]`.
 func SetLight(rack_id, board_id, light_status string) (string, error) {
 	responseData := &LightsDetails{}
-	path := fmt.Sprintf("%s/%s/%s/%s/",
-		lightspath, rack_id, board_id, lightsdevicetype)
-	resp, err := client.New().Path(path).Get(
+	path := fmt.Sprintf("%s/%s/%s/",
+		rack_id, board_id, lightsdevicetype)
+	resp, err := client.New().Path(lightspath).Path(path).Get(
 		light_status).ReceiveSuccess(responseData) // TODO: Add error reporting
 
 	if err != nil {
