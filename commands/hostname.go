@@ -43,18 +43,19 @@ func ListHostnames() error {
 
 // FIXME: Break getting back out into another function
 // PrintGetHostname takes the output of GetHostname and pretty prints it in table form.
-func PrintGetHostname(rack_id, board_id string) error {
+func PrintGetHostname(args utils.GetDeviceArgs) error {
 	var data [][]string
 
 	filter := &utils.FilterFunc{}
 	filter.FilterFn = func(res utils.Result) bool {
-		return res.DeviceType == "system" && res.RackID == rack_id && res.BoardID == board_id
+		return res.DeviceType == "system" && res.RackID == args.RackID && res.BoardID == args.BoardID
 	}
 
 	fil, err := utils.FilterDevices(filter)
 	if err != nil {
 		return err
 	}
+
 	for res := range fil {
 		if res.Error != nil {
 			return res.Error

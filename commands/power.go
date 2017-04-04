@@ -97,13 +97,13 @@ func PrintListPower() error {
 
 // PrintGetPower takes the output of GetPower and pretty prints it in table form.
 // Multiple entries are not merged.
-func PrintGetPower(rack_id, board_id string) error {
+func PrintGetPower(args utils.GetDeviceArgs) error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = device_id
-	filter.RackID = rack_id
-	filter.BoardID = board_id
+	filter.RackID = args.RackID
+	filter.BoardID = args.BoardID
 	filter.FilterFn = func(res utils.Result) bool {
-		return res.DeviceType == device_id && res.RackID == rack_id && res.BoardID == board_id
+		return res.DeviceType == device_id && res.RackID == args.RackID && res.BoardID == args.BoardID
 	}
 
 	header := []string{"Rack", "Board", "Device", "Name", "Input Power", "Over Current?", "Power Ok?", "Power Status"}
@@ -151,8 +151,8 @@ func SetPower(rack_id, board_id, power_status string) (string, error) {
 
 // PrintSetPower takes the output of SetPower and pretty prints whether the
 // status was changed successfully.
-func PrintSetPower(rack_id, board_id, power_status string) error {
-	status, err := SetPower(rack_id, board_id, power_status)
+func PrintSetPower(args utils.SetPowerArgs) error {
+	status, err := SetPower(args.RackID, args.BoardID, args.Value)
 	if err == nil && status == "cycle" {
 		fmt.Printf("Power successfully %sd\n", status)
 	}
