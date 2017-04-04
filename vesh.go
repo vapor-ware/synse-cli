@@ -9,7 +9,7 @@ package main
 import (
 	"os"
 
-	// "github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/commands"
 	"github.com/vapor-ware/vesh/utils"
 
@@ -32,29 +32,29 @@ func main() {
 	//app.CommandNotFound = commands.CommandNotFound
 	app.EnableBashCompletion = true
 
-	app.Before = func(cli *cli.Context) error {
-		err := utils.ConstructConfig()
+	app.Before = func (cli *cli.Context) error {
+		err := utils.EvaluateConfig()
 		return err
 	}
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
-			Name:        "debug, d",
-			Usage:       "Enable debug mode",
+			Name:  "debug, d",
+			Usage: "Enable debug mode",
 			Destination: &utils.DebugFlag,
 		},
 		cli.StringFlag{
-			EnvVar:      "VESH_CONFIG_FILE",
-			Name:        "config, c",
-			Usage:       "Path to config `file`",
-			Destination: &utils.ConfigFilePath,
+			EnvVar: "VESH_CONFIG_FILE",
+			Name:   "config, c",
+			Usage:  "Path to config `file`",
+			Destination: &utils.ConfigFile,
 		},
 		cli.StringFlag{
-			EnvVar:      "VAPOR_HOST",
+			EnvVar:      "VESH_HOST",
 			Name:        "host",
 			Value:       "demo.vapor.io", // This is temporary
 			Usage:       "Address of `Vapor Host`",
-			Destination: &utils.VaporHost,
+			Destination: &client.VeshHostPtr,
 		},
 	}
 
