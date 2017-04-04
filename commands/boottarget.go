@@ -25,7 +25,7 @@ func GetCurrentBootTarget(rack_id, board_id string) (string, error) {
 
 	resp, err := client.New().Path(
 		fmt.Sprintf("%s/%s/%s/", bootpath, rack_id, board_id)).Get(
-			bootdevicetype).Receive(status, failure)
+		bootdevicetype).Receive(status, failure)
 	if err != nil {
 		return "", err
 	}

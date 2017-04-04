@@ -140,7 +140,7 @@ func SetPower(rack_id, board_id, power_status string) (string, error) {
 	path := fmt.Sprintf("%s/%s/%s/%s/", powerpath, rack_id, board_id, device_id)
 	resp, err := client.New().Path(path).Get(
 		power_status).ReceiveSuccess(responseData) // Add error reporting
-	if resp.StatusCode != 200 {                                                                                                                               // This is not what I meant by "error reporting"
+	if resp.StatusCode != 200 { // This is not what I meant by "error reporting"
 		return "", err
 	}
 	if err == nil && power_status == "cycle" { // This should check if successful
