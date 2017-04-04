@@ -28,7 +28,25 @@ func configFromFile() error {
 	return &(GetConfig())
 }
 
-func EvaluatePriority()
+func EvaluatePriority(cli *cli.Context) (*Config, error) {
+	c := new(Config struct)
+	envValues := cli.GlobalFlagNames()
+	configValues := viper.AllSettings()
+	for _, val := range envValues {
+		switch configValues.InConfig(val) {
+		case true:
+			if envValues.GlobalIsSet(val) {
+				// c.val = envValues
+			}
+			else if configValues.IsSet(val) {
+				c.val = configValues.Get(val)
+			}
+		case false:
+			fmt.Println(val)
+		}
+	}
+	return nil
+}
 
 
 func GetConfig() (*Config, error) {
