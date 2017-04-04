@@ -34,3 +34,6 @@ vendor/
 
 # Shell autocompletion
 /*_autocomplete
+
+# Configuration file
+/.vesh.y*
