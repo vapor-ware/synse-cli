@@ -530,4 +530,22 @@ var Commands = []cli.Command{
 			},
 		},
 	},
+	{
+		Name: "shell-completion"
+		Usage: "Generate shell completion scripts for bash or zsh"
+		Hidden: true,
+		Action: nil,
+		Flags: []cli.Flag{
+			cli.BoolFlag{
+				Name: "bash",
+				Usage: "bash completion",
+				Hidden: true,
+			},
+			cli.BoolFlag{
+				Name: "zsh",
+				Usage: "zsh completion",
+				Hidden: true,
+			},
+		},
+	},
 }
