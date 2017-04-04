@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/vapor-ware/vesh/client"
-	//"github.com/olekukonko/tablewriter"
+	"github.com/vapor-ware/vesh/utils"
 )
 
 const bootpath = "boot_target/"
@@ -37,8 +37,8 @@ func GetCurrentBootTarget(rack_id, board_id string) (string, error) {
 
 // PrintGetCurrentBootTarget calls GetCurrentBootTarget and pretty prints the
 // result.
-func PrintGetCurrentBootTarget(rack_id, board_id string) error {
-	bootTarget, err := GetCurrentBootTarget(rack_id, board_id)
+func PrintGetCurrentBootTarget(args utils.GetDeviceArgs) error {
+	bootTarget, err := GetCurrentBootTarget(args.RackID, args.BoardID)
 	if err != nil {
 		return err
 	}
@@ -50,10 +50,10 @@ func PrintGetCurrentBootTarget(rack_id, board_id string) error {
 // boot target. The matching `system` device's boot target is set to the passed
 // boot target.
 // Options are: `no-override`, `hdd`, `pxe`.
-func SetCurrentBootTarget(rack_id, board_id, boot_target string) error {
+func SetCurrentBootTarget(args utils.SetBootTargetArgs) error {
 	status := &boottargetresponse{}
-	path := fmt.Sprintf("%s/%s/%s/%s/", bootpath, rack_id, board_id, bootdevicetype)
-	resp, err := client.New().Path(path).Get(boot_target).ReceiveSuccess(status)
+	path := fmt.Sprintf("%s/%s/%s/%s/", bootpath, args.RackID, args.BoardID, bootdevicetype)
+	resp, err := client.New().Path(path).Get(args.Value).ReceiveSuccess(status)
 	if err != nil {
 		return err
 	}
