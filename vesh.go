@@ -8,13 +8,11 @@ package main
 
 import (
 	"os"
-	"fmt"
 
-	"github.com/vapor-ware/vesh/client"
+	// "github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/commands"
 	"github.com/vapor-ware/vesh/utils"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
 	log "github.com/Sirupsen/logrus"
 )
@@ -28,49 +26,38 @@ func main() {
 	app.Name = "vesh"
 	app.Usage = "Vapor Edge Shell"
 	app.Version = "0.0.1"
-	app.Authors = []cli.Author{{Name: "Tim Fall", Email: "tim@vapor.io"},
-		{Name: "Thomas Rampelberg", Email: "thomasr@vapor.io"}}
+	app.Author = "Tim Fall <tim@vapor.io>"
 
 	app.Commands = commands.Commands
 	//app.CommandNotFound = commands.CommandNotFound
 	app.EnableBashCompletion = true
 
-	app.Before = func(c *cli.Context) error {
-		// Allow debugging of the config loading process
-		if c.Bool("debug") {
-			log.SetLevel(log.DebugLevel)
-		}
-
-		err := utils.ConstructConfig(c)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		if utils.Config.Debug {
-			log.SetLevel(log.DebugLevel)
-		}
-
-		client.Config(utils.Config.VaporHost)
-
-		return nil
+	app.Before = func(cli *cli.Context) error {
+		err := utils.ConstructConfig()
+		return err
 	}
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
-			Name:  "debug, d",
-			Usage: "Enable debug mode",
+			Name:        "debug, d",
+			Usage:       "Enable debug mode",
+			Destination: &utils.DebugFlag,
 		},
 		cli.StringFlag{
-			EnvVar: "VESH_CONFIG_FILE",
-			Name:   "config, c",
-			Usage:  "Path to config `file`",
+			EnvVar:      "VESH_CONFIG_FILE",
+			Name:        "config, c",
+			Usage:       "Path to config `file`",
+			Destination: &utils.ConfigFilePath,
 		},
 		cli.StringFlag{
-			EnvVar:  "VAPOR_HOST",
-			Name:    "vapor-host",
-			Usage:   "Address of `Vapor Host`",
+			EnvVar:      "VAPOR_HOST",
+			Name:        "host",
+			Value:       "demo.vapor.io", // This is temporary
+			Usage:       "Address of `Vapor Host`",
+			Destination: &utils.VaporHost,
 		},
 	}
 
 	app.Run(os.Args)
+
 }
