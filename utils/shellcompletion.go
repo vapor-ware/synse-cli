@@ -3,7 +3,10 @@ package utils
 import (
   "os"
   "io"
+  "io/ioutil"
+  "bytes"
   "net/http"
+  "fmt"
 )
 
 var appName = "vesh" // TODO: Dynamically source this from app.Name
@@ -12,31 +15,35 @@ const autocompleteUrl = "https://raw.githubusercontent.com/urfave/cli/master/aut
 
 func GenerateShellCompletion(shell string) error {
   var err error
+  var path string
   switch shell {
   case "bash":
-    err = bashcompletion()
+    path, err = downloadCompletionFile("bash")
   case "zsh":
-    err = zshcompletion()
+    path, err = downloadCompletionFile("zsh")
   }
+  fmt.Printf("You can now run `%s %s`\n", "source", path)
   return err
 }
 
-func downloadCompletionFile(shell string) error {
+func downloadCompletionFile(shell string) (string, error) {
   var err error
   path := autocompletionPath + appName
   out, err := os.Create(path)
   defer out.Close()
-  switch err {
+  switch {
   case os.IsExist(err):
-    return err
+    return path, err
   case os.IsPermission(err):
-    return err
+    return path, err
   }
-  shellPath := autocompleteUrl + shell + "_autocomlete"
+  shellPath := autocompleteUrl + shell + "_autocomplete"
   resp, err := http.Get(shellPath)
   defer resp.Body.Close()
-  out, err := io.Copy(out, resp.Body)
-  inFile, err := io.ioutil.ReadFile(path) // FIXME: There's a more compact way to do this
-  
-  return err
+  _, err = io.Copy(out, resp.Body)
+  inFile, err := ioutil.ReadFile(path) // FIXME: There's a better way to do this
+  output := bytes.Replace(inFile, []byte("$(basename ${BASH_SOURCE})"), []byte("vesh"), -1)
+  err = ioutil.WriteFile(path, output, 0666)
+  // fmt.Println(shellPath, resp, err, inFile, output)
+  return path, err
 }
