@@ -13,8 +13,8 @@ import (
 	"github.com/vapor-ware/vesh/commands"
 	"github.com/vapor-ware/vesh/utils"
 
-	"github.com/urfave/cli"
 	log "github.com/Sirupsen/logrus"
+	"github.com/urfave/cli"
 )
 
 // Main creates a new instance of cli.app (using https://github.com/urfave/cli)
