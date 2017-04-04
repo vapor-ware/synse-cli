@@ -14,11 +14,14 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/urfave/cli"
+	log "github.com/Sirupsen/logrus"
 )
 
 // Main creates a new instance of cli.app (using https://github.com/urfave/cli)
 // and sets the default configuration.
 func main() {
+	log.SetLevel(log.DebugLevel)
+
 	app := cli.NewApp()
 	app.Name = "vesh"
 	app.Usage = "Vapor Edge Shell"

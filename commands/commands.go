@@ -77,6 +77,7 @@ import (
 
 	"github.com/vapor-ware/vesh/utils"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -327,6 +328,13 @@ var Commands = []cli.Command{
 								return utils.CommandHandler(c,
 									PrintGetLight(c.Args().Get(0), c.Args().Get(1)))
 							}
+
+							if errFormat != nil {
+								log.WithFields(log.Fields{
+									"problem": errFormat,
+								}).Error("invalid arguments")
+							}
+
 							cli.ShowSubcommandHelp(c)
 							return nil // Fix this. Restructure error checking and responses.
 						},
