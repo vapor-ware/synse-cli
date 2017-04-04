@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/spf13/viper"
 )
@@ -34,7 +35,7 @@ func ConstructConfig() error {
 	case config.ConfigFilePath != "" && ConfigFilePath == "":
 		ConfigFilePath = config.ConfigFilePath
 	}
-	fmt.Println("populated config", VaporHost, DebugFlag, ConfigFilePath, config)
+	// fmt.Println("populated config", VaporHost, DebugFlag, ConfigFilePath, config)
 	return nil
 }
 
@@ -45,7 +46,9 @@ func readConfigFromFile() (*viper.Viper, error) {
 	v.AddConfigPath(".")      // Try local first
 	v.AddConfigPath("$HOME/") // Then try home
 	err := v.ReadInConfig()
-	if err != nil {
+	if reflect.TypeOf(err) == reflect.TypeOf(new(viper.ConfigFileNotFoundError)) {
+		return v, nil // TODO: Thomas add some logging here.
+	} else if err != nil {
 		return v, err
 	}
 	return v, nil
