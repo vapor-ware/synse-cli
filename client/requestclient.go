@@ -13,19 +13,16 @@ import (
 	"github.com/dghubble/sling"
 )
 
-// Empty variable to store the content of the VESH_HOST env variable.
-var VeshHostPtr = ""
 var theClient *sling.Sling
 
 // constructUrl builds the full url string from the host base, endpoint type
 // (openDCRE), and API version number. Endpoint paths can be extended off of
 // this base.
-func constructUrl() string {
-	var vaporBase = fmt.Sprint(VeshHostPtr)
+func constructUrl(host string) string {
 	var vaporPort = 5000
 	var defaultPath = "opendcre/1.3/" //Add a version number here
 	var CompleteBase = fmt.Sprintf(
-		"http://%s:%d/%s", vaporBase, vaporPort, defaultPath)
+		"http://%s:%d/%s", host, vaporPort, defaultPath)
 	return CompleteBase
 }
 
@@ -72,9 +69,13 @@ func (d LogMiddleware) Do(req *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
+func Config(host string) {
+	theClient = sling.New().Doer(&LogMiddleware{}).Base(constructUrl(host))
+}
+
 func New() *sling.Sling {
 	if theClient == nil {
-		theClient = sling.New().Doer(&LogMiddleware{}).Base(constructUrl())
+		panic("You must configure the client first.")
 	}
 
 	return theClient.New()

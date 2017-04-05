@@ -9,7 +9,7 @@ package main
 import (
 	"os"
 
-	// "github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/commands"
 	"github.com/vapor-ware/vesh/utils"
 
@@ -20,8 +20,6 @@ import (
 // Main creates a new instance of cli.app (using https://github.com/urfave/cli)
 // and sets the default configuration.
 func main() {
-	log.SetLevel(log.DebugLevel)
-
 	app := cli.NewApp()
 	app.Name = "vesh"
 	app.Usage = "Vapor Edge Shell"
@@ -33,32 +31,38 @@ func main() {
 	//app.CommandNotFound = commands.CommandNotFound
 	app.EnableBashCompletion = true
 
-	app.Before = func(cli *cli.Context) error {
-		err := utils.ConstructConfig()
-		return err
+
+	app.Before = func(c *cli.Context) error {
+		// Allow debugging of the config loading process
+		if c.Bool("debug") { log.SetLevel(log.DebugLevel) }
+
+		utils.ConstructConfig(c)
+
+		if utils.Config.Debug {
+			log.SetLevel(log.DebugLevel)
+		}
+
+		client.Config(utils.Config.Host)
+
+		return nil
 	}
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
 			Name:        "debug, d",
 			Usage:       "Enable debug mode",
-			Destination: &utils.DebugFlag,
 		},
 		cli.StringFlag{
 			EnvVar:      "VESH_CONFIG_FILE",
 			Name:        "config, c",
 			Usage:       "Path to config `file`",
-			Destination: &utils.ConfigFilePath,
 		},
 		cli.StringFlag{
 			EnvVar:      "VAPOR_HOST",
 			Name:        "host",
-			Value:       "demo.vapor.io", // This is temporary
 			Usage:       "Address of `Vapor Host`",
-			Destination: &utils.VaporHost,
 		},
 	}
 
 	app.Run(os.Args)
-
 }
