@@ -1,54 +1,78 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/spf13/viper"
+	log "github.com/Sirupsen/logrus"
+	"github.com/urfave/cli"
+	"github.com/fatih/structs"
+
 )
 
-type Config struct {
-	VaporHost      string `string:"vesh_host"`
-	Debug          bool   `bool:"debug"`
-	ConfigFilePath string
+type config struct {
+	Host           string
+	Debug          bool
+	Config         string
 }
 
-var VaporHost = ""
-var DebugFlag = false
-var ConfigFilePath = ""
+var Config config
 
-func ConstructConfig() error {
-	config := new(Config)
-	v, err := readConfigFromFile()
+func ConstructConfig(c *cli.Context) error {
+	v := readConfigFromFile()
+
+	err := v.Unmarshal(&Config)
 	if err != nil {
 		return err
 	}
-	err = v.Unmarshal(config)
-	if err != nil {
-		return err
+
+	s := structs.New(&Config)
+	for _, name := range c.GlobalFlagNames() {
+		if !c.IsSet(name) { continue }
+
+		field := s.Field(strings.Title(name))
+
+		val := reflect.ValueOf(c.Generic(name)).Elem()
+
+		var err error
+		if val.Kind() == reflect.Bool {
+			err = field.Set(val.Bool())
+		} else {
+			err = field.Set(val.String())
+		}
+
+		if err != nil {
+			fmt.Println("%v", err)
+		}
 	}
-	switch {
-	case config.VaporHost != "" && VaporHost == "":
-		VaporHost = config.VaporHost
-	case config.Debug && !DebugFlag:
-		DebugFlag = config.Debug
-	case config.ConfigFilePath != "" && ConfigFilePath == "":
-		ConfigFilePath = config.ConfigFilePath
-	}
-	// fmt.Println("populated config", VaporHost, DebugFlag, ConfigFilePath, config)
+
+	log.WithFields(log.Fields{
+		"config": Config,
+	}).Debug("final config")
+
 	return nil
 }
 
-func readConfigFromFile() (*viper.Viper, error) {
+// We don't care about being unable to read in the config as it is a non-terminal state.
+// Log the issue as debug and move on.
+func readConfigFromFile() *viper.Viper {
 	v := viper.New()
 	v.SetConfigName(".vesh")
 	v.SetConfigType("yaml")
 	v.AddConfigPath(".")      // Try local first
 	v.AddConfigPath("$HOME/") // Then try home
-	err := v.ReadInConfig()
-	if reflect.TypeOf(err) == reflect.TypeOf(new(viper.ConfigFileNotFoundError)) {
-		return v, nil // TODO: Thomas add some logging here.
-	} else if err != nil {
-		return v, err
-	}
-	return v, nil
+
+	// Defaults
+	v.SetDefault("Host", "demo.vapor.io")
+
+	v.ReadInConfig()
+
+	log.WithFields(log.Fields{
+		"file": v.ConfigFileUsed(),
+		"settings": v.AllSettings(),
+	}).Debug("loading config")
+
+	return v
 }
