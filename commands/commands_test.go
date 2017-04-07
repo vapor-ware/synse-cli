@@ -37,7 +37,7 @@ func TestCommands_args(t *testing.T) {
 		},
 		// {
 		// 	purpose:       "just right",
-		// 	args:          []string{"", ""},
+		// 	args:          []string{"rack_1", "000000000000"},
 		// 	expectedError: false,
 		// },
 	}
@@ -48,7 +48,7 @@ func TestCommands_args(t *testing.T) {
 	for _, cmd := range commands {
 		for _, condition := range tests {
 			t.Log(cmd.FullName(), condition)
-			switch err := cli.Run(condition.args); err != nil {
+			switch err := cli.Run(append([]string{cmd.Name}, condition.args...)); err != nil {
 			case condition.expectedError:
 				t.Errorf("Command %s failed while trying %s with error: %v", cmd.Name, condition.purpose, err)
 			}
