@@ -8,6 +8,7 @@ package main
 
 import (
 	"os"
+	"fmt"
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/commands"
@@ -30,36 +31,38 @@ func main() {
 	//app.CommandNotFound = commands.CommandNotFound
 	app.EnableBashCompletion = true
 
-
 	app.Before = func(c *cli.Context) error {
 		// Allow debugging of the config loading process
-		if c.Bool("debug") { log.SetLevel(log.DebugLevel) }
+		if c.Bool("debug") {
+			log.SetLevel(log.DebugLevel)
+		}
 
-		utils.ConstructConfig(c)
+		err := utils.ConstructConfig(c)
+		fmt.Println(err)
 
 		if utils.Config.Debug {
 			log.SetLevel(log.DebugLevel)
 		}
 
-		client.Config(utils.Config.Host)
+		client.Config(utils.Config.VaporHost)
 
 		return nil
 	}
 
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
-			Name:        "debug, d",
-			Usage:       "Enable debug mode",
+			Name:  "debug, d",
+			Usage: "Enable debug mode",
 		},
 		cli.StringFlag{
-			EnvVar:      "VESH_CONFIG_FILE",
-			Name:        "config, c",
-			Usage:       "Path to config `file`",
+			EnvVar: "VESH_CONFIG_FILE",
+			Name:   "config, c",
+			Usage:  "Path to config `file`",
 		},
 		cli.StringFlag{
-			EnvVar:      "VAPOR_HOST",
-			Name:        "host",
-			Usage:       "Address of `Vapor Host`",
+			EnvVar:  "VAPOR_HOST",
+			Name:    "vapor-host",
+			Usage:   "Address of `Vapor Host`",
 		},
 	}
 

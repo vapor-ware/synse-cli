@@ -5,23 +5,24 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/spf13/viper"
 	log "github.com/Sirupsen/logrus"
-	"github.com/urfave/cli"
 	"github.com/fatih/structs"
-
+	"github.com/spf13/viper"
+	"github.com/urfave/cli"
 )
 
 type config struct {
-	Host           string
-	Debug          bool
-	Config         string
+	VaporHost string
+	Debug     bool
+	Config    string
 }
 
 var Config config
 
 func ConstructConfig(c *cli.Context) error {
 	v := readConfigFromFile()
+
+	v.RegisterAlias("VaporHost", "vapor_host") // FIXME: This is really hacky, but works for now
 
 	err := v.Unmarshal(&Config)
 	if err != nil {
@@ -30,9 +31,11 @@ func ConstructConfig(c *cli.Context) error {
 
 	s := structs.New(&Config)
 	for _, name := range c.GlobalFlagNames() {
-		if !c.IsSet(name) { continue }
+		if !c.IsSet(name) {
+			continue
+		}
 
-		field := s.Field(strings.Title(name))
+		field := s.Field(strings.Replace(strings.Title(name), "-", "", -1))
 
 		val := reflect.ValueOf(c.Generic(name)).Elem()
 
@@ -65,12 +68,12 @@ func readConfigFromFile() *viper.Viper {
 	v.AddConfigPath("$HOME/") // Then try home
 
 	// Defaults
-	v.SetDefault("Host", "demo.vapor.io")
+	v.SetDefault("VaporHost", "demo.vapor.io")
 
 	v.ReadInConfig()
 
 	log.WithFields(log.Fields{
-		"file": v.ConfigFileUsed(),
+		"file":     v.ConfigFileUsed(),
 		"settings": v.AllSettings(),
 	}).Debug("loading config")
 
