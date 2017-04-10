@@ -17,6 +17,7 @@ type APIStatus struct {
 func TestAPI() error { // This should be supressed when not directly called unless debug is set
 	status := &APIStatus{}
 	resp, err := client.New().Get(testpath).ReceiveSuccess(status)
+	fmt.Println(resp)
 	if err != nil {
 		return err
 	}
