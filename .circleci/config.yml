@@ -4,7 +4,8 @@ jobs:
     docker:
       - image: golang:latest
         environment:
-          VESH_HOST: core.vapor.io
+          VAPOR_HOST: core.vapor.io
+          DEBUG: true
 
     working_directory: /go/src/github.com/vapor-ware/vesh
 
