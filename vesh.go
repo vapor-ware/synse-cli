@@ -39,7 +39,9 @@ func main() {
 		}
 
 		err := utils.ConstructConfig(c)
-		fmt.Println(err)
+		if err != nil {
+			fmt.Println(err)
+		}
 
 		if utils.Config.Debug {
 			log.SetLevel(log.DebugLevel)
