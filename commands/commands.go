@@ -251,6 +251,14 @@ var Commands = []cli.Command{
 				Category: "assets",
 				Subcommands: []cli.Command{
 					{
+						Name:     "list",
+						Usage:    "List boot targets",
+						Category: "boot-target",
+						Action: func(c *cli.Context) error {
+							return utils.CommandHandler(c, PrintListBootTarget())
+						},
+					},
+					{
 						Name:      "set",
 						Usage:     "Set the boot target for specific `device`. Can be `pxe` `hdd` or `no-override`",
 						ArgsUsage: "<rack id> <board id> <pxe/hdd/no-override>",
@@ -266,7 +274,7 @@ var Commands = []cli.Command{
 							if err := utils.InputValid(c, theArgs); err != nil {
 								return err
 							}
-							return utils.CommandHandler(c, SetCurrentBootTarget(theArgs))
+							return utils.CommandHandler(c, SetBootTarget(theArgs))
 						},
 					},
 					{
@@ -283,7 +291,7 @@ var Commands = []cli.Command{
 								return err
 							}
 							return utils.CommandHandler(
-									c, PrintGetCurrentBootTarget(theArgs))
+									c, PrintGetBootTarget(theArgs))
 						},
 					},
 				},

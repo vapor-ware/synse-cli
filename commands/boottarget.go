@@ -9,40 +9,119 @@ import (
 )
 
 const bootpath = "boot_target/"
+const bootdevicetype = "system"
 
-var bootdevicetype = "system"
-
-type boottargetresponse struct {
+type BootTargetDetails struct {
 	Target string `json:"target"`
-	status string `json:"status"`
+	Status string `json:"status"`
+}
+
+type BootTargetResult struct {
+	utils.Result
+	*BootTargetDetails
+}
+
+func ListBootTarget(filter *utils.FilterFunc) ([]BootTargetResult, error) {
+	var devices []utils.Result
+
+	var data []BootTargetResult
+
+	fil, err := utils.FilterDevices(filter)
+	if err != nil {
+		return data, nil
+	}
+	for res := range fil {
+		if res.Error != nil {
+			return data, res.Error
+		}
+		devices = append(devices, res.Result)
+	}
+
+	progressBar, pbWriter := utils.ProgressBar(len(devices), "Polling Boot Targets")
+
+	for _, res := range devices {
+		boottarget, _ := GetBootTarget(res)
+		data = append(data, BootTargetResult{res, boottarget})
+		progressBar.Incr(1)
+	}
+
+	utils.ProgressBarStop(pbWriter)
+	return data, err
+}
+
+func PrintListBootTarget() error {
+	filter := &utils.FilterFunc{}
+	filter.DeviceType = bootdevicetype
+	filter.FilterFn = func(res utils.Result) bool {
+		return res.DeviceType == bootdevicetype
+	}
+
+	header := []string{"Rack", "Board", "Device", "Device Type", "Boot Target"}
+	targetList, err := ListBootTarget(filter)
+	if err != nil {
+		return err
+	}
+
+	var data [][]string
+
+	for _, res := range targetList {
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			res.Target})
+	}
+
+	utils.TableOutput(header, data)
+
+	return nil
 }
 
 // GetCurrentBootTarget takes a rack and board id as locators and returns the
 // current set boot target for the `system` device.
-func GetCurrentBootTarget(rack_id, board_id string) (string, error) {
-	status := &boottargetresponse{}
-	failure := new(client.ErrorResponse)
-
-	resp, err := client.New().Path(
-		fmt.Sprintf("%s/%s/%s/", bootpath, rack_id, board_id)).Get(
-		bootdevicetype).Receive(status, failure)
+func GetBootTarget(res utils.Result) (*BootTargetDetails, error) {
+	boottarget := &BootTargetDetails{}
+	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)
+	_, err := client.New().Path(bootpath).Get(path).ReceiveSuccess(boottarget)
 	if err != nil {
-		return "", err
+		return boottarget, err
 	}
-	if resp.StatusCode != http.StatusOK {
-		return failure.Message, err
-	}
-	return status.Target, nil
+
+	return boottarget, nil
 }
 
 // PrintGetCurrentBootTarget calls GetCurrentBootTarget and pretty prints the
 // result.
-func PrintGetCurrentBootTarget(args utils.GetDeviceArgs) error {
-	bootTarget, err := GetCurrentBootTarget(args.RackID, args.BoardID)
+func PrintGetBootTarget(args utils.GetDeviceArgs) error {
+	filter := &utils.FilterFunc{}
+	filter.DeviceType = bootdevicetype
+	filter.RackID = args.RackID
+	filter.BoardID = args.BoardID
+	filter.FilterFn = func(res utils.Result) bool {
+		return res.DeviceType == bootdevicetype && res.RackID == args.RackID && res.BoardID == args.BoardID
+	}
+
+	header := []string{"Rack", "Board", "Device", "Device Type", "Boot Target", "Status"}
+	targetList, err := ListBootTarget(filter)
 	if err != nil {
 		return err
 	}
-	fmt.Println(bootTarget)
+
+	var data [][]string
+
+	for _, res := range targetList {
+		data = append(data, []string{
+			res.RackID,
+			res.BoardID,
+			res.DeviceID,
+			res.DeviceInfo,
+			res.Target,
+			res.Status})
+	}
+
+	utils.TableOutput(header, data)
+
 	return nil
 }
 
@@ -50,8 +129,8 @@ func PrintGetCurrentBootTarget(args utils.GetDeviceArgs) error {
 // boot target. The matching `system` device's boot target is set to the passed
 // boot target.
 // Options are: `no-override`, `hdd`, `pxe`.
-func SetCurrentBootTarget(args utils.SetBootTargetArgs) error {
-	status := &boottargetresponse{}
+func SetBootTarget(args utils.SetBootTargetArgs) error {
+	status := &BootTargetDetails{}
 	path := fmt.Sprintf("%s/%s/%s/%s/", bootpath, args.RackID, args.BoardID, bootdevicetype)
 	resp, err := client.New().Path(path).Get(args.Value).ReceiveSuccess(status)
 	if err != nil {
@@ -60,6 +139,6 @@ func SetCurrentBootTarget(args utils.SetBootTargetArgs) error {
 	if resp.StatusCode != http.StatusOK {
 		return err
 	}
-	fmt.Println(status.Target, status.status)
+	fmt.Println(status.Target, status.Status)
 	return nil
 }
