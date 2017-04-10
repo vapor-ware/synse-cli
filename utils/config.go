@@ -52,7 +52,7 @@ func ConstructConfig(c *cli.Context) error {
 	}
 
 	log.WithFields(log.Fields{
-		"config": Config,
+		"config": fmt.Sprintf("%+v", Config),
 	}).Debug("final config")
 
 	return nil
