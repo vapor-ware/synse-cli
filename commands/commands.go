@@ -73,6 +73,8 @@ is stateless and called once during each run.
 package commands
 
 import (
+	"fmt"
+
 	"github.com/vapor-ware/vesh/utils"
 
 	"github.com/urfave/cli"
