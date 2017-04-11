@@ -1,18 +1,18 @@
 package commands
 
 import (
-  "testing"
+	"testing"
 
-  "github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/vesh/client"
 )
 
-func init(){
-  client.Config("demo.vapor.io")
+func init() {
+	client.Config("demo.vapor.io")
 }
 
 func TestTestAPI(t *testing.T) {
-  err := TestAPI()
-  if err != nil {
-    t.Error(err)
-  }
+	err := TestAPI()
+	if err != nil {
+		t.Error(err)
+	}
 }
