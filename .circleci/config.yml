@@ -9,14 +9,23 @@ jobs:
 
     working_directory: /go/src/github.com/vapor-ware/vesh
 
+    environment:
+        TEST_DIRECTORY: "gotest"
+
     steps:
       - checkout
       - run:
           name: "Installing Dependencies"
           command: go get -v
       - run:
+          name: "Make test report directory"
+          command: mkdir -p $CICLE_TEST_REPORTS/$TEST_DIRECTORY
+      - run:
+          name: "Get test to junit xml parser"
+          command: go get -v -u github.com/jstemmer/go-junit-report
+      - run:
           name: "Running Tests"
-          command: go test -v --race ./...
+          command: go test -v --race ./... 2>&1 | go-junit-report > $CICLE_TEST_REPORTS/$TEST_DIRECTORY/report.xml
       - run:
           name: "Getting builder"
           command: |
