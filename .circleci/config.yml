@@ -25,7 +25,7 @@ jobs:
           command: go get -v -u github.com/jstemmer/go-junit-report
       - run:
           name: "Running Tests"
-          command: go test -v --race ./... 2>&1 | go-junit-report > $CICLE_TEST_REPORTS/$TEST_DIRECTORY/report.xml
+          command: go test -v --race ./...
       - run:
           name: "Getting builder"
           command: |
