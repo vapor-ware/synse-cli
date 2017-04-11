@@ -102,7 +102,7 @@ func PrintListLights() error {
 
 // PrintGetLight takes the output of GetLight and pretty prints it in table form.
 // Multiple entries are not merged.
-func PrintGetLight(args utils.GetDeviceArgs) error {
+func PrintGetLight(args utils.GetDeviceArgs) error { // FIXME: Change this to "lights"
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = lightsdevicetype
 	filter.RackID = args.RackID
