@@ -131,8 +131,8 @@ func PrintGetBootTarget(args utils.GetDeviceArgs) error {
 // Options are: `no-override`, `hdd`, `pxe`.
 func SetBootTarget(args utils.SetBootTargetArgs) error {
 	status := &BootTargetDetails{}
-	path := fmt.Sprintf("%s/%s/%s/%s/", bootpath, args.RackID, args.BoardID, bootdevicetype)
-	resp, err := client.New().Path(path).Get(args.Value).ReceiveSuccess(status)
+	path := fmt.Sprintf("%s/%s/%s/", args.RackID, args.BoardID, bootdevicetype)
+	resp, err := client.New().Path(bootpath).Path(path).Get(args.Value).ReceiveSuccess(status)
 	if err != nil {
 		return err
 	}

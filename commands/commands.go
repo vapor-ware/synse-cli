@@ -122,7 +122,7 @@ var Commands = []cli.Command{
 						Category:  "hostname",
 						Action: func(c *cli.Context) error {
 							theArgs := utils.GetDeviceArgs{
-								RackID: c.Args().Get(0),
+								RackID:  c.Args().Get(0),
 								BoardID: c.Args().Get(1),
 							}
 							if err := utils.InputValid(c, theArgs); err != nil {
@@ -153,7 +153,7 @@ var Commands = []cli.Command{
 						Category:  "power",
 						Action: func(c *cli.Context) error {
 							theArgs := utils.GetDeviceArgs{
-								RackID: c.Args().Get(0),
+								RackID:  c.Args().Get(0),
 								BoardID: c.Args().Get(1),
 							}
 							if err := utils.InputValid(c, theArgs); err != nil {
@@ -170,7 +170,7 @@ var Commands = []cli.Command{
 						Action: func(c *cli.Context) error {
 							theArgs := utils.SetPowerArgs{
 								GetDeviceArgs: utils.GetDeviceArgs{
-									RackID: c.Args().Get(0),
+									RackID:  c.Args().Get(0),
 									BoardID: c.Args().Get(1),
 								},
 								Value: c.Args().Get(2),
@@ -203,7 +203,7 @@ var Commands = []cli.Command{
 						Category:  "fans",
 						Action: func(c *cli.Context) error {
 							theArgs := utils.GetDeviceArgs{
-								RackID: c.Args().Get(0),
+								RackID:  c.Args().Get(0),
 								BoardID: c.Args().Get(1),
 							}
 							if err := utils.InputValid(c, theArgs); err != nil {
@@ -234,7 +234,7 @@ var Commands = []cli.Command{
 						Category:  "temperature",
 						Action: func(c *cli.Context) error {
 							theArgs := utils.GetDeviceArgs{
-								RackID: c.Args().Get(0),
+								RackID:  c.Args().Get(0),
 								BoardID: c.Args().Get(1),
 							}
 							if err := utils.InputValid(c, theArgs); err != nil {
@@ -266,7 +266,7 @@ var Commands = []cli.Command{
 						Action: func(c *cli.Context) error {
 							theArgs := utils.SetBootTargetArgs{
 								GetDeviceArgs: utils.GetDeviceArgs{
-									RackID: c.Args().Get(0),
+									RackID:  c.Args().Get(0),
 									BoardID: c.Args().Get(1),
 								},
 								Value: c.Args().Get(2),
@@ -284,14 +284,14 @@ var Commands = []cli.Command{
 						Category:  "boot-target",
 						Action: func(c *cli.Context) error {
 							theArgs := utils.GetDeviceArgs{
-								RackID: c.Args().Get(0),
+								RackID:  c.Args().Get(0),
 								BoardID: c.Args().Get(1),
 							}
 							if err := utils.InputValid(c, theArgs); err != nil {
 								return err
 							}
 							return utils.CommandHandler(
-									c, PrintGetBootTarget(theArgs))
+								c, PrintGetBootTarget(theArgs))
 						},
 					},
 				},
@@ -316,7 +316,7 @@ var Commands = []cli.Command{
 						Category:  "lights",
 						Action: func(c *cli.Context) error {
 							theArgs := utils.GetDeviceArgs{
-								RackID: c.Args().Get(0),
+								RackID:  c.Args().Get(0),
 								BoardID: c.Args().Get(1),
 							}
 							if err := utils.InputValid(c, theArgs); err != nil {
@@ -346,7 +346,7 @@ var Commands = []cli.Command{
 						Action: func(c *cli.Context) error {
 							theArgs := utils.SetLightsArgs{
 								GetDeviceArgs: utils.GetDeviceArgs{
-									RackID: c.Args().Get(0),
+									RackID:  c.Args().Get(0),
 									BoardID: c.Args().Get(1),
 								},
 								State: c.String("state"),
@@ -517,10 +517,10 @@ var Commands = []cli.Command{
 		},
 	},
 	{
-		Name: "shell-completion",
-		Usage: "Generate shell completion scripts for bash or zsh",
+		Name:   "shell-completion",
+		Usage:  "Generate shell completion scripts for bash or zsh",
 		Hidden: true,
-		Action: func (c *cli.Context) error {
+		Action: func(c *cli.Context) error {
 			switch {
 			case c.IsSet("bash") && c.IsSet("zsh"):
 				// return utils.CommandHandler(c, utils.GenerateShellCompletion)
@@ -536,11 +536,11 @@ var Commands = []cli.Command{
 		},
 		Flags: []cli.Flag{
 			cli.BoolFlag{
-				Name: "bash",
+				Name:  "bash",
 				Usage: "bash completion",
 			},
 			cli.BoolFlag{
-				Name: "zsh",
+				Name:  "zsh",
 				Usage: "zsh completion",
 			},
 		},

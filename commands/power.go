@@ -137,8 +137,8 @@ func PrintGetPower(args utils.GetDeviceArgs) error {
 // Options are: "on", "off", "cycle"
 func SetPower(rack_id, board_id, power_status string) (string, error) {
 	responseData := &PowerDetails{}
-	path := fmt.Sprintf("%s/%s/%s/%s/", powerpath, rack_id, board_id, device_id)
-	resp, err := client.New().Path(path).Get(
+	path := fmt.Sprintf("%s/%s/%s/", rack_id, board_id, device_id)
+	resp, err := client.New().Path(powerpath).Path(path).Get(
 		power_status).ReceiveSuccess(responseData) // Add error reporting
 	if resp.StatusCode != 200 { // This is not what I meant by "error reporting"
 		return "", err
