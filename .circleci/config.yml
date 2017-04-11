@@ -15,6 +15,9 @@ jobs:
           name: "Installing Dependencies"
           command: go get -v
       - run:
+          name: "Running Tests"
+          command: go test -v --race ./...
+      - run:
           name: "Getting builder"
           command: |
             go get -v github.com/mitchellh/gox
