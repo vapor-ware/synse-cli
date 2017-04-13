@@ -64,7 +64,7 @@ func main() {
 		},
 		cli.StringFlag{
 			EnvVar: "VAPOR_HOST",
-			Name:   "vapor-host",
+			Name:   "vapor-host, host",
 			Usage:  "Address of `Vapor Host`",
 		},
 	}
