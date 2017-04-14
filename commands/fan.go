@@ -10,15 +10,19 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 )
 
+// fanpath specifies the endpoint to query for fan status
 const fanpath = "fan/"
+// fandevicetype specifies the device type to query for fan status
 const fandevicetype = "fan_speed"
 
+// FanDetails contains the response data for a fan object
 type FanDetails struct {
 	Health   string   `json:"health"`
 	SpeedRPM float64  `json:"speed_rpm"`
 	States   []string `json:"states"`
 }
 
+// FanResult combines the standard utils.Result data with FanDetails
 type FanResult struct {
 	utils.Result
 	*FanDetails
@@ -61,6 +65,8 @@ func ListFan(filter *utils.FilterFunc) ([]FanResult, error) {
 	return data, err
 }
 
+// GetFan queries the api for any fan located on a specific rack and board. If
+// there is no query error, it returns the fan details associated with that board.
 func GetFan(res utils.Result) (*FanDetails, error) {
 	fan := &FanDetails{}
 	failure := new(client.ErrorResponse)

@@ -57,6 +57,8 @@ func ListLights(filter *utils.FilterFunc) ([]LightsResult, error) {
 	return data, err
 }
 
+// GetLights queries the api for  lights on a specific rack and board. If there
+// are no query errors it returns the results.
 func GetLights(res utils.Result) (LightsResult, error) {
 	lights := &LightsDetails{}
 	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)

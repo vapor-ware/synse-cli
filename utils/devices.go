@@ -21,11 +21,13 @@ type scanResponse struct {
 	Racks []Rack `json:"racks"`
 }
 
+// Rack contains the top level objects for a rack
 type Rack struct {
 	Boards []Board `json:"boards"`
 	RackID string  `json:"rack_id"`
 }
 
+// Board contains the top level objects for a board
 type Board struct {
 	BoardID     string   `json:"board_id"`
 	Hostnames   []string `json:"hostnames"`
@@ -33,28 +35,36 @@ type Board struct {
 	Devices     []Device `json:"devices"`
 }
 
+// Device contains the response values for a specific device
 type Device struct {
 	DeviceID   string `json:"device_id"`
 	DeviceInfo string `json:"device_info"`
 	DeviceType string `json:"device_type"`
 }
 
+// Result gathers the response values for all nested objects
 type Result struct {
 	Rack
 	Board
 	Device
 }
 
+// FilterFunc contains a matching function for conditions to be satisfied when
+// parsing the full list of devices. It should return `true` for any device satisfying
+// the search conditions.
 type FilterFunc struct {
 	Result
 	FilterFn func(r Result) bool
 }
 
+// ResultError contains response fields for query errors from the API.
 type ResultError struct {
 	Result
 	Error error
 }
 
+// FilterDevices takes in a FilterFunc object and parses the full list of devices
+// for matches. If there are no errors, it will return a slice of the matching objects.
 func FilterDevices(ff *FilterFunc) (chan ResultError, error) {
 	c := make(chan ResultError)
 	fn := ff.FilterFn
@@ -81,6 +91,9 @@ func FilterDevices(ff *FilterFunc) (chan ResultError, error) {
 	return c, err
 }
 
+// GetDevices queries the endpoint for a summary of all devices. It then walks
+// the tree and populates rack, board, and device responses for each object. The
+// resulting Result object can be passed to other functions for filtering.
 func GetDevices() (chan Result, error) {
 	c := make(chan Result)
 

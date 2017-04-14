@@ -52,6 +52,8 @@ func ListPower(filter *utils.FilterFunc) ([]PowerResult, error) {
 	return data, err
 }
 
+// GetLights queries the api for power devices on a specific rack and board. If there
+// are no query errors it returns the results.
 func GetPower(res utils.Result) (*PowerDetails, error) {
 	power := &PowerDetails{}
 	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceID)
