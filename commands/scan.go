@@ -15,11 +15,13 @@ type scanResponse struct {
 	Racks []Rack `json:"racks"`
 }
 
+// Rack contains the top level objects for a rack
 type Rack struct {
 	Boards []Board `json:"boards"`
 	RackID string  `json:"rack_id"`
 }
 
+// Board contains the top level objects for a board
 type Board struct {
 	BoardID     string   `json:"board_id"`
 	Hostnames   []string `json:"hostnames"`
@@ -27,6 +29,7 @@ type Board struct {
 	Devices     []Device `json:"devices"`
 }
 
+// Device contains the response values for a specific device
 type Device struct {
 	DeviceID   string `json:"device_id"`
 	DeviceInfo string `json:"device_info"`

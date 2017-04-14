@@ -19,6 +19,17 @@ type config struct {
 
 var Config config
 
+// ConstructConfig takes in the cli context and builds the current config from
+// the cascade of configuration sources. It prioritizes configruation options
+// from sources in the following order, with top of the list being highest priority.
+//
+// - Run time CLI flags
+// - Environment variables
+// - Configuration files
+// 		- .vesh.yaml in the local directory
+// 		- .vesh.yaml in the home (~) directory
+//
+// All fields in the configuration file are optional.
 func ConstructConfig(c *cli.Context) error {
 	v := readConfigFromFile()
 

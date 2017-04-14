@@ -52,6 +52,8 @@ func ListTemp(filter *utils.FilterFunc) ([]TempResult, error) {
 	return data, err
 }
 
+// GetLights queries the api for temperature sensors on a specific rack and board.
+// If there are no query errors it returns the results.
 func GetTemp(res utils.Result) (TempResult, error) {
 	temp := &TempDetails{}
 	path := fmt.Sprintf("read/%s/%s/%s/%s",

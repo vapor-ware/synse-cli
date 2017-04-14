@@ -10,6 +10,10 @@ import (
 	"github.com/vapor-ware/vesh/client"
 )
 
+// DeviceNotFoundErr takes in a specific device and queries the endpoint for that
+// device directly to return the error generated. It attempts to determine the
+// correct path to use from the DeviceType, but this is not always correct and can
+// cause overlaps.
 func DeviceNotFoundErr(res Result) error {
 	failure := &client.ErrorResponse{}
 	path := fmt.Sprintf("%s/%s/%s", res.RackID, res.BoardID, res.DeviceType) // FIXME: Do the lookup by device_type or device_id
@@ -35,6 +39,7 @@ func DeviceNotFoundErr(res Result) error {
 	return nil
 }
 
+// CommandHandler wraps the error logger to log results from a called command.
 func CommandHandler(c *cli.Context, err error) error {
 	if err != nil {
 		log.WithFields(log.Fields{
