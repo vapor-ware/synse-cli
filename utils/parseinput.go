@@ -2,12 +2,12 @@ package utils
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/urfave/cli"
 	"github.com/asaskevich/govalidator"
+	"github.com/urfave/cli"
 )
 
 type GetDeviceArgs struct {
-	RackID string `valid:"ascii,required"`
+	RackID  string `valid:"ascii,required"`
 	BoardID string `valid:"ascii,required"`
 }
 

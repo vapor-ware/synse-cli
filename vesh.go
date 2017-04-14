@@ -7,8 +7,8 @@
 package main
 
 import (
-	"os"
 	"fmt"
+	"os"
 
 	"github.com/vapor-ware/vesh/client"
 	"github.com/vapor-ware/vesh/commands"
@@ -63,9 +63,9 @@ func main() {
 			Usage:  "Path to config `file`",
 		},
 		cli.StringFlag{
-			EnvVar:  "VAPOR_HOST",
-			Name:    "vapor-host",
-			Usage:   "Address of `Vapor Host`",
+			EnvVar: "VAPOR_HOST",
+			Name:   "vapor-host, host",
+			Usage:  "Address of `Vapor Host`",
 		},
 	}
 
