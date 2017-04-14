@@ -8,27 +8,19 @@ import (
 	"github.com/vapor-ware/vesh/utils"
 )
 
-// bootpath represents the endpoint for querying boot targets
 const bootpath = "boot_target/"
-// bootdevicetype species the device object type to query against
 const bootdevicetype = "system"
 
-// BootTargetDetails contains the response object for boot targets
 type BootTargetDetails struct {
 	Target string `json:"target"`
 	Status string `json:"status"`
 }
 
-// BootTargetResult combines the utils.Result containing rack, board, and device
-// objects with the boot target response
 type BootTargetResult struct {
 	utils.Result
 	*BootTargetDetails
 }
 
-// ListBootTarget takes in a filter function with the correct device type.
-// It queries utils.FilterDevices to filter the full list of devices, then
-// passes the result to the progress bard and table render functions.
 func ListBootTarget(filter *utils.FilterFunc) ([]BootTargetResult, error) {
 	var devices []utils.Result
 

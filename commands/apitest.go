@@ -7,10 +7,8 @@ import (
 	"github.com/vapor-ware/vesh/client"
 )
 
-// testpath specifies the url endpoint to test against
 const testpath = "test"
 
-// APIStatus contains the response object from the test endpoint.
 type APIStatus struct {
 	Status string `json:"status"`
 }

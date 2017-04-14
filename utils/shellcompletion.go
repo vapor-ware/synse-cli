@@ -14,9 +14,6 @@ var autocompletionPath = "/etc/bash_completion.d/"
 
 const autocompleteUrl = "https://raw.githubusercontent.com/urfave/cli/master/autocomplete/"
 
-// GenerateShellCompletion generates the correct completion file for `bash` and
-// `zsh` shells. These files can then be sources to provide command and flag
-// autocompletion.
 func GenerateShellCompletion(shell string) error {
 	var err error
 	var path string
@@ -30,8 +27,6 @@ func GenerateShellCompletion(shell string) error {
 	return err
 }
 
-// downloadCompletionFile downloads the required bash completion file from
-// https://github.com/urfave/cli .
 func downloadCompletionFile(shell string) (string, error) {
 	var err error
 	path := autocompletionPath + appName
