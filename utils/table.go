@@ -8,7 +8,6 @@ import (
 	"github.com/vbauerster/mpb"
 )
 
-// TableOutput renders table output with the default configuration values.
 func TableOutput(header []string, data [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader(header)
@@ -20,8 +19,6 @@ func TableOutput(header []string, data [][]string) {
 	table.Render()
 }
 
-// ProgressBar renders an instance of the progress bar with the default configuration
-// values.
 func ProgressBar(length int, title string) (*mpb.Bar, *mpb.Progress) {
 	length64 := int64(length)
 	bar := mpb.New()
@@ -34,8 +31,6 @@ func ProgressBar(length int, title string) (*mpb.Bar, *mpb.Progress) {
 	return progressBar, bar
 }
 
-// ProgressBarStop takes the progress bar object and terminates it wether
-// rendering is complete or not.
 func ProgressBarStop(pb *mpb.Progress) {
 	pb.Stop()
 }

@@ -38,7 +38,6 @@ func main() {
 			log.SetLevel(log.DebugLevel)
 		}
 
-		// Construct the config for this session.
 		err := utils.ConstructConfig(c)
 		if err != nil {
 			fmt.Println(err)
@@ -48,7 +47,6 @@ func main() {
 			log.SetLevel(log.DebugLevel)
 		}
 
-		// Pass configuration results to the appropriate functions.
 		client.Config(utils.Config.VaporHost)
 
 		return nil
