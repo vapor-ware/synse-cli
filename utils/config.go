@@ -23,9 +23,9 @@ var Config config
 // the cascade of configuration sources. It prioritizes configruation options
 // from sources in the following order, with top of the list being highest priority.
 //
-// - Run time CLI flags
-// - Environment variables
-// - Configuration files
+// 	- Run time CLI flags
+// 	- Environment variables
+// 	- Configuration files
 // 		- .vesh.yaml in the local directory
 // 		- .vesh.yaml in the home (~) directory
 //
