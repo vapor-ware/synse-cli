@@ -32,9 +32,9 @@ GLOBAL OPTIONS:
 
 **TO DO**:
 - [x] Error handling
-- [x] Comments and documentation
-- [x] Configuration from file
-- [x] Debug mode
+- [ ] Comments and documentation
+- [ ] Configuration from file
+- [ ] Debug mode
 - [ ] "Second order" features
   - [ ] Notifications
   - [ ] Health
