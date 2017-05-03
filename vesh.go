@@ -1,4 +1,4 @@
-// Vesh provides a cli to vapor.io infrastructure. Specifically it allows access
+// Synse provides a cli to vapor.io infrastructure. Specifically it allows access
 // to the openDCRE (http://www.vapor.io/opendcre/) REST API for running commands
 // against connected infrastructure and devices.
 //
@@ -22,8 +22,8 @@ import (
 // and sets the default configuration.
 func main() {
 	app := cli.NewApp()
-	app.Name = "vesh"
-	app.Usage = "Vapor Edge Shell"
+	app.Name = "synse"
+	app.Usage = "Synse Shell"
 	app.Version = "0.0.1"
 	app.Authors = []cli.Author{{Name: "Tim Fall", Email: "tim@vapor.io"},
 		{Name: "Thomas Rampelberg", Email: "thomasr@vapor.io"}}
@@ -49,7 +49,7 @@ func main() {
 		}
 
 		// Pass configuration results to the appropriate functions.
-		client.Config(utils.Config.VaporHost)
+		client.Config(utils.Config.SynseHost)
 
 		return nil
 	}
@@ -60,14 +60,14 @@ func main() {
 			Usage: "Enable debug mode",
 		},
 		cli.StringFlag{
-			EnvVar: "VESH_CONFIG_FILE",
+			EnvVar: "SYNSE_CONFIG_FILE",
 			Name:   "config, c",
 			Usage:  "Path to config `file`",
 		},
 		cli.StringFlag{
-			EnvVar: "VAPOR_HOST",
-			Name:   "vapor-host, host",
-			Usage:  "Address of `Vapor Host`",
+			EnvVar: "SYNSE_HOST",
+			Name:   "synse-host, host",
+			Usage:  "Address of `Synse Host`",
 		},
 	}
 

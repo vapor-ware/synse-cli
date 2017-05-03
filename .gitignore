@@ -30,10 +30,10 @@ _testmain.go
 vendor/
 
 # `go build` binary
-/vesh
+/synse
 
 # Shell autocompletion
 /*_autocomplete
 
 # Configuration file
-/.vesh.y*
+/.synse.y*

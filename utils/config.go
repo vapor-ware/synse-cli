@@ -12,7 +12,7 @@ import (
 )
 
 type config struct {
-	VaporHost string
+	SynseHost string
 	Debug     bool
 	Config    string
 }
@@ -26,14 +26,14 @@ var Config config
 // 	- Run time CLI flags
 // 	- Environment variables
 // 	- Configuration files
-// 		- .vesh.yaml in the local directory
-// 		- .vesh.yaml in the home (~) directory
+// 		- .synse.yaml in the local directory
+// 		- .synse.yaml in the home (~) directory
 //
 // All fields in the configuration file are optional.
 func ConstructConfig(c *cli.Context) error {
 	v := readConfigFromFile()
 
-	v.RegisterAlias("VaporHost", "vapor_host") // FIXME: This is really hacky, but works for now
+	v.RegisterAlias("SynseHost", "synse_host") // FIXME: This is really hacky, but works for now
 
 	err := v.Unmarshal(&Config)
 	if err != nil {
@@ -73,13 +73,13 @@ func ConstructConfig(c *cli.Context) error {
 // Log the issue as debug and move on.
 func readConfigFromFile() *viper.Viper {
 	v := viper.New()
-	v.SetConfigName(".vesh")
+	v.SetConfigName(".synse")
 	v.SetConfigType("yaml")
 	v.AddConfigPath(".")      // Try local first
 	v.AddConfigPath("$HOME/") // Then try home
 
 	// Defaults
-	v.SetDefault("VaporHost", "demo.vapor.io")
+	v.SetDefault("SynseHost", "demo.vapor.io")
 
 	v.ReadInConfig()
 
