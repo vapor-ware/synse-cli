@@ -3,7 +3,7 @@ package commands
 import (
 	"testing"
 
-	"github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/synse-cli/client"
 )
 
 func init() {

@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"github.com/vapor-ware/vesh/utils"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 const Scanpath = "scan"

@@ -3,7 +3,7 @@ package commands
 import (
 	"strings"
 
-	"github.com/vapor-ware/vesh/utils"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // FIXME: Break printing back out into another function

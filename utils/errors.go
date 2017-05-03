@@ -7,7 +7,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/synse-cli/client"
 )
 
 // DeviceNotFoundErr takes in a specific device and queries the endpoint for that

@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/vapor-ware/vesh/client"
-	"github.com/vapor-ware/vesh/commands"
-	"github.com/vapor-ware/vesh/utils"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/commands"
+	"github.com/vapor-ware/synse-cli/utils"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"

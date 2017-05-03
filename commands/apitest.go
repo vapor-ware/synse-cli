@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/synse-cli/client"
 )
 
 // testpath specifies the url endpoint to test against
