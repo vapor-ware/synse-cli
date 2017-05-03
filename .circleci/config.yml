@@ -11,6 +11,7 @@ jobs:
 
     environment:
         TEST_DIRECTORY: "gotest"
+        BINARY_NAME: "synse"
 
     steps:
       - checkout
@@ -33,7 +34,7 @@ jobs:
             go get -v github.com/tcnksm/ghr
       - run:
           name: "Building"
-          command: gox --output="build/{{.Dir}}_{{.OS}}_{{.Arch}}" -os='!windows' -osarch='!darwin/386'
+          command: gox --output="build/$BINARY_NAME_{{.OS}}_{{.Arch}}" -os='!windows' -osarch='!darwin/386'
       - store_artifacts:
           path: build
           destination: build
