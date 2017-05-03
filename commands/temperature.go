@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/vapor-ware/vesh/client"
-	"github.com/vapor-ware/vesh/utils"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 const temperaturepath = "temperature/"

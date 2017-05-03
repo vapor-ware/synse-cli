@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/vapor-ware/vesh/client"
-	"github.com/vapor-ware/vesh/utils"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // fanpath specifies the endpoint to query for fan status

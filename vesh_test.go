@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/vapor-ware/vesh/commands"
+	"github.com/vapor-ware/synse-cli/commands"
 
 	"github.com/urfave/cli"
 )

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/vapor-ware/vesh/client"
+	"github.com/vapor-ware/synse-cli/client"
 
 	"github.com/fatih/structs"
 )

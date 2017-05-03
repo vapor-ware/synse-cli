@@ -7,7 +7,7 @@ jobs:
           VAPOR_HOST: core.vapor.io
           DEBUG: true
 
-    working_directory: /go/src/github.com/vapor-ware/vesh
+    working_directory: /go/src/github.com/vapor-ware/synse-cli
 
     environment:
         TEST_DIRECTORY: "gotest"
