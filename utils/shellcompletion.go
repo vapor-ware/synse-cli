@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var appName = "vesh" // TODO: Dynamically source this from app.Name
+var appName = "synse" // TODO: Dynamically source this from app.Name
 var autocompletionPath = "/etc/bash_completion.d/"
 
 const autocompleteUrl = "https://raw.githubusercontent.com/urfave/cli/master/autocomplete/"
@@ -48,7 +48,7 @@ func downloadCompletionFile(shell string) (string, error) {
 	defer resp.Body.Close()
 	_, err = io.Copy(out, resp.Body)
 	inFile, err := ioutil.ReadFile(path) // FIXME: There's a better way to do this
-	output := bytes.Replace(inFile, []byte("$(basename ${BASH_SOURCE})"), []byte("vesh"), -1)
+	output := bytes.Replace(inFile, []byte("$(basename ${BASH_SOURCE})"), []byte("synse"), -1)
 	err = ioutil.WriteFile(path, output, 0666)
 	// fmt.Println(shellPath, resp, err, inFile, output)
 	return path, err

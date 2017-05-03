@@ -1,7 +1,7 @@
 // Client extends the https://github.com/dghubble/sling package to provide a
 // RESTful client to the openDCRE endpoints. The base url path is constructed
 // from the configured openDCRE url as well as the type and version of the API.
-// All new queires within vesh should be using an instance of this client.
+// All new queires within synse should be using an instance of this client.
 package client
 
 import (
