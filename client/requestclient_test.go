@@ -16,8 +16,8 @@ func TestConstructUrl(t *testing.T) {
     t.Error(url, "No http:// detected")
   case !strings.HasSuffix(url, "/"):
     t.Error(url, "URL does not end with slash")
-  case !strings.Contains(url, "opendcre"):
-    t.Error(url, "URL does not contain 'opendcre'")
+  case !strings.Contains(url, "synse"):
+    t.Error(url, "URL does not contain 'synse'")
   }
   parts := strings.Split(strings.TrimPrefix(url, "http://"), "/")
   if len(parts) <= 1 {
