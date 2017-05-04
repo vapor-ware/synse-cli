@@ -20,10 +20,10 @@ var theClient *sling.Sling
 // this base.
 func constructUrl(host string) string {
 	var vaporPort = 5000
-	var defaultPath = "synse/" //Add a version number here
+	var defaultPath = "synse" //Add a version number here
 	var versionNumber = 1.4
 	var CompleteBase = fmt.Sprintf(
-		"http://%s:%d/%s/%d", host, vaporPort, defaultPath, versionNumber)
+		"http://%s:%d/%s/%f/", host, vaporPort, defaultPath, versionNumber)
 	return CompleteBase
 }
 
