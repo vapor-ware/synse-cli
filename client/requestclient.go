@@ -1,6 +1,6 @@
 // Client extends the https://github.com/dghubble/sling package to provide a
-// RESTful client to the openDCRE endpoints. The base url path is constructed
-// from the configured openDCRE url as well as the type and version of the API.
+// RESTful client to the Synse endpoints. The base url path is constructed
+// from the configured Synse url as well as the type and version of the API.
 // All new queires within synse should be using an instance of this client.
 package client
 
@@ -16,11 +16,11 @@ import (
 var theClient *sling.Sling
 
 // constructUrl builds the full url string from the host base, endpoint type
-// (openDCRE), and API version number. Endpoint paths can be extended off of
+// (Synse), and API version number. Endpoint paths can be extended off of
 // this base.
 func constructUrl(host string) string {
 	var vaporPort = 5000
-	var defaultPath = "opendcre/1.3/" //Add a version number here
+	var defaultPath = "synse/1.3/" //Add a version number here
 	var CompleteBase = fmt.Sprintf(
 		"http://%s:%d/%s", host, vaporPort, defaultPath)
 	return CompleteBase
