@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	client.Config("demo.vapor.io")
+	client.Config("35.185.201.100")
 }
 
 func TestTestAPI(t *testing.T) {
