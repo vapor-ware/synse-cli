@@ -2,12 +2,13 @@ package commands
 
 import (
 	"testing"
+	"os"
 
 	"github.com/vapor-ware/synse-cli/client"
 )
 
 func init() {
-	client.Config("35.185.201.100")
+	client.Config(os.Getenv("SYNSE_HOST"))
 }
 
 func TestTestAPI(t *testing.T) {
