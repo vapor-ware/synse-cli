@@ -112,8 +112,8 @@ This would list the output of all temperature sensors for all devices known to s
 
 Configuration options for customizing synse CLI can be input in a number of different ways. Synse CLI uses a standard cascading order of precedence when evaluating configuration options. Options with the highest priority are first.
 
-- Command line flags (e.g. --debug)
-- Environment variables (e.g. SYNSE_DEBUG)
+- Command line flags (e.g. `--debug`)
+- Environment variables (e.g. `SYNSE_DEBUG`)
 - Configuration file settings (e.g. `SynseHost: awesome.sauce`)
 
 #### Configuration Options
