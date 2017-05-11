@@ -19,14 +19,14 @@ Synse CLI is provided as a single pre-compiled binary, available for use on most
 For example, if running on macOS, you could do the following:
 
 ```shell
-wget https://github.com/vapor-ware/synse-cli/releases/download/<version number>/vesh_darwin_amd64 -O /usr/local/bin/synse
+wget https://github.com/vapor-ware/synse-cli/releases/download/<version number>/synse_darwin_amd64 -O /usr/local/bin/synse
 chmod +x /usr/local/bin/synse
 ```
 
 Or:
 
 ```shell
-curl https://github.com/vapor-ware/synse-cli/releases/download/<version number>/vesh_darwin_amd64 -o /usr/local/bin/synse
+curl https://github.com/vapor-ware/synse-cli/releases/download/<version number>/synse_darwin_amd64 -o /usr/local/bin/synse
 chmod +x /usr/local/bin/synse
 ```
 
