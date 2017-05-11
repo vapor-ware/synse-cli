@@ -1,5 +1,6 @@
 [![buddy pipeline](https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439/badge.svg?token=3ae6c804af4fdb5947b58ba1c544c232bf8d28f6e6d2b07321added2d1cc0bad "buddy pipeline")](https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439)
 [![CircleCI](https://circleci.com/gh/vapor-ware/synse-cli.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3)](https://circleci.com/gh/vapor-ware/vesh)
+[![GoDoc](https://godoc.org/github.com/vapor-ware/synse-cli?status.svg)](http://godoc.org/github.com/vapor-ware/synse-cli)
 
 # Synse Command Line Interface
 
@@ -65,7 +66,7 @@ go build
 
 ### Running Commands
 
-Synse cli is built to run commands with multiple verbs (`git`-like). Each command has it's own help documentation which shows what it does and how it should be used. A more detailed description of command structure and how they are used is available in the [documentation](godoc-link).
+Synse cli is built to run commands with multiple verbs (`git`-like). Each command has it's own help documentation which shows what it does and how it should be used. A more detailed description of command structure and how they are used is available in the [documentation](http://godoc.org/github.com/vapor-ware/synse-cli).
 
 For example the help output for the top-level command is printed by running `synse -h` or simply `synse`:
 
@@ -150,6 +151,6 @@ Configuration values _are_ case sensitive, but the cli will attempt to decode an
 
 ### Contributing
 
-Synse CLI is (un)-lovingly maintained by @timfallmk, who is far over worked and underpaid. We happily accept issues and pull requests logged in this repository. Please just be nice and follow appropriate rules when submitting anything.
+Synse CLI is (un)-lovingly maintained by [timfallmk](https://github.com/timfallmk), who is far over worked and underpaid. We happily accept issues and pull requests logged in this repository. Please just be nice and follow appropriate rules when submitting anything.
 
 Any code in this repository is governed under the license given therein.
