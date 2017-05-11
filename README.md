@@ -7,7 +7,7 @@
 
 [Synse](vapor-ware/synse-server) provides a programatic API for bi-directional access to hardware and other components. For more information, see the [README](vapor-ware/synse-server/README.md) in that repository.
 
-Synse CLI provides an command line interface to the underlying synse components. It allows for real-times queries and interaction with hardware endpoints monitored by synse, and is meant to have feature parity with the synse API. Although it is not designed to be programmed against directly, it can be used as an example for how to interface other apps with synse.
+Synse CLI provides an command line interface to the underlying synse components. It allows for real-times queries and interaction with hardware endpoints monitored by synse, and is meant to have feature parity with the synse API. Although it is not designed to be programmed against directly, it can be used as an example of how to interface other apps with synse.
 
 To get started, follow the instructions below.
 
@@ -18,18 +18,18 @@ Synse CLI is provided as a single pre-compiled binary, available for use on most
 For example, if running on macOS, you could do the following:
 
 ```shell
-wget https://github.com/vapor-ware/synse-cli/releases/download/vesh-alpha-1/vesh_darwin_amd64 -O /usr/local/bin/synse
+wget https://github.com/vapor-ware/synse-cli/releases/download/<version number>/vesh_darwin_amd64 -O /usr/local/bin/synse
 chmod +x /usr/local/bin/synse
 ```
 
 Or:
 
 ```shell
-curl https://github.com/vapor-ware/synse-cli/releases/download/vesh-alpha-1/vesh_darwin_amd64 -o /usr/local/bin/synse
+curl https://github.com/vapor-ware/synse-cli/releases/download/<version number>/vesh_darwin_amd64 -o /usr/local/bin/synse
 chmod +x /usr/local/bin/synse
 ```
 
-To save the binary to `/usr/local/bin`. The binary can be saved to any location you wish.
+To save the binary to `/usr/local/bin/`. The binary can be saved to any location you wish.
 
 **NOTE**: We recommend that you save the binary with the name `synse` as it is easier to remember. All commands in this guide will use this name.
 
@@ -132,14 +132,14 @@ There are currently a number of configuration options available.
       - `SYNSE_DEBUG` environment variable
       - `debug: true` in the configuration file
 - Configuration File
-   - This gives the path for where to locate the configuration file (more details in [Configuration File](section-link)).
+   - This gives the path for where to locate the configuration file (more details in [Configuration File](#configuration)).
    - It can be set with the following
       - `--config` or `-c` flags
       - `SYNSE_CONFIG_FILE` environment variable
 
 #### Configuration File
 
-Configuration options can be read in from a file at run time. Currently this file is named `.synse.yaml` (notice the leading dot). By default synse cli will look for this file in two places at run time, the root level of the current user's home directory (`~/.synse.yaml`) or, if it is not found there, in the current directory the command is being run from (`./.synse.yaml`). As mentioned above, specific settings in this file can be overriden on a per command basis using high precedence methods.
+Configuration options can be read in from a file at runtime. Currently this file is named `.synse.yaml` (notice the leading dot). By default synse cli will look for this file in two places at runtime, the root level of the current user's home directory (`~/.synse.yaml`) or, if it is not found there, in the current directory the command is being run from (`./.synse.yaml`). As mentioned above, specific settings in this file can be overriden on a per command basis using a higher precedence method.
 
 The configuration file follows standard YAML syntax and accepts the following settings:
 
@@ -147,3 +147,9 @@ The configuration file follows standard YAML syntax and accepts the following se
 - `debug: <true/false>`
 
 Configuration values _are_ case sensitive, but the cli will attempt to decode any values that match the above keys.
+
+### Contributing
+
+Synse CLI is (un)-lovingly maintained by @timfallmk, who is far over worked and underpaid. We happily accept issues and pull requests logged in this repository. Please just be nice and follow appropriate rules when submitting anything.
+
+Any code in this repository is governed under the license given therein.
