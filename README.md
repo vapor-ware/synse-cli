@@ -6,7 +6,7 @@
 
 ## Overview
 
-[Synse](vapor-ware/synse-server) provides a programatic API for bi-directional access to hardware and other components. For more information, see the [README](vapor-ware/synse-server/README.md) in that repository.
+[Synse](https://github.com/vapor-ware/synse-server) provides a programatic API for bi-directional access to hardware and other components. For more information, see the [README](https://github.com/vapor-ware/synse-server/blob/master/README.md) in that repository.
 
 Synse CLI provides an command line interface to the underlying synse components. It allows for real-times queries and interaction with hardware endpoints monitored by synse, and is meant to have feature parity with the synse API. Although it is not designed to be programmed against directly, it can be used as an example of how to interface other apps with synse.
 
