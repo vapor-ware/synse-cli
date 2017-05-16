@@ -37,3 +37,6 @@ vendor/
 
 # Configuration file
 /.synse.y*
+
+# Build output
+build/

@@ -133,7 +133,7 @@ There are currently a number of configuration options available.
       - `SYNSE_DEBUG` environment variable
       - `debug: true` in the configuration file
 - Configuration File
-   - This gives the path for where to locate the configuration file (more details in [Configuration File](#configuration)).
+   - This gives the path for where to locate the configuration file (more details in [Configuration File](#configuration-file)).
    - It can be set with the following
       - `--config` or `-c` flags
       - `SYNSE_CONFIG_FILE` environment variable

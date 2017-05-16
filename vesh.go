@@ -24,7 +24,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "synse"
 	app.Usage = "Synse Shell"
-	app.Version = "0.0.1"
+	app.Version = "0.1.0"
 	app.Authors = []cli.Author{{Name: "Tim Fall", Email: "tim@vapor.io"},
 		{Name: "Thomas Rampelberg", Email: "thomasr@vapor.io"}}
 
