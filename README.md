@@ -78,7 +78,7 @@ USAGE:
    synse [global options] command [command options] [arguments...]
 
 VERSION:
-   0.0.1
+   0.1.0
 
 AUTHORS:
    Tim Fall <tim@vapor.io>
