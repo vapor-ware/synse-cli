@@ -1,0 +1,11 @@
+# CI configuration
+.circleci
+
+# Build artifacts
+build
+
+# Left over executables
+synse
+
+# Autocomplete files
+bash_autocomplete
