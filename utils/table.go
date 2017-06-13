@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"github.com/vbauerster/mpb"
+	"gopkg.in/vbauerster/mpb.v2"
 )
 
 // TableOutput renders table output with the default configuration values.
