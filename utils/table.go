@@ -5,7 +5,9 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
-	"gopkg.in/vbauerster/mpb.v2"
+	"github.com/vbauerster/mpb"
+	"github.com/vbauerster/mpb/decor"
+
 )
 
 // TableOutput renders table output with the default configuration values.
@@ -25,11 +27,16 @@ func TableOutput(header []string, data [][]string) {
 func ProgressBar(length int, title string) (*mpb.Bar, *mpb.Progress) {
 	length64 := int64(length)
 	bar := mpb.New()
-	progressBar := bar.AddBar(length64)
-	progressBar.AppendETA(4, mpb.DwidthSync|mpb.DextraSpace)
-	progressBar.AppendPercentage(5, 0)
-	progressBar.PrependName(title+":", len(title), mpb.DwidthSync)
-	progressBar.PrependElapsed(5, mpb.DextraSpace)
+	progressBar := bar.AddBar((length64),
+		mpb.AppendDecorators(
+			decor.ETA(4, decor.DSyncSpace),
+			decor.Percentage(5, 0),
+		),
+		mpb.PrependDecorators(
+			decor.Name(title+":", len(title), decor.DwidthSync),
+			decor.Elapsed(5, decor.DextraSpace),
+		),
+	)
 
 	return progressBar, bar
 }
