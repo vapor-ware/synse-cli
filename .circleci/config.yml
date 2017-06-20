@@ -19,6 +19,9 @@ jobs:
           name: "Installing Dependencies"
           command: go get -v
       - run:
+          name: "Installing Dependencies for Windows"
+          command: GOOS=windows go get -v
+      - run:
           name: "Make test report directory"
           command: mkdir -p $CICLE_TEST_REPORTS/$TEST_DIRECTORY
       - run:
@@ -34,7 +37,7 @@ jobs:
             go get -v github.com/tcnksm/ghr
       - run:
           name: "Building"
-          command: gox --output="build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -os='!windows' -osarch='!darwin/386'
+          command: gox --output="build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386'
       - store_artifacts:
           path: build
           destination: build
