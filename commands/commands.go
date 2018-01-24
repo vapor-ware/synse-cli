@@ -2,7 +2,7 @@
 // commands, subcmmands, and flags available to the cli. It also provides
 // basic input parsing and error checking.
 /*
-Commands defines the commands, subcommands, and flags used in app.Cli to form
+Package commands defines the commands, subcommands, and flags used in app.Cli to form
 the structure of the CLI. Definitions, usage strings, help text, and flags are
 deligated to app.Cli. The `Action:` field gives the function called when each
 command is run.
@@ -362,7 +362,7 @@ var Commands = []cli.Command{
 					{
 						Name:      "blink",
 						Usage:     "Blink specific `LED` (alias for '--blink true') (NOT YET IMPLEMENTED)",
-						Hidden: true,
+						Hidden:    true,
 						ArgsUsage: "<rack id> <board id> <device id> <true/false>",
 						Category:  "lights",
 						Action:    nil,
@@ -370,7 +370,7 @@ var Commands = []cli.Command{
 					{
 						Name:      "color",
 						Usage:     "Set a specific `LED` to `color` (alias for '--color <hex>') (NOT YET IMPLEMENTED)", // Consider removing
-						Hidden: true,
+						Hidden:    true,
 						ArgsUsage: "<rack id> <board id> <device id> <color>",
 						Category:  "lights",
 						Action:    nil,
@@ -380,7 +380,7 @@ var Commands = []cli.Command{
 			{
 				Name:     "location",
 				Usage:    "Get the physical location of a `device` (NOT YET IMPLEMENTED)",
-				Hidden: true,
+				Hidden:   true,
 				Category: "assets",
 				Subcommands: []cli.Command{
 					{
@@ -397,7 +397,7 @@ var Commands = []cli.Command{
 					},
 					{
 						Name:     "map",
-						Hidden: true,
+						Hidden:   true,
 						Usage:    "Plot the geographic location of a specific `device` on a mapping service",
 						Category: "location",
 						Action:   nil,
@@ -407,33 +407,33 @@ var Commands = []cli.Command{
 			{
 				Name:     "find",
 				Usage:    "Blink the LEDs on a specific `device` for 10 seconds to locate it",
-				Hidden: true,
+				Hidden:   true,
 				Category: "assets",
 				Action:   nil,
 			},
 		},
 	},
 	{
-		Name:  "zones",
-		Usage: "List available zones (NOT YET IMPLEMENTED)",
+		Name:   "zones",
+		Usage:  "List available zones (NOT YET IMPLEMENTED)",
 		Hidden: true,
 		//Action:, TBD
 	},
 	{
-		Name:  "racks",
-		Usage: "List available racks within a given `zone` (or all zones if none is specified) (NOT YET IMPLEMENTED)",
+		Name:   "racks",
+		Usage:  "List available racks within a given `zone` (or all zones if none is specified) (NOT YET IMPLEMENTED)",
 		Hidden: true,
 		//Action:, TBD
 	},
 	{
-		Name:  "health",
-		Usage: "Check health for a given `zone`, `rack`, or `device` (NOT YET IMPLEMENTED)",
+		Name:   "health",
+		Usage:  "Check health for a given `zone`, `rack`, or `device` (NOT YET IMPLEMENTED)",
 		Hidden: true,
 		//Action:, TBD
 	},
 	{
-		Name:  "notifications",
-		Usage: "List notifications for a given `zone`, `rack`, or `device` (NOT YET IMPLEMENTED)",
+		Name:   "notifications",
+		Usage:  "List notifications for a given `zone`, `rack`, or `device` (NOT YET IMPLEMENTED)",
 		Hidden: true,
 		//Action:, TBD
 		Subcommands: []cli.Command{
@@ -455,8 +455,8 @@ var Commands = []cli.Command{
 		},
 	},
 	{
-		Name:  "load",
-		Usage: "Get the load by specific metric (NOT YET IMPLEMENTED)",
+		Name:   "load",
+		Usage:  "Get the load by specific metric (NOT YET IMPLEMENTED)",
 		Hidden: true,
 		//Action:, TBD
 		Subcommands: []cli.Command{
@@ -493,8 +493,8 @@ var Commands = []cli.Command{
 		},
 	},
 	{
-		Name:  "provision",
-		Usage: "Get (un)provisioned servers and provision new servers (NOT YET IMPLEMENTED)",
+		Name:   "provision",
+		Usage:  "Get (un)provisioned servers and provision new servers (NOT YET IMPLEMENTED)",
 		Hidden: true,
 		Subcommands: []cli.Command{
 			{

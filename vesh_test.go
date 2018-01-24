@@ -12,7 +12,7 @@ import (
 func TestMain(t *testing.T) {
 	app := cli.NewApp()
 	app.Name = "synse"
-	app.Usage = "Destory The World"
+	app.Usage = "Destroy The World"
 	app.Version = "97"
 	app.Authors = []cli.Author{{Name: "Tiny Rick", Email: "rick@tiny.com"}}
 

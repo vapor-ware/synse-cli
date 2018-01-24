@@ -11,12 +11,15 @@ import (
 const temperaturepath = "temperature/"
 const temperaturedevicetype = "temperature"
 
+// TempDetails contains the fields returned from temperature queries
 type TempDetails struct {
 	Health       string   `json:"health"`
 	States       []string `json:"states"`
 	TemperatureC float64  `json:"temperature_c"`
 }
 
+
+// TempResult contains the detailed fields and result object from a temperature query
 type TempResult struct {
 	utils.Result
 	*TempDetails
@@ -52,7 +55,7 @@ func ListTemp(filter *utils.FilterFunc) ([]TempResult, error) {
 	return data, err
 }
 
-// GetLights queries the api for temperature sensors on a specific rack and board.
+// GetTemp queries the api for temperature sensors on a specific rack and board.
 // If there are no query errors it returns the results.
 func GetTemp(res utils.Result) (TempResult, error) {
 	temp := &TempDetails{}

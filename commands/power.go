@@ -10,6 +10,7 @@ import (
 const powerpath = "power/"
 const device_id = "power"
 
+// PowerDetails contains the fields returned from a power query
 type PowerDetails struct {
 	InputPower  float64 `json:"input_power"`
 	OverCurrent bool    `json:"over_current"`
@@ -17,6 +18,7 @@ type PowerDetails struct {
 	PowerStatus string  `json:"power_status"`
 }
 
+// PowerResult contains the fields returned and a result object from a power query
 type PowerResult struct {
 	utils.Result
 	*PowerDetails
@@ -52,7 +54,7 @@ func ListPower(filter *utils.FilterFunc) ([]PowerResult, error) {
 	return data, err
 }
 
-// GetLights queries the api for power devices on a specific rack and board. If there
+// GetPower queries the api for power devices on a specific rack and board. If there
 // are no query errors it returns the results.
 func GetPower(res utils.Result) (*PowerDetails, error) {
 	power := &PowerDetails{}

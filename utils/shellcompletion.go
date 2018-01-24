@@ -45,6 +45,9 @@ func downloadCompletionFile(shell string) (string, error) {
 	}
 	shellPath := autocompleteUrl + shell + "_autocomplete"
 	resp, err := http.Get(shellPath)
+	if err != nil {
+		return path, err
+	}
 	defer resp.Body.Close()
 	_, err = io.Copy(out, resp.Body)
 	inFile, err := ioutil.ReadFile(path) // FIXME: There's a better way to do this

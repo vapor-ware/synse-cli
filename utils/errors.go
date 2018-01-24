@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -34,7 +33,7 @@ func DeviceNotFoundErr(res Result) error {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return errors.New(fmt.Sprintf("Error Code: %+v\nError: %+v", failure.HttpCode, failure.Message))
+		return fmt.Errorf("Error Code: %+v\nError: %+v", failure.HTTPCode, failure.Message)
 	}
 	return nil
 }
