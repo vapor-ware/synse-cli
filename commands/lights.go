@@ -10,12 +10,15 @@ import (
 const lightspath = "led/"
 const lightsdevicetype = "led"
 
+// LightsDetails contains the fields returned from a lights query
 type LightsDetails struct {
 	State      string `json:"led_state"`
 	BlinkState string `json:"blink_state"`
 	Color      int16  `json:"color"`
 }
 
+
+// LightsResult contains the fields returned and a result object from a lights query
 type LightsResult struct {
 	utils.Result
 	*LightsDetails
@@ -162,9 +165,9 @@ func SetLight(rack_id, board_id, light_status string) (string, error) {
 // or "blink", corresponding to the same action. The command type state is the
 // given state to which a specific light command is to be set. For example,
 // the light command "blink" may be set to the state "on" or "off". The
-// acceptible types differ for each command, and are given in the usage
+// acceptable types differ for each command, and are given in the usage
 // documentation for that command.
-// Command types and states are specified when running the commmand by the
+// Command types and states are specified when running the command by the
 // presence of the corresponding flag. For example, the command type "state"
 // is given by the flag "--state". The state is given as the argument to this
 // flag.

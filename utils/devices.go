@@ -10,6 +10,7 @@ import (
 	"github.com/fatih/structs"
 )
 
+// Scanpath contains the api path for performing scans
 const Scanpath = "scan"
 
 // scanResponse struct holds the response values from a `/scan` operation.

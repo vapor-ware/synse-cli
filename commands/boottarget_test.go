@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"testing"
 	"os"
+	"testing"
 
 	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/utils"

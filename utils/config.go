@@ -17,6 +17,7 @@ type config struct {
 	Config    string
 }
 
+// Config is a new variable containing the config object
 var Config config
 
 // ConstructConfig takes in the cli context and builds the current config from
@@ -58,7 +59,7 @@ func ConstructConfig(c *cli.Context) error {
 		}
 
 		if err != nil {
-			fmt.Println("%v", err)
+			fmt.Printf("%v\n", err)
 		}
 	}
 

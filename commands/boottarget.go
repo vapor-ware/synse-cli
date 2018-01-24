@@ -10,6 +10,7 @@ import (
 
 // bootpath represents the endpoint for querying boot targets
 const bootpath = "boot_target/"
+
 // bootdevicetype species the device object type to query against
 const bootdevicetype = "system"
 
@@ -57,6 +58,7 @@ func ListBootTarget(filter *utils.FilterFunc) ([]BootTargetResult, error) {
 	return data, err
 }
 
+// PrintListBootTarget prints the complete list of boot targets
 func PrintListBootTarget() error {
 	filter := &utils.FilterFunc{}
 	filter.DeviceType = bootdevicetype
@@ -86,7 +88,7 @@ func PrintListBootTarget() error {
 	return nil
 }
 
-// GetCurrentBootTarget takes a rack and board id as locators and returns the
+// GetBootTarget takes a rack and board id as locators and returns the
 // current set boot target for the `system` device.
 func GetBootTarget(res utils.Result) (*BootTargetDetails, error) {
 	boottarget := &BootTargetDetails{}
@@ -99,7 +101,7 @@ func GetBootTarget(res utils.Result) (*BootTargetDetails, error) {
 	return boottarget, nil
 }
 
-// PrintGetCurrentBootTarget calls GetCurrentBootTarget and pretty prints the
+// PrintGetBootTarget calls GetCurrentBootTarget and pretty prints the
 // result.
 func PrintGetBootTarget(args utils.GetDeviceArgs) error {
 	filter := &utils.FilterFunc{}
@@ -133,7 +135,7 @@ func PrintGetBootTarget(args utils.GetDeviceArgs) error {
 	return nil
 }
 
-// SetCurrentBootTarget takes a rack and board id as locators as well as a
+// SetBootTarget takes a rack and board id as locators as well as a
 // boot target. The matching `system` device's boot target is set to the passed
 // boot target.
 // Options are: `no-override`, `hdd`, `pxe`.

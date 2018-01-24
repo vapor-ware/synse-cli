@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -12,6 +11,7 @@ import (
 
 // fanpath specifies the endpoint to query for fan status
 const fanpath = "fan/"
+
 // fandevicetype specifies the device type to query for fan status
 const fandevicetype = "fan_speed"
 
@@ -76,8 +76,7 @@ func GetFan(res utils.Result) (*FanDetails, error) {
 		return fan, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(
-			fmt.Sprintf("%+v\n%+v", failure.HttpCode, failure.Message))
+		return nil, fmt.Errorf("%+v\n%+v", failure.HTTPCode, failure.Message)
 	}
 
 	return fan, nil

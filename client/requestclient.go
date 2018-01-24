@@ -1,7 +1,7 @@
-// Client extends the https://github.com/dghubble/sling package to provide a
+// Package client extends the https://github.com/dghubble/sling package to provide a
 // RESTful client to the Synse endpoints. The base url path is constructed
 // from the configured Synse url as well as the type and version of the API.
-// All new queires within synse should be using an instance of this client.
+// All new queries within synse should be using an instance of this client.
 package client
 
 import (
@@ -15,10 +15,10 @@ import (
 
 var theClient *sling.Sling
 
-// constructUrl builds the full url string from the host base, endpoint type
+// constructURL builds the full url string from the host base, endpoint type
 // (Synse), and API version number. Endpoint paths can be extended off of
 // this base.
-func constructUrl(host string) string {
+func constructURL(host string) string {
 	var vaporPort = 5000
 	var defaultPath = "synse" //Add a version number here
 	var versionNumber = 1.4
@@ -29,7 +29,7 @@ func constructUrl(host string) string {
 
 // ErrorResponse contains the possible response data from an API error.
 type ErrorResponse struct { // FIXME: This should go somewhere else
-	HttpCode int    `json:"http_code"`
+	HTTPCode int    `json:"http_code"`
 	Message  string `json:"message"`
 }
 
@@ -76,7 +76,7 @@ func (d LogMiddleware) Do(req *http.Request) (*http.Response, error) {
 
 // Config returns a new instance of the Client with the appropriate wrappers.
 func Config(host string) {
-	theClient = sling.New().Doer(&LogMiddleware{}).Base(constructUrl(host))
+	theClient = sling.New().Doer(&LogMiddleware{}).Base(constructURL(host))
 }
 
 // New generates a new instance of the Client with the current configuration.

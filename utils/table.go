@@ -7,7 +7,6 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/vbauerster/mpb"
 	"github.com/vbauerster/mpb/decor"
-
 )
 
 // TableOutput renders table output with the default configuration values.
