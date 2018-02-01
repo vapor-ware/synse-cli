@@ -1,5 +1,5 @@
 [![buddy pipeline](https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439/badge.svg?token=3ae6c804af4fdb5947b58ba1c544c232bf8d28f6e6d2b07321added2d1cc0bad "buddy pipeline")](https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439)
-[![CircleCI](https://circleci.com/gh/vapor-ware/synse-cli.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3)](https://circleci.com/gh/vapor-ware/vesh)
+[![CircleCI](https://circleci.com/gh/vapor-ware/synse-cli.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3)](https://circleci.com/gh/vapor-ware/synse-cli)
 [![GoDoc](https://godoc.org/github.com/vapor-ware/synse-cli?status.svg)](http://godoc.org/github.com/vapor-ware/synse-cli)
 [![Go Report Card](https://goreportcard.com/badge/github.com/vapor-ware/synse-cli)](https://goreportcard.com/report/github.com/vapor-ware/synse-cli)
 
