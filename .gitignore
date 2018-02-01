@@ -40,3 +40,6 @@ vendor/
 
 # Build output
 build/
+
+# Editors / IDEs
+.idea/
