@@ -2,28 +2,28 @@
 
 
 [[projects]]
+  branch = "master"
   name = "github.com/Sirupsen/logrus"
   packages = ["."]
-  revision = "d682213848ed68c0a260ca37d6dd5ace8423f5ba"
-  version = "v1.0.4"
+  revision = "768a92a02685ee7535069fc1581341b41bab9b72"
 
 [[projects]]
+  branch = "master"
   name = "github.com/asaskevich/govalidator"
   packages = ["."]
-  revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
-  version = "v8"
+  revision = "4b3d68f87f176641ffc147420296013aff66ea32"
 
 [[projects]]
+  branch = "master"
   name = "github.com/dghubble/sling"
   packages = ["."]
-  revision = "eb56e89ac5088bebb12eef3cb4b293300f43608b"
-  version = "v1.1.0"
+  revision = "80ec33c6152a53edb5545864ca37567b506c4ca5"
 
 [[projects]]
+  branch = "master"
   name = "github.com/fatih/structs"
   packages = ["."]
-  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
-  version = "v1.0"
+  revision = "ebf56d35bba727c68ac77f56f2fcf90b181851aa"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -44,6 +44,7 @@
     ".",
     "hcl/ast",
     "hcl/parser",
+    "hcl/printer",
     "hcl/scanner",
     "hcl/strconv",
     "hcl/token",
@@ -117,26 +118,26 @@
   version = "v1.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/spf13/viper"
   packages = ["."]
-  revision = "25b30aa063fc18e48662b86996252eabdcf2f0c7"
-  version = "v1.0.0"
+  revision = "aafc9e6bc7b7bb53ddaa75a5ef49a17d6e654be5"
 
 [[projects]]
+  branch = "master"
   name = "github.com/urfave/cli"
   packages = ["."]
-  revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
-  version = "v1.20.0"
+  revision = "75104e932ac2ddb944a6ea19d9f9f26316ff1145"
 
 [[projects]]
+  branch = "master"
   name = "github.com/vbauerster/mpb"
   packages = [
     ".",
     "cwriter",
     "decor"
   ]
-  revision = "dac08dfacedfef1da943f0491a430e4a8edf5bb0"
-  version = "v3.0.4"
+  revision = "9c8aced234a9ada5879c0631e9dd6e6b5fc07d49"
 
 [[projects]]
   branch = "master"
@@ -175,6 +176,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "78ea85c973d0974aac1854b493a7897f9770595e54f20c7e1031d42fee0efbdf"
+  inputs-digest = "91595eda6e270a88c78cfe4a4e66afae840826cd9e07cc32abd469e91aecd849"
   solver-name = "gps-cdcl"
   solver-version = 1
