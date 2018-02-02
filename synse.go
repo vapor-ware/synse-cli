@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/commands"
-	"github.com/vapor-ware/synse-cli/utils"
+	"github.com/vapor-ware/synse-cli/flags"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -23,11 +23,14 @@ import (
 func main() {
 	app := cli.NewApp()
 	app.Name = "synse"
-	app.Usage = "Synse Shell"
+	app.Usage = "Synse CLI"
 	app.Version = "0.1.0"
-	app.Authors = []cli.Author{{Name: "Tim Fall", Email: "tim@vapor.io"},
-		{Name: "Thomas Rampelberg", Email: "thomasr@vapor.io"}}
+	app.Authors = []cli.Author{
+		{Name: "Tim Fall", Email: "tim@vapor.io"},
+		{Name: "Thomas Rampelberg", Email: "thomasr@vapor.io"},
+	}
 
+	app.Flags = flags.Flags
 	app.Commands = commands.Commands
 	//app.CommandNotFound = commands.CommandNotFound
 	app.EnableBashCompletion = true
@@ -39,36 +42,16 @@ func main() {
 		}
 
 		// Construct the config for this session.
-		err := utils.ConstructConfig(c)
+		err := config.ConstructConfig(c)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		if utils.Config.Debug {
+		if config.Config.Debug {
 			log.SetLevel(log.DebugLevel)
 		}
 
-		// Pass configuration results to the appropriate functions.
-		client.Config(utils.Config.SynseHost)
-
 		return nil
-	}
-
-	app.Flags = []cli.Flag{
-		cli.BoolFlag{
-			Name:  "debug, d",
-			Usage: "Enable debug mode",
-		},
-		cli.StringFlag{
-			EnvVar: "SYNSE_CONFIG_FILE",
-			Name:   "config, c",
-			Usage:  "Path to config `file`",
-		},
-		cli.StringFlag{
-			EnvVar: "SYNSE_HOST",
-			Name:   "synse-host, host",
-			Usage:  "Address of `Synse Host`",
-		},
 	}
 
 	app.Run(os.Args)

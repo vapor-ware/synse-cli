@@ -17,7 +17,6 @@ type LightsDetails struct {
 	Color      int16  `json:"color"`
 }
 
-
 // LightsResult contains the fields returned and a result object from a lights query
 type LightsResult struct {
 	utils.Result

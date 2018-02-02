@@ -18,10 +18,11 @@ type APIStatus struct {
 // TestAPI checks the "../<testpath>" endpoint and returns the status returned.
 func TestAPI() error { // This should be suppressed when not directly called unless debug is set
 	status := &APIStatus{}
-	resp, err := client.New().Get(testpath).ReceiveSuccess(status)
+	resp, err := client.NewUnversioned().Get(testpath).ReceiveSuccess(status)
 	if err != nil {
 		return err
 	}
+
 	if resp.StatusCode != http.StatusOK {
 		return err
 	}
