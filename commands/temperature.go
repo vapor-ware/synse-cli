@@ -18,7 +18,6 @@ type TempDetails struct {
 	TemperatureC float64  `json:"temperature_c"`
 }
 
-
 // TempResult contains the detailed fields and result object from a temperature query
 type TempResult struct {
 	utils.Result

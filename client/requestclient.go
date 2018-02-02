@@ -11,20 +11,29 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/dghubble/sling"
+	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/scheme"
 )
-
-var theClient *sling.Sling
 
 // constructURL builds the full url string from the host base, endpoint type
 // (Synse), and API version number. Endpoint paths can be extended off of
 // this base.
 func constructURL(host string) string {
-	var vaporPort = 5000
-	var defaultPath = "synse" //Add a version number here
-	var versionNumber = 1.4
-	var CompleteBase = fmt.Sprintf(
-		"http://%s:%d/%s/%.1f/", host, vaporPort, defaultPath, versionNumber)
-	return CompleteBase
+	// FIXME (etd) - unclear what the best approach is here. do we just want to
+	//   get the version via the /version endpoint always? What if it fails to resolve?
+	//   then its basically just a failing 'status' command. should there be a fallback value?
+
+	version := &scheme.Version{}
+
+	resp, err := NewUnversioned().Get("version").ReceiveSuccess(version)
+	if err != nil {
+		panic(err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		panic(resp.StatusCode)
+	}
+
+	return fmt.Sprintf("http://%s/synse/%s/", host, version.APIVersion)
 }
 
 // ErrorResponse contains the possible response data from an API error.
@@ -74,16 +83,11 @@ func (d LogMiddleware) Do(req *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
-// Config returns a new instance of the Client with the appropriate wrappers.
-func Config(host string) {
-	theClient = sling.New().Doer(&LogMiddleware{}).Base(constructURL(host))
+func NewUnversioned() *sling.Sling {
+	return sling.New().Doer(&LogMiddleware{}).Base(fmt.Sprintf("http://%s/synse/", config.Config.ActiveHost.Address)).New()
 }
 
 // New generates a new instance of the Client with the current configuration.
 func New() *sling.Sling {
-	if theClient == nil {
-		panic("You must configure the client first.")
-	}
-
-	return theClient.New()
+	return sling.New().Doer(&LogMiddleware{}).Base(constructURL(config.Config.ActiveHost.Address)).New()
 }
