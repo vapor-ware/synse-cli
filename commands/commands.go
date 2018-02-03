@@ -76,6 +76,7 @@ import (
 	"fmt"
 
 	"github.com/vapor-ware/synse-cli/utils"
+	"github.com/vapor-ware/synse-cli/commands/hosts"
 
 	"github.com/urfave/cli"
 )
@@ -83,6 +84,7 @@ import (
 // Commands provides the global list of commands to app.cli.
 // Definitions, usage information, and executed functions are given.
 var Commands = []cli.Command{
+	hosts.NewHostsCommand(),
 	{
 		Name:    "status",
 		Aliases: []string{"stat"},
