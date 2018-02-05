@@ -54,5 +54,13 @@ func main() {
 		return nil
 	}
 
+	app.After = func(c *cli.Context) error {
+		err := config.Persist()
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
 	app.Run(os.Args)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/config"
 )
 
 var hostsActiveCommand = cli.Command{
@@ -14,6 +15,10 @@ var hostsActiveCommand = cli.Command{
 }
 
 func cmdActive(c *cli.Context) error {
-	fmt.Println("hosts active")
+	if config.Config.ActiveHost == nil {
+		return cli.NewExitError("no active host set", 1)
+	}
+	fmt.Printf("Name:    %s\n", config.Config.ActiveHost.Name)
+	fmt.Printf("Address: %s\n", config.Config.ActiveHost.Address)
 	return nil
 }

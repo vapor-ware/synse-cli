@@ -14,7 +14,21 @@ import (
 type config struct {
 	Debug bool
 	ActiveHost *hostConfig
-	Hosts []*hostConfig
+	Hosts map[string]*hostConfig
+}
+
+// AddHosts adds the given host to the configuration. If the host already exists
+// in the config, an error is returned. If there is no current active host when
+// a new host is being added, the new host will become the active host.
+func (c *config) AddHost(host *hostConfig) error {
+	if c.Hosts[host.Name] != nil {
+		return fmt.Errorf("host '%v' already exists in configuration", host.Name)
+	}
+	c.Hosts[host.Name] = host
+	if c.ActiveHost == nil {
+		c.ActiveHost = host
+	}
+	return nil
 }
 
 type hostConfig struct {
@@ -24,6 +38,17 @@ type hostConfig struct {
 
 // Config is a new variable containing the config object
 var Config config
+
+
+var configName = ".synse"
+
+
+func NewHostConfig(name, address string) *hostConfig {
+	return &hostConfig{
+		Name: name,
+		Address: address,
+	}
+}
 
 // ConstructConfig takes in the cli context and builds the current config from
 // the cascade of configuration sources. It prioritizes configruation options
@@ -44,16 +69,11 @@ func ConstructConfig(c *cli.Context) error {
 		return err
 	}
 
-	// Add a host for Synse Server running on localhost
-	localHost := hostConfig{
+	// add a default "local" instance of Synse Server
+	Config.AddHost(&hostConfig{
 		Name: "local",
 		Address: "localhost:5000",
-
-	}
-	Config.Hosts = append(Config.Hosts, &localHost)
-	if Config.ActiveHost == nil {
-		Config.ActiveHost = &localHost
-	}
+	})
 
 	// FIXME: not sure what this did..
 	//s := structs.New(&Config)
@@ -89,7 +109,7 @@ func ConstructConfig(c *cli.Context) error {
 // Log the issue as debug and move on.
 func readConfigFromFile() *viper.Viper {
 	v := viper.New()
-	v.SetConfigName(".synse")
+	v.SetConfigName(configName)
 	v.SetConfigType("yaml")
 
 	v.AddConfigPath(".")      // Try local first
@@ -99,7 +119,12 @@ func readConfigFromFile() *viper.Viper {
 	v.SetDefault("debug", false)
 	v.SetDefault("hosts", []hostConfig{})
 
-	v.ReadInConfig()
+	err := v.ReadInConfig()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"file": v.ConfigFileUsed(),
+		}).Debug("config file not found, a new one will be created")
+	}
 
 	log.WithFields(log.Fields{
 		"file":     v.ConfigFileUsed(),

@@ -1,9 +1,8 @@
 package hosts
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/config"
 )
 
 var hostAddCommand = cli.Command{
@@ -14,6 +13,15 @@ var hostAddCommand = cli.Command{
 }
 
 func cmfAdd(c *cli.Context) error {
-	fmt.Println("hosts add")
+	name := c.Args().Get(0)
+	addr := c.Args().Get(1)
+	if name == "" || addr == "" {
+		return cli.NewExitError("'add' requires 2 arguments", 1)
+	}
+
+	err := config.Config.AddHost(config.NewHostConfig(name, addr))
+	if err != nil {
+		return cli.NewExitError(err, 1)
+	}
 	return nil
 }
