@@ -25,12 +25,12 @@ type scanResponse struct {
 // Rack contains the top level objects for a rack
 type Rack struct {
 	Boards []Board `json:"boards"`
-	RackID string  `json:"rack_id"`
+	RackID string  `json:"id"`
 }
 
 // Board contains the top level objects for a board
 type Board struct {
-	BoardID     string   `json:"board_id"`
+	BoardID     string   `json:"id"`
 	Hostnames   []string `json:"hostnames"`
 	IPAddresses []string `json:"ip_addresses"`
 	Devices     []Device `json:"devices"`
@@ -38,9 +38,9 @@ type Board struct {
 
 // Device contains the response values for a specific device
 type Device struct {
-	DeviceID   string `json:"device_id"`
-	DeviceInfo string `json:"device_info"`
-	DeviceType string `json:"device_type"`
+	DeviceID   string `json:"id"`
+	DeviceInfo string `json:"info"`
+	DeviceType string `json:"type"`
 }
 
 // Result gathers the response values for all nested objects
