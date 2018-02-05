@@ -16,8 +16,9 @@ const configURI = "config"
 
 // configCommand
 var ConfigCommand = cli.Command{
-	Name:  "config",
-	Usage: "get the configuration of the active Synse Server instance",
+	Name:     "config",
+	Usage:    "get the configuration of the active Synse Server instance",
+	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdConfig(c))
 	},

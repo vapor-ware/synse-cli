@@ -9,14 +9,16 @@ import (
 	"github.com/vbauerster/mpb/decor"
 )
 
-// TableOutput renders table output with the default configuration values.
+// TableOutput renders table output.
 func TableOutput(header []string, data [][]string) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader(header)
 	table.SetBorder(false)
-	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-	table.SetCenterSeparator("|")
+	table.SetColumnSeparator("")
+	table.SetCenterSeparator("")
 	table.SetAutoMergeCells(false)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
 	table.AppendBulk(data)
 	table.Render()
 }

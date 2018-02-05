@@ -27,17 +27,17 @@ type DeviceInfo struct {
 type DeviceOutput struct {
 	Type      string      `json:"type"`
 	DataType  string      `json:"data_type"`
-	Precision int         `json:"precision"`
-	Unit      OutputUnit  `json:"unit"`
-	Range     OutputRange `json:"range"`
+	Precision int         `json:"precision,omitempty"`
+	Unit      OutputUnit  `json:"unit,omitempty"`
+	Range     OutputRange `json:"range,omitempty"`
 }
 
 type OutputUnit struct {
-	Name   string `json:"name"`
-	Symbol string `json:"symbol"`
+	Name   string `json:"name,omitempty"`
+	Symbol string `json:"symbol,omitempty"`
 }
 
 type OutputRange struct {
-	Min float64 `json:"min"`
-	Max float64 `json:"max"`
+	Min float64 `json:"min,omitempty"`
+	Max float64 `json:"max,omitempty"`
 }

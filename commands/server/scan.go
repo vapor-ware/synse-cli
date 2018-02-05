@@ -14,8 +14,9 @@ const scanURI = "scan"
 
 // statusCommand
 var ScanCommand = cli.Command{
-	Name:  "scan",
-	Usage: "scan the Synse Server instance",
+	Name:     "scan",
+	Usage:    "scan the Synse Server instance",
+	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdScan(c))
 	},
@@ -33,24 +34,22 @@ func cmdScan(c *cli.Context) error {
 		return err
 	}
 
-	// FIXME -- the below doesn't work anymore ):
 	var data [][]string
-
-	filter := &utils.FilterFunc{}
-	filter.FilterFn = func(res utils.Result) bool {
-		return true
-	}
-
-	fil, err := utils.FilterDevices(filter)
-	if err != nil {
-		return err
-	}
-	for res := range fil {
-		if res.Error != nil {
-			return res.Error
+	for _, rack := range scan.Racks {
+		for _, board := range rack.Boards {
+			for _, device := range board.Devices {
+				data = append(data, []string{
+					rack.Id,
+					board.Id,
+					device.Id,
+					device.Info,
+					device.Type,
+				})
+			}
 		}
-		data = append(data, []string{})
 	}
+
+	// FIXME (etd) - this should be sorted
 
 	header := []string{"Rack", "Board", "Device", "Info", "Type"}
 	utils.TableOutput(header, data)
