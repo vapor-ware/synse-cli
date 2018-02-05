@@ -79,27 +79,17 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/commands/server"
 )
 
 // Commands provides the global list of commands to app.cli.
 // Definitions, usage information, and executed functions are given.
 var Commands = []cli.Command{
 	hosts.NewHostsCommand(),
-	{
-		Name:    "status",
-		Aliases: []string{"stat"},
-		Usage:   "Get the status of the current deployment",
-		Action: func(c *cli.Context) error {
-			return utils.CommandHandler(c, TestAPI())
-		},
-	},
-	{
-		Name:  "scan",
-		Usage: "Scan the infrastructure and display device summary",
-		Action: func(c *cli.Context) error {
-			return utils.CommandHandler(c, Scan())
-		},
-	},
+	server.StatusCommand,
+	server.VersionCommand,
+	server.ScanCommand,
+	server.ConfigCommand,
 	{
 		Name:  "assets",
 		Usage: "Manage and get information about physical devices",
