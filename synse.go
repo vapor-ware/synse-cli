@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/commands"
+	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/flags"
 
 	log "github.com/Sirupsen/logrus"

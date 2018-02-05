@@ -6,10 +6,9 @@ import (
 )
 
 var hostAddCommand = cli.Command{
-	Name: "add",
-	Usage: "add a Synse Server instance to the tracked hosts",
+	Name:   "add",
+	Usage:  "add a Synse Server instance to the tracked hosts",
 	Action: cmfAdd,
-
 }
 
 func cmfAdd(c *cli.Context) error {
