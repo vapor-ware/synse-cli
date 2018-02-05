@@ -9,7 +9,6 @@ var debugFlag = cli.BoolFlag{
 	Usage: "enable debug mode",
 }
 
-
 var Flags = []cli.Flag{
 	debugFlag,
 }

@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/commands"
+	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/flags"
 
 	log "github.com/Sirupsen/logrus"
@@ -51,6 +51,14 @@ func main() {
 			log.SetLevel(log.DebugLevel)
 		}
 
+		return nil
+	}
+
+	app.After = func(c *cli.Context) error {
+		err := config.Persist()
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 

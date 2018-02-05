@@ -75,8 +75,8 @@ package commands
 import (
 	"fmt"
 
-	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-cli/commands/hosts"
+	"github.com/vapor-ware/synse-cli/utils"
 
 	"github.com/urfave/cli"
 )

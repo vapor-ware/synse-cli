@@ -7,7 +7,7 @@ import (
 // NewHostsCommand
 func NewHostsCommand() cli.Command {
 	return cli.Command{
-		Name: "hosts",
+		Name:  "hosts",
 		Usage: "manage the configured Synse Server instances",
 		Subcommands: []cli.Command{
 			hostsActiveCommand,
