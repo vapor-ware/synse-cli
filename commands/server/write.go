@@ -1,12 +1,13 @@
 package server
 
 import (
-	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/utils"
-	"github.com/vapor-ware/synse-cli/scheme"
-	"github.com/vapor-ware/synse-cli/client"
-	"net/http"
 	"fmt"
+	"net/http"
+
+	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/scheme"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // writeURI
@@ -14,8 +15,8 @@ const writeURI = "write"
 
 // writeCommand
 var writeCommand = cli.Command{
-	Name:    "write",
-	Usage:   "write",
+	Name:  "write",
+	Usage: "write",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdWrite(c))
 	},

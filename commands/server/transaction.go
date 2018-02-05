@@ -1,12 +1,13 @@
 package server
 
 import (
-	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/utils"
-	"github.com/vapor-ware/synse-cli/scheme"
-	"github.com/vapor-ware/synse-cli/client"
-	"net/http"
 	"fmt"
+	"net/http"
+
+	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/scheme"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // transactionURI
@@ -14,8 +15,8 @@ const transactionURI = "transaction"
 
 // transactionCommand
 var transactionCommand = cli.Command{
-	Name:    "transaction",
-	Usage:   "transaction",
+	Name:  "transaction",
+	Usage: "transaction",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdTransaction(c))
 	},

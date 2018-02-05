@@ -1,12 +1,13 @@
 package server
 
 import (
-	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/utils"
-	"github.com/vapor-ware/synse-cli/scheme"
-	"github.com/vapor-ware/synse-cli/client"
-	"net/http"
 	"fmt"
+	"net/http"
+
+	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/scheme"
+	"github.com/vapor-ware/synse-cli/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -15,8 +16,8 @@ const configURI = "config"
 
 // configCommand
 var ConfigCommand = cli.Command{
-	Name:    "config",
-	Usage:   "get the configuration of the active Synse Server instance",
+	Name:  "config",
+	Usage: "get the configuration of the active Synse Server instance",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdConfig(c))
 	},

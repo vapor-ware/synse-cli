@@ -1,11 +1,12 @@
 package server
 
 import (
-	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/utils"
-	"github.com/vapor-ware/synse-cli/scheme"
-	"github.com/vapor-ware/synse-cli/client"
 	"net/http"
+
+	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/scheme"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // scanURI
@@ -13,8 +14,8 @@ const scanURI = "scan"
 
 // statusCommand
 var ScanCommand = cli.Command{
-	Name:    "scan",
-	Usage:   "scan the Synse Server instance",
+	Name:  "scan",
+	Usage: "scan the Synse Server instance",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdScan(c))
 	},
@@ -48,9 +49,7 @@ func cmdScan(c *cli.Context) error {
 		if res.Error != nil {
 			return res.Error
 		}
-		data = append(data, []string{
-
-		})
+		data = append(data, []string{})
 	}
 
 	header := []string{"Rack", "Board", "Device", "Info", "Type"}

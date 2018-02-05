@@ -1,12 +1,13 @@
 package server
 
 import (
-	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/utils"
-	"github.com/vapor-ware/synse-cli/scheme"
-	"github.com/vapor-ware/synse-cli/client"
-	"net/http"
 	"fmt"
+	"net/http"
+
+	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/scheme"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // versionURI
@@ -14,8 +15,8 @@ const versionURI = "version"
 
 // versionCommand
 var VersionCommand = cli.Command{
-	Name:    "version",
-	Usage:   "get the version of the active Synse Server instance",
+	Name:  "version",
+	Usage: "get the version of the active Synse Server instance",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdVersion(c))
 	},
