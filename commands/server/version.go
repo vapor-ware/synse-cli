@@ -15,8 +15,9 @@ const versionURI = "version"
 
 // versionCommand
 var VersionCommand = cli.Command{
-	Name:  "version",
-	Usage: "get the version of the active Synse Server instance",
+	Name:     "version",
+	Usage:    "get the version of the active Synse Server instance",
+	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdVersion(c))
 	},

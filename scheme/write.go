@@ -1,10 +1,5 @@
 package scheme
 
-// Write
-type Write struct {
-	Transactions []WriteTransaction
-}
-
 // WriteTransaction
 type WriteTransaction struct {
 	Context     WriteContext `json:"context"`

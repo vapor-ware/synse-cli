@@ -15,8 +15,9 @@ const testURI = "test"
 
 // statusCommand
 var StatusCommand = cli.Command{
-	Name:  "status",
-	Usage: "get the status of the active Synse Server instance",
+	Name:     "status",
+	Usage:    "get the status of the active Synse Server instance",
+	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdStatus(c))
 	},

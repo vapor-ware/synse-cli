@@ -90,6 +90,10 @@ var Commands = []cli.Command{
 	server.VersionCommand,
 	server.ScanCommand,
 	server.ConfigCommand,
+	server.ReadCommand,
+	server.WriteCommand,
+	server.InfoCommand,
+	server.TransactionCommand,
 	{
 		Name:  "assets",
 		Usage: "Manage and get information about physical devices",
