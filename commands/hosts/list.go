@@ -2,15 +2,14 @@ package hosts
 
 import (
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 var hostsListCommand = cli.Command{
-	Name: "list",
-	Usage: "list the configured Synse Server hosts",
+	Name:   "list",
+	Usage:  "list the configured Synse Server hosts",
 	Action: cmdList,
-
 }
 
 func cmdList(c *cli.Context) error {

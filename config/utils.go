@@ -1,13 +1,14 @@
 package config
 
 import (
-	"path/filepath"
-	"strings"
-	"os"
 	"fmt"
 	"io/ioutil"
-	"gopkg.in/yaml.v2"
+	"os"
+	"path/filepath"
+	"strings"
+
 	log "github.com/Sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
 // Persist writes the current configuration to file.
@@ -21,7 +22,7 @@ func Persist() error {
 
 	// If an existing file does not exist, create one
 	if configPath == "" {
-		configPath = filepath.Join(os.Getenv("HOME"), configName + ".yml")
+		configPath = filepath.Join(os.Getenv("HOME"), configName+".yml")
 	}
 
 	log.WithFields(log.Fields{
@@ -39,8 +40,6 @@ func Persist() error {
 
 	return nil
 }
-
-
 
 // getConfigPath
 func getConfigPath(paths ...string) (string, error) {

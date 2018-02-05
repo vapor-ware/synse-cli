@@ -12,9 +12,9 @@ import (
 )
 
 type config struct {
-	Debug bool
+	Debug      bool
 	ActiveHost *hostConfig
-	Hosts map[string]*hostConfig
+	Hosts      map[string]*hostConfig
 }
 
 // AddHosts adds the given host to the configuration. If the host already exists
@@ -32,20 +32,18 @@ func (c *config) AddHost(host *hostConfig) error {
 }
 
 type hostConfig struct {
-	Name string
+	Name    string
 	Address string
 }
 
 // Config is a new variable containing the config object
 var Config config
 
-
 var configName = ".synse"
-
 
 func NewHostConfig(name, address string) *hostConfig {
 	return &hostConfig{
-		Name: name,
+		Name:    name,
 		Address: address,
 	}
 }
@@ -71,7 +69,7 @@ func ConstructConfig(c *cli.Context) error {
 
 	// add a default "local" instance of Synse Server
 	Config.AddHost(&hostConfig{
-		Name: "local",
+		Name:    "local",
 		Address: "localhost:5000",
 	})
 
