@@ -9,23 +9,24 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// scanURI
-const scanURI = "scan"
+// scanBase is the base URI for the "scan" route.
+const scanBase = "scan"
 
-// statusCommand
+// ScanCommand is the CLI command for Synse Server's "scan" API route.
 var ScanCommand = cli.Command{
 	Name:     "scan",
-	Usage:    "scan the Synse Server instance",
+	Usage:    "Enumerate all devices on the active host",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdScan(c))
 	},
 }
 
-// cmdScan
+// cmdScan is the action for the ScanCommand. It makes an "scan" request
+// against the active Synse Server instance.
 func cmdScan(c *cli.Context) error {
 	scan := &scheme.Scan{}
-	resp, err := client.New().Get(scanURI).ReceiveSuccess(scan)
+	resp, err := client.New().Get(scanBase).ReceiveSuccess(scan)
 	if err != nil {
 		return err
 	}

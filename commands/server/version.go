@@ -10,23 +10,24 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// versionURI
-const versionURI = "version"
+// versionBase is the base URI for the "version" route.
+const versionBase = "version"
 
-// versionCommand
+// VersionCommand is the CLI command for Synse Server's "version" API route.
 var VersionCommand = cli.Command{
 	Name:     "version",
-	Usage:    "get the version of the active Synse Server instance",
+	Usage:    "Get the version of the active host",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdVersion(c))
 	},
 }
 
-// cmdVersion
+// cmdVersion is the action for the VersionCommand. It makes an "version" request
+// against the active Synse Server instance.
 func cmdVersion(c *cli.Context) error {
 	version := &scheme.Version{}
-	resp, err := client.NewUnversioned().Get(versionURI).ReceiveSuccess(version)
+	resp, err := client.NewUnversioned().Get(versionBase).ReceiveSuccess(version)
 	if err != nil {
 		return err
 	}

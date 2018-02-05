@@ -5,13 +5,17 @@ import (
 	"github.com/vapor-ware/synse-cli/config"
 )
 
-var hostAddCommand = cli.Command{
+// hostsAddCommand is the CLI sub-command for adding a new host to the CLI
+// configuration.
+var hostsAddCommand = cli.Command{
 	Name:   "add",
-	Usage:  "add a Synse Server instance to the tracked hosts",
-	Action: cmfAdd,
+	Usage:  "Add a new Synse Server host",
+	Action: cmdAdd,
 }
 
-func cmfAdd(c *cli.Context) error {
+// cmdAdd is the action for hostsAddCommand. It adds the specified host to the
+// CLI configuration.
+func cmdAdd(c *cli.Context) error {
 	name := c.Args().Get(0)
 	addr := c.Args().Get(1)
 	if name == "" || addr == "" {

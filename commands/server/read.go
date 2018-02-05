@@ -11,20 +11,21 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// readURI
-const readURI = "read"
+// readBase is the base URI for the "read" route.
+const readBase = "read"
 
-// readCommand
+// ReadCommand is the CLI command for Synse Server's "read" API route.
 var ReadCommand = cli.Command{
 	Name:     "read",
-	Usage:    "read",
+	Usage:    "Read from the specified device",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdRead(c))
 	},
 }
 
-// cmdRead
+// cmdRead is the action for the ReadCommand. It makes an "read" request
+// against the active Synse Server instance.
 func cmdRead(c *cli.Context) error {
 	rack := c.Args().Get(0)
 	board := c.Args().Get(1)
@@ -34,7 +35,7 @@ func cmdRead(c *cli.Context) error {
 	}
 
 	read := &scheme.Read{}
-	uri := fmt.Sprintf("%s/%s/%s/%s", readURI, rack, board, device)
+	uri := fmt.Sprintf("%s/%s/%s/%s", readBase, rack, board, device)
 	resp, err := client.New().Get(uri).ReceiveSuccess(read)
 	if err != nil {
 		return err

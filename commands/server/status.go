@@ -10,23 +10,24 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// testURI
-const testURI = "test"
+// testBase is the base URI for the "test" route.
+const testBase = "test"
 
-// statusCommand
+// StatusCommand is the CLI command for Synse Server's "test" API route.
 var StatusCommand = cli.Command{
 	Name:     "status",
-	Usage:    "get the status of the active Synse Server instance",
+	Usage:    "Get the status of the active host",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdStatus(c))
 	},
 }
 
-// cmdStatus
+// cmdStatus is the action for the StatusCommand. It makes an "status" request
+// against the active Synse Server instance.
 func cmdStatus(c *cli.Context) error {
 	status := &scheme.TestStatus{}
-	resp, err := client.NewUnversioned().Get(testURI).ReceiveSuccess(status)
+	resp, err := client.NewUnversioned().Get(testBase).ReceiveSuccess(status)
 	if err != nil {
 		return err
 	}
