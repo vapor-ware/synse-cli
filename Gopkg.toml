@@ -39,10 +39,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/fatih/structs"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/olekukonko/tablewriter"
 
 [[constraint]]

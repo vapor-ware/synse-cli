@@ -1,5 +1,6 @@
 package scheme
 
+// Config is the scheme for the Synse Server "config" endpoint response.
 type Config struct {
 	Locale     string                 `json:"locale",yaml:"locale"`
 	PrettyJSON bool                   `json:"pretty_json",yaml:"pretty_json"`

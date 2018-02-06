@@ -47,12 +47,6 @@ type LogMiddleware struct {
 	c http.Client
 }
 
-// track tracks the time elapsed between calls.
-func track(start time.Time, name string) {
-	elapsed := time.Since(start)
-	log.Printf("%s took %s", name, elapsed)
-}
-
 // Do wraps the http.Request.Do object to log any messages during calls.
 func (d LogMiddleware) Do(req *http.Request) (*http.Response, error) {
 	log.WithFields(log.Fields{
@@ -83,6 +77,7 @@ func (d LogMiddleware) Do(req *http.Request) (*http.Response, error) {
 	return resp, err
 }
 
+// NewUnversioned generates a new instance of the Client for the un-versioned base endpoint.
 func NewUnversioned() *sling.Sling {
 	return sling.New().Doer(&LogMiddleware{}).Base(fmt.Sprintf("http://%s/synse/", config.Config.ActiveHost.Address)).New()
 }

@@ -1,25 +1,25 @@
 package scheme
 
-// Scan
+// Scan is the scheme for the Synse Server "scan" endpoint response.
 type Scan struct {
-	Racks []Rack `json:"racks"`
+	Racks []rack `json:"racks"`
 }
 
-// Rack
-type Rack struct {
-	Id     string  `json:"id"`
-	Boards []Board `json:"boards"`
+// rack describes a rack entry in the scan result.
+type rack struct {
+	ID     string  `json:"id"`
+	Boards []board `json:"boards"`
 }
 
-// Board
-type Board struct {
-	Id      string   `json:"id"`
-	Devices []Device `json:"devices"`
+// board describes a board entry in the scan result.
+type board struct {
+	ID      string   `json:"id"`
+	Devices []device `json:"devices"`
 }
 
-// Device
-type Device struct {
-	Id   string `json:"id"`
+// device describes a device entry in the scan result.
+type device struct {
+	ID   string `json:"id"`
 	Type string `json:"type"`
 	Info string `json:"info"`
 }

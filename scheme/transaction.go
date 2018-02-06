@@ -1,9 +1,9 @@
 package scheme
 
-// Transaction
+// Transaction is the scheme for the Synse Server "transaction" endpoint response.
 type Transaction struct {
-	Id      string       `json:"id"`
-	Context WriteContext `json:"context"`
+	ID      string       `json:"id"`
+	Context writeContext `json:"context"`
 	State   string       `json:"state"`
 	Created string       `json:"created"`
 	Updated string       `json:"updated"`
