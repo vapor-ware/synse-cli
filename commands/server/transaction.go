@@ -11,20 +11,21 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// transactionURI
-const transactionURI = "transaction"
+// transactionBase is the base URI for the "transaction" route.
+const transactionBase = "transaction"
 
-// transactionCommand
+// TransactionCommand is the CLI command for Synse Server's "transaction" API route.
 var TransactionCommand = cli.Command{
 	Name:     "transaction",
-	Usage:    "transaction",
+	Usage:    "Check the state and status of a transaction",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdTransaction(c))
 	},
 }
 
-// cmdTransaction
+// cmdTransaction is the action for the TransactionCommand. It makes an "transaction"
+// request against the active Synse Server instance.
 func cmdTransaction(c *cli.Context) error {
 	transactionID := c.Args().Get(0)
 	if transactionID == "" {
@@ -32,7 +33,7 @@ func cmdTransaction(c *cli.Context) error {
 	}
 
 	transaction := &scheme.Transaction{}
-	uri := fmt.Sprintf("%s/%s", transactionURI, transactionID)
+	uri := fmt.Sprintf("%s/%s", transactionBase, transactionID)
 	resp, err := client.New().Get(uri).ReceiveSuccess(transaction)
 	if err != nil {
 		return err

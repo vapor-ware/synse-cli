@@ -10,25 +10,27 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// writeURI
-const writeURI = "write"
+// writeBase is the base URI for the "write" route.
+const writeBase = "write"
 
-// writeCommand
+// writePost defines the data to POST to the Synse Server "write" route.
+type writePost struct {
+	Action string `json:"action,omitempty"`
+	Raw    string `json:"raw,omitempty"`
+}
+
+// WriteCommand is the CLI command for Synse Server's "write" API route.
 var WriteCommand = cli.Command{
 	Name:     "write",
-	Usage:    "write",
+	Usage:    "Write to the specified device",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdWrite(c))
 	},
 }
 
-type writePost struct {
-	Action string `json:"action,omitempty"`
-	Raw    string `json:"raw,omitempty"`
-}
-
-// cmdWrite
+// cmdWrite is the action for the WriteCommand. It makes an "write" request
+// against the active Synse Server instance.
 func cmdWrite(c *cli.Context) error {
 	rack := c.Args().Get(0)
 	board := c.Args().Get(1)
@@ -45,7 +47,7 @@ func cmdWrite(c *cli.Context) error {
 		Action: action,
 		Raw:    raw,
 	}
-	uri := fmt.Sprintf("%s/%s/%s/%s", writeURI, rack, board, device)
+	uri := fmt.Sprintf("%s/%s/%s/%s", writeBase, rack, board, device)
 	resp, err := client.New().Post(uri).BodyJSON(body).ReceiveSuccess(&write)
 	if err != nil {
 		return err

@@ -7,12 +7,15 @@ import (
 	"github.com/vapor-ware/synse-cli/config"
 )
 
+// hostsActiveCommand is the CLI sub-command for getting the active host.
 var hostsActiveCommand = cli.Command{
 	Name:   "active",
-	Usage:  "print the active Synse Server instance",
+	Usage:  "Display information for the active host",
 	Action: cmdActive,
 }
 
+// cmdActive is the action for hostsActiveCommand. It prints out the information
+// associated with the active host, if one is set.
 func cmdActive(c *cli.Context) error {
 	if config.Config.ActiveHost == nil {
 		return cli.NewExitError("no active host set", 1)

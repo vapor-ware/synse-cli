@@ -4,17 +4,16 @@ import (
 	"github.com/urfave/cli"
 )
 
-// NewHostsCommand
-func NewHostsCommand() cli.Command {
-	return cli.Command{
+// HostsCommand is the CLI command for managing Synse Server hosts.
+var HostsCommand = cli.Command{
 		Name:  "hosts",
-		Usage: "manage the configured Synse Server instances",
+		Usage: "Manage Synse Server instances",
 		Subcommands: []cli.Command{
 			hostsActiveCommand,
-			hostAddCommand,
-			hostChangeCommand,
-			hostDeleteCommand,
+			hostsAddCommand,
+			hostsChangeCommand,
+			hostsDeleteCommand,
 			hostsListCommand,
 		},
 	}
-}
+

@@ -85,7 +85,7 @@ import (
 // Commands provides the global list of commands to app.cli.
 // Definitions, usage information, and executed functions are given.
 var Commands = []cli.Command{
-	hosts.NewHostsCommand(),
+	hosts.HostsCommand,
 	server.StatusCommand,
 	server.VersionCommand,
 	server.ScanCommand,

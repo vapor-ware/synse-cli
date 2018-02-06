@@ -11,23 +11,24 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// configURI
-const configURI = "config"
+// configBase is the base URI for the "config" route.
+const configBase = "config"
 
-// configCommand
+// ConfigCommand is the CLI command for Synse Server's "config" API route.
 var ConfigCommand = cli.Command{
 	Name:     "config",
-	Usage:    "get the configuration of the active Synse Server instance",
+	Usage:    "Get the configuration for the active host",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
 		return utils.CommandHandler(c, cmdConfig(c))
 	},
 }
 
-// cmdConfig
+// cmdConfig is the action for the ConfigCommand. It makes an "config" request
+// against the active Synse Server instance.
 func cmdConfig(c *cli.Context) error {
 	cfg := &scheme.Config{}
-	resp, err := client.New().Get(configURI).ReceiveSuccess(cfg)
+	resp, err := client.New().Get(configBase).ReceiveSuccess(cfg)
 	if err != nil {
 		return err
 	}
