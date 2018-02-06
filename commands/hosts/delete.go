@@ -3,6 +3,7 @@ package hosts
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // hostsDeleteCommand is the CLI sub-command for deleting a host from the
@@ -17,10 +18,12 @@ var hostsDeleteCommand = cli.Command{
 // from the CLI configuration, if it exists. If the specified host is also the
 // active host, it will unset the active host.
 func cmdDelete(c *cli.Context) error {
-	name := c.Args().Get(0)
-	if name == "" {
-		return cli.NewExitError("'delete' requires 1 argument", 1)
+	err := utils.RequiresArgsExact(1, c)
+	if err != nil {
+		return err
 	}
+
+	name := c.Args().Get(0)
 
 	host := config.Config.Hosts[name]
 	if host != nil {

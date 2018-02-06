@@ -5,6 +5,7 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/utils"
 )
 
 // hostsChangeCommand is the CLI sub-command for changing the active host.
@@ -17,10 +18,12 @@ var hostsChangeCommand = cli.Command{
 // cmfChange is the action for hostsChangeCommand. It changes the active host to
 // the specified host, if it exists.
 func cmdChange(c *cli.Context) error {
-	name := c.Args().Get(0)
-	if name == "" {
-		return cli.NewExitError("'change' requires 1 argument", 1)
+	err := utils.RequiresArgsExact(1, c)
+	if err != nil {
+		return err
 	}
+
+	name := c.Args().Get(0)
 
 	for _, host := range config.Config.Hosts {
 		if host.Name == name {
