@@ -25,21 +25,23 @@ var WriteCommand = cli.Command{
 	Usage:    "Write to the specified device",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
-		return utils.CommandHandler(c, cmdWrite(c))
+		return utils.CmdHandler(c, cmdWrite(c))
 	},
 }
 
 // cmdWrite is the action for the WriteCommand. It makes an "write" request
 // against the active Synse Server instance.
 func cmdWrite(c *cli.Context) error {
+	err := utils.RequiresArgsInRange(4, 5, c)
+	if err != nil {
+		return err
+	}
+
 	rack := c.Args().Get(0)
 	board := c.Args().Get(1)
 	device := c.Args().Get(2)
 	action := c.Args().Get(3)
 	raw := c.Args().Get(4)
-	if rack == "" || board == "" || device == "" || action == "" {
-		return cli.NewExitError("'write' requires 4-5 arguments", 1)
-	}
 
 	write := make([]scheme.WriteTransaction, 0)
 
@@ -47,7 +49,7 @@ func cmdWrite(c *cli.Context) error {
 		Action: action,
 		Raw:    raw,
 	}
-	uri := fmt.Sprintf("%s/%s/%s/%s", writeBase, rack, board, device)
+	uri := utils.MakeURI(writeBase, rack, board, device)
 	resp, err := client.New().Post(uri).BodyJSON(body).ReceiveSuccess(&write)
 	if err != nil {
 		return err

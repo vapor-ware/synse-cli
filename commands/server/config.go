@@ -1,14 +1,9 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
-	"gopkg.in/yaml.v2"
 )
 
 // configBase is the base URI for the "config" route.
@@ -20,7 +15,7 @@ var ConfigCommand = cli.Command{
 	Usage:    "Get the configuration for the active host",
 	Category: "Synse Server Actions",
 	Action: func(c *cli.Context) error {
-		return utils.CommandHandler(c, cmdConfig(c))
+		return utils.CmdHandler(c, cmdConfig(c))
 	},
 }
 
@@ -28,19 +23,10 @@ var ConfigCommand = cli.Command{
 // against the active Synse Server instance.
 func cmdConfig(c *cli.Context) error {
 	cfg := &scheme.Config{}
-	resp, err := client.New().Get(configBase).ReceiveSuccess(cfg)
+	err := utils.DoGet(configBase, cfg)
 	if err != nil {
 		return err
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return err
-	}
-
-	out, err := yaml.Marshal(cfg)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%s", out)
-	return nil
+	return utils.AsYAML(cfg)
 }

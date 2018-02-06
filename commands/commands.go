@@ -94,6 +94,7 @@ var Commands = []cli.Command{
 	server.WriteCommand,
 	server.InfoCommand,
 	server.TransactionCommand,
+	/*
 	{
 		Name:  "assets",
 		Usage: "Manage and get information about physical devices",
@@ -523,6 +524,7 @@ var Commands = []cli.Command{
 			},
 		},
 	},
+	*/
 	{
 		Name:   "shell-completion",
 		Usage:  "Generate shell completion scripts for bash or zsh",

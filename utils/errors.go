@@ -38,6 +38,17 @@ func DeviceNotFoundErr(res Result) error {
 	return nil
 }
 
+func CmdHandler(c *cli.Context, err error) error {
+	if err != nil {
+		if exitErr, ok := err.(cli.ExitCoder); ok {
+			return exitErr
+		} else {
+			return cli.NewExitError(err.Error(), 1)
+		}
+	}
+	return nil
+}
+
 // CommandHandler wraps the error logger to log results from a called command.
 func CommandHandler(c *cli.Context, err error) error {
 	if err != nil {
