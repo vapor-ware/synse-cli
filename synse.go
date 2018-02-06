@@ -10,12 +10,11 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
+	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/commands"
 	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/flags"
-
-	log "github.com/Sirupsen/logrus"
-	"github.com/urfave/cli"
 )
 
 // Main creates a new instance of cli.app (using https://github.com/urfave/cli)
@@ -30,9 +29,8 @@ func main() {
 		{Name: "Thomas Rampelberg", Email: "thomasr@vapor.io"},
 	}
 
-	app.Flags = flags.Flags
+	app.Flags = flags.GlobalFlags
 	app.Commands = commands.Commands
-	//app.CommandNotFound = commands.CommandNotFound
 	app.EnableBashCompletion = true
 
 	app.Before = func(c *cli.Context) error {
@@ -55,12 +53,11 @@ func main() {
 	}
 
 	app.After = func(c *cli.Context) error {
-		err := config.Persist()
-		if err != nil {
-			return err
-		}
-		return nil
+		return config.Persist()
 	}
 
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

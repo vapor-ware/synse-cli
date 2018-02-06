@@ -33,12 +33,7 @@ func Persist() error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(configPath, data, 0644)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return ioutil.WriteFile(configPath, data, 0644)
 }
 
 // getConfigPath

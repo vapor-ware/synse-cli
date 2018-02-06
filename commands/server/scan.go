@@ -22,6 +22,7 @@ var ScanCommand = cli.Command{
 	},
 }
 
+// scanDevice represents a single device found during a scan.
 type scanDevice struct {
 	Rack   string
 	Board  string
@@ -30,7 +31,7 @@ type scanDevice struct {
 	Type   string
 }
 
-// ID
+// ID generates the ID of the device by joining the rack, board, and device.
 func (device *scanDevice) ID() string {
 	return strings.Join([]string{
 		device.Rack,
@@ -39,7 +40,7 @@ func (device *scanDevice) ID() string {
 	}, "-")
 }
 
-// ToRow
+// ToRow converts a scanDevice to a table row.
 func (device *scanDevice) ToRow() []string {
 	return []string{
 		device.ID(),
@@ -50,17 +51,17 @@ func (device *scanDevice) ToRow() []string {
 
 // TODO (etd) - better organization here. this should probably move to the
 // utils or other sorting/filtering package
-type byScanDeviceId []*scanDevice
+type byScanDeviceID []*scanDevice
 
-func (s byScanDeviceId) Len() int {
+func (s byScanDeviceID) Len() int {
 	return len(s)
 }
 
-func (s byScanDeviceId) Swap(i, j int) {
+func (s byScanDeviceID) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-func (s byScanDeviceId) Less(i, j int) bool {
+func (s byScanDeviceID) Less(i, j int) bool {
 	return s[i].ID() < s[j].ID()
 }
 
@@ -78,9 +79,9 @@ func cmdScan(c *cli.Context) error {
 		for _, board := range rack.Boards {
 			for _, device := range board.Devices {
 				devices = append(devices, &scanDevice{
-					Rack:   rack.Id,
-					Board:  board.Id,
-					Device: device.Id,
+					Rack:   rack.ID,
+					Board:  board.ID,
+					Device: device.ID,
 					Info:   device.Info,
 					Type:   device.Type,
 				})
@@ -89,7 +90,7 @@ func cmdScan(c *cli.Context) error {
 	}
 
 	// Sort by ID
-	sort.Sort(byScanDeviceId(devices))
+	sort.Sort(byScanDeviceID(devices))
 
 	var data [][]string
 	for _, dev := range devices {

@@ -8,7 +8,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// AsYAML
+// AsYAML prints out the given interface as YAML. Here, the interfaces
+// are expected to be Synse Server response schemes.
 func AsYAML(out interface{}) error {
 	o, err := yaml.Marshal(out)
 	if err != nil {
@@ -18,7 +19,8 @@ func AsYAML(out interface{}) error {
 	return nil
 }
 
-// AsJSON
+// AsJSON prints out the given interface as JSON. Here the interfaces
+// are expected to be Synse Server response schemes.
 func AsJSON(out interface{}) error {
 	o, err := json.Marshal(out)
 	if err != nil {

@@ -2,25 +2,22 @@ package config
 
 import (
 	"fmt"
-	//"reflect"
-	//"strings"
 
 	log "github.com/Sirupsen/logrus"
-	//"github.com/fatih/structs"
 	"github.com/spf13/viper"
 	"github.com/urfave/cli"
 )
 
 type config struct {
 	Debug      bool
-	ActiveHost *hostConfig
-	Hosts      map[string]*hostConfig
+	ActiveHost *HostConfig
+	Hosts      map[string]*HostConfig
 }
 
 // AddHosts adds the given host to the configuration. If the host already exists
 // in the config, an error is returned. If there is no current active host when
 // a new host is being added, the new host will become the active host.
-func (c *config) AddHost(host *hostConfig) error {
+func (c *config) AddHost(host *HostConfig) error {
 	if c.Hosts[host.Name] != nil {
 		return fmt.Errorf("host '%v' already exists in configuration", host.Name)
 	}
@@ -31,7 +28,8 @@ func (c *config) AddHost(host *hostConfig) error {
 	return nil
 }
 
-type hostConfig struct {
+// HostConfig holds the configuration information for a single Synse Server host.
+type HostConfig struct {
 	Name    string
 	Address string
 }
@@ -41,8 +39,9 @@ var Config config
 
 var configName = ".synse"
 
-func NewHostConfig(name, address string) *hostConfig {
-	return &hostConfig{
+// NewHostConfig creates a new instance of HostConfig with the given values.
+func NewHostConfig(name, address string) *HostConfig {
+	return &HostConfig{
 		Name:    name,
 		Address: address,
 	}
@@ -68,33 +67,10 @@ func ConstructConfig(c *cli.Context) error {
 	}
 
 	// add a default "local" instance of Synse Server
-	Config.AddHost(&hostConfig{
+	_ = Config.AddHost(&HostConfig{
 		Name:    "local",
 		Address: "localhost:5000",
 	})
-
-	// FIXME: not sure what this did..
-	//s := structs.New(&Config)
-	//for _, name := range c.GlobalFlagNames() {
-	//	if !c.IsSet(name) {
-	//		continue
-	//	}
-	//
-	//	field := s.Field(strings.Replace(strings.Title(name), "-", "", -1))
-	//
-	//	val := reflect.ValueOf(c.Generic(name)).Elem()
-	//
-	//	var err error
-	//	if val.Kind() == reflect.Bool {
-	//		err = field.Set(val.Bool())
-	//	} else {
-	//		err = field.Set(val.String())
-	//	}
-	//
-	//	if err != nil {
-	//		fmt.Printf("%v\n", err)
-	//	}
-	//}
 
 	log.WithFields(log.Fields{
 		"config": fmt.Sprintf("%+v", Config),
@@ -115,7 +91,7 @@ func readConfigFromFile() *viper.Viper {
 
 	// Defaults
 	v.SetDefault("debug", false)
-	v.SetDefault("hosts", []hostConfig{})
+	v.SetDefault("hosts", []HostConfig{})
 
 	err := v.ReadInConfig()
 	if err != nil {

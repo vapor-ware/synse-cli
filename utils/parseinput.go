@@ -37,12 +37,12 @@ type SetLightsArgs struct {
 // matching is limited as the range of accepted types is small.
 func InputValid(c *cli.Context, v interface{}) error {
 	if _, err := govalidator.ValidateStruct(v); err != nil {
-		cli.ShowSubcommandHelp(c)
-
-		log.WithFields(log.Fields{
-			"error": err,
-		}).Error("invalid input")
-
+		err := cli.ShowSubcommandHelp(c)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Error("invalid input")
+		}
 		return err
 	}
 	return nil

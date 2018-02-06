@@ -6,6 +6,9 @@ import (
 	"github.com/urfave/cli"
 )
 
+// RequiresArgsInRange checks the number of arguments passed to the command against the
+// specified expected minimum and maximum number of supported arguments. If the number
+// of arguments is out of the specified range, an error is returned.
 func RequiresArgsInRange(min, max int, c *cli.Context) error {
 	if c.NArg() < min || c.NArg() > max {
 		return cli.NewExitError(
@@ -16,6 +19,9 @@ func RequiresArgsInRange(min, max int, c *cli.Context) error {
 	return nil
 }
 
+// RequiresArgsExact checks the number of arguments passed to the command against the
+// specified exact count of expected supported arguments. If the number of arguments
+// do not match, an error is returned.
 func RequiresArgsExact(count int, c *cli.Context) error {
 	if c.NArg() != count {
 		return cli.NewExitError(
