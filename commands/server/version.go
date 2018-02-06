@@ -1,9 +1,8 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -16,6 +15,9 @@ var VersionCommand = cli.Command{
 	Name:     "version",
 	Usage:    "Get the version of the active host",
 	Category: "Synse Server Actions",
+	Flags: []cli.Flag{
+		flags.OutputFlag,
+	},
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(c, cmdVersion(c))
 	},
@@ -30,7 +32,5 @@ func cmdVersion(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Printf("api version: %s\n", version.APIVersion)
-	fmt.Printf("version:     %s\n", version.Version)
-	return nil
+	return utils.FormatOutput(c, version)
 }

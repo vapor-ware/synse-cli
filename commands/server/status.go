@@ -1,9 +1,8 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -16,6 +15,9 @@ var StatusCommand = cli.Command{
 	Name:     "status",
 	Usage:    "Get the status of the active host",
 	Category: "Synse Server Actions",
+	Flags: []cli.Flag{
+		flags.OutputFlag,
+	},
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(c, cmdStatus(c))
 	},
@@ -30,7 +32,5 @@ func cmdStatus(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Printf("status:    %s\n", status.Status)
-	fmt.Printf("timestamp: %s\n", status.Timestamp)
-	return nil
+	return utils.FormatOutput(c, status)
 }

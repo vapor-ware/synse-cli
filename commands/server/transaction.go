@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -14,6 +15,9 @@ var TransactionCommand = cli.Command{
 	Name:     "transaction",
 	Usage:    "Check the state and status of a transaction",
 	Category: "Synse Server Actions",
+	Flags: []cli.Flag{
+		flags.OutputFlag,
+	},
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(c, cmdTransaction(c))
 	},
@@ -35,5 +39,5 @@ func cmdTransaction(c *cli.Context) error {
 		return err
 	}
 
-	return utils.AsYAML(transaction)
+	return utils.FormatOutput(c, transaction)
 }

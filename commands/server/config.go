@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -14,6 +15,9 @@ var ConfigCommand = cli.Command{
 	Name:     "config",
 	Usage:    "Get the configuration for the active host",
 	Category: "Synse Server Actions",
+	Flags: []cli.Flag{
+		flags.OutputFlag,
+	},
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(c, cmdConfig(c))
 	},
@@ -28,5 +32,5 @@ func cmdConfig(c *cli.Context) error {
 		return err
 	}
 
-	return utils.AsYAML(cfg)
+	return utils.FormatOutput(c, cfg)
 }
