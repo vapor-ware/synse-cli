@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -14,6 +15,9 @@ var InfoCommand = cli.Command{
 	Name:     "info",
 	Usage:    "Get info for the specified rack, board, or device",
 	Category: "Synse Server Actions",
+	Flags: []cli.Flag{
+		flags.OutputFlag,
+	},
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(c, cmdInfo(c))
 	},
@@ -55,5 +59,5 @@ func cmdInfo(c *cli.Context) error {
 		return err
 	}
 
-	return utils.AsYAML(info)
+	return utils.FormatOutput(c, info)
 }
