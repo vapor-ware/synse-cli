@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"fmt"
-	"gopkg.in/yaml.v2"
-	"github.com/urfave/cli"
 	"encoding/json"
+	"fmt"
+
+	"github.com/urfave/cli"
+	"gopkg.in/yaml.v2"
 )
 
 // AsYAML

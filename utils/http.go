@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"net/http"
-	"github.com/urfave/cli"
 	"fmt"
-	"github.com/vapor-ware/synse-cli/client"
+	"net/http"
 	"strings"
+
+	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
 )
 
 // check
@@ -26,7 +27,6 @@ func check(response *http.Response, err error) error {
 func MakeURI(components ...string) string {
 	return strings.Join(components, "/")
 }
-
 
 func DoGet(uri string, scheme interface{}) error {
 	return check(client.New().Get(uri).ReceiveSuccess(scheme))

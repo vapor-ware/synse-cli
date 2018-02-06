@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/urfave/cli"
 	"fmt"
+
+	"github.com/urfave/cli"
 )
 
 func RequiresArgsInRange(min, max int, c *cli.Context) error {
@@ -14,7 +15,6 @@ func RequiresArgsInRange(min, max int, c *cli.Context) error {
 	}
 	return nil
 }
-
 
 func RequiresArgsExact(count int, c *cli.Context) error {
 	if c.NArg() != count {

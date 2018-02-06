@@ -1,11 +1,12 @@
 package server
 
 import (
+	"sort"
+	"strings"
+
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
-	"strings"
-	"sort"
 )
 
 // scanBase is the base URI for the "scan" route.
@@ -21,13 +22,12 @@ var ScanCommand = cli.Command{
 	},
 }
 
-
 type scanDevice struct {
-	Rack string
-	Board string
+	Rack   string
+	Board  string
 	Device string
-	Info string
-	Type string
+	Info   string
+	Type   string
 }
 
 // ID
@@ -47,7 +47,6 @@ func (device *scanDevice) ToRow() []string {
 		device.Type,
 	}
 }
-
 
 // TODO (etd) - better organization here. this should probably move to the
 // utils or other sorting/filtering package
@@ -79,11 +78,11 @@ func cmdScan(c *cli.Context) error {
 		for _, board := range rack.Boards {
 			for _, device := range board.Devices {
 				devices = append(devices, &scanDevice{
-					Rack: rack.Id,
-					Board: board.Id,
+					Rack:   rack.Id,
+					Board:  board.Id,
 					Device: device.Id,
-					Info: device.Info,
-					Type: device.Type,
+					Info:   device.Info,
+					Type:   device.Type,
 				})
 			}
 		}
