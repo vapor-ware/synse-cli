@@ -1,10 +1,12 @@
 package server
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -17,6 +19,9 @@ var ScanCommand = cli.Command{
 	Name:     "scan",
 	Usage:    "Enumerate all devices on the active host",
 	Category: "Synse Server Actions",
+	Flags: []cli.Flag{
+		flags.FilterFlag,
+	},
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(c, cmdScan(c))
 	},
@@ -51,6 +56,17 @@ func (device *scanDevice) ToRow() []string {
 
 // TODO (etd) - better organization here. this should probably move to the
 // utils or other sorting/filtering package
+
+func Filter(devices []*scanDevice, f func(*scanDevice) bool) []*scanDevice {
+	tmp := make([]*scanDevice, 0)
+	for _, d := range devices {
+		if f(d) {
+			tmp = append(tmp, d)
+		}
+	}
+	return tmp
+}
+
 type byScanDeviceID []*scanDevice
 
 func (s byScanDeviceID) Len() int {
@@ -91,6 +107,26 @@ func cmdScan(c *cli.Context) error {
 
 	// Sort by ID
 	sort.Sort(byScanDeviceID(devices))
+
+	filterString := c.String("filter")
+	if filterString != "" {
+		filter := strings.Split(filterString, "=")
+		if len(filter) != 2 {
+			return cli.NewExitError("filter must be in the form 'key=value'", 1)
+		}
+
+		switch strings.ToLower(filter[0]) {
+		case "type":
+			devices = Filter(devices, func(d *scanDevice) bool {
+				return d.Type == strings.ToLower(filter[1])
+			})
+		default:
+			return cli.NewExitError(
+				fmt.Sprintf("filter key for '%v' is not supported", filterString),
+				1,
+			)
+		}
+	}
 
 	var data [][]string
 	for _, dev := range devices {
