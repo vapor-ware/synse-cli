@@ -10,6 +10,9 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// FormatOutput formats the given scheme struct into a supported output
+// format (JSON, YAML) as determined by the value of the --format flag
+// associated with the command.
 func FormatOutput(c *cli.Context, out interface{}) error {
 	val := c.String("output")
 	switch strings.ToLower(val) {

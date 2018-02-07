@@ -8,14 +8,31 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// readBase is the base URI for the "read" route.
-const readBase = "read"
+const (
+	// readBase is the base URI for the 'read' route.
+	readBase = "read"
+
+	// readCmdName is the name for the 'read' command.
+	readCmdName = "read"
+
+	// readCmdUsage is the usage text for the 'read' command.
+	readCmdUsage = "Read from the specified device"
+
+	// readCmdDesc is the description for the 'read' command.
+	readCmdDesc = `The read command hits the active Synse Server host's '/read'
+	 endpoint to read from the specified device. A Synse Server read
+	 will be passed along to the backend plugin which handles the
+	 given device to get the reading information. Not all devices
+	 may support reading; device support for read is specified at
+	 the plugin level.`
+)
 
 // ReadCommand is the CLI command for Synse Server's "read" API route.
 var ReadCommand = cli.Command{
-	Name:     "read",
-	Usage:    "Read from the specified device",
-	Category: "Synse Server Actions",
+	Name:        readCmdName,
+	Usage:       readCmdUsage,
+	Description: readCmdDesc,
+	Category:    SynseActionsCategory,
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(c, cmdRead(c))
 	},

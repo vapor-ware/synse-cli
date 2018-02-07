@@ -17,17 +17,19 @@ import (
 	"github.com/vapor-ware/synse-cli/flags"
 )
 
+const (
+	appName    = "synse"
+	appUsage   = "Command line tool for interacting with Synse components"
+	appVersion = "0.1.0"
+)
+
 // Main creates a new instance of cli.app (using https://github.com/urfave/cli)
 // and sets the default configuration.
 func main() {
 	app := cli.NewApp()
-	app.Name = "synse"
-	app.Usage = "Synse CLI"
-	app.Version = "0.1.0"
-	app.Authors = []cli.Author{
-		{Name: "Tim Fall", Email: "tim@vapor.io"},
-		{Name: "Thomas Rampelberg", Email: "thomasr@vapor.io"},
-	}
+	app.Name = appName
+	app.Usage = appUsage
+	app.Version = appVersion
 
 	app.Flags = flags.GlobalFlags
 	app.Commands = commands.Commands

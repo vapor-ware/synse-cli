@@ -7,14 +7,29 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// configBase is the base URI for the "config" route.
-const configBase = "config"
+const (
+	// configBase is the base URI for the 'config' route.
+	configBase = "config"
+
+	// configCmdName is the name for the 'config' command.
+	configCmdName = "config"
+
+	// configCmdUsage is the usage text for the 'config' command.
+	configCmdUsage = "Get the configuration for the active host"
+
+	// configCmdDesc is the description for the 'config' command.
+	configCmdDesc = `The config command hits the active Synse Server host's '/config'
+	 endpoint, which returns the current active configuration for that
+	 instance.`
+)
 
 // ConfigCommand is the CLI command for Synse Server's "config" API route.
 var ConfigCommand = cli.Command{
-	Name:     "config",
-	Usage:    "Get the configuration for the active host",
-	Category: "Synse Server Actions",
+	Name:        configCmdName,
+	Usage:       configCmdUsage,
+	Description: configCmdDesc,
+	Category:    SynseActionsCategory,
+	ArgsUsage:   utils.NoArgs,
 	Flags: []cli.Flag{
 		flags.OutputFlag,
 	},

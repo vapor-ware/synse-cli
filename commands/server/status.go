@@ -7,14 +7,30 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// testBase is the base URI for the "test" route.
-const testBase = "test"
+const (
+	// testBase is the base URI for the 'test' route.
+	testBase = "test"
+
+	// testCmdName is the name for the 'status' command.
+	testCmdName = "status"
+
+	// testCmdUsage is the usage text for the 'status' command.
+	testCmdUsage = "Get the status of the active host"
+
+	// testCmdDesc is the description for the 'status' command.
+	testCmdDesc = `The status command hits the active Synse Server host's '/test'
+	 endpoint, which returns the status of the instance. If the returned
+	 status is "ok", then Synse Server is up and reachable. Otherwise there
+	 is an error either with Synse Server or connecting to it.`
+)
 
 // StatusCommand is the CLI command for Synse Server's "test" API route.
 var StatusCommand = cli.Command{
-	Name:     "status",
-	Usage:    "Get the status of the active host",
-	Category: "Synse Server Actions",
+	Name:        testCmdName,
+	Usage:       testCmdUsage,
+	Description: testCmdDesc,
+	Category:    SynseActionsCategory,
+	ArgsUsage:   utils.NoArgs,
 	Flags: []cli.Flag{
 		flags.OutputFlag,
 	},

@@ -7,14 +7,28 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// infoBase is the base URI for the "info" route.
-const infoBase = "info"
+const (
+	// infoBase is the base URI for the 'info' route.
+	infoBase = "info"
+
+	// infoCmdName is the name for the 'info' command.
+	infoCmdName = "info"
+
+	// infoCmdUsage is the usage text for the 'info' command.
+	infoCmdUsage = "Get info for the specified rack, board, or device"
+
+	// infoCmdDesc is the description for the 'info' command.
+	infoCmdDesc = `The info command hits the active Synse Server host's '/info'
+	 endpoint. Information can be provided at various scopes: the
+	 rack level, the board level, or the device level.`
+)
 
 // InfoCommand is the CLI command for Synse Server's "info" API route.
 var InfoCommand = cli.Command{
-	Name:     "info",
-	Usage:    "Get info for the specified rack, board, or device",
-	Category: "Synse Server Actions",
+	Name:        infoCmdName,
+	Usage:       infoCmdUsage,
+	Description: infoCmdDesc,
+	Category:    SynseActionsCategory,
 	Flags: []cli.Flag{
 		flags.OutputFlag,
 	},
