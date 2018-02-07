@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
@@ -37,7 +38,7 @@ var ScanCommand = cli.Command{
 		flags.FilterFlag,
 	},
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdScan(c))
+		return utils.CmdHandler(cmdScan(c))
 	},
 }
 
@@ -101,7 +102,7 @@ func (s byScanDeviceID) Less(i, j int) bool {
 // against the active Synse Server instance.
 func cmdScan(c *cli.Context) error {
 	scan := &scheme.Scan{}
-	err := utils.DoGet(scanBase, scan)
+	err := client.DoGet(scanBase, scan)
 	if err != nil {
 		return err
 	}

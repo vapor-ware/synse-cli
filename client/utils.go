@@ -1,4 +1,4 @@
-package utils
+package client
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/client"
 )
 
 // check is a helper function to check the HTTP response from Synse Server.
@@ -37,11 +36,11 @@ func MakeURI(components ...string) string {
 // DoGet is a convenience function which performs a GET request against the
 // Synse Server versioned API.
 func DoGet(uri string, scheme interface{}) error {
-	return check(client.New().Get(uri).ReceiveSuccess(scheme))
+	return check(New().Get(uri).ReceiveSuccess(scheme))
 }
 
 // DoGetUnversioned is a convenience function which performs a GET request against
 // the Synse Server unversioned API.
 func DoGetUnversioned(uri string, scheme interface{}) error {
-	return check(client.NewUnversioned().Get(uri).ReceiveSuccess(scheme))
+	return check(NewUnversioned().Get(uri).ReceiveSuccess(scheme))
 }

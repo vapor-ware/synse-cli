@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -34,7 +35,7 @@ var ReadCommand = cli.Command{
 	Description: readCmdDesc,
 	Category:    SynseActionsCategory,
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdRead(c))
+		return utils.CmdHandler(cmdRead(c))
 	},
 }
 
@@ -51,7 +52,7 @@ func cmdRead(c *cli.Context) error {
 	device := c.Args().Get(2)
 
 	read := &scheme.Read{}
-	err = utils.DoGet(utils.MakeURI(readBase, rack, board, device), read)
+	err = client.DoGet(client.MakeURI(readBase, rack, board, device), read)
 	if err != nil {
 		return err
 	}

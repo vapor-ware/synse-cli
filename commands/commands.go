@@ -37,9 +37,9 @@ var Commands = []cli.Command{
 				fmt.Println("Can't do both") // FIXME: Once we figure out how to handle this
 				return nil
 			case c.IsSet("bash"):
-				return utils.CmdHandler(c, utils.GenerateShellCompletion("bash"))
+				return utils.CmdHandler(utils.GenerateShellCompletion("bash"))
 			case c.IsSet("zsh"):
-				return utils.CmdHandler(c, utils.GenerateShellCompletion("zsh"))
+				return utils.CmdHandler(utils.GenerateShellCompletion("zsh"))
 			}
 			return cli.ShowSubcommandHelp(c)
 		},

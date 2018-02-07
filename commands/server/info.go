@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
@@ -33,7 +34,7 @@ var InfoCommand = cli.Command{
 		flags.OutputFlag,
 	},
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdInfo(c))
+		return utils.CmdHandler(cmdInfo(c))
 	},
 }
 
@@ -55,20 +56,20 @@ func cmdInfo(c *cli.Context) error {
 	if board == "" {
 		// No board is defined, so we are querying at the rack level.
 		info = &scheme.RackInfo{}
-		uri = utils.MakeURI(infoBase, rack)
+		uri = client.MakeURI(infoBase, rack)
 
 	} else if device == "" {
 		// Board is defined, but device is not, so we are querying at the board level.
 		info = &scheme.BoardInfo{}
-		uri = utils.MakeURI(infoBase, rack, board)
+		uri = client.MakeURI(infoBase, rack, board)
 
 	} else {
 		// Rack, Board, Device is defined, so we are querying at the device level.
 		info = &scheme.DeviceInfo{}
-		uri = utils.MakeURI(infoBase, rack, board, device)
+		uri = client.MakeURI(infoBase, rack, board, device)
 	}
 
-	err = utils.DoGet(uri, info)
+	err = client.DoGet(uri, info)
 	if err != nil {
 		return err
 	}

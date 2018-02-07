@@ -42,7 +42,7 @@ var WriteCommand = cli.Command{
 	Description: writeCmdDesc,
 	Category:    SynseActionsCategory,
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdWrite(c))
+		return utils.CmdHandler(cmdWrite(c))
 	},
 }
 
@@ -66,7 +66,7 @@ func cmdWrite(c *cli.Context) error {
 		Action: action,
 		Raw:    raw,
 	}
-	uri := utils.MakeURI(writeBase, rack, board, device)
+	uri := client.MakeURI(writeBase, rack, board, device)
 	resp, err := client.New().Post(uri).BodyJSON(body).ReceiveSuccess(&write)
 	if err != nil {
 		return err
