@@ -11,14 +11,28 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// scanBase is the base URI for the "scan" route.
-const scanBase = "scan"
+const (
+	// scanBase is the base URI for the 'scan' route.
+	scanBase = "scan"
+
+	// scanCmdName is the name for the 'scan' command.
+	scanCmdName = "scan"
+
+	// scanCmdUsage is the usage text for the 'scan' command.
+	scanCmdUsage = "Enumerate all devices on the active host"
+
+	// scanCmdDesc is the description for the 'scan' command.
+	scanCmdDesc = `The scan command hits the active Synse Server host's '/scan'
+	 endpoint, which enumerates all devices that are known to Synse
+	 Server via the instance's configured plugins.`
+)
 
 // ScanCommand is the CLI command for Synse Server's "scan" API route.
 var ScanCommand = cli.Command{
-	Name:     "scan",
-	Usage:    "Enumerate all devices on the active host",
-	Category: "Synse Server Actions",
+	Name:        scanCmdName,
+	Usage:       scanCmdUsage,
+	Description: scanCmdDesc,
+	Category:    SynseActionsCategory,
 	Flags: []cli.Flag{
 		flags.FilterFlag,
 	},
@@ -57,6 +71,8 @@ func (device *scanDevice) ToRow() []string {
 // TODO (etd) - better organization here. this should probably move to the
 // utils or other sorting/filtering package
 
+// Filter is used to filter the scan results based on the given filtering
+// function.
 func Filter(devices []*scanDevice, f func(*scanDevice) bool) []*scanDevice {
 	tmp := make([]*scanDevice, 0)
 	for _, d := range devices {

@@ -7,14 +7,29 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// versionBase is the base URI for the "version" route.
-const versionBase = "version"
+const (
+	// versionBase is the base URI for the 'version' route.
+	versionBase = "version"
+
+	// versionCmdName is the name for the 'version' command.
+	versionCmdName = "version"
+
+	// versionCmdUsage is the usage text for the 'version' command.
+	versionCmdUsage = "Get the version of the active host"
+
+	// versionCmdDesc is the description for the 'version' command.
+	versionCmdDesc = `The version command hits the active Synse Server host's '/version'
+	 endpoint, which returns the version (full and API) of the Synse
+	 Server instance.`
+)
 
 // VersionCommand is the CLI command for Synse Server's "version" API route.
 var VersionCommand = cli.Command{
-	Name:     "version",
-	Usage:    "Get the version of the active host",
-	Category: "Synse Server Actions",
+	Name:        versionCmdName,
+	Usage:       versionCmdUsage,
+	Description: versionCmdDesc,
+	Category:    SynseActionsCategory,
+	ArgsUsage:   utils.NoArgs,
 	Flags: []cli.Flag{
 		flags.OutputFlag,
 	},

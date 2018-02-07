@@ -1,5 +1,5 @@
 
-VERSION := $(shell cat synse.go | grep 'app.Version =' | awk '{print $$3}')
+VERSION := $(shell cat synse.go | grep 'appVersion =' | awk '{print $$3}')
 
 HAS_LINT := $(shell which gometalinter)
 HAS_DEP  := $(shell which dep)

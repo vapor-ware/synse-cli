@@ -7,14 +7,27 @@ import (
 	"github.com/vapor-ware/synse-cli/utils"
 )
 
-// transactionBase is the base URI for the "transaction" route.
-const transactionBase = "transaction"
+const (
+	// transactionBase is the base URI for the 'transaction' route.
+	transactionBase = "transaction"
+
+	// transactionCmdName is the name for the 'transaction' command.
+	transactionCmdName = "transaction"
+
+	// transactionCmdUsage is the usage text for the 'transaction' command.
+	transactionCmdUsage = "Check the state and status of a transaction"
+
+	// transactionCmdDesc is the description for the 'transaction' command.
+	transactionCmdDesc = `The transaction command hits the active Synse Server host's '/transaction'
+	 endpoint, which returns the state and status of the specified transaction.`
+)
 
 // TransactionCommand is the CLI command for Synse Server's "transaction" API route.
 var TransactionCommand = cli.Command{
-	Name:     "transaction",
-	Usage:    "Check the state and status of a transaction",
-	Category: "Synse Server Actions",
+	Name:        transactionCmdName,
+	Usage:       transactionCmdUsage,
+	Description: transactionCmdDesc,
+	Category:    SynseActionsCategory,
 	Flags: []cli.Flag{
 		flags.OutputFlag,
 	},

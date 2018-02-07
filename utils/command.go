@@ -6,6 +6,9 @@ import (
 	"github.com/urfave/cli"
 )
 
+// NoArgs is used to specify that a command does not use any arguments.
+const NoArgs = " "
+
 // RequiresArgsInRange checks the number of arguments passed to the command against the
 // specified expected minimum and maximum number of supported arguments. If the number
 // of arguments is out of the specified range, an error is returned.
