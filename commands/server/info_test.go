@@ -31,7 +31,7 @@ const (
     "device-5",
     "device-6",
     "device-7",
-    "device-8",
+    "device-8"
   ]
 }`
 
@@ -65,9 +65,7 @@ const (
     }
   ]
 }`
-
 )
-
 
 func TestInfoCommandError(t *testing.T) {
 	test.Setup()
