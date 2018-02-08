@@ -3,8 +3,8 @@ package hosts
 import (
 	"testing"
 
-	"github.com/vapor-ware/synse-cli/internal/test"
 	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/internal/test"
 )
 
 func TestListCommandSuccess(t *testing.T) {
@@ -15,9 +15,8 @@ func TestListCommandSuccess(t *testing.T) {
 
 	// should succeed with no hosts
 	err := app.Run([]string{app.Name, hostsListCommand.Name})
-	if err != nil {
-		t.Errorf("expected no error but got: %v", err)
-	}
+
+	test.ExpectNoError(t, err)
 }
 
 func TestListCommandSuccess2(t *testing.T) {
@@ -35,9 +34,8 @@ func TestListCommandSuccess2(t *testing.T) {
 
 	// should succeed with hosts, but no active host
 	err := app.Run([]string{app.Name, hostsListCommand.Name})
-	if err != nil {
-		t.Errorf("expected no error but got: %v", err)
-	}
+
+	test.ExpectNoError(t, err)
 }
 
 func TestListCommandSuccess3(t *testing.T) {
@@ -56,7 +54,6 @@ func TestListCommandSuccess3(t *testing.T) {
 
 	// should succeed with hosts and an active host
 	err := app.Run([]string{app.Name, hostsListCommand.Name})
-	if err != nil {
-		t.Errorf("expected no error but got: %v", err)
-	}
+
+	test.ExpectNoError(t, err)
 }

@@ -3,9 +3,8 @@ package hosts
 import (
 	"testing"
 
-	"github.com/vapor-ware/synse-cli/internal/test"
 	"github.com/vapor-ware/synse-cli/config"
-	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/internal/test"
 )
 
 func TestActiveCommandError(t *testing.T) {
@@ -17,13 +16,8 @@ func TestActiveCommandError(t *testing.T) {
 	config.Config.ActiveHost = nil
 
 	err := app.Run([]string{app.Name, hostsActiveCommand.Name})
-	if err == nil {
-		t.Error("expected error, but got nil")
-	}
-	_, ok := err.(cli.ExitCoder)
-	if !ok {
-		t.Error("expected error to fulfill cli.ExitCoder interface, but does not")
-	}
+
+	test.ExpectExitCoderError(t, err)
 }
 
 func TestActiveCommandSuccess(t *testing.T) {
@@ -33,12 +27,11 @@ func TestActiveCommandSuccess(t *testing.T) {
 
 	// Set the active host to a HostConfig
 	config.Config.ActiveHost = &config.HostConfig{
-		Name: "test-host",
+		Name:    "test-host",
 		Address: "test-address",
 	}
 
 	err := app.Run([]string{app.Name, hostsActiveCommand.Name})
-	if err != nil {
-		t.Errorf("expected no error but got: %v", err)
-	}
+
+	test.ExpectNoError(t, err)
 }

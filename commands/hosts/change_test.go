@@ -3,9 +3,8 @@ package hosts
 import (
 	"testing"
 
-	"github.com/vapor-ware/synse-cli/internal/test"
-	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/internal/test"
 )
 
 func TestChangeCommandError(t *testing.T) {
@@ -16,13 +15,8 @@ func TestChangeCommandError(t *testing.T) {
 
 	// expects exactly one arg, here passing none
 	err := app.Run([]string{app.Name, hostsChangeCommand.Name})
-	if err == nil {
-		t.Error("expected error, but got nil")
-	}
-	_, ok := err.(cli.ExitCoder)
-	if !ok {
-		t.Error("expected error to fulfill cli.ExitCoder interface, but does not")
-	}
+
+	test.ExpectExitCoderError(t, err)
 }
 
 func TestChangeCommandError2(t *testing.T) {
@@ -33,13 +27,8 @@ func TestChangeCommandError2(t *testing.T) {
 
 	// specifying a host that does not exist - should cause failure
 	err := app.Run([]string{app.Name, hostsChangeCommand.Name, "missing-host"})
-	if err == nil {
-		t.Error("expected error, but got nil")
-	}
-	_, ok := err.(cli.ExitCoder)
-	if !ok {
-		t.Error("expected error to fulfill cli.ExitCoder interface, but does not")
-	}
+
+	test.ExpectExitCoderError(t, err)
 }
 
 func TestChangeCommandSuccess(t *testing.T) {
@@ -49,7 +38,7 @@ func TestChangeCommandSuccess(t *testing.T) {
 	app.Commands = append(app.Commands, hostsChangeCommand)
 
 	config.Config.Hosts["test-host"] = &config.HostConfig{
-		Name: "test-host",
+		Name:    "test-host",
 		Address: "test-address",
 	}
 
@@ -59,9 +48,8 @@ func TestChangeCommandSuccess(t *testing.T) {
 	}
 
 	err := app.Run([]string{app.Name, hostsChangeCommand.Name, "test-host"})
-	if err != nil {
-		t.Errorf("expected no error but got: %v", err)
-	}
+
+	test.ExpectNoError(t, err)
 
 	// after running, check that the active host is now set
 	if config.Config.ActiveHost != config.Config.Hosts["test-host"] {

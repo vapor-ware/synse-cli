@@ -5,15 +5,13 @@ import (
 	"github.com/vapor-ware/synse-cli/config"
 )
 
-
 func Setup() {
 	config.Config = config.CliConfig{
-		Debug: false,
+		Debug:      false,
 		ActiveHost: nil,
-		Hosts: make(map[string]*config.HostConfig, 0),
+		Hosts:      make(map[string]*config.HostConfig, 0),
 	}
 }
-
 
 func NewFakeApp() *cli.App {
 	app := &cli.App{

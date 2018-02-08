@@ -1,9 +1,10 @@
 package client
 
 import (
-	"testing"
-	"net/http"
 	"fmt"
+	"net/http"
+	"testing"
+
 	"github.com/urfave/cli"
 )
 
@@ -52,28 +53,28 @@ func TestCheck3(t *testing.T) {
 }
 
 func TestMakeURI(t *testing.T) {
-	var testTable = []struct{
-		in []string
+	var testTable = []struct {
+		in  []string
 		out string
 	}{
 		{
-			in: []string{""},
+			in:  []string{""},
 			out: "",
 		},
 		{
-			in: []string{"foo"},
+			in:  []string{"foo"},
 			out: "foo",
 		},
 		{
-			in: []string{"foo", "bar"},
+			in:  []string{"foo", "bar"},
 			out: "foo/bar",
 		},
 		{
-			in: []string{"foo", "bar", "baz/"},
+			in:  []string{"foo", "bar", "baz/"},
 			out: "foo/bar/baz/",
 		},
 		{
-			in: []string{"foo/", "/bar"},
+			in:  []string{"foo/", "/bar"},
 			out: "foo///bar",
 		},
 	}
