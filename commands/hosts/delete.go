@@ -27,7 +27,7 @@ func cmdDelete(c *cli.Context) error {
 
 	host := config.Config.Hosts[name]
 	if host != nil {
-		if *host == *config.Config.ActiveHost {
+		if config.Config.ActiveHost != nil && *host == *config.Config.ActiveHost {
 			config.Config.ActiveHost = nil
 		}
 	}

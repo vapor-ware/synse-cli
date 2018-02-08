@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-type config struct {
+type CliConfig struct {
 	Debug      bool
 	ActiveHost *HostConfig
 	Hosts      map[string]*HostConfig
@@ -17,7 +17,7 @@ type config struct {
 // AddHosts adds the given host to the configuration. If the host already exists
 // in the config, an error is returned. If there is no current active host when
 // a new host is being added, the new host will become the active host.
-func (c *config) AddHost(host *HostConfig) error {
+func (c *CliConfig) AddHost(host *HostConfig) error {
 	if c.Hosts[host.Name] != nil {
 		return fmt.Errorf("host '%v' already exists in configuration", host.Name)
 	}
@@ -35,7 +35,7 @@ type HostConfig struct {
 }
 
 // Config is a new variable containing the config object
-var Config config
+var Config CliConfig
 
 var configName = ".synse"
 
