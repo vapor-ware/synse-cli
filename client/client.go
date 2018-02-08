@@ -20,7 +20,7 @@ import (
 // this base.
 func constructURL(host string) string {
 	version := &scheme.Version{}
-	err := DoGet("version", version)
+	err := DoGetUnversioned("version", version)
 	if err != nil {
 		// FIXME (etd) - should we return err here? probably.
 	}

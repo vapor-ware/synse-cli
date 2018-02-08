@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
@@ -67,12 +66,8 @@ func cmdWrite(c *cli.Context) error {
 		Raw:    raw,
 	}
 	uri := client.MakeURI(writeBase, rack, board, device)
-	resp, err := client.New().Post(uri).BodyJSON(body).ReceiveSuccess(&write)
+	err = client.DoPost(uri, body, &write)
 	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusOK {
 		return err
 	}
 

@@ -44,3 +44,7 @@ func DoGet(uri string, scheme interface{}) error {
 func DoGetUnversioned(uri string, scheme interface{}) error {
 	return check(NewUnversioned().Get(uri).ReceiveSuccess(scheme))
 }
+
+func DoPost(uri string, body interface{}, scheme interface{}) error {
+	return check(New().Post(uri).BodyJSON(body).ReceiveSuccess(scheme))
+}
