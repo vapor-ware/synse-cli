@@ -38,7 +38,7 @@ func TestTransactionCommandError(t *testing.T) {
 func TestTransactionCommandError2(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
@@ -60,7 +60,7 @@ func TestTransactionCommandError2(t *testing.T) {
 func TestTransactionCommandSuccess(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",

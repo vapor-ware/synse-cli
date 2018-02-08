@@ -8,13 +8,14 @@ import (
 	"github.com/urfave/cli"
 )
 
+// CliConfig specifies the configuration for the CLI
 type CliConfig struct {
 	Debug      bool
 	ActiveHost *HostConfig
 	Hosts      map[string]*HostConfig
 }
 
-// AddHosts adds the given host to the configuration. If the host already exists
+// AddHost adds the given host to the configuration. If the host already exists
 // in the config, an error is returned. If there is no current active host when
 // a new host is being added, the new host will become the active host.
 func (c *CliConfig) AddHost(host *HostConfig) error {
@@ -67,7 +68,7 @@ func ConstructConfig(c *cli.Context) error {
 	}
 
 	// add a default "local" instance of Synse Server
-	_ = Config.AddHost(&HostConfig{
+	_ = Config.AddHost(&HostConfig{ // nolint
 		Name:    "local",
 		Address: "localhost:5000",
 	})

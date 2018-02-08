@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/internal/test"
 )
 
 func TestCheck1(t *testing.T) {
@@ -15,9 +16,7 @@ func TestCheck1(t *testing.T) {
 	}
 
 	e := check(&resp, err)
-	if e != nil {
-		t.Errorf("expected nil but got error: %v", e)
-	}
+	test.ExpectNoError(t, e)
 }
 
 func TestCheck2(t *testing.T) {
@@ -27,13 +26,7 @@ func TestCheck2(t *testing.T) {
 	}
 
 	e := check(&resp, err)
-	if e == nil {
-		t.Error("expected error, but got nil")
-	}
-	_, ok := e.(cli.ExitCoder)
-	if !ok {
-		t.Error("expected error to fulfil cli.ExitCoder interface, but does not")
-	}
+	test.ExpectExitCoderError(t, e)
 }
 
 func TestCheck3(t *testing.T) {
@@ -43,13 +36,7 @@ func TestCheck3(t *testing.T) {
 	}
 
 	e := check(&resp, err)
-	if e == nil {
-		t.Error("expected error, but got nil")
-	}
-	_, ok := e.(cli.ExitCoder)
-	if !ok {
-		t.Error("expected error to fulfil cli.ExitCoder interface, but does not")
-	}
+	test.ExpectExitCoderError(t, e)
 }
 
 func TestMakeURI(t *testing.T) {
@@ -79,6 +66,8 @@ func TestMakeURI(t *testing.T) {
 		},
 	}
 
+	cli.OsExiter = func(int) {}
+
 	for _, testCase := range testTable {
 		r := MakeURI(testCase.in...)
 		if r != testCase.out {
@@ -88,9 +77,85 @@ func TestMakeURI(t *testing.T) {
 }
 
 func TestDoGet(t *testing.T) {
-	// TODO (etd) -- need to figure out how to properly mock the HTTP call here
+	test.Setup()
+	cli.OsExiter = func(int) {}
+
+	type testData struct {
+		Status string
+	}
+
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc("/synse/2.0/foobar", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"status": "ok"}`)
+	})
+
+	test.AddServerHost(server)
+
+	out := &testData{}
+	err := DoGet("foobar", out)
+
+	test.ExpectNoError(t, err)
+
+	if out.Status != "ok" {
+		t.Errorf("expected status 'ok', but was %s", out.Status)
+	}
 }
 
 func TestDoGetUnversioned(t *testing.T) {
-	// TODO (etd) -- need to figure out how to properly mock the HTTP call here
+	test.Setup()
+	cli.OsExiter = func(int) {}
+
+	type testData struct {
+		Status string
+	}
+
+	mux, server := test.UnversionedServer()
+	defer server.Close()
+	mux.HandleFunc("/synse/foobar", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"status": "ok"}`)
+	})
+
+	test.AddServerHost(server)
+
+	out := &testData{}
+	err := DoGet("foobar", out)
+
+	test.ExpectNoError(t, err)
+
+	if out.Status != "ok" {
+		t.Errorf("expected status 'ok', but was %s", out.Status)
+	}
+}
+
+func TestDoPost(t *testing.T) {
+	test.Setup()
+	cli.OsExiter = func(int) {}
+
+	type testData struct {
+		Status string
+	}
+
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc("/synse/2.0/foobar", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Errorf("expected request to be POST, but was %s", r.Method)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"status": "ok"}`)
+	})
+
+	test.AddServerHost(server)
+
+	out := &testData{}
+	err := DoPost("foobar", testData{}, out)
+
+	test.ExpectNoError(t, err)
+
+	if out.Status != "ok" {
+		t.Errorf("expected status 'ok', but was %s", out.Status)
+	}
 }

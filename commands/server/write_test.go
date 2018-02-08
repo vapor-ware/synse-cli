@@ -46,7 +46,7 @@ func TestWriteCommandError2(t *testing.T) {
 func TestWriteCommandError3(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/write/rack-1/board-1/device-1",
@@ -68,7 +68,7 @@ func TestWriteCommandError3(t *testing.T) {
 func TestWriteCommandSuccess(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/write/rack-1/board-1/device-1",

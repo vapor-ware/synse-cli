@@ -92,7 +92,7 @@ func TestInfoCommandError2(t *testing.T) {
 func TestInfoCommandErrorRack(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/info/rack-1",
@@ -114,7 +114,7 @@ func TestInfoCommandErrorRack(t *testing.T) {
 func TestInfoCommandSuccessRack(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/info/rack-1",
@@ -136,7 +136,7 @@ func TestInfoCommandSuccessRack(t *testing.T) {
 func TestInfoCommandErrorBoard(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/info/rack-1/board-1",
@@ -158,7 +158,7 @@ func TestInfoCommandErrorBoard(t *testing.T) {
 func TestInfoCommandSuccessBoard(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/info/rack-1/board-1",
@@ -180,7 +180,7 @@ func TestInfoCommandSuccessBoard(t *testing.T) {
 func TestInfoCommandErrorDevice(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/info/rack-1/board-1/device-1",
@@ -202,7 +202,7 @@ func TestInfoCommandErrorDevice(t *testing.T) {
 func TestInfoCommandSuccessDevice(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/info/rack-1/board-1/device-1",

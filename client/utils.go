@@ -45,6 +45,8 @@ func DoGetUnversioned(uri string, scheme interface{}) error {
 	return check(NewUnversioned().Get(uri).ReceiveSuccess(scheme))
 }
 
+// DoPost is a convenience function which perfoms a POST request against the
+// Synse Server versioned API.
 func DoPost(uri string, body interface{}, scheme interface{}) error {
 	return check(New().Post(uri).BodyJSON(body).ReceiveSuccess(scheme))
 }
