@@ -22,7 +22,7 @@ func constructURL(host string) string {
 	version := &scheme.Version{}
 	err := DoGet("version", version)
 	if err != nil {
-		// should we return err here? probably.
+		// FIXME (etd) - should we return err here? probably.
 	}
 	return fmt.Sprintf("http://%s/synse/%s/", host, version.APIVersion)
 }
