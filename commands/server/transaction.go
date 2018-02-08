@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
@@ -32,7 +33,7 @@ var TransactionCommand = cli.Command{
 		flags.OutputFlag,
 	},
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdTransaction(c))
+		return utils.CmdHandler(cmdTransaction(c))
 	},
 }
 
@@ -47,7 +48,7 @@ func cmdTransaction(c *cli.Context) error {
 	transactionID := c.Args().Get(0)
 
 	transaction := &scheme.Transaction{}
-	err = utils.DoGet(utils.MakeURI(transactionBase, transactionID), transaction)
+	err = client.DoGet(client.MakeURI(transactionBase, transactionID), transaction)
 	if err != nil {
 		return err
 	}

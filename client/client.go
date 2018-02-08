@@ -19,20 +19,11 @@ import (
 // (Synse), and API version number. Endpoint paths can be extended off of
 // this base.
 func constructURL(host string) string {
-	// FIXME (etd) - unclear what the best approach is here. do we just want to
-	//   get the version via the /version endpoint always? What if it fails to resolve?
-	//   then its basically just a failing 'status' command. should there be a fallback value?
-
 	version := &scheme.Version{}
-
-	resp, err := NewUnversioned().Get("version").ReceiveSuccess(version)
+	err := DoGetUnversioned("version", version)
 	if err != nil {
-		panic(err)
+		// FIXME (etd) - should we return err here? probably.
 	}
-	if resp.StatusCode != http.StatusOK {
-		panic(resp.StatusCode)
-	}
-
 	return fmt.Sprintf("http://%s/synse/%s/", host, version.APIVersion)
 }
 

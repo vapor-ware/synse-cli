@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
@@ -42,7 +41,7 @@ var WriteCommand = cli.Command{
 	Description: writeCmdDesc,
 	Category:    SynseActionsCategory,
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdWrite(c))
+		return utils.CmdHandler(cmdWrite(c))
 	},
 }
 
@@ -66,13 +65,9 @@ func cmdWrite(c *cli.Context) error {
 		Action: action,
 		Raw:    raw,
 	}
-	uri := utils.MakeURI(writeBase, rack, board, device)
-	resp, err := client.New().Post(uri).BodyJSON(body).ReceiveSuccess(&write)
+	uri := client.MakeURI(writeBase, rack, board, device)
+	err = client.DoPost(uri, body, &write)
 	if err != nil {
-		return err
-	}
-
-	if resp.StatusCode != http.StatusOK {
 		return err
 	}
 

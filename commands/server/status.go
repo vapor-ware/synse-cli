@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
@@ -35,7 +36,7 @@ var StatusCommand = cli.Command{
 		flags.OutputFlag,
 	},
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdStatus(c))
+		return utils.CmdHandler(cmdStatus(c))
 	},
 }
 
@@ -43,7 +44,7 @@ var StatusCommand = cli.Command{
 // against the active Synse Server instance.
 func cmdStatus(c *cli.Context) error {
 	status := &scheme.TestStatus{}
-	err := utils.DoGetUnversioned(testBase, status)
+	err := client.DoGetUnversioned(testBase, status)
 	if err != nil {
 		return err
 	}

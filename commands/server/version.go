@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
@@ -34,7 +35,7 @@ var VersionCommand = cli.Command{
 		flags.OutputFlag,
 	},
 	Action: func(c *cli.Context) error {
-		return utils.CmdHandler(c, cmdVersion(c))
+		return utils.CmdHandler(cmdVersion(c))
 	},
 }
 
@@ -42,7 +43,7 @@ var VersionCommand = cli.Command{
 // against the active Synse Server instance.
 func cmdVersion(c *cli.Context) error {
 	version := &scheme.Version{}
-	err := utils.DoGetUnversioned(versionBase, version)
+	err := client.DoGetUnversioned(versionBase, version)
 	if err != nil {
 		return err
 	}
