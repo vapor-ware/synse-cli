@@ -13,41 +13,41 @@ const (
 {
   "rack":"rack-1",
   "boards":[
-    "vec"
+    "board-1"
   ]
 }`
 
 	infoBoardRespOK = `
 {
-  "board":"vec",
+  "board":"board-1",
   "location":{
     "rack":"rack-1"
   },
   "devices":[
-    "eb100067acb0c054cf877759db376b03",
-    "83cc1efe7e596e4ab6769e0c6e3edf88",
-    "db1e5deb43d9d0af6d80885e74362913",
-    "329a91c6781ce92370a3c38ba9bf35b2",
-    "f97f284037b04badb6bb7aacd9654a4e",
-    "eb9a56f95b5bd6d9b51996ccd0f2329c",
-    "f52d29fecf05a195af13f14c7306cfed",
-    "d29e0bd113a484dc48fd55bd3abad6bb"
+    "device-1",
+    "device-2",
+    "device-3",
+    "device-4",
+    "device-5",
+    "device-6",
+    "device-7",
+    "device-8",
   ]
 }`
 
 	infoDeviceRespOK = `
 {
   "timestamp":"2018-02-08 15:58:51.063845404 +0000 UTC m=+3105.953837345",
-  "uid":"83cc1efe7e596e4ab6769e0c6e3edf88",
+  "uid":"device-1",
   "type":"temperature",
   "model":"emul8-temp",
   "manufacturer":"Vapor IO",
   "protocol":"emulator",
-  "info":"Synse Temperature Sensor 2",
+  "info":"Synse Temperature Sensor",
   "comment":"",
   "location":{
     "rack":"rack-1",
-    "board":"vec"
+    "board":"board-1"
   },
   "output":[
     {

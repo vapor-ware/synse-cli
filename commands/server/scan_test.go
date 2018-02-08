@@ -15,46 +15,46 @@ const scanRespOK = `
       "id":"rack-1",
       "boards":[
         {
-          "id":"vec",
+          "id":"board-1",
           "devices":[
             {
-              "id":"f97f284037b04badb6bb7aacd9654a4e",
-              "info":"Synse Temperature Sensor 5",
+              "id":"device-1",
+              "info":"Synse Temperature Sensor",
               "type":"temperature"
             },
             {
-              "id":"eb9a56f95b5bd6d9b51996ccd0f2329c",
+              "id":"device-2",
               "info":"Synse Fan",
               "type":"fan"
             },
             {
-              "id":"f52d29fecf05a195af13f14c7306cfed",
+              "id":"device-3",
               "info":"Synse LED",
               "type":"led"
             },
             {
-              "id":"d29e0bd113a484dc48fd55bd3abad6bb",
-              "info":"Synse backup LED",
+              "id":"device-4",
+              "info":"Synse LED",
               "type":"led"
             },
             {
-              "id":"eb100067acb0c054cf877759db376b03",
-              "info":"Synse Temperature Sensor 1",
+              "id":"device-5",
+              "info":"Synse Temperature Sensor",
               "type":"temperature"
             },
             {
-              "id":"83cc1efe7e596e4ab6769e0c6e3edf88",
-              "info":"Synse Temperature Sensor 2",
+              "id":"device-6",
+              "info":"Synse Temperature Sensor",
               "type":"temperature"
             },
             {
-              "id":"db1e5deb43d9d0af6d80885e74362913",
-              "info":"Synse Temperature Sensor 3",
+              "id":"device-7",
+              "info":"Synse Temperature Sensor",
               "type":"temperature"
             },
             {
-              "id":"329a91c6781ce92370a3c38ba9bf35b2",
-              "info":"Synse Temperature Sensor 4",
+              "id":"device-8",
+              "info":"Synse Temperature Sensor",
               "type":"temperature"
             }
           ]
