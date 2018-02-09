@@ -37,7 +37,7 @@ var pluginReadCommand = cli.Command{
 
 // cmdRead is the action for pluginReadCommand. It prints out a reading that was
 // retrieved from the specified plugin.
-func cmdRead(c *cli.Context) error {
+func cmdRead(c *cli.Context) error { // nolint: gocyclo
 	err := utils.RequiresArgsExact(3, c)
 	if err != nil {
 		return err
@@ -64,6 +64,9 @@ func cmdRead(c *cli.Context) error {
 	w := tabwriter.NewWriter(os.Stdout, 10, 1, 3, ' ', 0)
 
 	tmpl, err := template.New("read").Parse(readTmpl)
+	if err != nil {
+		return err
+	}
 	err = tmpl.Execute(w, readHeader)
 	if err != nil {
 		return err
@@ -91,6 +94,5 @@ func cmdRead(c *cli.Context) error {
 
 	}
 
-	w.Flush()
-	return nil
+	return w.Flush()
 }

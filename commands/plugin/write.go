@@ -36,7 +36,7 @@ var pluginWriteCommand = cli.Command{
 
 // cmdWrite is the action for pluginWriteCommand. It writes directly to
 // the specified plugin.
-func cmdWrite(c *cli.Context) error {
+func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 	err := utils.RequiresArgsInRange(4, 5, c)
 	if err != nil {
 		return err
@@ -48,8 +48,7 @@ func cmdWrite(c *cli.Context) error {
 	action := c.Args().Get(3)
 	raw := c.Args().Get(4)
 
-	var wd *synse.WriteData
-	wd = &synse.WriteData{
+	wd := &synse.WriteData{
 		Action: action,
 	}
 	if raw != "" {
@@ -74,6 +73,9 @@ func cmdWrite(c *cli.Context) error {
 	w := tabwriter.NewWriter(os.Stdout, 10, 1, 3, ' ', 0)
 
 	tmpl, err := template.New("write").Parse(writeTmpl)
+	if err != nil {
+		return err
+	}
 	err = tmpl.Execute(w, writeHeader)
 	if err != nil {
 		return err
@@ -96,6 +98,5 @@ func cmdWrite(c *cli.Context) error {
 		}
 	}
 
-	w.Flush()
-	return nil
+	return w.Flush()
 }

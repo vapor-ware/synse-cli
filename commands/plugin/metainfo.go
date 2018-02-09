@@ -60,6 +60,9 @@ func cmdMeta(c *cli.Context) error {
 	w := tabwriter.NewWriter(os.Stdout, 10, 1, 3, ' ', 0)
 
 	tmpl, err := template.New("meta").Parse(metaTmpl)
+	if err != nil {
+		return err
+	}
 	err = tmpl.Execute(w, metaHeader)
 	if err != nil {
 		return err
@@ -89,6 +92,5 @@ func cmdMeta(c *cli.Context) error {
 		}
 	}
 
-	w.Flush()
-	return nil
+	return w.Flush()
 }

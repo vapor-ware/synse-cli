@@ -56,6 +56,9 @@ func cmdTransaction(c *cli.Context) error {
 	w := tabwriter.NewWriter(os.Stdout, 10, 1, 3, ' ', 0)
 
 	tmpl, err := template.New("transaction").Parse(transactionTmpl)
+	if err != nil {
+		return err
+	}
 	err = tmpl.Execute(w, transactionHeader)
 	if err != nil {
 		return err
@@ -81,6 +84,5 @@ func cmdTransaction(c *cli.Context) error {
 		return err
 	}
 
-	w.Flush()
-	return nil
+	return w.Flush()
 }
