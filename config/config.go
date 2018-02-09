@@ -68,7 +68,7 @@ func ConstructConfig(c *cli.Context) error {
 	}
 
 	// add a default "local" instance of Synse Server
-	_ = Config.AddHost(&HostConfig{ // nolint
+	Config.AddHost(&HostConfig{ // nolint
 		Name:    "local",
 		Address: "localhost:5000",
 	})
