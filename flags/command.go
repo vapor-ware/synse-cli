@@ -16,3 +16,15 @@ var FilterFlag = cli.StringFlag{
 	Name:  "filter, f",
 	Usage: "set a filter for the output results",
 }
+
+// HostFlag is the flag for setting the hostname for a plugin.
+var HostFlag = cli.StringFlag{
+	Name:  "tcp, t",
+	Usage: "set the hostname/ip[:port] for a plugin",
+}
+
+// UnixFlag is the flag for setting the unix socket path for a plugin.
+var UnixFlag = cli.StringFlag{
+	Name:  "unix, u",
+	Usage: "set the unix socket path for a plugin",
+}
