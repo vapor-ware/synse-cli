@@ -42,8 +42,8 @@ var ScanCommand = cli.Command{
 	},
 }
 
-// scanDevice represents a single device found during a scan.
-type scanDevice struct {
+// ScanDevice represents a single device found during a scan.
+type ScanDevice struct {
 	Rack   string
 	Board  string
 	Device string
@@ -52,7 +52,7 @@ type scanDevice struct {
 }
 
 // ID generates the ID of the device by joining the rack, board, and device.
-func (device *scanDevice) ID() string {
+func (device *ScanDevice) ID() string {
 	return strings.Join([]string{
 		device.Rack,
 		device.Board,
@@ -61,7 +61,7 @@ func (device *scanDevice) ID() string {
 }
 
 // ToRow converts a scanDevice to a table row.
-func (device *scanDevice) ToRow() []string {
+func (device *ScanDevice) ToRow() []string {
 	return []string{
 		device.ID(),
 		device.Info,
@@ -74,8 +74,8 @@ func (device *scanDevice) ToRow() []string {
 
 // Filter is used to filter the scan results based on the given filtering
 // function.
-func Filter(devices []*scanDevice, f func(*scanDevice) bool) []*scanDevice {
-	tmp := make([]*scanDevice, 0)
+func Filter(devices []*ScanDevice, f func(*ScanDevice) bool) []*ScanDevice {
+	tmp := make([]*ScanDevice, 0)
 	for _, d := range devices {
 		if f(d) {
 			tmp = append(tmp, d)
@@ -84,7 +84,7 @@ func Filter(devices []*scanDevice, f func(*scanDevice) bool) []*scanDevice {
 	return tmp
 }
 
-type byScanDeviceID []*scanDevice
+type byScanDeviceID []*ScanDevice
 
 func (s byScanDeviceID) Len() int {
 	return len(s)
@@ -107,11 +107,11 @@ func cmdScan(c *cli.Context) error {
 		return err
 	}
 
-	var devices []*scanDevice
+	var devices []*ScanDevice
 	for _, rack := range scan.Racks {
 		for _, board := range rack.Boards {
 			for _, device := range board.Devices {
-				devices = append(devices, &scanDevice{
+				devices = append(devices, &ScanDevice{
 					Rack:   rack.ID,
 					Board:  board.ID,
 					Device: device.ID,
@@ -134,7 +134,7 @@ func cmdScan(c *cli.Context) error {
 
 		switch strings.ToLower(filter[0]) {
 		case "type":
-			devices = Filter(devices, func(d *scanDevice) bool {
+			devices = Filter(devices, func(d *ScanDevice) bool {
 				return d.Type == strings.ToLower(filter[1])
 			})
 		default:

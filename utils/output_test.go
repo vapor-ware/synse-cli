@@ -51,7 +51,10 @@ func TestFormatOutputJSON1(t *testing.T) {
 	fs := &flag.FlagSet{}
 	var v stringValue
 	fs.Var(&v, "output", "")
-	fs.Parse([]string{"--output", "json"})
+	err := fs.Parse([]string{"--output", "json"})
+	if err != nil {
+		t.Error(err)
+	}
 	ctx := cli.NewContext(nil, fs, nil)
 
 	td := testData{
@@ -59,7 +62,7 @@ func TestFormatOutputJSON1(t *testing.T) {
 		Value: 1,
 	}
 
-	err := FormatOutput(ctx, td)
+	err = FormatOutput(ctx, td)
 	if err != nil {
 		t.Errorf("expected nil, but get: %v", err)
 	}
@@ -69,7 +72,10 @@ func TestFormatOutputJSON2(t *testing.T) {
 	fs := &flag.FlagSet{}
 	var v stringValue
 	fs.Var(&v, "output", "")
-	fs.Parse([]string{"--output=j"})
+	err := fs.Parse([]string{"--output=j"})
+	if err != nil {
+		t.Error(err)
+	}
 	ctx := cli.NewContext(nil, fs, nil)
 
 	td := testData{
@@ -77,7 +83,7 @@ func TestFormatOutputJSON2(t *testing.T) {
 		Value: 1,
 	}
 
-	err := FormatOutput(ctx, td)
+	err = FormatOutput(ctx, td)
 	if err != nil {
 		t.Errorf("expected nil, but get: %v", err)
 	}
@@ -87,7 +93,10 @@ func TestFormatOutputYAML1(t *testing.T) {
 	fs := &flag.FlagSet{}
 	var v stringValue
 	fs.Var(&v, "output", "")
-	fs.Parse([]string{"--output=yaml"})
+	err := fs.Parse([]string{"--output=yaml"})
+	if err != nil {
+		t.Error(err)
+	}
 	ctx := cli.NewContext(nil, fs, nil)
 
 	td := testData{
@@ -95,7 +104,7 @@ func TestFormatOutputYAML1(t *testing.T) {
 		Value: 1,
 	}
 
-	err := FormatOutput(ctx, td)
+	err = FormatOutput(ctx, td)
 	if err != nil {
 		t.Errorf("expected nil, but get: %v", err)
 	}
@@ -105,7 +114,10 @@ func TestFormatOutputYAML2(t *testing.T) {
 	fs := &flag.FlagSet{}
 	var v stringValue
 	fs.Var(&v, "output", "")
-	fs.Parse([]string{"--output=yml"})
+	err := fs.Parse([]string{"--output=yml"})
+	if err != nil {
+		t.Error(err)
+	}
 	ctx := cli.NewContext(nil, fs, nil)
 
 	td := testData{
@@ -113,7 +125,7 @@ func TestFormatOutputYAML2(t *testing.T) {
 		Value: 1,
 	}
 
-	err := FormatOutput(ctx, td)
+	err = FormatOutput(ctx, td)
 	if err != nil {
 		t.Errorf("expected nil, but get: %v", err)
 	}
@@ -123,7 +135,10 @@ func TestFormatOutputYAML3(t *testing.T) {
 	fs := &flag.FlagSet{}
 	var v stringValue
 	fs.Var(&v, "output", "")
-	fs.Parse([]string{"--output=y"})
+	err := fs.Parse([]string{"--output=y"})
+	if err != nil {
+		t.Error(err)
+	}
 	ctx := cli.NewContext(nil, fs, nil)
 
 	td := testData{
@@ -131,7 +146,7 @@ func TestFormatOutputYAML3(t *testing.T) {
 		Value: 1,
 	}
 
-	err := FormatOutput(ctx, td)
+	err = FormatOutput(ctx, td)
 	if err != nil {
 		t.Errorf("expected nil, but get: %v", err)
 	}
@@ -141,7 +156,10 @@ func TestFormatOutputInvalid(t *testing.T) {
 	fs := &flag.FlagSet{}
 	var v stringValue
 	fs.Var(&v, "output", "")
-	fs.Parse([]string{"--output=invalid"})
+	err := fs.Parse([]string{"--output=invalid"})
+	if err != nil {
+		t.Error(err)
+	}
 	ctx := cli.NewContext(nil, fs, nil)
 
 	td := testData{
@@ -149,7 +167,7 @@ func TestFormatOutputInvalid(t *testing.T) {
 		Value: 1,
 	}
 
-	err := FormatOutput(ctx, td)
+	err = FormatOutput(ctx, td)
 	if err == nil {
 		t.Error("expected error, but got nil")
 	}

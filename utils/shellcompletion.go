@@ -39,7 +39,7 @@ func downloadCompletionFile(shell string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer out.Close()
+	defer out.Close() // nolint
 
 	switch {
 	case os.IsExist(err):
@@ -52,7 +52,7 @@ func downloadCompletionFile(shell string) (string, error) {
 	if err != nil {
 		return path, err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() // nolint
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
 		return "", err

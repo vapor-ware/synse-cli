@@ -17,7 +17,7 @@ const versionRespOK = `
 func TestVersionCommandError(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestUnversionedServer()
+	mux, server := test.UnversionedServer()
 	defer server.Close()
 	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -36,7 +36,7 @@ func TestVersionCommandError(t *testing.T) {
 func TestVersionCommandSuccess(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestUnversionedServer()
+	mux, server := test.UnversionedServer()
 	defer server.Close()
 	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

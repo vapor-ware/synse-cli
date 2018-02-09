@@ -17,7 +17,7 @@ const statusRespOK = `
 func TestStatusCommandError(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestUnversionedServer()
+	mux, server := test.UnversionedServer()
 	defer server.Close()
 	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -36,7 +36,7 @@ func TestStatusCommandError(t *testing.T) {
 func TestStatusCommandSuccess(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestUnversionedServer()
+	mux, server := test.UnversionedServer()
 	defer server.Close()
 	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
