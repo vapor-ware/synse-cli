@@ -67,7 +67,7 @@ const scanRespOK = `
 func TestScanCommandError(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/scan",
@@ -89,7 +89,7 @@ func TestScanCommandError(t *testing.T) {
 func TestScanCommandSuccess(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc(
 		"/synse/2.0/scan",

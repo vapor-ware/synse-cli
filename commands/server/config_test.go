@@ -29,7 +29,7 @@ const configRespOK = `
 func TestConfigCommandError(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -48,7 +48,7 @@ func TestConfigCommandError(t *testing.T) {
 func TestConfigCommandSuccess(t *testing.T) {
 	test.Setup()
 
-	mux, server := test.TestServer()
+	mux, server := test.Server()
 	defer server.Close()
 	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

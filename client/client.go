@@ -11,6 +11,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/dghubble/sling"
+	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/scheme"
 )
@@ -22,7 +23,8 @@ func constructURL(host string) string {
 	version := &scheme.Version{}
 	err := DoGetUnversioned("version", version)
 	if err != nil {
-		// FIXME (etd) - should we return err here? probably.
+		log.Error("failed to get API version of Synse Server instance")
+		cli.OsExiter(1)
 	}
 	return fmt.Sprintf("http://%s/synse/%s/", host, version.APIVersion)
 }
