@@ -11,6 +11,7 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/commands/hosts"
+	"github.com/vapor-ware/synse-cli/commands/plugin"
 	"github.com/vapor-ware/synse-cli/commands/server"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -18,6 +19,7 @@ import (
 // Commands provides the global list of commands used by the CLI.
 var Commands = []cli.Command{
 	hosts.HostsCommand,
+	plugin.PluginCommand,
 	server.StatusCommand,
 	server.VersionCommand,
 	server.ScanCommand,
