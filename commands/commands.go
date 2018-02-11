@@ -18,6 +18,7 @@ import (
 
 // Commands provides the global list of commands used by the CLI.
 var Commands = []cli.Command{
+	configCommand,
 	hosts.HostsCommand,
 	plugin.PluginCommand,
 	server.StatusCommand,
