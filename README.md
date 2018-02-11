@@ -1,27 +1,33 @@
-[![buddy pipeline](https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439/badge.svg?token=3ae6c804af4fdb5947b58ba1c544c232bf8d28f6e6d2b07321added2d1cc0bad "buddy pipeline")](https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439)
-[![CircleCI](https://circleci.com/gh/vapor-ware/synse-cli.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3)](https://circleci.com/gh/vapor-ware/synse-cli)
-[![GoDoc](https://godoc.org/github.com/vapor-ware/synse-cli?status.svg)](http://godoc.org/github.com/vapor-ware/synse-cli)
-[![Go Report Card](https://goreportcard.com/badge/github.com/vapor-ware/synse-cli)](https://goreportcard.com/report/github.com/vapor-ware/synse-cli)
+<p align="center"><img src="docs/img/logo.png" width="360"></p>
+<p align="center">
+    <a href="https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439"><img src="https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439/badge.svg?token=3ae6c804af4fdb5947b58ba1c544c232bf8d28f6e6d2b07321added2d1cc0bad"></a>
+    <a href="https://circleci.com/gh/vapor-ware/synse-cli"><img src="https://circleci.com/gh/vapor-ware/synse-cli.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3"></a>
+    <a href="http://godoc.org/github.com/vapor-ware/synse-cli"><img src="https://godoc.org/github.com/vapor-ware/synse-cli?status.svg"></a>
+    <a href="https://goreportcard.com/report/github.com/vapor-ware/synse-cli"><img src="https://goreportcard.com/badge/github.com/vapor-ware/synse-cli"></a>
+        
+<h1 align="center">Synse Command Line Interface</h1>
+</p>
 
-# Synse Command Line Interface
+A CLI for for Vapor IO's [Synse Server][synse-server] and Synse Plugins.
+
 
 ## Overview
 
-[Synse](https://github.com/vapor-ware/synse-server) provides a programatic API for bi-directional access to hardware
-and other components. For more information, see the [README](https://github.com/vapor-ware/synse-server/blob/master/README.md)
-in that repository.
+[Synse Server](https://github.com/vapor-ware/synse-server) provides a programatic API for bi-directional access to hardware
+and other components via its configured plugins. For more information, see the [README](https://github.com/vapor-ware/synse-server/blob/master/README.md)
+for Synse Server.
 
-Synse CLI provides an command line interface to the underlying synse components. It allows for real-times queries
-and interaction with hardware endpoints monitored by synse, and is meant to have feature parity with the synse API.
-Although it is not designed to be programmed against directly, it can be used as an example of how to interface other
-apps with synse.
+The Synse CLI provides a command line interface to Synse Server instances as well as direct access to plugins.
+It allows for real-time queries and interaction with the hardware that is managed by Synse Server, and is meant
+to have feature parity with the Synse Server HTTP API. Although it is not designed to be programmed against
+directly (for that, the Synse Server HTTP API should be used), it can be used as a tool for local access and
+debugging of Synse components and may serve as an example on how to interface other applications with Synse Server.
 
-To get started, follow the instructions below.
 
 ## Quick Start
 
-Synse CLI is provided as a single pre-compiled binary, available for use on most platforms. To get it, simply download
-the binary that matches your architecture (e.g. x86 or amd64).
+The Synse CLI is provided as a single pre-compiled binary, available for use on most platforms. To get it, simply
+download the binary that matches your architecture (e.g. x86 or amd64).
 
 For example, if running on macOS, you could do the following:
 
@@ -39,7 +45,7 @@ chmod +x /usr/local/bin/synse
 
 To save the binary to `/usr/local/bin/`. The binary can be saved to any location you wish.
 
-**NOTE**: We recommend that you save the binary with the name `synse` as it is easier to remember. All commands
+> **NOTE**: We recommend that you save the binary with the name `synse` as it is easier to remember. All commands
 in this guide will use this name.
 
 You are now ready to run `synse` cli. To see a list of commands, type `synse -h`.
@@ -79,49 +85,16 @@ go build
 
 ### Running Commands
 
-Synse cli is built to run commands with multiple verbs (`git`-like). Each command has it's own help
+The Synse CLI is built to run commands with multiple verbs (`git`-like). Each command has it's own help
 documentation which shows what it does and how it should be used. A more detailed description of command structure
 and how they are used is available in the [documentation](http://godoc.org/github.com/vapor-ware/synse-cli).
 
-For example the help output for the top-level command is printed by running `synse -h` or simply `synse`:
+For example the help output for the top-level command is printed by running `synse -h` or simply `synse`.
 
-```shell
-NAME:
-   synse - Synse Shell
-
-USAGE:
-   synse [global options] command [command options] [arguments...]
-
-VERSION:
-   0.1.0
-
-AUTHORS:
-   Tim Fall <tim@vapor.io>
-   Thomas Rampelberg <thomasr@vapor.io>
-
-COMMANDS:
-     status, stat  Get the status of the current deployment
-     scan          Scan the infrastructure and display device summary
-     assets        Manage and get information about physical devices
-     help, h       Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --debug, -d                                 Enable debug mode
-   --config file, -c file                      Path to config file [$SYNSE_CONFIG_FILE]
-   --synse-host Synse Host, --host Synse Host  Address of Synse Host [$SYNSE_HOST]
-   --help, -h                                  show help
-   --version, -v                               print the version
-```
-
-Possible following verbs are shown under `COMMANDS` and will generate their own help pages down the line.
-
-An example of a complete command would be:
-
-```shell
-synse assets temperature list
-```
-
-This would list the output of all temperature sensors for all devices known to synse.
+There are different groups of commands. In general, those are:
+- configuration management, e.g. managing Synse Server instances to interface with
+- Synse Server commands, e.g. reading, writing, etc. via the Synse Server HTTP API
+- Synse Plugin commands, e.g. reading, writing, etc. via the internal gRPC API
 
 ### Configuration
 
