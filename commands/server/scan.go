@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
+	"github.com/vapor-ware/synse-cli/formatters/server"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -42,40 +43,13 @@ var ScanCommand = cli.Command{
 	},
 }
 
-// ScanDevice represents a single device found during a scan.
-type ScanDevice struct {
-	Rack   string
-	Board  string
-	Device string
-	Info   string
-	Type   string
-}
-
-// ID generates the ID of the device by joining the rack, board, and device.
-func (device *ScanDevice) ID() string {
-	return strings.Join([]string{
-		device.Rack,
-		device.Board,
-		device.Device,
-	}, "-")
-}
-
-// ToRow converts a scanDevice to a table row.
-func (device *ScanDevice) ToRow() []string {
-	return []string{
-		device.ID(),
-		device.Info,
-		device.Type,
-	}
-}
-
 // TODO (etd) - better organization here. this should probably move to the
 // utils or other sorting/filtering package
 
 // Filter is used to filter the scan results based on the given filtering
 // function.
-func Filter(devices []*ScanDevice, f func(*ScanDevice) bool) []*ScanDevice {
-	tmp := make([]*ScanDevice, 0)
+func Filter(devices []*scheme.InternalScan, f func(scan *scheme.InternalScan) bool) []*scheme.InternalScan {
+	tmp := make([]*scheme.InternalScan, 0)
 	for _, d := range devices {
 		if f(d) {
 			tmp = append(tmp, d)
@@ -84,7 +58,7 @@ func Filter(devices []*ScanDevice, f func(*ScanDevice) bool) []*ScanDevice {
 	return tmp
 }
 
-type byScanDeviceID []*ScanDevice
+type byScanDeviceID []*scheme.InternalScan
 
 func (s byScanDeviceID) Len() int {
 	return len(s)
@@ -107,11 +81,11 @@ func cmdScan(c *cli.Context) error {
 		return err
 	}
 
-	var devices []*ScanDevice
+	var devices []*scheme.InternalScan
 	for _, rack := range scan.Racks {
 		for _, board := range rack.Boards {
 			for _, device := range board.Devices {
-				devices = append(devices, &ScanDevice{
+				devices = append(devices, &scheme.InternalScan{
 					Rack:   rack.ID,
 					Board:  board.ID,
 					Device: device.ID,
@@ -134,7 +108,7 @@ func cmdScan(c *cli.Context) error {
 
 		switch strings.ToLower(filter[0]) {
 		case "type":
-			devices = Filter(devices, func(d *ScanDevice) bool {
+			devices = Filter(devices, func(d *scheme.InternalScan) bool {
 				return d.Type == strings.ToLower(filter[1])
 			})
 		default:
@@ -145,12 +119,10 @@ func cmdScan(c *cli.Context) error {
 		}
 	}
 
-	var data [][]string
-	for _, dev := range devices {
-		data = append(data, dev.ToRow())
+	formatter := server.NewScanFormatter(c.App.Writer)
+	err = formatter.Add(devices)
+	if err != nil {
+		return err
 	}
-
-	header := []string{"ID", "Info", "Type"}
-	utils.TableOutput(header, data)
-	return nil
+	return formatter.Write()
 }
