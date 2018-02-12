@@ -26,7 +26,8 @@ func Persist() error {
 	}
 
 	log.WithFields(log.Fields{
-		"path": configPath,
+		"path":   configPath,
+		"config": fmt.Sprintf("%+v", Config),
 	}).Debug("Persisting config")
 
 	data, err := yaml.Marshal(Config)

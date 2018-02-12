@@ -10,9 +10,11 @@ import (
 
 // hostsChangeCommand is the CLI sub-command for changing the active host.
 var hostsChangeCommand = cli.Command{
-	Name:   "change",
-	Usage:  "Change the active host",
-	Action: cmdChange,
+	Name:  "change",
+	Usage: "Change the active host",
+	Action: func(c *cli.Context) error {
+		return utils.CmdHandler(cmdChange(c))
+	},
 }
 
 // cmfChange is the action for hostsChangeCommand. It changes the active host to

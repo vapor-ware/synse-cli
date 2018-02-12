@@ -31,8 +31,13 @@ func (c *CliConfig) AddHost(host *HostConfig) error {
 
 // HostConfig holds the configuration information for a single Synse Server host.
 type HostConfig struct {
-	Name    string
-	Address string
+	Name    string `json:"name" yaml:"name"`
+	Address string `json:"address" yaml:"address"`
+}
+
+// IsActiveHost checks if the host is the current active host for the CLI.
+func (c *HostConfig) IsActiveHost() bool {
+	return Config.ActiveHost != nil && *c == *Config.ActiveHost
 }
 
 // Config is a new variable containing the config object

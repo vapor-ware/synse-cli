@@ -9,9 +9,11 @@ import (
 // hostsAddCommand is the CLI sub-command for adding a new host to the CLI
 // configuration.
 var hostsAddCommand = cli.Command{
-	Name:   "add",
-	Usage:  "Add a new Synse Server host",
-	Action: cmdAdd,
+	Name:  "add",
+	Usage: "Add a new Synse Server host",
+	Action: func(c *cli.Context) error {
+		return utils.CmdHandler(cmdAdd(c))
+	},
 }
 
 // cmdAdd is the action for hostsAddCommand. It adds the specified host to the

@@ -93,14 +93,17 @@ func (f *Formatter) Write() error {
 			return err
 		}
 
-		err = tmpl.Execute(w, f.header)
-		if err != nil {
-			return err
+		if f.header != nil {
+			err = tmpl.Execute(w, f.header)
+			if err != nil {
+				return err
+			}
 		}
+
 		for _, d := range f.data {
 			err := tmpl.Execute(w, d)
 			if err != nil {
-				return nil
+				return err
 			}
 		}
 		return w.Flush()

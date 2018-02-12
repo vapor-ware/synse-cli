@@ -9,9 +9,11 @@ import (
 // hostsDeleteCommand is the CLI sub-command for deleting a host from the
 // CLI configuration.
 var hostsDeleteCommand = cli.Command{
-	Name:   "delete",
-	Usage:  "Delete a Synse Server host from configuration",
-	Action: cmdDelete,
+	Name:  "delete",
+	Usage: "Delete a Synse Server host from configuration",
+	Action: func(c *cli.Context) error {
+		return utils.CmdHandler(cmdDelete(c))
+	},
 }
 
 // cmdDelete is the action for hostsDeleteCommand. It removes the specified host
