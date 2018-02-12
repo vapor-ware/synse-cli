@@ -1,7 +1,8 @@
-package utils
+package formatters
 
 import (
 	"flag"
+	"io/ioutil"
 	"testing"
 
 	"github.com/urfave/cli"
@@ -30,7 +31,8 @@ func TestAsJSONOk(t *testing.T) {
 		Name:  "test",
 		Value: 1,
 	}
-	err := AsJSON(td)
+	// FIXME - test output w/ golden file
+	err := AsJSON(td, ioutil.Discard)
 	if err != nil {
 		t.Errorf("expected nil, but got: %v", err)
 	}
@@ -41,7 +43,8 @@ func TestAsYAMLOk(t *testing.T) {
 		Name:  "test",
 		Value: 1,
 	}
-	err := AsYAML(td)
+	// FIXME - test output w/ golden file
+	err := AsYAML(td, ioutil.Discard)
 	if err != nil {
 		t.Errorf("expected nil, but got: %v", err)
 	}
@@ -55,7 +58,7 @@ func TestFormatOutputJSON1(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ctx := cli.NewContext(nil, fs, nil)
+	ctx := cli.NewContext(cli.NewApp(), fs, nil)
 
 	td := testData{
 		Name:  "test",
@@ -76,7 +79,7 @@ func TestFormatOutputJSON2(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ctx := cli.NewContext(nil, fs, nil)
+	ctx := cli.NewContext(cli.NewApp(), fs, nil)
 
 	td := testData{
 		Name:  "test",
@@ -97,7 +100,7 @@ func TestFormatOutputYAML1(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ctx := cli.NewContext(nil, fs, nil)
+	ctx := cli.NewContext(cli.NewApp(), fs, nil)
 
 	td := testData{
 		Name:  "test",
@@ -118,7 +121,7 @@ func TestFormatOutputYAML2(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ctx := cli.NewContext(nil, fs, nil)
+	ctx := cli.NewContext(cli.NewApp(), fs, nil)
 
 	td := testData{
 		Name:  "test",
@@ -139,7 +142,7 @@ func TestFormatOutputYAML3(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ctx := cli.NewContext(nil, fs, nil)
+	ctx := cli.NewContext(cli.NewApp(), fs, nil)
 
 	td := testData{
 		Name:  "test",
@@ -160,7 +163,7 @@ func TestFormatOutputInvalid(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	ctx := cli.NewContext(nil, fs, nil)
+	ctx := cli.NewContext(cli.NewApp(), fs, nil)
 
 	td := testData{
 		Name:  "test",
