@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -51,7 +50,7 @@ func downloadCompletionFile(appName, shell string) (string, error) {
 
 	out, err := os.Create(path)
 	if err != nil {
-		return path, err
+		return "", err
 	}
 	defer out.Close() // nolint
 
@@ -64,7 +63,6 @@ func downloadCompletionFile(appName, shell string) (string, error) {
 
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
-		log.Debug(err)
 		return "", err
 	}
 
