@@ -2,7 +2,8 @@ package plugin
 
 import (
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/formatters/plugin"
+	"github.com/vapor-ware/synse-cli/formatters"
+	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
@@ -32,7 +33,7 @@ func cmdTransaction(c *cli.Context) error {
 		return err
 	}
 
-	formatter := plugin.NewTransactionFormatter(c.App.Writer)
+	formatter := formatters.NewTransactionFormatter(c.App.Writer)
 
 	status, err := pluginClient.TransactionCheck(context.Background(), &synse.TransactionId{
 		Id: tid,
@@ -40,7 +41,15 @@ func cmdTransaction(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	err = formatter.Add(status)
+
+	s := &scheme.Transaction{
+		ID:      tid,
+		State:   status.State.String(),
+		Status:  status.Status.String(),
+		Created: status.Created,
+		Updated: status.Updated,
+	}
+	err = formatter.Add(s)
 	if err != nil {
 		return err
 	}

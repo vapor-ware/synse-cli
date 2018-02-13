@@ -4,7 +4,7 @@ import (
 	"io"
 
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/formatters/plugin"
+	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
@@ -35,7 +35,7 @@ func cmdMeta(c *cli.Context) error {
 		return err
 	}
 
-	formatter := plugin.NewMetaFormatter(c.App.Writer)
+	formatter := formatters.NewMetaFormatter(c.App.Writer)
 	for {
 		resp, err := stream.Recv()
 		if err == io.EOF {
@@ -49,6 +49,5 @@ func cmdMeta(c *cli.Context) error {
 			return err
 		}
 	}
-
 	return formatter.Write()
 }

@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
-	"github.com/vapor-ware/synse-cli/formatters/server"
+	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -56,7 +56,7 @@ func cmdRead(c *cli.Context) error {
 		return err
 	}
 
-	formatter := server.NewReadFormatter(c.App.Writer)
+	formatter := formatters.NewReadFormatter(c.App.Writer)
 	err = formatter.Add(read)
 	if err != nil {
 		return err

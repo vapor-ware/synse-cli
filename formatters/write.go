@@ -1,11 +1,10 @@
-package server
+package formatters
 
 import (
 	"io"
 
 	"fmt"
 
-	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/scheme"
 )
 
@@ -41,15 +40,15 @@ func newWriteFormat(data interface{}) (interface{}, error) {
 }
 
 // NewWriteFormatter creates a new instance of a Formatter configured
-// for the write command.
-func NewWriteFormatter(out io.Writer) *formatters.Formatter {
-	f := formatters.NewFormatter(
+// for write command output.
+func NewWriteFormatter(out io.Writer) *Formatter {
+	f := NewFormatter(
 		writeTmpl,
 		out,
 	)
 	f.SetHandler(newWriteFormat)
 	f.SetHeader(writeFormat{
-		Transaction: "TRANSACTION",
+		Transaction: "TRANSACTION ID",
 		Action:      "ACTION",
 		Raw:         []string{"RAW"},
 	})

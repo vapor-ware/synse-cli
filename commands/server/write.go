@@ -3,7 +3,7 @@ package server
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
-	"github.com/vapor-ware/synse-cli/formatters/server"
+	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -70,7 +70,7 @@ func cmdWrite(c *cli.Context) error {
 		return err
 	}
 
-	formatter := server.NewWriteFormatter(c.App.Writer)
+	formatter := formatters.NewWriteFormatter(c.App.Writer)
 	err = formatter.Add(write)
 	if err != nil {
 		return err

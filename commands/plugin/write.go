@@ -2,7 +2,8 @@ package plugin
 
 import (
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/formatters/plugin"
+	"github.com/vapor-ware/synse-cli/formatters"
+	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
@@ -53,8 +54,24 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		return err
 	}
 
-	formatter := plugin.NewWriteFormatter(c.App.Writer)
-	err = formatter.Add(transactions)
+	t := make([]scheme.WriteTransaction, len(transactions.Transactions))
+	for id, ctx := range transactions.Transactions {
+		var raw []string
+		for _, r := range ctx.Raw {
+			raw = append(raw, string(r))
+		}
+
+		t = append(t, scheme.WriteTransaction{
+			Transaction: id,
+			Context: scheme.WriteContext{
+				Action: ctx.Action,
+				Raw:    raw,
+			},
+		})
+	}
+
+	formatter := formatters.NewWriteFormatter(c.App.Writer)
+	err = formatter.Add(t)
 	if err != nil {
 		return err
 	}
