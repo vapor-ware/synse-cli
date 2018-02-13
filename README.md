@@ -150,6 +150,16 @@ The configuration file follows standard YAML syntax and accepts the following se
 
 Configuration values _are_ case sensitive, but the cli will attempt to decode any values that match the above keys.
 
+### Bash Completion
+
+Bash/Zsh completion can be setup for the Synse CLI using the `completion` command, e.g. for bash,
+```shell
+$ synse completion --bash
+You can now run `source /etc/bash_completion.d/synse`
+
+$ source /etc/bash_completion.d/synse
+```
+
 ### Contributing
 
 Synse CLI is (un)-lovingly maintained by [timfallmk](https://github.com/timfallmk), who is far over worked and underpaid. We happily accept issues and pull requests logged in this repository. Please just be nice and follow appropriate rules when submitting anything.

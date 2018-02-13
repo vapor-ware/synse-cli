@@ -28,3 +28,15 @@ var UnixFlag = cli.StringFlag{
 	Name:  "unix, u",
 	Usage: "set the unix socket path for a plugin",
 }
+
+// BashFlag is the flag for generating shell completion scripts for bash.
+var BashFlag = cli.BoolFlag{
+	Name:  "bash",
+	Usage: "bash completion",
+}
+
+// ZshFlag is the flag for generating shell completion scripts for zsh.
+var ZshFlag = cli.BoolFlag{
+	Name:  "zsh",
+	Usage: "zsh completion",
+}
