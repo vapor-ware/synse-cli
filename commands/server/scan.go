@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
-	"github.com/vapor-ware/synse-cli/formatters/server"
+	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -119,7 +119,7 @@ func cmdScan(c *cli.Context) error {
 		}
 	}
 
-	formatter := server.NewScanFormatter(c.App.Writer)
+	formatter := formatters.NewScanFormatter(c.App.Writer)
 	err = formatter.Add(devices)
 	if err != nil {
 		return err

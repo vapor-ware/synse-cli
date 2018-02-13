@@ -1,23 +1,22 @@
-package server
+package formatters
 
 import (
+	"fmt"
 	"io"
 
-	"fmt"
-
-	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/scheme"
 )
 
 const (
 	// the default output template for read requests
-	readTmpl = "table {{.Reading}}\t{{.Value}}\n"
+	readTmpl = "table {{.Type}}\t{{.Value}}\t{{.Timestamp}}\n"
 )
 
 // readFormat collects the data that will be parsed into the output template.
 type readFormat struct {
-	Reading string
-	Value   string
+	Type      string
+	Value     string
+	Timestamp string
 }
 
 // newReadFormat is the handler for read commands that is used by the
@@ -31,8 +30,9 @@ func newReadFormat(data interface{}) (interface{}, error) {
 	var out []interface{}
 	for readType, readData := range read.Data {
 		out = append(out, &readFormat{
-			Reading: readType,
-			Value:   fmt.Sprintf("%v", readData.Value),
+			Type:      readType,
+			Value:     fmt.Sprintf("%v", readData.Value),
+			Timestamp: readData.Timestamp,
 		})
 	}
 
@@ -41,15 +41,16 @@ func newReadFormat(data interface{}) (interface{}, error) {
 
 // NewReadFormatter creates a new instance of a Formatter configured
 // for the read command.
-func NewReadFormatter(out io.Writer) *formatters.Formatter {
-	f := formatters.NewFormatter(
+func NewReadFormatter(out io.Writer) *Formatter {
+	f := NewFormatter(
 		readTmpl,
 		out,
 	)
 	f.SetHandler(newReadFormat)
 	f.SetHeader(readFormat{
-		Reading: "READING",
-		Value:   "VALUE",
+		Type:      "TYPE",
+		Value:     "VALUE",
+		Timestamp: "TIMESTAMP",
 	})
 	return f
 }

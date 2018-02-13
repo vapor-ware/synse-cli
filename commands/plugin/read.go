@@ -4,7 +4,8 @@ import (
 	"io"
 
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/formatters/plugin"
+	"github.com/vapor-ware/synse-cli/formatters"
+	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
@@ -45,7 +46,7 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 		return err
 	}
 
-	formatter := plugin.NewReadFormatter(c.App.Writer)
+	formatter := formatters.NewReadFormatter(c.App.Writer)
 	for {
 		resp, err := stream.Recv()
 		if err == io.EOF {
@@ -54,7 +55,16 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 		if err != nil {
 			return err
 		}
-		err = formatter.Add(resp)
+		r := &scheme.Read{
+			Type: resp.Type,
+			Data: map[string]scheme.ReadData{
+				resp.Type: {
+					Value:     resp.Value,
+					Timestamp: resp.Timestamp,
+				},
+			},
+		}
+		err = formatter.Add(r)
 		if err != nil {
 			return err
 		}
