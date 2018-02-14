@@ -1,6 +1,5 @@
-// Synse provides a cli to vapor.io infrastructure. Specifically it allows access
-// to the Synse (http://www.vapor.io/synse/) REST API for running commands
-// against connected infrastructure and devices.
+// `synse` is a CLI for interacting with Synse components including Synse Server,
+// via its HTTP API, and Synse plugins.
 //
 // For usage information please see the help text or the README in this
 // repository.
@@ -23,8 +22,7 @@ const (
 	appVersion = "0.1.0"
 )
 
-// Main creates a new instance of cli.app (using https://github.com/urfave/cli)
-// and sets the default configuration.
+// Create a new instance of the CLI application, configure it, and run it.
 func main() {
 	app := cli.NewApp()
 	app.Name = appName
@@ -35,6 +33,7 @@ func main() {
 	app.Commands = commands.Commands
 	app.EnableBashCompletion = true
 
+	// Before running, load and construct the CLI configuration
 	app.Before = func(c *cli.Context) error {
 		// Allow debugging of the config loading process
 		if c.Bool("debug") {
@@ -54,10 +53,12 @@ func main() {
 		return nil
 	}
 
+	// After running, persist the configuration
 	app.After = func(c *cli.Context) error {
 		return config.Persist()
 	}
 
+	// Run the CLI
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
