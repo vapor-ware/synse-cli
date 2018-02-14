@@ -1,37 +1,21 @@
 package plugin
 
 import (
-	"os"
-	"text/tabwriter"
-	"text/template"
-
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/formatters"
+	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
 )
 
-const (
-	writeTmpl = "{{.ID}}\t{{.Action}}\t{{.Raw}}\n"
-)
-
-type writeOut struct {
-	ID     string
-	Action string
-	Raw    string
-}
-
-var writeHeader = writeOut{
-	ID:     "TRANSACTION ID",
-	Action: "ACTION",
-	Raw:    "RAW",
-}
-
 // pluginWriteCommand is a CLI sub-command for writing to a plugin
 var pluginWriteCommand = cli.Command{
-	Name:   "write",
-	Usage:  "Write data directly to a plugin",
-	Action: cmdWrite,
+	Name:  "write",
+	Usage: "Write data directly to a plugin",
+	Action: func(c *cli.Context) error {
+		return utils.CmdHandler(cmdWrite(c))
+	},
 }
 
 // cmdWrite is the action for pluginWriteCommand. It writes directly to
@@ -55,12 +39,12 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		wd.Raw = [][]byte{[]byte(raw)}
 	}
 
-	plugin, err := makeGrpcClient(c)
+	pluginClient, err := makeGrpcClient(c)
 	if err != nil {
 		return err
 	}
 
-	transactions, err := plugin.Write(context.Background(), &synse.WriteRequest{
+	transactions, err := pluginClient.Write(context.Background(), &synse.WriteRequest{
 		Device: device,
 		Board:  board,
 		Rack:   rack,
@@ -70,33 +54,26 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		return err
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 10, 1, 3, ' ', 0)
+	t := make([]scheme.WriteTransaction, len(transactions.Transactions))
+	for id, ctx := range transactions.Transactions {
+		var raw []string
+		for _, r := range ctx.Raw {
+			raw = append(raw, string(r))
+		}
 
-	tmpl, err := template.New("write").Parse(writeTmpl)
+		t = append(t, scheme.WriteTransaction{
+			Transaction: id,
+			Context: scheme.WriteContext{
+				Action: ctx.Action,
+				Raw:    raw,
+			},
+		})
+	}
+
+	formatter := formatters.NewWriteFormatter(c.App.Writer)
+	err = formatter.Add(t)
 	if err != nil {
 		return err
 	}
-	err = tmpl.Execute(w, writeHeader)
-	if err != nil {
-		return err
-	}
-
-	for tid, ctx := range transactions.Transactions {
-		raw := ""
-		for _, i := range ctx.Raw {
-			raw += string(i) + " "
-		}
-
-		out := writeOut{
-			ID:     tid,
-			Action: ctx.Action,
-			Raw:    raw,
-		}
-		err = tmpl.Execute(w, out)
-		if err != nil {
-			return err
-		}
-	}
-
-	return w.Flush()
+	return formatter.Write()
 }

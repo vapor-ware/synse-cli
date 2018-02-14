@@ -1,10 +1,9 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
+	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -57,15 +56,10 @@ func cmdRead(c *cli.Context) error {
 		return err
 	}
 
-	var data [][]string
-	for readType, readData := range read.Data {
-		data = append(data, []string{
-			readType,
-			fmt.Sprintf("%v", readData.Value),
-		})
+	formatter := formatters.NewReadFormatter(c.App.Writer)
+	err = formatter.Add(read)
+	if err != nil {
+		return err
 	}
-
-	header := []string{"reading", "value"}
-	utils.TableOutput(header, data)
-	return nil
+	return formatter.Write()
 }

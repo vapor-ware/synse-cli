@@ -1,41 +1,21 @@
 package plugin
 
 import (
-	"os"
-	"text/tabwriter"
-	"text/template"
-
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/formatters"
+	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
 )
 
-const (
-	transactionTmpl = "{{.ID}}\t{{.Status}}\t{{.State}}\t{{.Created}}\t{{.Updated}}\n"
-)
-
-type transactionOut struct {
-	ID      string
-	Status  string
-	State   string
-	Created string
-	Updated string
-}
-
-var transactionHeader = transactionOut{
-	ID:      "ID",
-	Status:  "STATUS",
-	State:   "STATE",
-	Created: "CREATED",
-	Updated: "UPDATED",
-}
-
 // pluginTransactionCommand is a CLI sub-command for getting transaction info from a plugin.
 var pluginTransactionCommand = cli.Command{
-	Name:   "transaction",
-	Usage:  "Get transaction info from a plugin",
-	Action: cmdTransaction,
+	Name:  "transaction",
+	Usage: "Get transaction info from a plugin",
+	Action: func(c *cli.Context) error {
+		return utils.CmdHandler(cmdTransaction(c))
+	},
 }
 
 // cmdTransaction is the action for pluginTransactionCommand. It prints out transaction info
@@ -48,41 +28,30 @@ func cmdTransaction(c *cli.Context) error {
 
 	tid := c.Args().Get(0)
 
-	plugin, err := makeGrpcClient(c)
+	pluginClient, err := makeGrpcClient(c)
 	if err != nil {
 		return err
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 10, 1, 3, ' ', 0)
+	formatter := formatters.NewTransactionFormatter(c.App.Writer)
 
-	tmpl, err := template.New("transaction").Parse(transactionTmpl)
-	if err != nil {
-		return err
-	}
-	err = tmpl.Execute(w, transactionHeader)
-	if err != nil {
-		return err
-	}
-
-	status, err := plugin.TransactionCheck(context.Background(), &synse.TransactionId{
+	status, err := pluginClient.TransactionCheck(context.Background(), &synse.TransactionId{
 		Id: tid,
 	})
 	if err != nil {
 		return err
 	}
 
-	transaction := transactionOut{
+	s := &scheme.Transaction{
 		ID:      tid,
-		Status:  status.Status.String(),
 		State:   status.State.String(),
+		Status:  status.Status.String(),
 		Created: status.Created,
 		Updated: status.Updated,
 	}
-
-	err = tmpl.Execute(w, transaction)
+	err = formatter.Add(s)
 	if err != nil {
 		return err
 	}
-
-	return w.Flush()
+	return formatter.Write()
 }

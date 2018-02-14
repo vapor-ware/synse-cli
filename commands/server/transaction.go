@@ -4,6 +4,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/client"
 	"github.com/vapor-ware/synse-cli/flags"
+	"github.com/vapor-ware/synse-cli/formatters"
 	"github.com/vapor-ware/synse-cli/scheme"
 	"github.com/vapor-ware/synse-cli/utils"
 )
@@ -53,5 +54,10 @@ func cmdTransaction(c *cli.Context) error {
 		return err
 	}
 
-	return utils.FormatOutput(c, transaction)
+	formatter := formatters.NewTransactionFormatter(c.App.Writer)
+	err = formatter.Add(transaction)
+	if err != nil {
+		return err
+	}
+	return formatter.Write()
 }

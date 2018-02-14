@@ -8,12 +8,11 @@
 <h1 align="center">Synse Command Line Interface</h1>
 </p>
 
-A CLI for for Vapor IO's [Synse Server][synse-server] and Synse Plugins.
-
+<p align="center">A CLI for for Vapor IO's Synse Server and Synse Plugins.</p>
 
 ## Overview
 
-[Synse Server](https://github.com/vapor-ware/synse-server) provides a programatic API for bi-directional access to hardware
+[Synse Server](https://github.com/vapor-ware/synse-server) provides a programmatic API for bi-directional access to hardware
 and other components via its configured plugins. For more information, see the [README](https://github.com/vapor-ware/synse-server/blob/master/README.md)
 for Synse Server.
 
@@ -57,16 +56,16 @@ You are now ready to run `synse` cli. To see a list of commands, type `synse -h`
 Synse CLI is written in [Go](https://golang.org) and is provided as source. It can be compiled directly from source
 and built into a binary for any supported system.
 
-**NOTE**: Windows is not supported at this time, due to incompatibilities in some utilized libraries. If there is
+> **NOTE**: Windows is not supported at this time, due to incompatibilities in some utilized libraries. If there is
 enough interest this may be added in the future.
 
-To get the code and compile it, simply clone this repository into your `GOPATH` and run the standard `go build`
-command. For example:
+To get the code and compile it, clone this repository into your `GOPATH`. Then, get the vendored dependencies
+with [dep](https://github.com/golang/dep) and build.
 
 ```shell
 git clone https://github.com/vapor-ware/synse-cli
 cd synse-cli
-go get
+dep ensure
 go build
 ```
 
@@ -79,9 +78,20 @@ in your `GOPATH`.
 ```shell
 go get github.com/vapor-ware/synse-cli
 cd $GOPATH/src/github.com/vapor-ware/synse-cli
-go get
+dep ensure
 go build
 ```
+
+Makefile targets exist to make it easy to get dependencies, build, lint, format and test. Once you have the
+source, either by `git clone` or `go get`, you can simply
+
+```shell
+make setup build
+```
+
+This will install `dep` and `gometalinter`, if not already installed, ensure the vendored dependencies
+exist, then build the CLI and output a `synse` binary to the `build/` subdirectory. From there, it can
+be moved onto your `PATH`.
 
 ### Running Commands
 
@@ -104,51 +114,40 @@ priority are first.
 
 - Command line flags (e.g. `--debug`)
 - Environment variables (e.g. `SYNSE_DEBUG`)
-- Configuration file settings (e.g. `SynseHost: awesome.sauce`)
+- Configuration file settings (e.g. `debug: true`)
 
 #### Configuration Options
 
-There are currently a number of configuration options available.
+The default configuration for the Synse CLI looks like:
 
-- Synse Host
-   - This sets the API endpoint for where synse is serving data. It is given as a resolvable address without
-   any leading or trailing information (e.g. awesome.sauce.io).
-   - It can be set with the following
-      - `--synse_host` or `--host` flag
-      - `SYNSE_HOST` environment variable
-      - `SynseHost` (case sensitive) in the configuration file
-- Debug
-   - This enables debug logging to `STDOUT`, printing debug information to the screen.
-   - In can be enabled by setting the following
-      - `--debug` flag
-      - `SYNSE_DEBUG` environment variable
-      - `debug: true` in the configuration file
-- Configuration File
-   - This gives the path for where to locate the configuration file (more details in [Configuration File](#configuration-file)).
-   - It can be set with the following
-      - `--config` or `-c` flags
-      - `SYNSE_CONFIG_FILE` environment variable
+```yaml
+debug: false
+activehost:
+  name: local
+  address: localhost:5000
+hosts:
+  local:
+    name: local
+    address: localhost:5000
+```
 
-#### Configuration File
+When running the CLI, it will parse configuration options in the precedence order listed above. When
+looking for configuration files, it will first look for the `.synse.yml` (note the leading dot) file
+in the current directory the command is being run from (e.g. `.`). If not found there, it will look
+in the current user's home directory (e.g. `~`). If the file does not exist in either location, it will
+be created in the home directory upon command termination.
 
-Configuration options can be read in from a file at runtime. Currently this file is named `.synse.yaml`
-(notice the leading dot). By default synse cli will look for this file in two places at runtime, the root
-level of the current user's home directory (`~/.synse.yaml`) or, if it is not found there, in the current
-directory the command is being run from (`./.synse.yaml`). As mentioned above, specific settings in this
-file can be overriden on a per command basis using a higher precedence method.
-
-The configuration file follows standard YAML syntax and accepts the following settings:
-
-- `SynseHost: some.host.com`
-- `debug: <true/false>`
-
-Configuration values _are_ case sensitive, but the cli will attempt to decode any values that match the
-above keys.
+- `debug` enables debug logging to `STDOUT`, printing debug information to the screen.
+- `activehost` specifies which of the `hosts` is currently set as active. This host will be the one
+   used when issuing any subsequent command against Synse Server. This value can either be updated
+   manually or via the `hosts change` command.
+- `hosts` specifies a list of all Synse Server hosts which the user can choose to interface with.
+  by default a host named `local` at address `localhost:5000` is added and set as the active host.
+  Hosts can be added manually or by the `hosts add` command.
 
 ### Contributing
 
-Synse CLI is (un)-lovingly maintained by [timfallmk](https://github.com/timfallmk), who is far over worked and
-underpaid. We happily accept issues and pull requests logged in this repository. Please just be nice and follow
+We happily accept issues and pull requests logged in this repository. Please just be nice and follow
 appropriate rules when submitting anything.
 
 Any code in this repository is governed under the license given therein.
