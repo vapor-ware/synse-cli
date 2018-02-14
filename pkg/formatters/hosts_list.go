@@ -1,4 +1,4 @@
-package hosts
+package formatters
 
 import (
 	"io"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/vapor-ware/synse-cli/pkg/config"
-	"github.com/vapor-ware/synse-cli/pkg/formatters"
 )
 
 const (
@@ -44,8 +43,8 @@ func newListFormat(data interface{}) (interface{}, error) {
 
 // NewListFormatter creates a new instance of a Formatter configured
 // for the host list command.
-func NewListFormatter(out io.Writer) *formatters.Formatter {
-	f := formatters.NewFormatter(
+func NewListFormatter(out io.Writer) *Formatter {
+	f := NewFormatter(
 		listTmpl,
 		out,
 	)

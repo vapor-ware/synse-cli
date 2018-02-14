@@ -1,8 +1,7 @@
-package pkg
+package commands
 
 import (
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/pkg/commands"
 	"github.com/vapor-ware/synse-cli/pkg/commands/hosts"
 	"github.com/vapor-ware/synse-cli/pkg/commands/plugin"
 	"github.com/vapor-ware/synse-cli/pkg/commands/server"
@@ -20,5 +19,5 @@ var Commands = []cli.Command{
 	server.WriteCommand,
 	server.InfoCommand,
 	server.TransactionCommand,
-	commands.CompletionCommand,
+	completionCommand,
 }

@@ -7,8 +7,8 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
-// CompletionCommand is the CLI command for generating shell completion scripts.
-var CompletionCommand = cli.Command{
+// completionCommand is the CLI command for generating shell completion scripts.
+var completionCommand = cli.Command{
 	Name:  "completion",
 	Usage: "Generate shell completion scripts for bash or zsh",
 

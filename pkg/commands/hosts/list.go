@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/config"
-	"github.com/vapor-ware/synse-cli/pkg/formatters/hosts"
+	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -46,7 +46,7 @@ func cmdList(c *cli.Context) error {
 	sort.Sort(byHostName(configuredHosts))
 
 	// Format output
-	formatter := hosts.NewListFormatter(c.App.Writer)
+	formatter := formatters.NewListFormatter(c.App.Writer)
 	err := formatter.Add(configuredHosts)
 	if err != nil {
 		return err
