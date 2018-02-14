@@ -14,6 +14,7 @@ import (
 	"github.com/vapor-ware/synse-cli/commands"
 	"github.com/vapor-ware/synse-cli/config"
 	"github.com/vapor-ware/synse-cli/flags"
+	"github.com/vapor-ware/synse-cli/formatters"
 )
 
 const (
@@ -56,6 +57,14 @@ func main() {
 	// After running, persist the configuration
 	app.After = func(c *cli.Context) error {
 		return config.Persist()
+	}
+
+	app.Action = func(c *cli.Context) error {
+		if c.IsSet("config") {
+			return formatters.AsYAML(config.Config, c.App.Writer)
+		}
+
+		return cli.ShowAppHelp(c)
 	}
 
 	// Run the CLI
