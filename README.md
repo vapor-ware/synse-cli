@@ -145,6 +145,16 @@ be created in the home directory upon command termination.
   by default a host named `local` at address `localhost:5000` is added and set as the active host.
   Hosts can be added manually or by the `hosts add` command.
 
+### Bash Completion
+
+Bash/Zsh completion can be setup for the Synse CLI using the `completion` command, e.g. for bash,
+```shell
+$ synse completion --bash
+You can now run `source /etc/bash_completion.d/synse`
+
+$ source /etc/bash_completion.d/synse
+```
+
 ### Contributing
 
 We happily accept issues and pull requests logged in this repository. Please just be nice and follow
