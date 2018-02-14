@@ -7,7 +7,6 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
-	"github.com/vapor-ware/synse-cli/pkg/flags"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -35,11 +34,17 @@ var ScanCommand = cli.Command{
 	Usage:       scanCmdUsage,
 	Description: scanCmdDesc,
 	Category:    SynseActionsCategory,
-	Flags: []cli.Flag{
-		flags.FilterFlag,
-	},
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdScan(c))
+	},
+
+	Flags: []cli.Flag{
+		// --filter, -f flag sets a filter in the form "key=value" on the command output
+		cli.StringFlag{
+			Name:  "filter, f",
+			Usage: "set a filter for the output results",
+		},
 	},
 }
 

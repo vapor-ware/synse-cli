@@ -39,6 +39,7 @@ var WriteCommand = cli.Command{
 	Usage:       writeCmdUsage,
 	Description: writeCmdDesc,
 	Category:    SynseActionsCategory,
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdWrite(c))
 	},

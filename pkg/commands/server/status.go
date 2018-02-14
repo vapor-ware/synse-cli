@@ -3,7 +3,6 @@ package server
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
-	"github.com/vapor-ware/synse-cli/pkg/flags"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -33,11 +32,18 @@ var StatusCommand = cli.Command{
 	Description: testCmdDesc,
 	Category:    SynseActionsCategory,
 	ArgsUsage:   utils.NoArgs,
-	Flags: []cli.Flag{
-		flags.OutputFlag,
-	},
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdStatus(c))
+	},
+
+	Flags: []cli.Flag{
+		// --output, -o flag specifies the output format (YAML, JSON) for the command
+		cli.StringFlag{
+			Name:  "output, o",
+			Value: "yaml",
+			Usage: "set the output format of the command",
+		},
 	},
 }
 

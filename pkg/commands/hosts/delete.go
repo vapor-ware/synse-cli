@@ -11,6 +11,7 @@ import (
 var hostsDeleteCommand = cli.Command{
 	Name:  "delete",
 	Usage: "Delete a Synse Server host from configuration",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdDelete(c))
 	},

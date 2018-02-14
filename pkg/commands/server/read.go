@@ -33,6 +33,7 @@ var ReadCommand = cli.Command{
 	Usage:       readCmdUsage,
 	Description: readCmdDesc,
 	Category:    SynseActionsCategory,
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdRead(c))
 	},

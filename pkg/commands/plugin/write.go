@@ -13,6 +13,7 @@ import (
 var pluginWriteCommand = cli.Command{
 	Name:  "write",
 	Usage: "Write data directly to a plugin",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdWrite(c))
 	},

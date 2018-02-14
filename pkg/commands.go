@@ -1,13 +1,8 @@
-/*
-Package commands defines the commands, sub-commands, and flags used in app.Cli to form
-the structure of the CLI. Definitions, usage strings, help text, and flags are
-delegated to app.Cli. The `Action:` field gives the function called when each
-command is run.
-*/
-package commands
+package pkg
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/pkg/commands"
 	"github.com/vapor-ware/synse-cli/pkg/commands/hosts"
 	"github.com/vapor-ware/synse-cli/pkg/commands/plugin"
 	"github.com/vapor-ware/synse-cli/pkg/commands/server"
@@ -25,5 +20,5 @@ var Commands = []cli.Command{
 	server.WriteCommand,
 	server.InfoCommand,
 	server.TransactionCommand,
-	completionCommand,
+	commands.CompletionCommand,
 }

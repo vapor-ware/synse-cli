@@ -12,6 +12,7 @@ import (
 var hostsChangeCommand = cli.Command{
 	Name:  "change",
 	Usage: "Change the active host",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdChange(c))
 	},

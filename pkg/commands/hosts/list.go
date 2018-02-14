@@ -13,6 +13,7 @@ import (
 var hostsListCommand = cli.Command{
 	Name:  "list",
 	Usage: "List the configured Synse Server hosts",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdList(c))
 	},

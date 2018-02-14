@@ -11,6 +11,7 @@ import (
 var hostsAddCommand = cli.Command{
 	Name:  "add",
 	Usage: "Add a new Synse Server host",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdAdd(c))
 	},

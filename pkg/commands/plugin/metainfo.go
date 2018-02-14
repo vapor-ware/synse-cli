@@ -14,6 +14,7 @@ import (
 var pluginMetainfoCommand = cli.Command{
 	Name:  "meta",
 	Usage: "Get the metainformation from a plugin",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdMeta(c))
 	},

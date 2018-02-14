@@ -4,20 +4,29 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/pkg/flags"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
-// completionCommand is the CLI command for generating shell completion scripts.
-var completionCommand = cli.Command{
+// CompletionCommand is the CLI command for generating shell completion scripts.
+var CompletionCommand = cli.Command{
 	Name:  "completion",
 	Usage: "Generate shell completion scripts for bash or zsh",
-	Flags: []cli.Flag{
-		flags.BashFlag,
-		flags.ZshFlag,
-	},
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdCompletion(c))
+	},
+
+	Flags: []cli.Flag{
+		// --zsh flag for setting Zsh shell completion
+		cli.BoolFlag{
+			Name:  "zsh",
+			Usage: "zsh completion",
+		},
+		// --bash flag for setting Bash shell completion
+		cli.BoolFlag{
+			Name:  "bash",
+			Usage: "bash completion",
+		},
 	},
 }
 

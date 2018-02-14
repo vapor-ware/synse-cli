@@ -15,6 +15,7 @@ import (
 var pluginReadCommand = cli.Command{
 	Name:  "read",
 	Usage: "Get a reading from a plugin",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdRead(c))
 	},

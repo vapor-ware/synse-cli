@@ -13,6 +13,7 @@ import (
 var pluginTransactionCommand = cli.Command{
 	Name:  "transaction",
 	Usage: "Get transaction info from a plugin",
+
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdTransaction(c))
 	},

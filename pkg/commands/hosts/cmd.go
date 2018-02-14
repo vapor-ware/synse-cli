@@ -8,6 +8,7 @@ import (
 var HostsCommand = cli.Command{
 	Name:  "hosts",
 	Usage: "Manage Synse Server instances",
+
 	Subcommands: []cli.Command{
 		hostsActiveCommand,
 		hostsAddCommand,
