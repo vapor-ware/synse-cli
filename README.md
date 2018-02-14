@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/img/logo.png" width="360"></p>
+<p align="center"><img src="assets/logo.png" width="360"></p>
 <p align="center">
     <a href="https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439"><img src="https://app.buddy.works/timfall/synse-cli/pipelines/pipeline/50439/badge.svg?token=3ae6c804af4fdb5947b58ba1c544c232bf8d28f6e6d2b07321added2d1cc0bad"></a>
     <a href="https://circleci.com/gh/vapor-ware/synse-cli"><img src="https://circleci.com/gh/vapor-ware/synse-cli.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3"></a>

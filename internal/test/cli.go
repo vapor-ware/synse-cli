@@ -2,7 +2,7 @@ package test
 
 import (
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/pkg/config"
 )
 
 // Setup can be run at the beginning of tests to perform setup actions.
