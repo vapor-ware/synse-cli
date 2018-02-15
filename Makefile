@@ -62,6 +62,13 @@ setup:  ## Install the build and development dependencies
 test:  ## Run all tests
 	go test -cover ./...
 
+.PHONY: ci-test
+ci-test:
+	go test -v ./... 2>&1 | tee /tmp/${TEST_DIRECTORY}/test.out
+	cat /tmp/${TEST_DIRECTORY}/test.out \
+		| go-junit-report \
+		> /tmp/${TEST_DIRECTORY}/report.xml
+
 .PHONY: version
 version: ## Print the version of the CLI
 	@echo "$(VERSION)"
