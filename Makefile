@@ -7,7 +7,7 @@ HAS_DEP  := $(shell which dep)
 
 .PHONY: build
 build:  ## Build the CLI locally
-	go build -o build/synse .
+	go build -o build/synse github.com/vapor-ware/synse-cli/cmd/synse
 
 .PHONY: ci
 ci:  ## Run CI checks locally (build, test, lint)
