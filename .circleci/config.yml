@@ -4,7 +4,6 @@ jobs:
     docker:
       - image: golang:latest
         environment:
-          SYNSE_HOST: 104.199.113.92
           DEBUG: true
 
     working_directory: /go/src/github.com/vapor-ware/synse-cli
