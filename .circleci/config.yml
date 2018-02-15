@@ -77,7 +77,7 @@ jobs:
       - run:
           name: "Building"
           command: |
-            cd cmd/ksync/
+            cd cmd/synse/
             gox --output="build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386'
 
       - save_cache:
@@ -137,18 +137,7 @@ jobs:
 
       - run:
           name: "Creating Release"
-          command: |
-            # Quick fix for #71 ($CIRCLE_TAG not populated)
-            if git describe --exact-match --tags HEAD; then
-              CIRCLE_TAG=$(git describe --exact-match --tags HEAD)
-            fi
-            ghr \
-              -u ${GITHUB_USER} \
-              -t ${GITHUB_TOKEN} \
-              -b "$(cat ./CHANGELOG.md)" \
-              -p 1 \
-              -draft \
-              ${CIRCLE_TAG} build/
+          command: make ci-create-release
 
 workflows:
   version: 2
