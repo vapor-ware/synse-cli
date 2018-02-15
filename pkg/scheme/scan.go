@@ -4,23 +4,44 @@ import "strings"
 
 // Scan is the scheme for the Synse Server "scan" endpoint response.
 type Scan struct {
-	Racks []rack `json:"racks"`
+	Racks []Rack `json:"racks"`
 }
 
-// rack describes a rack entry in the scan result.
-type rack struct {
+// ToInternalScan converts the Scan result scheme to a list of InternalScan
+// representations of the scan results, which makes it easier to sort, filter,
+// format, and generally work with the scan results at a device-level.
+func (s *Scan) ToInternalScan() []*InternalScan {
+	var devices []*InternalScan
+	for _, rack := range s.Racks {
+		for _, board := range rack.Boards {
+			for _, device := range board.Devices {
+				devices = append(devices, &InternalScan{
+					Rack:   rack.ID,
+					Board:  board.ID,
+					Device: device.ID,
+					Info:   device.Info,
+					Type:   device.Type,
+				})
+			}
+		}
+	}
+	return devices
+}
+
+// Rack describes a rack entry in the scan result.
+type Rack struct {
 	ID     string  `json:"id"`
-	Boards []board `json:"boards"`
+	Boards []Board `json:"boards"`
 }
 
-// board describes a board entry in the scan result.
-type board struct {
+// Board describes a board entry in the scan result.
+type Board struct {
 	ID      string   `json:"id"`
-	Devices []device `json:"devices"`
+	Devices []Device `json:"devices"`
 }
 
-// device describes a device entry in the scan result.
-type device struct {
+// Device describes a device entry in the scan result.
+type Device struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
 	Info string `json:"info"`

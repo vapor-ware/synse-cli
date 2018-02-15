@@ -82,20 +82,10 @@ func cmdScan(c *cli.Context) error {
 		return err
 	}
 
-	var devices []*scheme.InternalScan
-	for _, rack := range scan.Racks {
-		for _, board := range rack.Boards {
-			for _, device := range board.Devices {
-				devices = append(devices, &scheme.InternalScan{
-					Rack:   rack.ID,
-					Board:  board.ID,
-					Device: device.ID,
-					Info:   device.Info,
-					Type:   device.Type,
-				})
-			}
-		}
-	}
+	// convert the scan results to an internal representation that
+	// makes it easier to do device-based actions (sorting, filtering,
+	// formatting, etc).
+	devices := scan.ToInternalScan()
 
 	// Sort by ID
 	sort.Sort(byScanDeviceID(devices))

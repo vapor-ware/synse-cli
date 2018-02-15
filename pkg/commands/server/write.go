@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
+	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
@@ -33,6 +34,8 @@ var WriteCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdWrite(c))
 	},
+
+	BashComplete: completion.CompleteRackBoardDevice,
 }
 
 // cmdWrite is the action for the WriteCommand. It makes an "write" request

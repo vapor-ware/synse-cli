@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
+	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
@@ -33,6 +34,8 @@ var ReadCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdRead(c))
 	},
+
+	BashComplete: completion.CompleteRackBoardDevice,
 }
 
 // cmdRead is the action for the ReadCommand. It makes an "read" request

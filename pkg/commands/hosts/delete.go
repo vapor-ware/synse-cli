@@ -1,9 +1,8 @@
 package hosts
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
@@ -18,7 +17,7 @@ var hostsDeleteCommand = cli.Command{
 		return utils.CmdHandler(cmdDelete(c))
 	},
 
-	BashComplete: cmdDeleteComplete,
+	BashComplete: completion.CompleteHostNames,
 }
 
 // cmdDelete is the action for hostsDeleteCommand. It removes the specified host
@@ -40,16 +39,4 @@ func cmdDelete(c *cli.Context) error {
 	}
 	delete(config.Config.Hosts, name)
 	return nil
-}
-
-// cmdDeleteComplete is the bash completion function for the hosts delete command.
-// It will auto-complete on the names of the configured Synse Server hosts, if any
-// exist.
-func cmdDeleteComplete(c *cli.Context) {
-	if c.NArg() > 0 {
-		return
-	}
-	for name := range config.Config.Hosts {
-		fmt.Println(name)
-	}
 }

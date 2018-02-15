@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
+	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
@@ -30,6 +31,8 @@ var InfoCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdInfo(c))
 	},
+
+	BashComplete: completion.CompleteRackBoardDevice,
 
 	Flags: []cli.Flag{
 		// --output, -o flag specifies the output format (YAML, JSON) for the command

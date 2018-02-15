@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
@@ -17,7 +18,7 @@ var hostsChangeCommand = cli.Command{
 		return utils.CmdHandler(cmdChange(c))
 	},
 
-	BashComplete: cmdChangeComplete,
+	BashComplete: completion.CompleteHostNames,
 }
 
 // cmdChange is the action for hostsChangeCommand. It changes the active host to
@@ -37,16 +38,4 @@ func cmdChange(c *cli.Context) error {
 		}
 	}
 	return cli.NewExitError(fmt.Sprintf("host with name '%v' not found", name), 1)
-}
-
-// cmdChangeComplete is the bash completion function for the hosts change command.
-// It will auto-complete on the names of the configured Synse Server hosts, if any
-// exist.
-func cmdChangeComplete(c *cli.Context) {
-	if c.NArg() > 0 {
-		return
-	}
-	for name := range config.Config.Hosts {
-		fmt.Println(name)
-	}
 }
