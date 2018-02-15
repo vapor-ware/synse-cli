@@ -72,11 +72,7 @@ jobs:
 
       - run:
           name: "Running Tests"
-          command: |
-          go test -v ./... 2>&1 | tee /tmp/${TEST_DIRECTORY}/test.out
-            cat /tmp/${TEST_DIRECTORY}/test.out \
-            | go-junit-report \
-            > /tmp/${TEST_DIRECTORY}/report.xml
+          command: make ci-test
 
       - run:
           name: "Building"
@@ -101,6 +97,7 @@ jobs:
 
       - store_test_results:
           path: /tmp/gotest
+
   release:
     working_directory: /go/src/github.com/vapor-ware/synse-cli
     docker:
