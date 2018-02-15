@@ -4,14 +4,10 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// transactionBase is the base URI for the 'transaction' route.
-	transactionBase = "transaction"
-
 	// transactionCmdName is the name for the 'transaction' command.
 	transactionCmdName = "transaction"
 
@@ -54,8 +50,7 @@ func cmdTransaction(c *cli.Context) error {
 
 	transactionID := c.Args().Get(0)
 
-	transaction := &scheme.Transaction{}
-	err = client.DoGet(client.MakeURI(transactionBase, transactionID), transaction)
+	transaction, err := client.Client.Transaction(transactionID)
 	if err != nil {
 		return err
 	}

@@ -13,9 +13,6 @@ import (
 )
 
 const (
-	// scanBase is the base URI for the 'scan' route.
-	scanBase = "scan"
-
 	// scanCmdName is the name for the 'scan' command.
 	scanCmdName = "scan"
 
@@ -80,8 +77,7 @@ func (s byScanDeviceID) Less(i, j int) bool {
 // cmdScan is the action for the ScanCommand. It makes an "scan" request
 // against the active Synse Server instance.
 func cmdScan(c *cli.Context) error {
-	scan := &scheme.Scan{}
-	err := client.DoGet(scanBase, scan)
+	scan, err := client.Client.Scan()
 	if err != nil {
 		return err
 	}

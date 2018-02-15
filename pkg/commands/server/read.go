@@ -4,14 +4,10 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// readBase is the base URI for the 'read' route.
-	readBase = "read"
-
 	// readCmdName is the name for the 'read' command.
 	readCmdName = "read"
 
@@ -51,8 +47,7 @@ func cmdRead(c *cli.Context) error {
 	board := c.Args().Get(1)
 	device := c.Args().Get(2)
 
-	read := &scheme.Read{}
-	err = client.DoGet(client.MakeURI(readBase, rack, board, device), read)
+	read, err := client.Client.Read(rack, board, device)
 	if err != nil {
 		return err
 	}

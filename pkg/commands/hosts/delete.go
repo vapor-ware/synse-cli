@@ -1,10 +1,11 @@
 package hosts
 
 import (
+	"fmt"
+
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
-	"fmt"
 )
 
 // hostsDeleteCommand is the CLI sub-command for deleting a host from the
@@ -48,7 +49,7 @@ func cmdDeleteComplete(c *cli.Context) {
 	if c.NArg() > 0 {
 		return
 	}
-	for name, _ := range config.Config.Hosts {
+	for name := range config.Config.Hosts {
 		fmt.Println(name)
 	}
 }

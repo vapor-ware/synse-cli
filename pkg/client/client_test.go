@@ -69,14 +69,14 @@ func TestMakeURI(t *testing.T) {
 	cli.OsExiter = func(int) {}
 
 	for _, testCase := range testTable {
-		r := MakeURI(testCase.in...)
+		r := makeURI(testCase.in...)
 		if r != testCase.out {
-			t.Errorf("MakeURI(%v) => %s, want %s", testCase.in, r, testCase.out)
+			t.Errorf("makeURI(%v) => %s, want %s", testCase.in, r, testCase.out)
 		}
 	}
 }
 
-func TestDoGet(t *testing.T) {
+func TestGetVersioned(t *testing.T) {
 	test.Setup()
 	cli.OsExiter = func(int) {}
 
@@ -94,7 +94,7 @@ func TestDoGet(t *testing.T) {
 	test.AddServerHost(server)
 
 	out := &testData{}
-	err := DoGet("foobar", out)
+	err := getVersioned("foobar", out)
 
 	test.ExpectNoError(t, err)
 
@@ -103,7 +103,7 @@ func TestDoGet(t *testing.T) {
 	}
 }
 
-func TestDoGetUnversioned(t *testing.T) {
+func TestGetUnversioned(t *testing.T) {
 	test.Setup()
 	cli.OsExiter = func(int) {}
 
@@ -121,7 +121,7 @@ func TestDoGetUnversioned(t *testing.T) {
 	test.AddServerHost(server)
 
 	out := &testData{}
-	err := DoGet("foobar", out)
+	err := getUnversioned("foobar", out)
 
 	test.ExpectNoError(t, err)
 
@@ -130,7 +130,7 @@ func TestDoGetUnversioned(t *testing.T) {
 	}
 }
 
-func TestDoPost(t *testing.T) {
+func TestPostVersioned(t *testing.T) {
 	test.Setup()
 	cli.OsExiter = func(int) {}
 
@@ -151,7 +151,7 @@ func TestDoPost(t *testing.T) {
 	test.AddServerHost(server)
 
 	out := &testData{}
-	err := DoPost("foobar", testData{}, out)
+	err := postVersioned("foobar", testData{}, out)
 
 	test.ExpectNoError(t, err)
 

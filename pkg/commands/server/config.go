@@ -4,14 +4,10 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// configBase is the base URI for the 'config' route.
-	configBase = "config"
-
 	// configCmdName is the name for the 'config' command.
 	configCmdName = "config"
 
@@ -49,8 +45,7 @@ var ConfigCommand = cli.Command{
 // cmdConfig is the action for the ConfigCommand. It makes an "config" request
 // against the active Synse Server instance.
 func cmdConfig(c *cli.Context) error {
-	cfg := &scheme.Config{}
-	err := client.DoGet(configBase, cfg)
+	cfg, err := client.Client.Config()
 	if err != nil {
 		return err
 	}

@@ -4,14 +4,10 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// testBase is the base URI for the 'test' route.
-	testBase = "test"
-
 	// testCmdName is the name for the 'status' command.
 	testCmdName = "status"
 
@@ -50,8 +46,7 @@ var StatusCommand = cli.Command{
 // cmdStatus is the action for the StatusCommand. It makes an "status" request
 // against the active Synse Server instance.
 func cmdStatus(c *cli.Context) error {
-	status := &scheme.TestStatus{}
-	err := client.DoGetUnversioned(testBase, status)
+	status, err := client.Client.Status()
 	if err != nil {
 		return err
 	}

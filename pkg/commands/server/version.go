@@ -4,14 +4,10 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// versionBase is the base URI for the 'version' route.
-	versionBase = "version"
-
 	// versionCmdName is the name for the 'version' command.
 	versionCmdName = "version"
 
@@ -49,8 +45,7 @@ var VersionCommand = cli.Command{
 // cmdVersion is the action for the VersionCommand. It makes an "version" request
 // against the active Synse Server instance.
 func cmdVersion(c *cli.Context) error {
-	version := &scheme.Version{}
-	err := client.DoGetUnversioned(versionBase, version)
+	version, err := client.Client.Version()
 	if err != nil {
 		return err
 	}

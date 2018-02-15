@@ -46,7 +46,7 @@ func cmdChangeComplete(c *cli.Context) {
 	if c.NArg() > 0 {
 		return
 	}
-	for name, _ := range config.Config.Hosts {
+	for name := range config.Config.Hosts {
 		fmt.Println(name)
 	}
 }

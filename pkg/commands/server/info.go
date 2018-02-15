@@ -4,14 +4,10 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// infoBase is the base URI for the 'info' route.
-	infoBase = "info"
-
 	// infoCmdName is the name for the 'info' command.
 	infoCmdName = "info"
 
@@ -47,8 +43,8 @@ var InfoCommand = cli.Command{
 
 // cmdInfo is the action for the InfoCommand. It makes an "info" request
 // against the active Synse Server instance.
-func cmdInfo(c *cli.Context) error {
-	err := utils.RequiresArgsInRange(1, 3, c)
+func cmdInfo(c *cli.Context) (err error) {
+	err = utils.RequiresArgsInRange(1, 3, c)
 	if err != nil {
 		return err
 	}
@@ -58,25 +54,20 @@ func cmdInfo(c *cli.Context) error {
 	device := c.Args().Get(2)
 
 	var info interface{}
-	var uri string
 
 	if board == "" {
 		// No board is defined, so we are querying at the rack level.
-		info = &scheme.RackInfo{}
-		uri = client.MakeURI(infoBase, rack)
+		info, err = client.Client.RackInfo(rack)
 
 	} else if device == "" {
 		// Board is defined, but device is not, so we are querying at the board level.
-		info = &scheme.BoardInfo{}
-		uri = client.MakeURI(infoBase, rack, board)
+		info, err = client.Client.BoardInfo(rack, board)
 
 	} else {
 		// Rack, Board, Device is defined, so we are querying at the device level.
-		info = &scheme.DeviceInfo{}
-		uri = client.MakeURI(infoBase, rack, board, device)
+		info, err = client.Client.DeviceInfo(rack, board, device)
 	}
 
-	err = client.DoGet(uri, info)
 	if err != nil {
 		return err
 	}

@@ -4,14 +4,10 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// writeBase is the base URI for the 'write' route.
-	writeBase = "write"
-
 	// writeCmdName is the name for the 'write' command.
 	writeCmdName = "write"
 
@@ -26,12 +22,6 @@ const (
 	 may support writing; device support for write is specified at
 	 the plugin level.`
 )
-
-// writePost defines the data to POST to the Synse Server "write" route.
-type writePost struct {
-	Action string `json:"action,omitempty"`
-	Raw    string `json:"raw,omitempty"`
-}
 
 // WriteCommand is the CLI command for Synse Server's "write" API route.
 var WriteCommand = cli.Command{
@@ -59,14 +49,7 @@ func cmdWrite(c *cli.Context) error {
 	action := c.Args().Get(3)
 	raw := c.Args().Get(4)
 
-	write := make([]scheme.WriteTransaction, 0)
-
-	body := &writePost{
-		Action: action,
-		Raw:    raw,
-	}
-	uri := client.MakeURI(writeBase, rack, board, device)
-	err = client.DoPost(uri, body, &write)
+	write, err := client.Client.Write(rack, board, device, action, raw)
 	if err != nil {
 		return err
 	}

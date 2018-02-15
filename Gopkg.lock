@@ -5,7 +5,7 @@
   branch = "master"
   name = "github.com/Sirupsen/logrus"
   packages = ["."]
-  revision = "9f91ab2ef97544cdca176a1fb9165f2cf6fd709b"
+  revision = "8c0189d9f6bbf301e5d055d34268156b317016af"
 
 [[projects]]
   branch = "master"
@@ -63,32 +63,14 @@
 [[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
-  revision = "d419a98cdbed11a922bf76f257b7c4be79b50e73"
-  version = "v1.7.4"
-
-[[projects]]
-  name = "github.com/mattn/go-isatty"
-  packages = ["."]
-  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
-  version = "v0.0.3"
-
-[[projects]]
-  name = "github.com/mattn/go-runewidth"
-  packages = ["."]
-  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
-  version = "v0.0.2"
+  revision = "c3beff4c2358b44d0493c7dda585e7db7ff28ae6"
+  version = "v1.7.6"
 
 [[projects]]
   branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "a4e142e9c047c904fa2f1e144d9a84e6133024bc"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/olekukonko/tablewriter"
-  packages = ["."]
-  revision = "b8a9be070da40449e501c3c4730a889e42d87a9e"
 
 [[projects]]
   name = "github.com/pelletier/go-toml"
@@ -108,8 +90,8 @@
 [[projects]]
   name = "github.com/spf13/cast"
   packages = ["."]
-  revision = "acbeb36b902d72a7a4c18e8f3241075e7ab763e4"
-  version = "v1.1.0"
+  revision = "8965335b8c7107321228e3e3702cab9832751bac"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -133,7 +115,7 @@
   branch = "master"
   name = "github.com/urfave/cli"
   packages = ["."]
-  revision = "803d0665796d3b09d3190067803fc285d1604732"
+  revision = "a1c7408de3f632d86eee604a3bb755f1ffb68226"
 
 [[projects]]
   name = "github.com/vapor-ware/synse-server-grpc"
@@ -143,19 +125,9 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/vbauerster/mpb"
-  packages = [
-    ".",
-    "cwriter",
-    "decor"
-  ]
-  revision = "9c8aced234a9ada5879c0631e9dd6e6b5fc07d49"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "5119cf507ed5294cc409c092980c7497ee5d6fd2"
+  revision = "650f4a345ab4e5b245a3034b110ebc7299e68186"
 
 [[projects]]
   branch = "master"
@@ -245,6 +217,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cf911e2eaa2fc99469a6269aa1f82eb5dd5bb2dc67ab56822097631c7570676d"
+  inputs-digest = "db5f3f6df747daed573776496c648f7e203b1e8cef819fa9e05cc2985990c4f4"
   solver-name = "gps-cdcl"
   solver-version = 1
