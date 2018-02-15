@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
@@ -32,7 +33,7 @@ func newReadFormat(data interface{}) (interface{}, error) {
 		out = append(out, &readFormat{
 			Type:      readType,
 			Value:     fmt.Sprintf("%v", readData.Value),
-			Timestamp: readData.Timestamp,
+			Timestamp: utils.ParseTimestamp(readData.Timestamp),
 		})
 	}
 
