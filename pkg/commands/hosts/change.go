@@ -16,9 +16,11 @@ var hostsChangeCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdChange(c))
 	},
+
+	BashComplete: cmdChangeComplete,
 }
 
-// cmfChange is the action for hostsChangeCommand. It changes the active host to
+// cmdChange is the action for hostsChangeCommand. It changes the active host to
 // the specified host, if it exists.
 func cmdChange(c *cli.Context) error {
 	err := utils.RequiresArgsExact(1, c)
@@ -35,4 +37,16 @@ func cmdChange(c *cli.Context) error {
 		}
 	}
 	return cli.NewExitError(fmt.Sprintf("host with name '%v' not found", name), 1)
+}
+
+// cmdChangeComplete is the bash completion function for the hosts change command.
+// It will auto-complete on the names of the configured Synse Server hosts, if any
+// exist.
+func cmdChangeComplete(c *cli.Context) {
+	if c.NArg() > 0 {
+		return
+	}
+	for name, _ := range config.Config.Hosts {
+		fmt.Println(name)
+	}
 }
