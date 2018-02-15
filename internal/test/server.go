@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/vapor-ware/synse-cli/config"
+	"github.com/vapor-ware/synse-cli/pkg/config"
 )
 
 // Server creates a test HTTP server used for testing commands
