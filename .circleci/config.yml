@@ -78,7 +78,7 @@ jobs:
           name: "Building"
           command: |
             cd cmd/synse/
-            gox --output="build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386'
+            gox --output="../../build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386'
 
       - save_cache:
           when: on_success
