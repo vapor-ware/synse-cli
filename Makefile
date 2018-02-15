@@ -4,9 +4,6 @@ VERSION := $(shell cat cmd/synse/synse.go | grep 'appVersion =' | awk '{print $$
 HAS_LINT := $(shell which gometalinter)
 HAS_DEP  := $(shell which dep)
 
-GIT_TAG := $(shell git describe --exact-match --tags HEAD)
-
-
 .PHONY: build
 build:  ## Build the CLI locally
 	go build -o build/synse github.com/vapor-ware/synse-cli/cmd/synse
@@ -73,6 +70,7 @@ ci-test:
 
 .PHONY: ci-create-release
 ci-create-release:
+	$(eval GIT_TAG := $(shell git describe --exact-match --tags HEAD))
 	ghr \
 		-u ${GITHUB_USER} \
 		-t ${GITHUB_TOKEN} \
