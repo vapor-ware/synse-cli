@@ -14,30 +14,161 @@ jobs:
         BINARY_NAME: "synse"
 
     steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+
       - checkout
-      - run:
-          name: "Installing Dependencies"
-          command: go get -v
-      - run:
-          name: "Installing Dependencies for Windows"
-          command: GOOS=windows go get -v
+
+      - restore_cache:
+          keys:
+            - vendor-{{ checksum "Gopkg.toml" }}-{{ checksum "Gopkg.lock" }}
+            - vendor-{{ checksum "Gopkg.toml" }}
+
       - run:
           name: "Make test report directory"
-          command: mkdir -p $CICLE_TEST_REPORTS/$TEST_DIRECTORY
+          command: mkdir -p /tmp/$TEST_DIRECTORY
+
       - run:
-          name: "Get test to junit xml parser"
-          command: go get -v -u github.com/jstemmer/go-junit-report
-      - run:
-          name: "Running Tests"
-          command: go test -v --race ./...
+          name: "Installing Vendored Dependencies"
+          command: |
+            go get -v github.com/golang/dep/cmd/dep
+            go install github.com/golang/dep/cmd/dep
+            dep ensure -v --vendor-only
+
       - run:
           name: "Getting builder"
           command: |
             go get -v github.com/mitchellh/gox
-            go get -v github.com/tcnksm/ghr
+
+      - run:
+          name: "Linting"
+          command: |
+            go get -u github.com/alecthomas/gometalinter
+            gometalinter --install
+            gometalinter ./... \
+              --vendor \
+              --skip "testdata" \
+              --exclude "[a-zA-Z]*_test.go" \
+              --disable=megacheck \
+              --tests \
+              --sort=severity \
+              --aggregate \
+              --deadline=500s
+            gometalinter ./... \
+              --vendor \
+              --skip "testdata" \
+              --exclude "[a-zA-Z]*_test.go" \
+              --disable-all \
+              --tests \
+              --sort=severity \
+              --aggregate \
+              --enable=megacheck \
+              --deadline=240s
+
+      - run:
+          name: "Get test to junit xml parser"
+          command: |
+            go get -v -u github.com/jstemmer/go-junit-report
+
+      - run:
+          name: "Running Tests"
+          command: |
+          go test -v ./... 2>&1 | tee /tmp/${TEST_DIRECTORY}/test.out
+            cat /tmp/${TEST_DIRECTORY}/test.out \
+            | go-junit-report \
+            > /tmp/${TEST_DIRECTORY}/report.xml
+
       - run:
           name: "Building"
-          command: gox --output="build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386'
+          command: |
+            cd cmd/ksync/
+            gox --output="build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386'
+
+      - save_cache:
+          when: on_success
+          key: vendor-{{ checksum "Gopkg.toml" }}-{{ checksum "Gopkg.lock" }}
+          paths:
+            - vendor/
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
       - store_artifacts:
           path: build
-          destination: build
+          destination: binaries
+
+      - store_test_results:
+          path: /tmp/gotest
+  release:
+    working_directory: /go/src/github.com/vapor-ware/synse-cli
+    docker:
+      - image: circleci/golang:latest
+
+    environment:
+        BINARY_NAME: "synse"
+
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: "Getting Distributor"
+          command: |
+            go get -v github.com/tcnksm/ghr
+
+      - run:
+          name: "Generate Changelog"
+          command: |
+            docker pull timfallmk/github-changelog-generator
+            docker run --name changelog timfallmk/github-changelog-generator \
+              -u vapor-ware \
+              -p ${BINARY_NAME} \
+              --since-tag $(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`) \
+              -t ${GITHUB_TOKEN}
+            docker cp changelog:/usr/local/src/your-app/CHANGELOG.md ./
+      # - run:
+      #     name: "Tag for release"
+      #     command: |
+      #       docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+      #       make docker-tag-release
+
+      - run:
+          name: "Creating Release"
+          command: |
+            # Quick fix for #71 ($CIRCLE_TAG not populated)
+            if git describe --exact-match --tags HEAD; then
+              CIRCLE_TAG=$(git describe --exact-match --tags HEAD)
+            fi
+            ghr \
+              -u ${GITHUB_USER} \
+              -t ${GITHUB_TOKEN} \
+              -b "$(cat ./CHANGELOG.md)" \
+              -p 1 \
+              -draft \
+              ${CIRCLE_TAG} build/
+
+workflows:
+  version: 2
+
+  release:
+    jobs:
+      - build:
+          context: org-global
+          filters:
+            tags:
+              only: /.*/
+
+      - release:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^[0-9]*(\.[0-9]*)*$/
