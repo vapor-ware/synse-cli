@@ -8,6 +8,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
+	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
 // pluginMetainfoCommand is a CLI sub-command for getting metainfo from a plugin.
@@ -23,7 +24,7 @@ var pluginMetainfoCommand = cli.Command{
 // cmdMeta is the action for pluginMetainfoCommand. It prints out the meta-information
 // provided by the specified plugin.
 func cmdMeta(c *cli.Context) error {
-	pluginClient, err := makeGrpcClient(c)
+	pluginClient, err := client.MakeGrpcClient(c)
 	if err != nil {
 		return err
 	}

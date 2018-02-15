@@ -9,6 +9,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
+	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
 // pluginReadCommand is a CLI sub-command for getting a reading from a plugin.
@@ -33,7 +34,7 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 	board := c.Args().Get(1)
 	device := c.Args().Get(2)
 
-	pluginClient, err := makeGrpcClient(c)
+	pluginClient, err := client.MakeGrpcClient(c)
 	if err != nil {
 		return err
 	}

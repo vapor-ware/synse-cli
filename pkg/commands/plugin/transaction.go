@@ -7,6 +7,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
+	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
 // pluginTransactionCommand is a CLI sub-command for getting transaction info from a plugin.
@@ -29,7 +30,7 @@ func cmdTransaction(c *cli.Context) error {
 
 	tid := c.Args().Get(0)
 
-	pluginClient, err := makeGrpcClient(c)
+	pluginClient, err := client.MakeGrpcClient(c)
 	if err != nil {
 		return err
 	}

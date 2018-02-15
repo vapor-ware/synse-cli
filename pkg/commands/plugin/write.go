@@ -7,6 +7,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
 	"golang.org/x/net/context"
+	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
 // pluginWriteCommand is a CLI sub-command for writing to a plugin
@@ -40,7 +41,7 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		wd.Raw = [][]byte{[]byte(raw)}
 	}
 
-	pluginClient, err := makeGrpcClient(c)
+	pluginClient, err := client.MakeGrpcClient(c)
 	if err != nil {
 		return err
 	}
