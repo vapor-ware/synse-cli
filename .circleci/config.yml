@@ -48,7 +48,6 @@ jobs:
             gometalinter ./... \
               --vendor \
               --skip "testdata" \
-              --exclude "[a-zA-Z]*_test.go" \
               --disable=megacheck \
               --tests \
               --sort=severity \
@@ -57,7 +56,6 @@ jobs:
             gometalinter ./... \
               --vendor \
               --skip "testdata" \
-              --exclude "[a-zA-Z]*_test.go" \
               --disable-all \
               --tests \
               --sort=severity \
