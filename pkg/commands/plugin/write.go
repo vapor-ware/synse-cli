@@ -2,12 +2,12 @@ package plugin
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/pkg/client"
+	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-server-grpc/go"
-	"golang.org/x/net/context"
-	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
 // pluginWriteCommand is a CLI sub-command for writing to a plugin
@@ -18,6 +18,8 @@ var pluginWriteCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdWrite(c))
 	},
+
+	BashComplete: completion.CompleteRackBoardDevicePlugin,
 }
 
 // cmdWrite is the action for pluginWriteCommand. It writes directly to
@@ -41,21 +43,10 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		wd.Raw = [][]byte{[]byte(raw)}
 	}
 
-	pluginClient, err := client.MakeGrpcClient(c)
+	transactions, err := client.Grpc.Write(c, rack, board, device, wd)
 	if err != nil {
-		return err
+		return nil
 	}
-
-	transactions, err := pluginClient.Write(context.Background(), &synse.WriteRequest{
-		Device: device,
-		Board:  board,
-		Rack:   rack,
-		Data:   []*synse.WriteData{wd},
-	})
-	if err != nil {
-		return err
-	}
-
 	t := make([]scheme.WriteTransaction, len(transactions.Transactions))
 	for id, ctx := range transactions.Transactions {
 		var raw []string

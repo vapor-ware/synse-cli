@@ -1,15 +1,12 @@
 package plugin
 
 import (
-	"io"
-
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/pkg/client"
+	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
-	"github.com/vapor-ware/synse-server-grpc/go"
-	"golang.org/x/net/context"
-	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
 // pluginReadCommand is a CLI sub-command for getting a reading from a plugin.
@@ -20,6 +17,8 @@ var pluginReadCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdRead(c))
 	},
+
+	BashComplete: completion.CompleteRackBoardDevicePlugin,
 }
 
 // cmdRead is the action for pluginReadCommand. It prints out a reading that was
@@ -34,39 +33,22 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 	board := c.Args().Get(1)
 	device := c.Args().Get(2)
 
-	pluginClient, err := client.MakeGrpcClient(c)
-	if err != nil {
-		return err
-	}
-
-	stream, err := pluginClient.Read(context.Background(), &synse.ReadRequest{
-		Device: device,
-		Board:  board,
-		Rack:   rack,
-	})
+	resp, err := client.Grpc.Read(c, rack, board, device)
 	if err != nil {
 		return err
 	}
 
 	formatter := formatters.NewReadFormatter(c.App.Writer)
-	for {
-		resp, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		r := &scheme.Read{
-			Type: resp.Type,
+	for _, read := range resp {
+		err = formatter.Add(&scheme.Read{
+			Type: read.Type,
 			Data: map[string]scheme.ReadData{
-				resp.Type: {
-					Value:     resp.Value,
-					Timestamp: resp.Timestamp,
+				read.Type: {
+					Value:     read.Value,
+					Timestamp: read.Timestamp,
 				},
 			},
-		}
-		err = formatter.Add(r)
+		})
 		if err != nil {
 			return err
 		}

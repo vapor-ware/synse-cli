@@ -2,12 +2,10 @@ package plugin
 
 import (
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
-	"github.com/vapor-ware/synse-server-grpc/go"
-	"golang.org/x/net/context"
-	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
 // pluginTransactionCommand is a CLI sub-command for getting transaction info from a plugin.
@@ -30,20 +28,10 @@ func cmdTransaction(c *cli.Context) error {
 
 	tid := c.Args().Get(0)
 
-	pluginClient, err := client.MakeGrpcClient(c)
+	status, err := client.Grpc.Transaction(c, tid)
 	if err != nil {
 		return err
 	}
-
-	formatter := formatters.NewTransactionFormatter(c.App.Writer)
-
-	status, err := pluginClient.TransactionCheck(context.Background(), &synse.TransactionId{
-		Id: tid,
-	})
-	if err != nil {
-		return err
-	}
-
 	s := &scheme.Transaction{
 		ID:      tid,
 		State:   status.State.String(),
@@ -51,6 +39,8 @@ func cmdTransaction(c *cli.Context) error {
 		Created: status.Created,
 		Updated: status.Updated,
 	}
+
+	formatter := formatters.NewTransactionFormatter(c.App.Writer)
 	err = formatter.Add(s)
 	if err != nil {
 		return err
