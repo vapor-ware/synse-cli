@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
@@ -31,8 +32,8 @@ func newTransactionFormat(data interface{}) (interface{}, error) {
 	return &transactionFormat{
 		Status:  transaction.Status,
 		State:   transaction.State,
-		Created: transaction.Created,
-		Updated: transaction.Updated,
+		Created: utils.ParseTimestamp(transaction.Created),
+		Updated: utils.ParseTimestamp(transaction.Updated),
 	}, nil
 }
 

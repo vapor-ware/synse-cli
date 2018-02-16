@@ -4,7 +4,6 @@ VERSION := $(shell cat cmd/synse/synse.go | grep 'appVersion =' | awk '{print $$
 HAS_LINT := $(shell which gometalinter)
 HAS_DEP  := $(shell which dep)
 
-
 .PHONY: build
 build:  ## Build the CLI locally
 	go build -o build/synse github.com/vapor-ware/synse-cli/cmd/synse
@@ -61,6 +60,24 @@ setup:  ## Install the build and development dependencies
 .PHONY: test
 test:  ## Run all tests
 	go test -cover ./...
+
+.PHONY: ci-test
+ci-test:
+	go test -v ./... 2>&1 | tee /tmp/${TEST_DIRECTORY}/test.out
+	cat /tmp/${TEST_DIRECTORY}/test.out \
+		| go-junit-report \
+		> /tmp/${TEST_DIRECTORY}/report.xml
+
+.PHONY: ci-create-release
+ci-create-release:
+	$(eval GIT_TAG := $(shell git describe --exact-match --tags HEAD))
+	ghr \
+		-u ${GITHUB_USER} \
+		-t ${GITHUB_TOKEN} \
+		-b "$(cat ./CHANGELOG.md)" \
+		-p 1 \
+		-draft \
+		${GIT_TAG} build/
 
 .PHONY: version
 version: ## Print the version of the CLI

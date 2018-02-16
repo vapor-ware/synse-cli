@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/urfave/cli"
 )
@@ -47,4 +48,15 @@ func RequiresArgsExact(count int, c *cli.Context) error {
 		)
 	}
 	return nil
+}
+
+// ParseTimestamp takes a timestamp string and attempts to parse it for RFC3339Nano.
+// If successfully parsed, that timestamp will be returned in a more human-readable
+// format, otherwise, the given timestamp is returned back.
+func ParseTimestamp(timestamp string) string {
+	t, err := time.Parse(time.RFC3339Nano, timestamp)
+	if err != nil {
+		return timestamp
+	}
+	return t.Format(time.UnixDate)
 }
