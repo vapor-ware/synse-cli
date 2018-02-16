@@ -67,28 +67,10 @@
   version = "v1.7.4"
 
 [[projects]]
-  name = "github.com/mattn/go-isatty"
-  packages = ["."]
-  revision = "0360b2af4f38e8d38c7fce2a9f4e702702d73a39"
-  version = "v0.0.3"
-
-[[projects]]
-  name = "github.com/mattn/go-runewidth"
-  packages = ["."]
-  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
-  version = "v0.0.2"
-
-[[projects]]
   branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "a4e142e9c047c904fa2f1e144d9a84e6133024bc"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/olekukonko/tablewriter"
-  packages = ["."]
-  revision = "b8a9be070da40449e501c3c4730a889e42d87a9e"
 
 [[projects]]
   name = "github.com/pelletier/go-toml"
@@ -140,16 +122,6 @@
   packages = ["go"]
   revision = "1409f2f9101ba8301b6f079d36e68479f6557620"
   version = "v0.0.1"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/vbauerster/mpb"
-  packages = [
-    ".",
-    "cwriter",
-    "decor"
-  ]
-  revision = "9c8aced234a9ada5879c0631e9dd6e6b5fc07d49"
 
 [[projects]]
   branch = "master"
@@ -245,6 +217,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cf911e2eaa2fc99469a6269aa1f82eb5dd5bb2dc67ab56822097631c7570676d"
+  inputs-digest = "db5f3f6df747daed573776496c648f7e203b1e8cef819fa9e05cc2985990c4f4"
   solver-name = "gps-cdcl"
   solver-version = 1
