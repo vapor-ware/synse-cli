@@ -27,6 +27,12 @@ var completionCommand = cli.Command{
 			Name:  "bash",
 			Usage: "bash completion",
 		},
+		// --path, -p flag for setting the directory to which the shell completion
+		// script will be saved
+		cli.StringFlag{
+			Name:  "path, p",
+			Usage: "set the directory for the bash completion file output",
+		},
 	},
 }
 
