@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
+	//"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -38,7 +38,7 @@ type metaFormat struct {
 // newScanFormat is the handler for scan commands that is used by the
 // Formatter to add new scan data to the format context.
 func newScanFormat(data interface{}) (interface{}, error) {
-	scan, ok := data.([]*scheme.InternalScan)
+	scan, ok := data.([]interface{})
 	if !ok {
 		return nil, fmt.Errorf("formatter data %T not of type []*scheme.InternalScan", data)
 	}
