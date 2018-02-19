@@ -46,7 +46,7 @@ func cmdList(c *cli.Context) error {
 	sort.Sort(byHostName(configuredHosts))
 
 	// Format output
-	formatter := formatters.NewListFormatter(c.App.Writer)
+	formatter := formatters.NewListFormatter(c)
 	err := formatter.Add(configuredHosts)
 	if err != nil {
 		return err

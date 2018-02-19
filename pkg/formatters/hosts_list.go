@@ -1,16 +1,15 @@
 package formatters
 
 import (
-	"io"
-
 	"fmt"
 
+	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 )
 
 const (
-	// the default output template for host list command
-	listTmpl = "table {{if .Active}}* {{else}}  {{end}}{{.Name}}\t{{.Address}}\n"
+	// the pretty output format for host list command
+	prettyList = "{{if .Active}}* {{else}}  {{end}}{{.Name}}\t{{.Address}}\n"
 )
 
 type listFormat struct {
@@ -43,10 +42,12 @@ func newListFormat(data interface{}) (interface{}, error) {
 
 // NewListFormatter creates a new instance of a Formatter configured
 // for the host list command.
-func NewListFormatter(out io.Writer) *Formatter {
+func NewListFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(
-		listTmpl,
-		out,
+		c,
+		&Formats{
+			Pretty: prettyList,
+		},
 	)
 	f.SetHandler(newListFormat)
 	return f

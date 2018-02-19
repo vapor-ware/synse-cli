@@ -57,7 +57,7 @@ func cmdWrite(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewWriteFormatter(c.App.Writer)
+	formatter := formatters.NewWriteFormatter(c)
 	err = formatter.Add(write)
 	if err != nil {
 		return err

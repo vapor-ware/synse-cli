@@ -1,16 +1,15 @@
 package formatters
 
 import (
-	"io"
-
 	"fmt"
 
+	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 )
 
 const (
-	// the default output template for write requests
-	writeTmpl = "table {{.Transaction}}\t{{.Action}}\t{{range .Raw}}{{.}} {{end}}\n"
+	// the pretty output format for write requests
+	prettyWrite = "{{.Transaction}}\t{{.Action}}\t{{range .Raw}}{{.}} {{end}}\n"
 )
 
 // writeFormat collects the data that will be parsed into the output template.
@@ -41,10 +40,12 @@ func newWriteFormat(data interface{}) (interface{}, error) {
 
 // NewWriteFormatter creates a new instance of a Formatter configured
 // for write command output.
-func NewWriteFormatter(out io.Writer) *Formatter {
+func NewWriteFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(
-		writeTmpl,
-		out,
+		c,
+		&Formats{
+			Pretty: prettyWrite,
+		},
 	)
 	f.SetHandler(newWriteFormat)
 	f.SetHeader(writeFormat{

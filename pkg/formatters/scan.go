@@ -2,18 +2,18 @@ package formatters
 
 import (
 	"fmt"
-	"io"
 
+	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-server-grpc/go"
 )
 
 const (
-	// the default output template for scan requests
-	scanTmpl = "table {{.Rack}}\t{{.Board}}\t{{.Device}}\t{{.Info}}\t{{.Type}}\n"
+	// the pretty output format for scan requests
+	prettyScan = "{{.Rack}}\t{{.Board}}\t{{.Device}}\t{{.Info}}\t{{.Type}}\n"
 
-	// the default output template for plugin metainfo requests
-	metaTmpl = "table {{.ID}}\t{{.Type}}\t{{.Model}}\t{{.Protocol}}\t{{.Rack}}\t{{.Board}}\n"
+	// the pretty output format for plugin metainfo requests
+	prettyMeta = "{{.ID}}\t{{.Type}}\t{{.Model}}\t{{.Protocol}}\t{{.Rack}}\t{{.Board}}\n"
 )
 
 // scanFormat collects the data that will be parsed into the output template.
@@ -69,10 +69,12 @@ func newMetaFormat(data interface{}) (interface{}, error) {
 
 // NewScanFormatter creates a new instance of a Formatter configured
 // for the scan command.
-func NewScanFormatter(out io.Writer) *Formatter {
+func NewScanFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(
-		scanTmpl,
-		out,
+		c,
+		&Formats{
+			Pretty: prettyScan,
+		},
 	)
 	f.SetHandler(newScanFormat)
 	f.SetHeader(scanFormat{
@@ -87,10 +89,12 @@ func NewScanFormatter(out io.Writer) *Formatter {
 
 // NewMetaFormatter creates a new instance of a Formatter configured
 // for the plugin meta command.
-func NewMetaFormatter(out io.Writer) *Formatter {
+func NewMetaFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(
-		metaTmpl,
-		out,
+		c,
+		&Formats{
+			Pretty: prettyMeta,
+		},
 	)
 	f.SetHandler(newMetaFormat)
 	f.SetHeader(metaFormat{

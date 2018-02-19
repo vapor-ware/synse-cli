@@ -29,15 +29,6 @@ var TransactionCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdTransaction(c))
 	},
-
-	Flags: []cli.Flag{
-		// --output, -o flag specifies the output format (YAML, JSON) for the command
-		cli.StringFlag{
-			Name:  "output, o",
-			Value: "yaml",
-			Usage: "set the output format of the command",
-		},
-	},
 }
 
 // cmdTransaction is the action for the TransactionCommand. It makes an "transaction"
@@ -55,7 +46,7 @@ func cmdTransaction(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewTransactionFormatter(c.App.Writer)
+	formatter := formatters.NewTransactionFormatter(c)
 	err = formatter.Add(transaction)
 	if err != nil {
 		return err
