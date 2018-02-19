@@ -1,12 +1,12 @@
 
-VERSION := $(shell cat cmd/synse/synse.go | grep 'appVersion =' | awk '{print $$3}')
+VERSION := $(shell cat cmd/synse.go | grep 'appVersion =' | awk '{print $$3}')
 
 HAS_LINT := $(shell which gometalinter)
 HAS_DEP  := $(shell which dep)
 
 .PHONY: build
 build:  ## Build the CLI locally
-	go build -o build/synse github.com/vapor-ware/synse-cli/cmd/synse
+	go build -o build/synse github.com/vapor-ware/synse-cli/cmd
 
 .PHONY: ci
 ci:  ## Run CI checks locally (build, test, lint)

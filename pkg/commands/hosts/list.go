@@ -37,7 +37,7 @@ func (h byHostName) Less(i, j int) bool {
 // cmdList is the action for hostsListCommand. It prints out all of the configured
 // hosts' names and addresses.
 func cmdList(c *cli.Context) error {
-	configuredHosts := HostList(c)
+	configuredHosts := HostList()
 
 	// Sort by host name
 	sort.Sort(byHostName(configuredHosts))
@@ -53,10 +53,10 @@ func cmdList(c *cli.Context) error {
 
 // HostList creates an unsorted list of hosts present in the configuration and
 // returns that list.
-func HostList(c *cli.Context) {
+func HostList() {
 	var configuredHosts []*config.HostConfig
-	for _, c := range config.Config.Hosts {
-		configuredHosts = append(configuredHosts, c)
+	for _, hosts := range config.Config.Hosts {
+		configuredHosts = append(configuredHosts, hosts)
 	}
 	return configuredHosts
 }
