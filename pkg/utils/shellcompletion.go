@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/urfave/cli"
 )
@@ -23,9 +24,9 @@ func GenerateShellCompletion(c *cli.Context, shell string) error {
 	var path string
 	switch shell {
 	case "bash":
-		path, err = downloadCompletionFile(c.App.Name, "bash")
+		path, err = downloadCompletionFile(c, "bash")
 	case "zsh":
-		path, err = downloadCompletionFile(c.App.Name, "zsh")
+		path, err = downloadCompletionFile(c, "zsh")
 	}
 	if err != nil {
 		return err
@@ -36,24 +37,38 @@ func GenerateShellCompletion(c *cli.Context, shell string) error {
 
 // downloadCompletionFile downloads the required bash completion file from
 // https://github.com/urfave/cli .
-func downloadCompletionFile(appName, shell string) (string, error) {
+func downloadCompletionFile(c *cli.Context, shell string) (string, error) {
 	var err error
-	path := autocompletionPath + appName
+	var dirOut string
 
-	_, err = os.Stat(autocompletionPath)
+	// If the --path or -p flag is set for the completion command, use the
+	// value provided for the output directory, otherwise use the default
+	// output directory.
+	if c.IsSet("path") {
+		dirOut = c.String("path")
+	} else {
+		dirOut = autocompletionPath
+	}
+
+	// Check if the directory exists - if it does not, try to create it.
+	path := filepath.Join(dirOut, c.App.Name)
+	_, err = os.Stat(dirOut)
 	if os.IsNotExist(err) {
-		err = os.MkdirAll(autocompletionPath, os.ModePerm)
+		err = os.MkdirAll(dirOut, os.ModePerm)
 		if err != nil {
-			return "", fmt.Errorf("unable to create %s (try running with sudo)", autocompletionPath)
+			return "", fmt.Errorf("unable to create %s (try running with sudo)", dirOut)
 		}
 	}
 
+	// Create the completion file
 	out, err := os.Create(path)
 	if err != nil {
 		return "", err
 	}
 	defer out.Close() // nolint
 
+	// Download the completion file from GitHub and copy it into the created
+	// completion file locally.
 	shellPath := autocompleteURL + shell + "_autocomplete"
 	resp, err := http.Get(shellPath)
 	if err != nil {

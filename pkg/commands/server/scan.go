@@ -74,7 +74,7 @@ var ScanCommand = cli.Command{
 //	return s[i].ID() < s[j].ID()
 //}
 
-// cmdScan is the action for the ScanCommand. It makes an "scan" request
+// cmdScan is the action for the ScanCommand. It makes a "scan" request
 // against the active Synse Server instance.
 func cmdScan(c *cli.Context) error {
 	scan, err := client.Client.Scan()

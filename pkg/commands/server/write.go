@@ -38,7 +38,7 @@ var WriteCommand = cli.Command{
 	BashComplete: completion.CompleteRackBoardDevice,
 }
 
-// cmdWrite is the action for the WriteCommand. It makes an "write" request
+// cmdWrite is the action for the WriteCommand. It makes a "write" request
 // against the active Synse Server instance.
 func cmdWrite(c *cli.Context) error {
 	err := utils.RequiresArgsInRange(4, 5, c)

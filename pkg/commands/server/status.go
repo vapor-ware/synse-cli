@@ -34,7 +34,7 @@ var StatusCommand = cli.Command{
 	},
 }
 
-// cmdStatus is the action for the StatusCommand. It makes an "status" request
+// cmdStatus is the action for the StatusCommand. It makes a "status" request
 // against the active Synse Server instance.
 func cmdStatus(c *cli.Context) error {
 	status, err := client.Client.Status()

@@ -28,6 +28,9 @@ const (
 	// configBaseURI is the base URI for the 'config' route.
 	configBaseURI = "config"
 
+	// pluginsBaseURI is the base URI for the 'plugins' route.
+	pluginsBaseURI = "plugins"
+
 	// scanBaseURI is the base URI for the 'scan' route.
 	scanBaseURI = "scan"
 
@@ -193,6 +196,16 @@ func (c *synseClient) Version() (*scheme.Version, error) {
 func (c *synseClient) Config() (*scheme.Config, error) {
 	out := &scheme.Config{}
 	err := getVersioned(configBaseURI, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Plugins gets and parses the response from Synse Server's "plugins" endpoint.
+func (c *synseClient) Plugins() ([]scheme.Plugin, error) {
+	var out []scheme.Plugin
+	err := getVersioned(pluginsBaseURI, &out)
 	if err != nil {
 		return nil, err
 	}

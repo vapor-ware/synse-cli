@@ -33,7 +33,7 @@ var VersionCommand = cli.Command{
 	},
 }
 
-// cmdVersion is the action for the VersionCommand. It makes an "version" request
+// cmdVersion is the action for the VersionCommand. It makes a "version" request
 // against the active Synse Server instance.
 func cmdVersion(c *cli.Context) error {
 	version, err := client.Client.Version()
