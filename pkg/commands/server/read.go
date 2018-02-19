@@ -55,7 +55,7 @@ func cmdRead(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewReadFormatter(c.App.Writer)
+	formatter := formatters.NewReadFormatter(c)
 	err = formatter.Add(read)
 	if err != nil {
 		return err

@@ -110,7 +110,7 @@ func cmdScan(c *cli.Context) error {
 		}
 	}
 
-	formatter := formatters.NewScanFormatter(c.App.Writer)
+	formatter := formatters.NewScanFormatter(c)
 	err = formatter.Add(devices)
 	if err != nil {
 		return err

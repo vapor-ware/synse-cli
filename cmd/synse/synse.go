@@ -13,6 +13,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/commands"
 	"github.com/vapor-ware/synse-cli/pkg/config"
+	"github.com/vapor-ware/synse-cli/pkg/flags"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 )
 
@@ -56,7 +57,8 @@ func appAfter(c *cli.Context) error {
 // otherwise it will display the usage information.
 func appAction(c *cli.Context) error {
 	if c.IsSet("config") {
-		return formatters.AsYAML(config.Config, c.App.Writer)
+		formatter := formatters.NewConfigFormatter(c, config.Config)
+		return formatter.Write()
 	}
 	return cli.ShowAppHelp(c)
 }
@@ -77,16 +79,9 @@ func main() {
 	app.Commands = commands.Commands
 
 	app.Flags = []cli.Flag{
-		// --debug, -d flag to enable debug logging output
-		cli.BoolFlag{
-			Name:  "debug, d",
-			Usage: "enable debug mode",
-		},
-		// --config flag to display the YAML configuration for the CLI
-		cli.BoolFlag{
-			Name:  "config",
-			Usage: "display the current CLI configuration",
-		},
+		flags.DebugFlag,  // --debug, -d flag to enable debug logging output
+		flags.ConfigFlag, // --config flag to display the YAML configuration for the CLI
+		flags.FormatFlag, // --format flag to specify the output format for a command
 	}
 
 	// Run the CLI

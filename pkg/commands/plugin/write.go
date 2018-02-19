@@ -63,7 +63,7 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		})
 	}
 
-	formatter := formatters.NewWriteFormatter(c.App.Writer)
+	formatter := formatters.NewWriteFormatter(c)
 	err = formatter.Add(t)
 	if err != nil {
 		return err

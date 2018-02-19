@@ -3,6 +3,7 @@ package test
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/config"
+	"github.com/vapor-ware/synse-cli/pkg/flags"
 )
 
 // Setup can be run at the beginning of tests to perform setup actions.
@@ -20,6 +21,12 @@ func Setup() {
 func NewFakeApp() *cli.App {
 	app := &cli.App{
 		Name: "test app",
+	}
+
+	app.Flags = []cli.Flag{
+		flags.DebugFlag,
+		flags.ConfigFlag,
+		flags.FormatFlag,
 	}
 
 	// prevent the fake app from calling os.Exit() on failure
