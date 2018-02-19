@@ -133,6 +133,10 @@ func (f *Formatter) getFormat() string {
 
 // writePretty writes out data in a pretty table format.
 func (f *Formatter) writePretty() error {
+	if !f.HasPretty() {
+		return fmt.Errorf("'pretty' formatting not supported for %s", f.Context.Command.Name)
+	}
+
 	w := tabwriter.NewWriter(f.Output, 10, 1, 3, ' ', 0)
 	tmpl, err := template.New("").Parse(f.Formats.Pretty)
 	if err != nil {
@@ -157,6 +161,10 @@ func (f *Formatter) writePretty() error {
 
 // writeJSON writes out data in JSON format.
 func (f *Formatter) writeJSON() error {
+	if !f.HasJSON() {
+		return fmt.Errorf("'json' formatting not supported for %s", f.Context.Command.Name)
+	}
+
 	o, err := json.MarshalIndent(f.Formats.JSON, "", "  ")
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
@@ -167,6 +175,10 @@ func (f *Formatter) writeJSON() error {
 
 // writeYaml writes out data in YAML format.
 func (f *Formatter) writeYaml() error {
+	if !f.HasYaml() {
+		return fmt.Errorf("'yaml' formatting not supported for %s", f.Context.Command.Name)
+	}
+
 	o, err := yaml.Marshal(f.Formats.Yaml)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
