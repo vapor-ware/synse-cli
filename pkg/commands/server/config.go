@@ -42,7 +42,7 @@ var ConfigCommand = cli.Command{
 	},
 }
 
-// cmdConfig is the action for the ConfigCommand. It makes an "config" request
+// cmdConfig is the action for the ConfigCommand. It makes a "config" request
 // against the active Synse Server instance.
 func cmdConfig(c *cli.Context) error {
 	cfg, err := client.Client.Config()

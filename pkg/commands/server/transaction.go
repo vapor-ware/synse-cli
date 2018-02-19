@@ -40,7 +40,7 @@ var TransactionCommand = cli.Command{
 	},
 }
 
-// cmdTransaction is the action for the TransactionCommand. It makes an "transaction"
+// cmdTransaction is the action for the TransactionCommand. It makes a "transaction"
 // request against the active Synse Server instance.
 func cmdTransaction(c *cli.Context) error {
 	err := utils.RequiresArgsExact(1, c)
