@@ -53,10 +53,10 @@ func cmdList(c *cli.Context) error {
 
 // HostList creates an unsorted list of hosts present in the configuration and
 // returns that list.
-func HostList() {
+func HostList() []*config.HostConfig {
 	var configuredHosts []*config.HostConfig
-	for _, hosts := range config.Config.Hosts {
-		configuredHosts = append(configuredHosts, hosts)
+	for _, host := range config.Config.Hosts {
+		configuredHosts = append(configuredHosts, host)
 	}
 	return configuredHosts
 }
