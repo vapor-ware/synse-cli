@@ -4,6 +4,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
+	"github.com/vapor-ware/synse-cli/pkg/transformers"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -33,9 +34,16 @@ var ScanCommand = cli.Command{
 
 	Flags: []cli.Flag{
 		// --filter, -f flag sets a filter in the form "key=value" on the command output
-		cli.StringFlag{
+		cli.StringSliceFlag{
 			Name:  "filter, f",
-			Usage: "set a filter for the output results",
+			Usage: "set filters for the output results",
+		},
+		// --sort flag sets the sorting constraints. multiple constraints should be
+		// separated by commas, e.g. "key1,key2".
+		cli.StringFlag{
+			Name:  "sort",
+			Value: "rack,board,device",
+			Usage: "set the sort constraints for pretty output",
 		},
 	},
 }
@@ -48,14 +56,21 @@ func cmdScan(c *cli.Context) error {
 		return err
 	}
 
-	transformer := scan.ToScanTransformer()
-	transformer.OrderBy("rack", "board", "device")
-	transformer.FiltersFromContext(c)
-	transformer.Sort()
-	transformer.Filter()
+	devices := scan.ToScanDevices()
+
+	t, err := transformers.NewScanTransformer(devices)
+	if err != nil {
+		return err
+	}
+	err = t.SetFilters(c)
+	if err != nil {
+		return err
+	}
+	t.OrderBy(c.String("sort"))
+	t.Apply()
 
 	formatter := formatters.NewScanFormatter(c)
-	err = formatter.Add(transformer.Items)
+	err = formatter.Add(t.Items)
 	if err != nil {
 		return err
 	}
