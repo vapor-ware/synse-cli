@@ -213,8 +213,8 @@ func (c *synseClient) Plugins() ([]scheme.Plugin, error) {
 }
 
 // Scan gets and parses the response from Synse Server's "scan" endpoint.
-func (c *synseClient) Scan() (*scheme.Scan, error) {
-	out := &scheme.Scan{}
+func (c *synseClient) Scan() (*scheme.ScanResponse, error) {
+	out := &scheme.ScanResponse{}
 	err := getVersioned(scanBaseURI, out)
 	if err != nil {
 		return nil, err

@@ -1,14 +1,10 @@
 package server
 
 import (
-	"fmt"
-	"sort"
-	"strings"
-
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
+	"github.com/vapor-ware/synse-cli/pkg/transformers"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -38,40 +34,18 @@ var ScanCommand = cli.Command{
 
 	Flags: []cli.Flag{
 		// --filter, -f flag sets a filter in the form "key=value" on the command output
-		cli.StringFlag{
+		cli.StringSliceFlag{
 			Name:  "filter, f",
-			Usage: "set a filter for the output results",
+			Usage: "set filters for the output results",
+		},
+		// --sort flag sets the sorting constraints. multiple constraints should be
+		// separated by commas, e.g. "key1,key2".
+		cli.StringFlag{
+			Name:  "sort",
+			Value: "rack,board,device",
+			Usage: "set the sort constraints for pretty output",
 		},
 	},
-}
-
-// TODO (etd) - better organization here. this should probably move to the
-// utils or other sorting/filtering package
-
-// Filter is used to filter the scan results based on the given filtering
-// function.
-func Filter(devices []*scheme.InternalScan, f func(scan *scheme.InternalScan) bool) []*scheme.InternalScan {
-	tmp := make([]*scheme.InternalScan, 0)
-	for _, d := range devices {
-		if f(d) {
-			tmp = append(tmp, d)
-		}
-	}
-	return tmp
-}
-
-type byScanDeviceID []*scheme.InternalScan
-
-func (s byScanDeviceID) Len() int {
-	return len(s)
-}
-
-func (s byScanDeviceID) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
-
-func (s byScanDeviceID) Less(i, j int) bool {
-	return s[i].ID() < s[j].ID()
 }
 
 // cmdScan is the action for the ScanCommand. It makes a "scan" request
@@ -82,36 +56,21 @@ func cmdScan(c *cli.Context) error {
 		return err
 	}
 
-	// convert the scan results to an internal representation that
-	// makes it easier to do device-based actions (sorting, filtering,
-	// formatting, etc).
-	devices := scan.ToInternalScan()
+	devices := scan.ToScanDevices()
 
-	// Sort by ID
-	sort.Sort(byScanDeviceID(devices))
-
-	filterString := c.String("filter")
-	if filterString != "" {
-		filter := strings.Split(filterString, "=")
-		if len(filter) != 2 {
-			return cli.NewExitError("filter must be in the form 'key=value'", 1)
-		}
-
-		switch strings.ToLower(filter[0]) {
-		case "type":
-			devices = Filter(devices, func(d *scheme.InternalScan) bool {
-				return d.Type == strings.ToLower(filter[1])
-			})
-		default:
-			return cli.NewExitError(
-				fmt.Sprintf("filter key for '%v' is not supported", filterString),
-				1,
-			)
-		}
+	t, err := transformers.NewScanTransformer(devices)
+	if err != nil {
+		return err
 	}
+	err = t.SetFilters(c)
+	if err != nil {
+		return err
+	}
+	t.OrderBy(c.String("sort"))
+	t.Apply()
 
 	formatter := formatters.NewScanFormatter(c)
-	err = formatter.Add(devices)
+	err = formatter.Add(t.Items)
 	if err != nil {
 		return err
 	}

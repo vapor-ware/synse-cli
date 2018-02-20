@@ -85,7 +85,7 @@ func CompleteRackBoardDevice(c *cli.Context) { // nolint: gocyclo
 	}
 	// Convert to an internal representation to make it easier to
 	// do resource (rack, board, device) aggregation.
-	devices := scan.ToInternalScan()
+	devices := scan.ToScanDevices()
 
 	// If there are no arguments, resolve the first arg, rack
 	if c.NArg() == 0 {

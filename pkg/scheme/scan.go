@@ -1,21 +1,32 @@
 package scheme
 
-import "strings"
-
-// Scan is the scheme for the Synse Server "scan" endpoint response.
-type Scan struct {
-	Racks []Rack `json:"racks"`
+// ScanResponse is the scheme for the Synse Server "scan" endpoint response.
+// It is intended to be the structure that a scan gets marshaled into, but
+// should be converted into a slice of `Scan` structs for all internal use.
+type ScanResponse struct {
+	Racks []struct {
+		ID     string `json:"id" yaml:"id"`
+		Boards []struct {
+			ID      string `json:"id" yaml:"id"`
+			Devices []struct {
+				ID   string `json:"id" yaml:"id"`
+				Type string `json:"type" yaml:"type"`
+				Info string `json:"info" yaml:"info"`
+			} `json:"devices" yaml:"devices"`
+		} `json:"boards" yaml:"boards"`
+	} `json:"racks" yaml:"racks"`
 }
 
-// ToInternalScan converts the Scan result scheme to a list of InternalScan
+// ToScanDevices converts the ScanResponse result scheme to a slice of ScanDevice
 // representations of the scan results, which makes it easier to sort, filter,
 // format, and generally work with the scan results at a device-level.
-func (s *Scan) ToInternalScan() []*InternalScan {
-	var devices []*InternalScan
+// FIXME - this should move to utils?
+func (s *ScanResponse) ToScanDevices() []*ScanDevice {
+	var devices []*ScanDevice
 	for _, rack := range s.Racks {
 		for _, board := range rack.Boards {
 			for _, device := range board.Devices {
-				devices = append(devices, &InternalScan{
+				devices = append(devices, &ScanDevice{
 					Rack:   rack.ID,
 					Board:  board.ID,
 					Device: device.ID,
@@ -28,42 +39,13 @@ func (s *Scan) ToInternalScan() []*InternalScan {
 	return devices
 }
 
-// Rack describes a rack entry in the scan result.
-type Rack struct {
-	ID     string  `json:"id"`
-	Boards []Board `json:"boards"`
-}
-
-// Board describes a board entry in the scan result.
-type Board struct {
-	ID      string   `json:"id"`
-	Devices []Device `json:"devices"`
-}
-
-// Device describes a device entry in the scan result.
-type Device struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
-	Info string `json:"info"`
-}
-
-// InternalScan is a representation of a Scan result that is used internally.
-// FIXME (etd): not sure if this belongs in scheme. this can be used be formatting,
-//   sorting, and filtering. Other commands will need something similar. Will sort this
-//   out when I tackle generalizing of sorting/filtering.
-type InternalScan struct {
-	Rack   string
-	Board  string
-	Device string
-	Info   string
-	Type   string
-}
-
-// ID generates the ID of the device by joining the rack, board, and device.
-func (device *InternalScan) ID() string {
-	return strings.Join([]string{
-		device.Rack,
-		device.Board,
-		device.Device,
-	}, "-")
+// ScanDevice represents a single device from the "scan" output. A slice of
+// ScanDevice is a flattened ScanResponse. This scheme is used internally to
+// more easily sort, filter, and format scan results.
+type ScanDevice struct {
+	Rack   string `json:"rack" yaml:"rack"`
+	Board  string `json:"board" yaml:"board"`
+	Device string `json:"device" yaml:"device"`
+	Info   string `json:"info" yaml:"info"`
+	Type   string `json:"type" yaml:"type"`
 }
