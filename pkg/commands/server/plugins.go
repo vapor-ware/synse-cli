@@ -41,7 +41,7 @@ func cmdPlugins(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewPluginsFormatter(c.App.Writer)
+	formatter := formatters.NewPluginsFormatter(c)
 	err = formatter.Add(plugins)
 	if err != nil {
 		return err

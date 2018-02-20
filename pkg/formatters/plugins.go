@@ -2,14 +2,14 @@ package formatters
 
 import (
 	"fmt"
-	"io"
 
+	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 )
 
 const (
-	// the default output template for plugins requests
-	pluginsTmpl = "table {{.Name}}\t{{.Network}}\t{{.Address}}\n"
+	// the pretty output format for plugins requests
+	prettyPlugins = "{{.Name}}\t{{.Network}}\t{{.Address}}\n"
 )
 
 // pluginsFormat collects the data that will be parsed into the output template.
@@ -40,10 +40,12 @@ func newPluginsFormat(data interface{}) (interface{}, error) {
 
 // NewPluginsFormatter creates a new instance of a Formatter configured
 // for the plugins command.
-func NewPluginsFormatter(out io.Writer) *Formatter {
+func NewPluginsFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(
-		pluginsTmpl,
-		out,
+		c,
+		&Formats{
+			Pretty: prettyPlugins,
+		},
 	)
 	f.SetHandler(newPluginsFormat)
 	f.SetHeader(pluginsFormat{
