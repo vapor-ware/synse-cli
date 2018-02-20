@@ -31,18 +31,9 @@ var VersionCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdVersion(c))
 	},
-
-	Flags: []cli.Flag{
-		// --output, -o flag specifies the output format (YAML, JSON) for the command
-		cli.StringFlag{
-			Name:  "output, o",
-			Value: "yaml",
-			Usage: "set the output format of the command",
-		},
-	},
 }
 
-// cmdVersion is the action for the VersionCommand. It makes an "version" request
+// cmdVersion is the action for the VersionCommand. It makes a "version" request
 // against the active Synse Server instance.
 func cmdVersion(c *cli.Context) error {
 	version, err := client.Client.Version()
@@ -50,5 +41,6 @@ func cmdVersion(c *cli.Context) error {
 		return err
 	}
 
-	return formatters.FormatOutput(c, version)
+	formatter := formatters.NewVersionFormatter(c, version)
+	return formatter.Write()
 }

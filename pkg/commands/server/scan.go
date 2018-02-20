@@ -74,7 +74,7 @@ func (s byScanDeviceID) Less(i, j int) bool {
 	return s[i].ID() < s[j].ID()
 }
 
-// cmdScan is the action for the ScanCommand. It makes an "scan" request
+// cmdScan is the action for the ScanCommand. It makes a "scan" request
 // against the active Synse Server instance.
 func cmdScan(c *cli.Context) error {
 	scan, err := client.Client.Scan()
@@ -110,7 +110,7 @@ func cmdScan(c *cli.Context) error {
 		}
 	}
 
-	formatter := formatters.NewScanFormatter(c.App.Writer)
+	formatter := formatters.NewScanFormatter(c)
 	err = formatter.Add(devices)
 	if err != nil {
 		return err

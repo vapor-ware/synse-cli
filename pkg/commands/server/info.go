@@ -33,15 +33,6 @@ var InfoCommand = cli.Command{
 	},
 
 	BashComplete: completion.CompleteRackBoardDevice,
-
-	Flags: []cli.Flag{
-		// --output, -o flag specifies the output format (YAML, JSON) for the command
-		cli.StringFlag{
-			Name:  "output, o",
-			Value: "yaml",
-			Usage: "set the output format of the command",
-		},
-	},
 }
 
 // cmdInfo is the action for the InfoCommand. It makes an "info" request
@@ -75,5 +66,6 @@ func cmdInfo(c *cli.Context) (err error) {
 		return err
 	}
 
-	return formatters.FormatOutput(c, info)
+	formatter := formatters.NewInfoFormatter(c, info)
+	return formatter.Write()
 }

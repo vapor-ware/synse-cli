@@ -32,18 +32,9 @@ var StatusCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdStatus(c))
 	},
-
-	Flags: []cli.Flag{
-		// --output, -o flag specifies the output format (YAML, JSON) for the command
-		cli.StringFlag{
-			Name:  "output, o",
-			Value: "yaml",
-			Usage: "set the output format of the command",
-		},
-	},
 }
 
-// cmdStatus is the action for the StatusCommand. It makes an "status" request
+// cmdStatus is the action for the StatusCommand. It makes a "status" request
 // against the active Synse Server instance.
 func cmdStatus(c *cli.Context) error {
 	status, err := client.Client.Status()
@@ -51,5 +42,6 @@ func cmdStatus(c *cli.Context) error {
 		return err
 	}
 
-	return formatters.FormatOutput(c, status)
+	formatter := formatters.NewStatusFormatter(c, status)
+	return formatter.Write()
 }

@@ -2,15 +2,15 @@ package formatters
 
 import (
 	"fmt"
-	"io"
 
+	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 const (
-	// the default output template for the transaction command
-	transactionTmpl = "table {{.Status}}\t{{.State}}\t{{.Created}}\t{{.Updated}}\n"
+	// the pretty output format for the transaction command
+	prettyTransaction = "{{.Status}}\t{{.State}}\t{{.Created}}\t{{.Updated}}\n"
 )
 
 // transactionFormat collects the data that will be parsed into the output template.
@@ -39,10 +39,12 @@ func newTransactionFormat(data interface{}) (interface{}, error) {
 
 // NewTransactionFormatter creates a new instance of a Formatter configured
 // for the transaction command.
-func NewTransactionFormatter(out io.Writer) *Formatter {
+func NewTransactionFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(
-		transactionTmpl,
-		out,
+		c,
+		&Formats{
+			Pretty: prettyTransaction,
+		},
 	)
 	f.SetHandler(newTransactionFormat)
 	f.SetHeader(transactionFormat{

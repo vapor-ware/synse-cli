@@ -31,18 +31,9 @@ var ConfigCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdConfig(c))
 	},
-
-	Flags: []cli.Flag{
-		// --output, -o flag specifies the output format (YAML, JSON) for the command
-		cli.StringFlag{
-			Name:  "output, o",
-			Value: "yaml",
-			Usage: "set the output format of the command",
-		},
-	},
 }
 
-// cmdConfig is the action for the ConfigCommand. It makes an "config" request
+// cmdConfig is the action for the ConfigCommand. It makes a "config" request
 // against the active Synse Server instance.
 func cmdConfig(c *cli.Context) error {
 	cfg, err := client.Client.Config()
@@ -50,5 +41,6 @@ func cmdConfig(c *cli.Context) error {
 		return err
 	}
 
-	return formatters.FormatOutput(c, cfg)
+	formatter := formatters.NewConfigFormatter(c, cfg)
+	return formatter.Write()
 }

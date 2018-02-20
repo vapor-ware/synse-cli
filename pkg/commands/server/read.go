@@ -38,7 +38,7 @@ var ReadCommand = cli.Command{
 	BashComplete: completion.CompleteRackBoardDevice,
 }
 
-// cmdRead is the action for the ReadCommand. It makes an "read" request
+// cmdRead is the action for the ReadCommand. It makes a "read" request
 // against the active Synse Server instance.
 func cmdRead(c *cli.Context) error {
 	err := utils.RequiresArgsExact(3, c)
@@ -55,7 +55,7 @@ func cmdRead(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewReadFormatter(c.App.Writer)
+	formatter := formatters.NewReadFormatter(c)
 	err = formatter.Add(read)
 	if err != nil {
 		return err

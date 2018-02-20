@@ -26,7 +26,7 @@ func cmdMeta(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewMetaFormatter(c.App.Writer)
+	formatter := formatters.NewMetaFormatter(c)
 	for _, meta := range resp {
 		err = formatter.Add(meta)
 		if err != nil {
