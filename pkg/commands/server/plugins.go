@@ -20,12 +20,11 @@ const (
 	 instance.`
 )
 
-// PluginsCommand is the CLI command for Synse Server's "plugins" API route.
-var PluginsCommand = cli.Command{
+// pluginsCommand is the CLI command for Synse Server's "plugins" API route.
+var pluginsCommand = cli.Command{
 	Name:        pluginsCmdName,
 	Usage:       pluginsCmdUsage,
 	Description: pluginsCmdDesc,
-	Category:    SynseActionsCategory,
 	ArgsUsage:   utils.NoArgs,
 
 	Action: func(c *cli.Context) error {
@@ -33,7 +32,7 @@ var PluginsCommand = cli.Command{
 	},
 }
 
-// cmPlugins is the action for the PluginsCommand. It makes a "plugins" request
+// cmPlugins is the action for the pluginsCommand. It makes a "plugins" request
 // against the active Synse Server instance.
 func cmdPlugins(c *cli.Context) error {
 	plugins, err := client.Client.Plugins()

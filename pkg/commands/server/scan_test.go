@@ -79,9 +79,9 @@ func TestScanCommandError(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, ScanCommand)
+	app.Commands = append(app.Commands, scanCommand)
 
-	err := app.Run([]string{app.Name, ScanCommand.Name})
+	err := app.Run([]string{app.Name, scanCommand.Name})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -101,9 +101,9 @@ func TestScanCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, ScanCommand)
+	app.Commands = append(app.Commands, scanCommand)
 
-	err := app.Run([]string{app.Name, ScanCommand.Name})
+	err := app.Run([]string{app.Name, scanCommand.Name})
 
 	test.ExpectNoError(t, err)
 }

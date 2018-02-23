@@ -20,12 +20,11 @@ const (
 	 instance.`
 )
 
-// ConfigCommand is the CLI command for Synse Server's "config" API route.
-var ConfigCommand = cli.Command{
+// configCommand is the CLI command for Synse Server's "config" API route.
+var configCommand = cli.Command{
 	Name:        configCmdName,
 	Usage:       configCmdUsage,
 	Description: configCmdDesc,
-	Category:    SynseActionsCategory,
 	ArgsUsage:   utils.NoArgs,
 
 	Action: func(c *cli.Context) error {
@@ -33,7 +32,7 @@ var ConfigCommand = cli.Command{
 	},
 }
 
-// cmdConfig is the action for the ConfigCommand. It makes a "config" request
+// cmdConfig is the action for the configCommand. It makes a "config" request
 // against the active Synse Server instance.
 func cmdConfig(c *cli.Context) error {
 	cfg, err := client.Client.Config()

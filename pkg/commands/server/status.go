@@ -21,12 +21,11 @@ const (
 	 is an error either with Synse Server or connecting to it.`
 )
 
-// StatusCommand is the CLI command for Synse Server's "test" API route.
-var StatusCommand = cli.Command{
+// statusCommand is the CLI command for Synse Server's "test" API route.
+var statusCommand = cli.Command{
 	Name:        testCmdName,
 	Usage:       testCmdUsage,
 	Description: testCmdDesc,
-	Category:    SynseActionsCategory,
 	ArgsUsage:   utils.NoArgs,
 
 	Action: func(c *cli.Context) error {
@@ -34,7 +33,7 @@ var StatusCommand = cli.Command{
 	},
 }
 
-// cmdStatus is the action for the StatusCommand. It makes a "status" request
+// cmdStatus is the action for the statusCommand. It makes a "status" request
 // against the active Synse Server instance.
 func cmdStatus(c *cli.Context) error {
 	status, err := client.Client.Status()

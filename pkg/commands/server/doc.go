@@ -12,6 +12,3 @@ endpoints provided by Synse Server, namely:
  - /transaction/...
 */
 package server
-
-// SynseActionsCategory defines the category name for Synse Server actions.
-const SynseActionsCategory = "Synse Server Actions"

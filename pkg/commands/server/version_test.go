@@ -26,9 +26,9 @@ func TestVersionCommandError(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, VersionCommand)
+	app.Commands = append(app.Commands, versionCommand)
 
-	err := app.Run([]string{app.Name, VersionCommand.Name})
+	err := app.Run([]string{app.Name, versionCommand.Name})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -45,9 +45,9 @@ func TestVersionCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, VersionCommand)
+	app.Commands = append(app.Commands, versionCommand)
 
-	err := app.Run([]string{app.Name, VersionCommand.Name})
+	err := app.Run([]string{app.Name, versionCommand.Name})
 
 	test.ExpectNoError(t, err)
 }

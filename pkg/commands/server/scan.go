@@ -21,12 +21,11 @@ const (
 	 Server via the instance's configured plugins.`
 )
 
-// ScanCommand is the CLI command for Synse Server's "scan" API route.
-var ScanCommand = cli.Command{
+// scanCommand is the CLI command for Synse Server's "scan" API route.
+var scanCommand = cli.Command{
 	Name:        scanCmdName,
 	Usage:       scanCmdUsage,
 	Description: scanCmdDesc,
-	Category:    SynseActionsCategory,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdScan(c))
@@ -48,7 +47,7 @@ var ScanCommand = cli.Command{
 	},
 }
 
-// cmdScan is the action for the ScanCommand. It makes a "scan" request
+// cmdScan is the action for the scanCommand. It makes a "scan" request
 // against the active Synse Server instance.
 func cmdScan(c *cli.Context) error {
 	scan, err := client.Client.Scan()

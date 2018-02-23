@@ -28,9 +28,9 @@ func TestTransactionCommandError(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, TransactionCommand)
+	app.Commands = append(app.Commands, transactionCommand)
 
-	err := app.Run([]string{app.Name, TransactionCommand.Name})
+	err := app.Run([]string{app.Name, transactionCommand.Name})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -50,9 +50,9 @@ func TestTransactionCommandError2(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, TransactionCommand)
+	app.Commands = append(app.Commands, transactionCommand)
 
-	err := app.Run([]string{app.Name, TransactionCommand.Name, "b9u6ss6q5i6g020lau6g"})
+	err := app.Run([]string{app.Name, transactionCommand.Name, "b9u6ss6q5i6g020lau6g"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -72,9 +72,9 @@ func TestTransactionCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, TransactionCommand)
+	app.Commands = append(app.Commands, transactionCommand)
 
-	err := app.Run([]string{app.Name, TransactionCommand.Name, "b9u6ss6q5i6g020lau6g"})
+	err := app.Run([]string{app.Name, transactionCommand.Name, "b9u6ss6q5i6g020lau6g"})
 
 	test.ExpectNoError(t, err)
 }
