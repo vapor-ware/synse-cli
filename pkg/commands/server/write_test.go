@@ -25,9 +25,9 @@ func TestWriteCommandError(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, WriteCommand)
+	app.Commands = append(app.Commands, writeCommand)
 
-	err := app.Run([]string{app.Name, WriteCommand.Name, "rack-1", "board-1", "device-1"})
+	err := app.Run([]string{app.Name, writeCommand.Name, "rack-1", "board-1", "device-1"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -36,9 +36,9 @@ func TestWriteCommandError2(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, WriteCommand)
+	app.Commands = append(app.Commands, writeCommand)
 
-	err := app.Run([]string{app.Name, WriteCommand.Name, "rack-1", "board-1", "device-1", "color", "000000", "extra"})
+	err := app.Run([]string{app.Name, writeCommand.Name, "rack-1", "board-1", "device-1", "color", "000000", "extra"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -58,9 +58,9 @@ func TestWriteCommandError3(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, WriteCommand)
+	app.Commands = append(app.Commands, writeCommand)
 
-	err := app.Run([]string{app.Name, WriteCommand.Name, "rack-1", "board-1", "device-1", "color", "000000"})
+	err := app.Run([]string{app.Name, writeCommand.Name, "rack-1", "board-1", "device-1", "color", "000000"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -84,9 +84,9 @@ func TestWriteCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, WriteCommand)
+	app.Commands = append(app.Commands, writeCommand)
 
-	err := app.Run([]string{app.Name, WriteCommand.Name, "rack-1", "board-1", "device-1", "color", "000000"})
+	err := app.Run([]string{app.Name, writeCommand.Name, "rack-1", "board-1", "device-1", "color", "000000"})
 
 	test.ExpectNoError(t, err)
 }

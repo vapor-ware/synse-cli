@@ -26,9 +26,9 @@ func TestStatusCommandError(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, StatusCommand)
+	app.Commands = append(app.Commands, statusCommand)
 
-	err := app.Run([]string{app.Name, StatusCommand.Name})
+	err := app.Run([]string{app.Name, statusCommand.Name})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -45,9 +45,9 @@ func TestStatusCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, StatusCommand)
+	app.Commands = append(app.Commands, statusCommand)
 
-	err := app.Run([]string{app.Name, StatusCommand.Name})
+	err := app.Run([]string{app.Name, statusCommand.Name})
 
 	test.ExpectNoError(t, err)
 }

@@ -24,12 +24,11 @@ const (
 	 the plugin level.`
 )
 
-// ReadCommand is the CLI command for Synse Server's "read" API route.
-var ReadCommand = cli.Command{
+// readCommand is the CLI command for Synse Server's "read" API route.
+var readCommand = cli.Command{
 	Name:        readCmdName,
 	Usage:       readCmdUsage,
 	Description: readCmdDesc,
-	Category:    SynseActionsCategory,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdRead(c))
@@ -38,7 +37,7 @@ var ReadCommand = cli.Command{
 	BashComplete: completion.CompleteRackBoardDevice,
 }
 
-// cmdRead is the action for the ReadCommand. It makes a "read" request
+// cmdRead is the action for the readCommand. It makes a "read" request
 // against the active Synse Server instance.
 func cmdRead(c *cli.Context) error {
 	err := utils.RequiresArgsExact(3, c)

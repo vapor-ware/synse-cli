@@ -20,12 +20,11 @@ const (
 	 Server instance.`
 )
 
-// VersionCommand is the CLI command for Synse Server's "version" API route.
-var VersionCommand = cli.Command{
+// versionCommand is the CLI command for Synse Server's "version" API route.
+var versionCommand = cli.Command{
 	Name:        versionCmdName,
 	Usage:       versionCmdUsage,
 	Description: versionCmdDesc,
-	Category:    SynseActionsCategory,
 	ArgsUsage:   utils.NoArgs,
 
 	Action: func(c *cli.Context) error {
@@ -33,7 +32,7 @@ var VersionCommand = cli.Command{
 	},
 }
 
-// cmdVersion is the action for the VersionCommand. It makes a "version" request
+// cmdVersion is the action for the versionCommand. It makes a "version" request
 // against the active Synse Server instance.
 func cmdVersion(c *cli.Context) error {
 	version, err := client.Client.Version()

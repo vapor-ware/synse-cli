@@ -38,9 +38,9 @@ func TestConfigCommandError(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, ConfigCommand)
+	app.Commands = append(app.Commands, configCommand)
 
-	err := app.Run([]string{app.Name, ConfigCommand.Name})
+	err := app.Run([]string{app.Name, configCommand.Name})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -57,9 +57,9 @@ func TestConfigCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, ConfigCommand)
+	app.Commands = append(app.Commands, configCommand)
 
-	err := app.Run([]string{app.Name, ConfigCommand.Name})
+	err := app.Run([]string{app.Name, configCommand.Name})
 
 	test.ExpectNoError(t, err)
 }

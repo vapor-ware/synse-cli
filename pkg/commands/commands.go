@@ -11,14 +11,6 @@ import (
 var Commands = []cli.Command{
 	hosts.HostsCommand,
 	plugin.PluginCommand,
-	server.StatusCommand,
-	server.VersionCommand,
-	server.ScanCommand,
-	server.ConfigCommand,
-	server.PluginsCommand,
-	server.ReadCommand,
-	server.WriteCommand,
-	server.InfoCommand,
-	server.TransactionCommand,
+	server.ServerCommand,
 	completionCommand,
 }

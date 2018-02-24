@@ -37,9 +37,9 @@ func TestPluginsCommandError(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, PluginsCommand)
+	app.Commands = append(app.Commands, pluginsCommand)
 
-	err := app.Run([]string{app.Name, PluginsCommand.Name})
+	err := app.Run([]string{app.Name, pluginsCommand.Name})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -59,9 +59,9 @@ func TestPluginsCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, PluginsCommand)
+	app.Commands = append(app.Commands, pluginsCommand)
 
-	err := app.Run([]string{app.Name, PluginsCommand.Name})
+	err := app.Run([]string{app.Name, pluginsCommand.Name})
 
 	test.ExpectNoError(t, err)
 }

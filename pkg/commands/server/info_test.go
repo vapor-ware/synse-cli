@@ -71,9 +71,9 @@ func TestInfoCommandError(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name})
+	err := app.Run([]string{app.Name, infoCommand.Name})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -82,9 +82,9 @@ func TestInfoCommandError2(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name, "rack-1", "board-1", "device-1", "extra"})
+	err := app.Run([]string{app.Name, infoCommand.Name, "rack-1", "board-1", "device-1", "extra"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -104,9 +104,9 @@ func TestInfoCommandErrorRack(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name, "rack-1"})
+	err := app.Run([]string{app.Name, infoCommand.Name, "rack-1"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -126,9 +126,9 @@ func TestInfoCommandSuccessRack(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name, "rack-1"})
+	err := app.Run([]string{app.Name, infoCommand.Name, "rack-1"})
 
 	test.ExpectNoError(t, err)
 }
@@ -148,9 +148,9 @@ func TestInfoCommandErrorBoard(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name, "rack-1", "board-1"})
+	err := app.Run([]string{app.Name, infoCommand.Name, "rack-1", "board-1"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -170,9 +170,9 @@ func TestInfoCommandSuccessBoard(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name, "rack-1", "board-1"})
+	err := app.Run([]string{app.Name, infoCommand.Name, "rack-1", "board-1"})
 
 	test.ExpectNoError(t, err)
 }
@@ -192,9 +192,9 @@ func TestInfoCommandErrorDevice(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name, "rack-1", "board-1", "device-1"})
+	err := app.Run([]string{app.Name, infoCommand.Name, "rack-1", "board-1", "device-1"})
 
 	test.ExpectExitCoderError(t, err)
 }
@@ -214,9 +214,9 @@ func TestInfoCommandSuccessDevice(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, InfoCommand)
+	app.Commands = append(app.Commands, infoCommand)
 
-	err := app.Run([]string{app.Name, InfoCommand.Name, "rack-1", "board-1", "device-1"})
+	err := app.Run([]string{app.Name, infoCommand.Name, "rack-1", "board-1", "device-1"})
 
 	test.ExpectNoError(t, err)
 }

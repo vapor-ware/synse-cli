@@ -24,12 +24,11 @@ const (
 	 the plugin level.`
 )
 
-// WriteCommand is the CLI command for Synse Server's "write" API route.
-var WriteCommand = cli.Command{
+// writeCommand is the CLI command for Synse Server's "write" API route.
+var writeCommand = cli.Command{
 	Name:        writeCmdName,
 	Usage:       writeCmdUsage,
 	Description: writeCmdDesc,
-	Category:    SynseActionsCategory,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdWrite(c))
@@ -38,7 +37,7 @@ var WriteCommand = cli.Command{
 	BashComplete: completion.CompleteRackBoardDevice,
 }
 
-// cmdWrite is the action for the WriteCommand. It makes a "write" request
+// cmdWrite is the action for the writeCommand. It makes a "write" request
 // against the active Synse Server instance.
 func cmdWrite(c *cli.Context) error {
 	err := utils.RequiresArgsInRange(4, 5, c)

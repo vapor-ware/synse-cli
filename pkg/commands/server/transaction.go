@@ -19,19 +19,18 @@ const (
 	 endpoint, which returns the state and status of the specified transaction.`
 )
 
-// TransactionCommand is the CLI command for Synse Server's "transaction" API route.
-var TransactionCommand = cli.Command{
+// transactionCommand is the CLI command for Synse Server's "transaction" API route.
+var transactionCommand = cli.Command{
 	Name:        transactionCmdName,
 	Usage:       transactionCmdUsage,
 	Description: transactionCmdDesc,
-	Category:    SynseActionsCategory,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdTransaction(c))
 	},
 }
 
-// cmdTransaction is the action for the TransactionCommand. It makes a "transaction"
+// cmdTransaction is the action for the transactionCommand. It makes a "transaction"
 // request against the active Synse Server instance.
 func cmdTransaction(c *cli.Context) error {
 	err := utils.RequiresArgsExact(1, c)

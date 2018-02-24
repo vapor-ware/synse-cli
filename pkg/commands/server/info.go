@@ -21,12 +21,11 @@ const (
 	 rack level, the board level, or the device level.`
 )
 
-// InfoCommand is the CLI command for Synse Server's "info" API route.
-var InfoCommand = cli.Command{
+// infoCommand is the CLI command for Synse Server's "info" API route.
+var infoCommand = cli.Command{
 	Name:        infoCmdName,
 	Usage:       infoCmdUsage,
 	Description: infoCmdDesc,
-	Category:    SynseActionsCategory,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdInfo(c))
@@ -35,7 +34,7 @@ var InfoCommand = cli.Command{
 	BashComplete: completion.CompleteRackBoardDevice,
 }
 
-// cmdInfo is the action for the InfoCommand. It makes an "info" request
+// cmdInfo is the action for the infoCommand. It makes an "info" request
 // against the active Synse Server instance.
 func cmdInfo(c *cli.Context) (err error) {
 	err = utils.RequiresArgsInRange(1, 3, c)
