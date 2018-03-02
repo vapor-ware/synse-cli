@@ -19,7 +19,7 @@ func DeviceNotFoundErr(res Result) error {
 	// FIXME: NOOOOOOOOOOOOOOOO
 	var prefix string
 	switch res.DeviceType {
-	case "fan_speed":
+	case "fan":
 		prefix = "fan/"
 	case "system":
 		prefix = "power/"

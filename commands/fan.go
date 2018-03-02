@@ -13,7 +13,7 @@ import (
 const fanpath = "fan/"
 
 // fandevicetype specifies the device type to query for fan status
-const fandevicetype = "fan_speed"
+const fandevicetype = "fan"
 
 // FanDetails contains the response data for a fan object
 type FanDetails struct {
@@ -29,9 +29,9 @@ type FanResult struct {
 }
 
 // ListFan iterates over the complete list of devices and returns health,
-// speed (rpm), and state of each `fan_speed` device type. Since there may
+// speed (rpm), and state of each `fan` device type. Since there may
 // be multiple fans per board, each board is also iterated over for each
-// device of type `fan_speed`.
+// device of type `fan`.
 // Future types may need to be added to this list to accomidate different
 // types of fan data.
 func ListFan(filter *utils.FilterFunc) ([]FanResult, error) {
