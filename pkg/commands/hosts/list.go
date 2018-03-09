@@ -9,10 +9,34 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
+const (
+	// listCmdName is the name for the 'list' command.
+	listCmdName = "list"
+
+	// listCmdUsage is the usage text for the 'list' command.
+	listCmdUsage = "List all configured Synse Server hosts"
+
+	// activeCmdDesc is the description for the 'list' command.
+	listCmdDesc = `The list command shows all of the Synse Server instances
+  that are currently configured with the CLI. The current
+  active host will be denoted with a '*', if there is an
+  active host.
+
+Example:
+  synse hosts list
+
+Formatting:
+  The 'hosts list' command supports the following formatting
+  options (via the CLI global --format flag):
+    - pretty (default)`
+)
+
 // hostsListCommand is the CLI sub-command for listing all configured hosts.
 var hostsListCommand = cli.Command{
-	Name:  "list",
-	Usage: "List the configured Synse Server hosts",
+	Name:        listCmdName,
+	Usage:       listCmdUsage,
+	Description: listCmdDesc,
+	ArgsUsage:   utils.NoArgs,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdList(c))

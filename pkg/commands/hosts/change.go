@@ -9,10 +9,31 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
+const (
+	// changeCmdName is the name for the 'change' command.
+	changeCmdName = "change"
+
+	// changeCmdUsage is the usage text for the 'change' command.
+	changeCmdUsage = "Change the active host"
+
+	// changeCmdArgsUsage is the argument usage for the 'change' command.
+	changemdArgsUsage = "NAME"
+
+	// changeCmdDesc is the description for the 'change' command.
+	changeCmdDesc = `The change command changes the active host to the one specified
+  by the given reference name. To see a list of all hosts that
+  are currently configured with the CLI, use 'synse hosts list'.
+
+Example:
+  synse hosts change local`
+)
+
 // hostsChangeCommand is the CLI sub-command for changing the active host.
 var hostsChangeCommand = cli.Command{
-	Name:  "change",
-	Usage: "Change the active host",
+	Name:        changeCmdName,
+	Usage:       changeCmdUsage,
+	Description: changeCmdDesc,
+	ArgsUsage:   changemdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdChange(c))

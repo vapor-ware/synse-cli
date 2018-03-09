@@ -12,12 +12,20 @@ const (
 	pluginsCmdName = "plugins"
 
 	// pluginsCmdUsage is the usage text for the 'plugins' command.
-	pluginsCmdUsage = "Get a list of plugins that are configured with the active host"
+	pluginsCmdUsage = "Get the list of plugins that are configured with Synse Server"
 
 	// pluginsCmdDesc is the description for the 'plugins' command.
 	pluginsCmdDesc = `The plugins command hits the active Synse Server host's '/plugins'
-	 endpoint, which returns the current set of configured plugins for that
-	 instance.`
+  endpoint, which returns the current set of configured plugins for
+  that instance.
+
+Example:
+  synse server plugins
+
+Formatting:
+  The 'server plugins' command supports the following formatting
+  options (via the CLI global --format flag):
+    - pretty (default)`
 )
 
 // pluginsCommand is the CLI command for Synse Server's "plugins" API route.

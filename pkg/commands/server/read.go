@@ -15,13 +15,28 @@ const (
 	// readCmdUsage is the usage text for the 'read' command.
 	readCmdUsage = "Read from the specified device"
 
+	// readCmdArgsUsage is the argument usage for the 'read' command.
+	readCmdArgsUsage = "RACK BOARD DEVICE"
+
 	// readCmdDesc is the description for the 'read' command.
 	readCmdDesc = `The read command hits the active Synse Server host's '/read'
-	 endpoint to read from the specified device. A Synse Server read
-	 will be passed along to the backend plugin which handles the
-	 given device to get the reading information. Not all devices
-	 may support reading; device support for read is specified at
-	 the plugin level.`
+  endpoint to read from the specified device. A Synse Server read
+  will be passed along to the backend plugin which handles the
+  given device to get the reading information. Not all devices
+  may support reading; device support for read is specified at
+  the plugin level.
+
+  Reads require the rack, board, and device to be specified.
+  These can be found using the 'server scan' command, or with
+  tab completion, if enabled.
+
+Example:
+  synse read rack-1 board 29d1a03e8cddfbf1cf68e14e60e5f5cc
+
+Formatting:
+  The 'server read' command supports the following formatting
+  options (via the CLI global --format flag):
+    - pretty (default)`
 )
 
 // readCommand is the CLI command for Synse Server's "read" API route.
@@ -29,6 +44,7 @@ var readCommand = cli.Command{
 	Name:        readCmdName,
 	Usage:       readCmdUsage,
 	Description: readCmdDesc,
+	ArgsUsage:   readCmdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdRead(c))

@@ -15,13 +15,45 @@ const (
 	// writeCmdUsage is the usage text for the 'write' command.
 	writeCmdUsage = "Write to the specified device"
 
+	// writeCmdArgsUsage is the argument usage for the 'write' command.
+	writeCmdArgsUsage = "RACK BOARD DEVICE ACTION [DATA]"
+
 	// writeCmdDesc is the description for the 'write' command.
 	writeCmdDesc = `The write command hits the active Synse Server host's '/write'
-	 endpoint to write to the specified device. A Synse Server write
-	 will be passed along to the backend plugin which handles the
-	 given device to get the write information. Not all devices
-	 may support writing; device support for write is specified at
-	 the plugin level.`
+  endpoint to write to the specified device. A Synse Server write
+  will be passed along to the backend plugin which handles the
+  given device to get the write information. Not all devices
+  may support writing; support for write is determined at the
+  plugin level.
+
+  Writes are asynchronous, so issuing a write command will return
+  a transaction ID. This ID can be checked to get the state/status
+  of the write using the 'synse server transaction' command.
+
+  When writing to a device, the rack, board, and device id must be
+  specified along with the stuff to write. This 'stuff' is composed
+  of two parts -- the ACTION (e.g. the thing to change) and the
+  DATA (e.g. the value to change it to). Most devices require both
+  ACTION and DATA for writing, but some may require only an ACTION.
+
+  Below is a table listing some common actions and the requirements
+  for their data
+
+  TYPE      ACTION    DATA
+  --------  --------  -------------------
+  led       state     (on|off)
+            blink     (blink|steady)
+            color     RBG HEX string
+
+  fan       speed     integer
+
+Example:
+  synse server write rack-1 board 29d1a03e8cddfbf1cf68e14e60e5f5cc color ff00ff
+
+Formatting:
+  The 'server write' command supports the following formatting
+  options (via the CLI global --format flag):
+    - pretty (default)`
 )
 
 // writeCommand is the CLI command for Synse Server's "write" API route.
@@ -29,6 +61,7 @@ var writeCommand = cli.Command{
 	Name:        writeCmdName,
 	Usage:       writeCmdUsage,
 	Description: writeCmdDesc,
+	ArgsUsage:   writeCmdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdWrite(c))

@@ -15,10 +15,31 @@ const (
 	// infoCmdUsage is the usage text for the 'info' command.
 	infoCmdUsage = "Get info for the specified rack, board, or device"
 
+	// infoCmdArgsUsage is the argument usage for the 'info' command.
+	infoCmdArgsUsage = "RACK [BOARD [DEVICE]]"
+
 	// infoCmdDesc is the description for the 'info' command.
 	infoCmdDesc = `The info command hits the active Synse Server host's '/info'
-	 endpoint. Information can be provided at various scopes: the
-	 rack level, the board level, or the device level.`
+  endpoint. Information can be provided at various scopes: the
+  rack level, the board level, or the device level. Each level
+  of info will provide locational information (e.g. what lives
+  on it/what it lives on) as well as any entity-specific info.
+
+Example:
+  # rack level info request
+  synse rack-1
+
+  # board level info request
+  synse rack-1 board
+
+  # device level info request
+  synse rack-1 board 29d1a03e8cddfbf1cf68e14e60e5f5cc
+
+Formatting:
+  The 'server info' command supports the following formatting
+  options (via the CLI global --format flag):
+    - yaml (default)
+    - json`
 )
 
 // infoCommand is the CLI command for Synse Server's "info" API route.
@@ -26,6 +47,7 @@ var infoCommand = cli.Command{
 	Name:        infoCmdName,
 	Usage:       infoCmdUsage,
 	Description: infoCmdDesc,
+	ArgsUsage:   infoCmdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdInfo(c))
