@@ -84,6 +84,55 @@ func main() {
 		flags.FormatFlag, // --format flag to specify the output format for a command
 	}
 
+	cli.AppHelpTemplate = `
+{{.Usage}}
+
+Usage:
+  {{.HelpName}} {{if .VisibleFlags}}[global options]{{end}}{{if .Commands}} COMMAND [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
+{{if .Commands}}
+Commands:
+{{range .Commands}}{{if not .HideHelp}}  {{join .Names ", "}}{{ "\t"}}{{.Usage}}{{ "\n" }}{{end}}{{end}}{{end}}{{if .VisibleFlags}}
+Global Options:
+  {{range .VisibleFlags}}{{.}}
+  {{end}}{{end}}
+Use 'synse COMMAND --help' for more information on a command.
+`
+
+	cli.CommandHelpTemplate = `
+{{.Usage}}
+
+Usage:
+  {{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}}{{if .VisibleFlags}} [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}{{if .Category}}
+
+Category:
+  {{.Category}}{{end}}{{if .Description}}
+
+Description:
+  {{.Description}}{{end}}{{if .VisibleFlags}}
+
+Options:
+  {{range .VisibleFlags}}{{.}}
+  {{end}}{{end}}
+`
+
+	cli.SubcommandHelpTemplate = `
+{{.Usage}}{{if .Description}}
+
+Description:
+  {{.Description}}{{end}}
+
+Usage:
+  {{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} command{{if .VisibleFlags}} [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}
+
+Commands:{{range .VisibleCategories}}{{if .Name}}
+  {{.Name}}:{{end}}{{range .VisibleCommands}}
+  {{join .Names ", "}}{{"\t"}}{{.Usage}}{{end}}
+{{end}}{{if .VisibleFlags}}
+Options:
+  {{range .VisibleFlags}}{{.}}
+  {{end}}{{end}}
+`
+
 	// Run the CLI
 	err := app.Run(os.Args)
 	if err != nil {

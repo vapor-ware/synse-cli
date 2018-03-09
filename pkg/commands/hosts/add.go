@@ -6,11 +6,31 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
+const (
+	// addCmdName is the name for the 'add' command.
+	addCmdName = "add"
+
+	// addCmdUsage is the usage text for the 'add' command.
+	addCmdUsage = "Add a new Synse Server host"
+
+	// addCmdArgsUsage is the argument usage for the 'add' command.
+	addCmdArgsUsage = "NAME HOST"
+
+	// addCmdDesc is the description for the 'add' command.
+	addCmdDesc = `The add command adds a new Synse Server instance to the
+  available hosts that the CLI can interface with.
+
+Example:
+  synse hosts add local localhost:5000`
+)
+
 // hostsAddCommand is the CLI sub-command for adding a new host to the CLI
 // configuration.
 var hostsAddCommand = cli.Command{
-	Name:  "add",
-	Usage: "Add a new Synse Server host",
+	Name:        addCmdName,
+	Usage:       addCmdUsage,
+	Description: addCmdDesc,
+	ArgsUsage:   addCmdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdAdd(c))

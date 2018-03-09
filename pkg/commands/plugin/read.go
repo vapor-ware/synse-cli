@@ -9,10 +9,41 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
+const (
+	// readCmdName is the name for the 'read' command.
+	readCmdName = "read"
+
+	// readCmdUsage is the usage text for the 'read' command.
+	readCmdUsage = "Get a reading from a plugin"
+
+	// readCmdArgsUsage is the argument usage for the 'read' command.
+	readCmdArgsUsage = "RACK BOARD DEVICE"
+
+	// readCmdDesc is the description for the 'read' command.
+	readCmdDesc = `The read command gets a device reading from a plugin via the
+  Synse gRPC API. The plugin read info return is similar to that
+  of a 'synse server read' command, and the response data for
+  both should look the same.
+
+  Reads require the rack, board, and device to be specified.
+  These can be found using the 'plugin meta' command, or with
+  tab completion, if enabled.
+
+Example:
+  synse plugin read rack-1 board 29d1a03e8cddfbf1cf68e14e60e5f5cc
+
+Formatting:
+  The 'plugin read' command supports the following formatting
+  options (via the CLI global --format flag):
+    - pretty (default)`
+)
+
 // pluginReadCommand is a CLI sub-command for getting a reading from a plugin.
 var pluginReadCommand = cli.Command{
-	Name:  "read",
-	Usage: "Get a reading from a plugin",
+	Name:        readCmdName,
+	Usage:       readCmdUsage,
+	Description: readCmdDesc,
+	ArgsUsage:   readCmdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdRead(c))

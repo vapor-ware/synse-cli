@@ -12,12 +12,21 @@ const (
 	versionCmdName = "version"
 
 	// versionCmdUsage is the usage text for the 'version' command.
-	versionCmdUsage = "Get the version of the active host"
+	versionCmdUsage = "Get the version of Synse Server"
 
 	// versionCmdDesc is the description for the 'version' command.
 	versionCmdDesc = `The version command hits the active Synse Server host's '/version'
-	 endpoint, which returns the version (full and API) of the Synse
-	 Server instance.`
+  endpoint, which returns the version (full and API) of the Synse
+  Server instance.
+
+Example:
+  synse server version
+
+Formatting:
+  The 'server version' command supports the following formatting
+  options (via the CLI global --format flag):
+    - yaml (default)
+    - json`
 )
 
 // versionCommand is the CLI command for Synse Server's "version" API route.

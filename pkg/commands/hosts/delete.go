@@ -7,11 +7,31 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
+const (
+	// deleteCmdName is the name for the 'delete' command.
+	deleteCmdName = "delete"
+
+	// deleteCmdUsage is the usage text for the 'delete' command.
+	deleteCmdUsage = "Delete a Synse Server host"
+
+	// deleteCmdArgsUsage is the argument usage for the 'delete' command.
+	deleteCmdArgsUsage = "NAME"
+
+	// deleteCmdDesc is the description for the 'delete' command.
+	deleteCmdDesc = `The delete command removes a Synse Server instance from the
+  tracked hosts configuration.
+
+Example:
+  synse hosts delete local`
+)
+
 // hostsDeleteCommand is the CLI sub-command for deleting a host from the
 // CLI configuration.
 var hostsDeleteCommand = cli.Command{
-	Name:  "delete",
-	Usage: "Delete a Synse Server host from configuration",
+	Name:        deleteCmdName,
+	Usage:       deleteCmdUsage,
+	Description: deleteCmdDesc,
+	ArgsUsage:   deleteCmdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdDelete(c))
