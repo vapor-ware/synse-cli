@@ -7,6 +7,7 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/internal/test"
+	"github.com/vapor-ware/synse-cli/pkg/scheme"
 )
 
 func TestCheck1(t *testing.T) {
@@ -15,7 +16,8 @@ func TestCheck1(t *testing.T) {
 		StatusCode: 200,
 	}
 
-	e := check(&resp, err)
+	errScheme := new(scheme.Error)
+	e := check(&resp, err, errScheme)
 	test.ExpectNoError(t, e)
 }
 
@@ -25,7 +27,8 @@ func TestCheck2(t *testing.T) {
 		StatusCode: 200,
 	}
 
-	e := check(&resp, err)
+	errScheme := new(scheme.Error)
+	e := check(&resp, err, errScheme)
 	test.ExpectExitCoderError(t, e)
 }
 
@@ -35,7 +38,8 @@ func TestCheck3(t *testing.T) {
 		StatusCode: 500,
 	}
 
-	e := check(&resp, err)
+	errScheme := new(scheme.Error)
+	e := check(&resp, err, errScheme)
 	test.ExpectExitCoderError(t, e)
 }
 

@@ -11,6 +11,9 @@ import (
 
 	"strings"
 
+	"bytes"
+	"encoding/json"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/dghubble/sling"
 	"github.com/urfave/cli"
@@ -117,16 +120,24 @@ func constructURL(host string) string {
 // check is a helper function to check the HTTP response from Synse Server.
 // If the request failed with error or returned an error code, it will raise
 // an error.
-func check(response *http.Response, err error) error {
+func check(response *http.Response, err error, errorScheme *scheme.Error) error {
 	if err != nil {
 		return cli.NewExitError(err, 1)
 	}
 
 	if response.StatusCode != http.StatusOK {
-		// TODO (etd) - Synse Server returns JSON for 404 and 500 - we should check
-		// that here/log it out.
+		errBytes, err := json.Marshal(errorScheme)
+		if err != nil {
+			return cli.NewExitError(err, 1)
+		}
+
+		var errOut bytes.Buffer
+		err = json.Indent(&errOut, errBytes, "", "  ")
+		if err != nil {
+			return cli.NewExitError(err, 1)
+		}
 		return cli.NewExitError(
-			fmt.Sprintf("got HTTP code %v for request", response.StatusCode),
+			fmt.Sprintf("Synse Server responded with error: \n%v", errOut.String()),
 			1,
 		)
 	}
@@ -154,19 +165,24 @@ run against an actual live endpoint, but was failing for the tests.
 */
 
 // getUnversioned performs a GET request against the Synse Server unversioned API.
-func getUnversioned(uri string, scheme interface{}) error {
-
-	return check(newUnversioned().Get(uri).ReceiveSuccess(scheme))
+func getUnversioned(uri string, requestScheme interface{}) error {
+	errScheme := new(scheme.Error)
+	response, err := newUnversioned().Get(uri).Receive(requestScheme, errScheme)
+	return check(response, err, errScheme)
 }
 
 // getVersioned performs a GET request against the Synse Server versioned API.
-func getVersioned(uri string, scheme interface{}) error {
-	return check(newVersioned().Get(uri).ReceiveSuccess(scheme))
+func getVersioned(uri string, requestScheme interface{}) error {
+	errScheme := new(scheme.Error)
+	response, err := newVersioned().Get(uri).Receive(requestScheme, errScheme)
+	return check(response, err, errScheme)
 }
 
 // postVersioned performs a POST request against the Sysne Server versioned API.
-func postVersioned(uri string, body interface{}, scheme interface{}) error {
-	return check(newVersioned().Post(uri).BodyJSON(body).ReceiveSuccess(scheme))
+func postVersioned(uri string, body interface{}, requestScheme interface{}) error {
+	errScheme := new(scheme.Error)
+	response, err := newVersioned().Post(uri).BodyJSON(body).Receive(requestScheme, errScheme)
+	return check(response, err, errScheme)
 }
 
 // synseClient is a client for making requests against the Synse Server HTTP API.
