@@ -134,3 +134,19 @@ func CompleteRackBoardDevice(c *cli.Context) { // nolint: gocyclo
 		return
 	}
 }
+
+// CompleteTransactions is a bash completion function for the server 'transaction' command.
+// It will auto-complete on the transaction ids returned from a "transaction" request.
+func CompleteTransactions(c *cli.Context) {
+	// If there are no arguments, resolve the transaction ID
+	if c.NArg() == 0 {
+		ids, err := client.Client.TransactionList()
+		if err != nil {
+			return
+		}
+
+		for _, opt := range *ids {
+			fmt.Println(opt)
+		}
+	}
+}
