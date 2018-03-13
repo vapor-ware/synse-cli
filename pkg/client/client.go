@@ -291,7 +291,18 @@ func (c *synseClient) Transaction(id string) (*scheme.Transaction, error) {
 	return out, nil
 }
 
-// Write POSTS data and parses the response from Synse Server's "write" endpoint.
+// TransactionList gets and parses the response from Synse Server's "transaction"
+// endpoint for listing all active transactions.
+func (c *synseClient) TransactionList() (*[]string, error) {
+	out := new([]string)
+	err := getVersioned(transactionBaseURI, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Write POSTs data and parses the response from Synse Server's "write" endpoint.
 func (c *synseClient) Write(rack, board, device, action, raw string) ([]scheme.WriteTransaction, error) {
 	out := make([]scheme.WriteTransaction, 0)
 
