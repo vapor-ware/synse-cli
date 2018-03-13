@@ -10,7 +10,7 @@ import (
 
 const (
 	// the pretty output format for the transaction command
-	prettyTransaction = "{{.Status}}\t{{.State}}\t{{.Created}}\t{{.Updated}}\n"
+	prettyTransaction = "{{.Status}}\t{{.State}}\t{{.Created}}\t{{.Updated}}\t{{.Message}}\n"
 )
 
 // transactionFormat collects the data that will be parsed into the output template.
@@ -19,6 +19,7 @@ type transactionFormat struct {
 	State   string
 	Created string
 	Updated string
+	Message string
 }
 
 // newTransactionFormat is the handler for transaction commands that is used by the
@@ -29,11 +30,17 @@ func newTransactionFormat(data interface{}) (interface{}, error) {
 		return nil, fmt.Errorf("formatter data %T not of type *scheme.Transaction", transaction)
 	}
 
+	// Set the message to "ok" if nothing is wrong
+	if transaction.Message == "" {
+		transaction.Message = "ok"
+	}
+
 	return &transactionFormat{
 		Status:  transaction.Status,
 		State:   transaction.State,
 		Created: utils.ParseTimestamp(transaction.Created),
 		Updated: utils.ParseTimestamp(transaction.Updated),
+		Message: transaction.Message,
 	}, nil
 }
 
@@ -52,6 +59,7 @@ func NewTransactionFormatter(c *cli.Context) *Formatter {
 		State:   "STATE",
 		Created: "CREATED",
 		Updated: "UPDATED",
+		Message: "MESSAGE",
 	})
 	return f
 }
