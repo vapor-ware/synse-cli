@@ -15,10 +15,14 @@ func TestDeleteCommandError(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsDeleteCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// expects exactly one arg, but none are given
-	err := app.Run([]string{app.Name, hostsDeleteCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsDeleteCommand.Name,
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "delete.error.no_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -29,10 +33,15 @@ func TestDeleteCommandError2(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsDeleteCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// expects exactly one arg, but multiple are given
-	err := app.Run([]string{app.Name, hostsDeleteCommand.Name, "arg1", "arg2"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsDeleteCommand.Name,
+		"arg1", "arg2",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "delete.error.extra_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -44,11 +53,16 @@ func TestDeleteCommandSuccess(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsDeleteCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// we should not fail if we try to delete a host that is not in
 	// the configuration
-	err := app.Run([]string{app.Name, hostsDeleteCommand.Name, "missing-host"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsDeleteCommand.Name,
+		"missing-host",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "delete.success.golden"))
 	test.ExpectNoError(t, err)
@@ -60,7 +74,7 @@ func TestDeleteCommandSuccess2(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsDeleteCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	config.Config.Hosts["test-host"] = &config.HostConfig{
 		Name:    "test-host",
@@ -69,7 +83,12 @@ func TestDeleteCommandSuccess2(t *testing.T) {
 
 	// we should not fail if we try to delete a host that is in the
 	// configuration
-	err := app.Run([]string{app.Name, hostsDeleteCommand.Name, "test-host"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsDeleteCommand.Name,
+		"test-host",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "delete.success.golden"))
 	test.ExpectNoError(t, err)
@@ -81,7 +100,7 @@ func TestDeleteCommandSuccess3(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsDeleteCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	host := &config.HostConfig{
 		Name:    "test-host",
@@ -92,7 +111,12 @@ func TestDeleteCommandSuccess3(t *testing.T) {
 
 	// we should not fail if we try to delete a host that is in the
 	// configuration and is also the active host
-	err := app.Run([]string{app.Name, hostsDeleteCommand.Name, "test-host"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsDeleteCommand.Name,
+		"test-host",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "delete.success.golden"))
 	test.ExpectNoError(t, err)

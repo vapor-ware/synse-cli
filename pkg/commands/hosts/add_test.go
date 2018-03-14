@@ -15,9 +15,13 @@ func TestAddCommandError(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsAddCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
-	err := app.Run([]string{app.Name, hostsAddCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsAddCommand.Name,
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "add.error.no_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -29,7 +33,7 @@ func TestAddCommandError2(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsAddCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// Before adding the "name / address" host, we want it to already exist.
 	config.Config.Hosts["name"] = &config.HostConfig{
@@ -37,7 +41,11 @@ func TestAddCommandError2(t *testing.T) {
 		Address: "address",
 	}
 
-	err := app.Run([]string{app.Name, hostsAddCommand.Name, "name", "address"})
+	err := app.Run([]string{
+		app.Name, HostsCommand.Name,
+		hostsAddCommand.Name,
+		"name", "address",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "add.error.duplicate_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -49,7 +57,7 @@ func TestAddCommandError3(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsAddCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// Before adding the "name / address" host, we want it to already exist.
 	config.Config.Hosts["name"] = &config.HostConfig{
@@ -57,7 +65,12 @@ func TestAddCommandError3(t *testing.T) {
 		Address: "address",
 	}
 
-	err := app.Run([]string{app.Name, hostsAddCommand.Name, "name", "address", "extra"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsAddCommand.Name,
+		"name", "address", "extra",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "add.error.extra_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -69,9 +82,14 @@ func TestAddCommandSuccess(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsAddCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
-	err := app.Run([]string{app.Name, hostsAddCommand.Name, "name", "address"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsAddCommand.Name,
+		"name", "address",
+	})
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "add.success.golden"))
 	test.ExpectNoError(t, err)

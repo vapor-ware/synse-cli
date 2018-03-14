@@ -46,7 +46,6 @@ var pluginMetainfoCommand = cli.Command{
 // cmdMeta is the action for pluginMetainfoCommand. It prints out the meta-information
 // provided by the specified plugin.
 func cmdMeta(c *cli.Context) error {
-
 	resp, err := client.Grpc.Metainfo(c)
 	if err != nil {
 		return err

@@ -16,10 +16,14 @@ func TestChangeCommandError(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsChangeCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// expects exactly one arg, here passing none
-	err := app.Run([]string{app.Name, hostsChangeCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsChangeCommand.Name,
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "change.error.no_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -31,10 +35,15 @@ func TestChangeCommandError2(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsChangeCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// specifying a host that does not exist - should cause failure
-	err := app.Run([]string{app.Name, hostsChangeCommand.Name, "missing-host"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsChangeCommand.Name,
+		"missing-host",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "change.error.invalid_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -45,10 +54,15 @@ func TestChangeCommandError3(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsChangeCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// expects exactly one arg, here passing in multiple
-	err := app.Run([]string{app.Name, hostsChangeCommand.Name, "arg1", "arg2"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsChangeCommand.Name,
+		"arg1", "arg2",
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "change.error.extra_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -60,7 +74,7 @@ func TestChangeCommandSuccess(t *testing.T) {
 	test.Setup()
 
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsChangeCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	config.Config.Hosts["test-host"] = &config.HostConfig{
 		Name:    "test-host",
@@ -72,7 +86,12 @@ func TestChangeCommandSuccess(t *testing.T) {
 		t.Error("expected active host to be nil at test start")
 	}
 
-	err := app.Run([]string{app.Name, hostsChangeCommand.Name, "test-host"})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsChangeCommand.Name,
+		"test-host",
+	})
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "change.success.golden"))
 	test.ExpectNoError(t, err)

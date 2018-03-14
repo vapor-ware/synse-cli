@@ -94,7 +94,7 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 
 	transactions, err := client.Grpc.Write(c, rack, board, device, wd)
 	if err != nil {
-		return nil
+		return err
 	}
 	t := make([]scheme.WriteTransaction, len(transactions.Transactions))
 	for id, ctx := range transactions.Transactions {

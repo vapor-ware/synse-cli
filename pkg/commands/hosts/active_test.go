@@ -14,12 +14,16 @@ import (
 // active host is set.
 func TestActiveCommandError(t *testing.T) {
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsActiveCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// Set the active host to nil
 	config.Config.ActiveHost = nil
 
-	err := app.Run([]string{app.Name, hostsActiveCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		HostsCommand.Name,
+		hostsActiveCommand.Name,
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "active.error.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -30,7 +34,7 @@ func TestActiveCommandError(t *testing.T) {
 // this to fail since 'active' does not yet support pretty formatting.
 func TestActiveCommandErrorPretty(t *testing.T) {
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsActiveCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// Set the active host to a HostConfig
 	config.Config.ActiveHost = &config.HostConfig{
@@ -38,7 +42,12 @@ func TestActiveCommandErrorPretty(t *testing.T) {
 		Address: "test-address",
 	}
 
-	err := app.Run([]string{app.Name, "--format", "pretty", hostsActiveCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		"--format", "pretty",
+		HostsCommand.Name,
+		hostsActiveCommand.Name,
+	})
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "active.error.pretty.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -49,7 +58,7 @@ func TestActiveCommandErrorPretty(t *testing.T) {
 // this to succeed.
 func TestActiveCommandSuccessYaml(t *testing.T) {
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsActiveCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// Set the active host to a HostConfig
 	config.Config.ActiveHost = &config.HostConfig{
@@ -57,7 +66,12 @@ func TestActiveCommandSuccessYaml(t *testing.T) {
 		Address: "test-address",
 	}
 
-	err := app.Run([]string{app.Name, "--format", "yaml", hostsActiveCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		HostsCommand.Name,
+		hostsActiveCommand.Name,
+	})
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "active.success.yaml.golden"))
 	test.ExpectNoError(t, err)
@@ -68,7 +82,7 @@ func TestActiveCommandSuccessYaml(t *testing.T) {
 // this to succeed.
 func TestActiveCommandSuccessJson(t *testing.T) {
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, hostsActiveCommand)
+	app.Commands = append(app.Commands, HostsCommand)
 
 	// Set the active host to a HostConfig
 	config.Config.ActiveHost = &config.HostConfig{
@@ -76,7 +90,12 @@ func TestActiveCommandSuccessJson(t *testing.T) {
 		Address: "test-address",
 	}
 
-	err := app.Run([]string{app.Name, "--format", "json", hostsActiveCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		HostsCommand.Name,
+		hostsActiveCommand.Name,
+	})
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "active.success.json.golden"))
 	test.ExpectNoError(t, err)

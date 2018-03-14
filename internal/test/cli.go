@@ -20,6 +20,9 @@ func Setup() {
 	}
 }
 
+// FakeApp is the CLI Application that is used for testing. It has an
+// embedded cli.App, so much of the interface is the same. It also contains
+// out/err buffers so we can test command output.
 type FakeApp struct {
 	OutBuffer *bytes.Buffer
 	ErrBuffer *bytes.Buffer
@@ -30,6 +33,10 @@ type FakeApp struct {
 func NewFakeApp() *FakeApp {
 	outBuffer := new(bytes.Buffer)
 	errBuffer := new(bytes.Buffer)
+
+	// apparently sub-commands use the cli ErrWriter, not the App
+	// ErrWriter, so we also need to manually set this
+	cli.ErrWriter = errBuffer
 
 	cliApp := &cli.App{
 		// Name of the test application
@@ -43,7 +50,7 @@ func NewFakeApp() *FakeApp {
 		// later read out from it to validate the output
 		ErrWriter: errBuffer,
 		ExitErrHandler: func(context *cli.Context, err error) {
-			fmt.Fprintln(errBuffer, err)
+			fmt.Fprintln(errBuffer, err) // nolint
 		},
 	}
 

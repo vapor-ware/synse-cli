@@ -20,7 +20,6 @@ clean:  ## Remove temporary files
 cover:  ## Run tests and open the coverage report
 	./bin/coverage.sh
 	go tool cover -html=coverage.txt
-	rm coverage.txt
 
 .PHONY: dep
 dep:  ## Ensure and prune dependencies
