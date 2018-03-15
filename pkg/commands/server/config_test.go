@@ -5,10 +5,16 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/gotestyourself/gotestyourself/assert"
+	"github.com/gotestyourself/gotestyourself/golden"
+
 	"github.com/vapor-ware/synse-cli/internal/test"
+	"github.com/vapor-ware/synse-cli/pkg/config"
 )
 
-const configRespOK = `
+const (
+	// the mocked 200 OK JSON response for the Synse Server 'config' route
+	configRespOK = `
 {
   "locale":"en_US",
   "pretty_json":true,
@@ -26,7 +32,61 @@ const configRespOK = `
   }
 }`
 
+	// the mocked 500 error JSON response for the Synse Server 'config' route
+	configRespErr = `
+{
+  "http_code":500,
+  "error_id":0,
+  "description":"unknown",
+  "timestamp":"2018-03-14 15:34:42.243715",
+  "context":"test error."
+}`
+)
+
+// TestConfigCommandError tests the 'config' command when it is unable to
+// connect to the Synse Server instance because the active host is nil.
 func TestConfigCommandError(t *testing.T) {
+	test.Setup()
+
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		ServerCommand.Name,
+		configCommand.Name,
+	})
+
+	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.nil.golden"))
+	test.ExpectExitCoderError(t, err)
+}
+
+// TestConfigCommandError2 tests the 'config' command when it is unable to
+// connect to the Synse Server instance because the active host is not a
+// Synse Server instance.
+func TestConfigCommandError2(t *testing.T) {
+	test.Setup()
+	config.Config.ActiveHost = &config.HostConfig{
+		Name:    "test-host",
+		Address: "localhost:5151",
+	}
+
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		ServerCommand.Name,
+		configCommand.Name,
+	})
+
+	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.bad_host.golden"))
+	test.ExpectExitCoderError(t, err)
+}
+
+// TestConfigCommandRequestError tests the 'config' command when it gets a
+// 500 response from Synse Server.
+func TestConfigCommandRequestError(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -34,18 +94,26 @@ func TestConfigCommandError(t *testing.T) {
 	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(500)
+		fmt.Fprint(w, configRespErr)
 	})
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, configCommand)
+	app.Commands = append(app.Commands, ServerCommand)
 
-	err := app.Run([]string{app.Name, configCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		ServerCommand.Name,
+		configCommand.Name,
+	})
 
+	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.500.golden"))
 	test.ExpectExitCoderError(t, err)
 }
 
-func TestConfigCommandSuccess(t *testing.T) {
+// TestConfigCommandRequestErrorPretty tests the 'config' command when it gets
+// a 200 response from Synse Server, with pretty output.
+func TestConfigCommandRequestErrorPretty(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -57,9 +125,69 @@ func TestConfigCommandSuccess(t *testing.T) {
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, configCommand)
+	app.Commands = append(app.Commands, ServerCommand)
 
-	err := app.Run([]string{app.Name, configCommand.Name})
+	err := app.Run([]string{
+		app.Name,
+		"--format", "pretty",
+		ServerCommand.Name,
+		configCommand.Name,
+	})
 
+	assert.Assert(t, golden.String(app.ErrBuffer.String(), "config.error.pretty.golden"))
+	test.ExpectExitCoderError(t, err)
+}
+
+// TestConfigCommandRequestSuccessYaml tests the 'config' command when it gets
+// a 200 response from Synse Server, with YAML output.
+func TestConfigCommandRequestSuccessYaml(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, configRespOK)
+	})
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		configCommand.Name,
+	})
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "config.success.yaml.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestConfigCommandRequestSuccessJson tests the 'config' command when it gets
+// a 200 response from Synse Server, with JSON output.
+func TestConfigCommandRequestSuccessJson(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, configRespOK)
+	})
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		ServerCommand.Name,
+		configCommand.Name,
+	})
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "config.success.json.golden"))
 	test.ExpectNoError(t, err)
 }

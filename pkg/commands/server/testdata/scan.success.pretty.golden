@@ -1,0 +1,9 @@
+RACK      BOARD     DEVICE     INFO                       TYPE
+rack-1    board-1   device-1   Synse Temperature Sensor   temperature
+rack-1    board-1   device-2   Synse Fan                  fan
+rack-1    board-1   device-3   Synse LED                  led
+rack-1    board-1   device-4   Synse LED                  led
+rack-1    board-1   device-5   Synse Temperature Sensor   temperature
+rack-1    board-1   device-6   Synse Temperature Sensor   temperature
+rack-1    board-1   device-7   Synse Temperature Sensor   temperature
+rack-1    board-1   device-8   Synse Temperature Sensor   temperature

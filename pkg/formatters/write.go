@@ -9,7 +9,7 @@ import (
 
 const (
 	// the pretty output format for write requests
-	prettyWrite = "{{.Transaction}}\t{{.Action}}\t{{range .Raw}}{{.}} {{end}}\n"
+	prettyWrite = "{{.Transaction}}\t{{.Action}}\t{{$n := len .Raw}}{{range $i, $e := .Raw}}{{.}}{{if lt (plus1 $i) $n}}, {{end}}{{end}}\n"
 )
 
 // writeFormat collects the data that will be parsed into the output template.

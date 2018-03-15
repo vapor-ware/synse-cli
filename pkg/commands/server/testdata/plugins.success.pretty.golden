@@ -1,0 +1,3 @@
+NAME      NETWORK   ADDRESS
+foo       tcp       localhost:6000
+bar       unix      /tmp/synse/proc/bar.sock

@@ -1,0 +1,1 @@
+Get http://localhost:5151/synse/version: dial tcp [::1]:5151: getsockopt: connection refused
