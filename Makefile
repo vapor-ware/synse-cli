@@ -74,7 +74,7 @@ ci-create-release:
 	ghr \
 		-u ${GITHUB_USER} \
 		-t ${GITHUB_TOKEN} \
-		-b "$(cat ./CHANGELOG.md)" \
+		-b "$$(cat ./CHANGELOG.md)" \
 		-p 1 \
 		-draft \
 		${GIT_TAG} build/
