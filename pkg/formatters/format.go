@@ -39,6 +39,13 @@ type Formatter struct {
 	data          []interface{}
 }
 
+// templateFns are custom functions that we can call in templates.
+var templateFns = template.FuncMap{
+	"plus1": func(x int) int {
+		return x + 1
+	},
+}
+
 // NewFormatter creates a new instance of a Formatter.
 func NewFormatter(c *cli.Context, formats *Formats) *Formatter {
 	return &Formatter{
@@ -138,7 +145,7 @@ func (f *Formatter) writePretty() error {
 	}
 
 	w := tabwriter.NewWriter(f.Output, 10, 1, 3, ' ', 0)
-	tmpl, err := template.New("").Parse(f.Formats.Pretty)
+	tmpl, err := template.New("").Funcs(templateFns).Parse(f.Formats.Pretty)
 	if err != nil {
 		return err
 	}

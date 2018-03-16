@@ -18,15 +18,8 @@ clean:  ## Remove temporary files
 
 .PHONY: cover
 cover:  ## Run tests and open the coverage report
-	go test -covermode=atomic -coverprofile=coverage.txt -v -race -timeout=30s .
-	go test -covermode=atomic -coverprofile=coverage_client.txt -v -race -timeout=30s ./client
-	go test -covermode=atomic -coverprofile=coverage_commands.txt -v -race -timeout=30s ./commands
-	go test -covermode=atomic -coverprofile=coverage_utils.txt -v -race -timeout=30s ./utils
+	./bin/coverage.sh
 	go tool cover -html=coverage.txt
-	go tool cover -html=coverage_client.txt
-	go tool cover -html=coverage_commands.txt
-	go tool cover -html=coverage_utils.txt
-	rm coverage.txt coverage_client.txt coverage_commands.txt coverage_utils.txt
 
 .PHONY: dep
 dep:  ## Ensure and prune dependencies

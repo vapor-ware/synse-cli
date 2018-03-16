@@ -1,0 +1,16 @@
+{
+  "locale": "en_US",
+  "pretty_json": true,
+  "logging": "debug",
+  "cache": {
+    "meta": {
+      "ttl": 20
+    },
+    "transaction": {
+      "ttl": 20
+    }
+  },
+  "grpc": {
+    "timeout": 20
+  }
+}

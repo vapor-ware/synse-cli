@@ -1,0 +1,8 @@
+Synse Server responded with error:
+{
+  "http_code": 500,
+  "error_id": 0,
+  "description": "unknown",
+  "timestamp": "2018-03-14 15:34:42.243715",
+  "context": "test error."
+}

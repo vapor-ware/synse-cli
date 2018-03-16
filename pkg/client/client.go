@@ -96,25 +96,36 @@ func (d logMiddleware) Do(req *http.Request) (*http.Response, error) {
 }
 
 // newUnversioned generates a new instance of the Client for the un-versioned base endpoint.
-func newUnversioned() *sling.Sling {
-	return sling.New().Doer(&logMiddleware{}).Base(fmt.Sprintf("http://%s/synse/", config.Config.ActiveHost.Address)).New()
+func newUnversioned() (*sling.Sling, error) {
+	activeHost := config.Config.ActiveHost
+	if activeHost == nil {
+		return nil, fmt.Errorf("no active host is set - use the 'synse hosts' command to set the active host")
+	}
+	return sling.New().Doer(&logMiddleware{}).Base(fmt.Sprintf("http://%s/synse/", activeHost.Address)).New(), nil
 }
 
 // newVersioned generates a new instance of the Client with the current configuration.
-func newVersioned() *sling.Sling {
-	return sling.New().Doer(&logMiddleware{}).Base(constructURL(config.Config.ActiveHost.Address)).New()
+func newVersioned() (*sling.Sling, error) {
+	activeHost := config.Config.ActiveHost
+	if activeHost == nil {
+		return nil, fmt.Errorf("no active host is set - use the 'synse hosts' command to set the active host")
+	}
+	url, err := constructURL(activeHost.Address)
+	if err != nil {
+		return nil, err
+	}
+	return sling.New().Doer(&logMiddleware{}).Base(url).New(), nil
 }
 
 // constructURL builds the full url string from the host base, endpoint type
 // (Synse), and API version number. Endpoint paths can be extended off of
 // this base.
-func constructURL(host string) string {
+func constructURL(host string) (string, error) {
 	version, err := Client.Version()
 	if err != nil {
-		log.Error("failed to get API version of Synse Server instance")
-		cli.OsExiter(1)
+		return "", err
 	}
-	return fmt.Sprintf("http://%s/synse/%s/", host, version.APIVersion)
+	return fmt.Sprintf("http://%s/synse/%s/", host, version.APIVersion), nil
 }
 
 // check is a helper function to check the HTTP response from Synse Server.
@@ -137,7 +148,7 @@ func check(response *http.Response, err error, errorScheme *scheme.Error) error 
 			return cli.NewExitError(err, 1)
 		}
 		return cli.NewExitError(
-			fmt.Sprintf("Synse Server responded with error: \n%v", errOut.String()),
+			fmt.Sprintf("Synse Server responded with error:\n%v", errOut.String()),
 			1,
 		)
 	}
@@ -167,21 +178,33 @@ run against an actual live endpoint, but was failing for the tests.
 // getUnversioned performs a GET request against the Synse Server unversioned API.
 func getUnversioned(uri string, requestScheme interface{}) error {
 	errScheme := new(scheme.Error)
-	response, err := newUnversioned().Get(uri).Receive(requestScheme, errScheme)
+	client, err := newUnversioned()
+	if err != nil {
+		return err
+	}
+	response, err := client.Get(uri).Receive(requestScheme, errScheme)
 	return check(response, err, errScheme)
 }
 
 // getVersioned performs a GET request against the Synse Server versioned API.
 func getVersioned(uri string, requestScheme interface{}) error {
 	errScheme := new(scheme.Error)
-	response, err := newVersioned().Get(uri).Receive(requestScheme, errScheme)
+	client, err := newVersioned()
+	if err != nil {
+		return err
+	}
+	response, err := client.Get(uri).Receive(requestScheme, errScheme)
 	return check(response, err, errScheme)
 }
 
 // postVersioned performs a POST request against the Sysne Server versioned API.
 func postVersioned(uri string, body interface{}, requestScheme interface{}) error {
 	errScheme := new(scheme.Error)
-	response, err := newVersioned().Post(uri).BodyJSON(body).Receive(requestScheme, errScheme)
+	client, err := newVersioned()
+	if err != nil {
+		return err
+	}
+	response, err := client.Post(uri).BodyJSON(body).Receive(requestScheme, errScheme)
 	return check(response, err, errScheme)
 }
 

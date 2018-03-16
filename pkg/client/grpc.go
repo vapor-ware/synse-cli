@@ -2,10 +2,9 @@ package client
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"time"
-
-	"io"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -21,6 +20,11 @@ var Grpc = grpcClient{}
 // grpcClient is a client for making requests against the Synse Server gRPC API.
 type grpcClient struct {
 	apiClient synse.InternalApiClient
+}
+
+// Reset resets the grpcClient state. This is used primarily for testing.
+func (client *grpcClient) Reset() {
+	client.apiClient = nil
 }
 
 // newGrpcClient creates an instance of the Synse InternalApiClient for gRPC
