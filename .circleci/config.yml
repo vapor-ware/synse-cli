@@ -71,7 +71,7 @@ jobs:
           name: "Running Tests"
           command: |
             #make ci-test
-            # run tests with coverage.
+            # run tests with coverage
             ./bin/coverage.sh
 
             # upload coverage results
