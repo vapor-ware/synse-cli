@@ -147,12 +147,13 @@ be created in the home directory upon command termination.
 
 ### Bash Completion
 
-Bash/Zsh completion can be setup for the Synse CLI using the `completion` command, e.g. for bash,
-```shell
-$ synse completion --bash
-You can now run `source /etc/bash_completion.d/synse`
+Bash/Zsh completion can be setup for the Synse CLI using the `completion` command, e.g.
+```console
+$ # completion for bash -- updates .bashrc
+$ synse completion bash
 
-$ source /etc/bash_completion.d/synse
+$ # completion for zsh -- updates .zshrc
+$ synse completion zsh
 ```
 
 ### Contributing
