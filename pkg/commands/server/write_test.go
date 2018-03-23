@@ -53,6 +53,9 @@ func TestWriteCommandError(t *testing.T) {
 		"rack-1", "board-1", "device-1", "color", "000000",
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.nil.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -98,6 +101,9 @@ func TestWriteCommandError3(t *testing.T) {
 		writeCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "write.error.no_args.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -116,6 +122,9 @@ func TestWriteCommandError4(t *testing.T) {
 		writeCommand.Name,
 		"rack-1", "board-1", "device-1", "color", "000000", "extra",
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "write.error.extra_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -147,6 +156,9 @@ func TestWriteCommandRequestError(t *testing.T) {
 		writeCommand.Name,
 		"rack-1", "board-1", "device-1", "color", "000000",
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.500.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -182,8 +194,11 @@ func TestWriteCommandRequestErrorYaml(t *testing.T) {
 		"rack-1", "board-1", "device-1", "color", "000000",
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "write.error.yaml.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "write.success.yaml.golden"))
+	test.ExpectNoError(t, err)
 }
 
 // TestWriteCommandRequestErrorJson tests the 'write' command when it gets
@@ -216,8 +231,11 @@ func TestWriteCommandRequestErrorJson(t *testing.T) {
 		"rack-1", "board-1", "device-1", "color", "000000",
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "write.error.json.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "write.success.json.golden"))
+	test.ExpectNoError(t, err)
 }
 
 // TestWriteCommandRequestSuccessPretty tests the 'write' command when it gets
@@ -249,6 +267,9 @@ func TestWriteCommandRequestSuccessPretty(t *testing.T) {
 		writeCommand.Name,
 		"rack-1", "board-1", "device-1", "color", "000000",
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "write.success.pretty.golden"))
 	test.ExpectNoError(t, err)

@@ -1,0 +1,13 @@
+{
+  "type": "temperature",
+  "data": {
+    "temperature": {
+      "value": 51,
+      "timestamp": "2018-02-08 15:54:26.255253838 +0000 UTC m=+2841.145248278",
+      "unit": {
+        "name": "degrees celsius",
+        "symbol": "C"
+      }
+    }
+  }
+}

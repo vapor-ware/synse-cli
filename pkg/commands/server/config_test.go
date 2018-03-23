@@ -164,6 +164,9 @@ func TestConfigCommandRequestSuccessYaml(t *testing.T) {
 		configCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "config.success.yaml.golden"))
 	test.ExpectNoError(t, err)
 }
@@ -190,6 +193,9 @@ func TestConfigCommandRequestSuccessJson(t *testing.T) {
 		ServerCommand.Name,
 		configCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "config.success.json.golden"))
 	test.ExpectNoError(t, err)

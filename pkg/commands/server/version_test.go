@@ -45,6 +45,9 @@ func TestVersionCommandError(t *testing.T) {
 		versionCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.nil.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -67,6 +70,9 @@ func TestVersionCommandError2(t *testing.T) {
 		ServerCommand.Name,
 		versionCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	// FIXME: this test fails on CI because the expected output is different
 	//     -Get http://localhost:5151/synse/version: dial tcp [::1]:5151: getsockopt: connection refused
@@ -98,6 +104,9 @@ func TestVersionCommandRequestError(t *testing.T) {
 		versionCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.500.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -124,6 +133,9 @@ func TestVersionCommandRequestErrorPretty(t *testing.T) {
 		ServerCommand.Name,
 		versionCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "version.error.pretty.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -152,6 +164,9 @@ func TestVersionCommandRequestSuccessYaml(t *testing.T) {
 		versionCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "version.success.yaml.golden"))
 	test.ExpectNoError(t, err)
 }
@@ -178,6 +193,9 @@ func TestVersionCommandRequestSuccessJson(t *testing.T) {
 		ServerCommand.Name,
 		versionCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "version.success.json.golden"))
 	test.ExpectNoError(t, err)
