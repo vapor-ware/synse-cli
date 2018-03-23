@@ -25,7 +25,9 @@ Example:
 Formatting:
   The 'server plugins' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // pluginsCommand is the CLI command for Synse Server's "plugins" API route.
@@ -48,7 +50,7 @@ func cmdPlugins(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewPluginsFormatter(c)
+	formatter := formatters.NewPluginsFormatter(c, plugins)
 	err = formatter.Add(plugins)
 	if err != nil {
 		return err

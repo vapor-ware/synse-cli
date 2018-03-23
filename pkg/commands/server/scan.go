@@ -52,7 +52,9 @@ Example:
 Formatting:
   The 'server scan' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // scanCommand is the CLI command for Synse Server's "scan" API route.
@@ -103,7 +105,7 @@ func cmdScan(c *cli.Context) error {
 	t.OrderBy(c.String("sort"))
 	t.Apply()
 
-	formatter := formatters.NewScanFormatter(c)
+	formatter := formatters.NewScanFormatter(c, scan)
 	err = formatter.Add(t.Items)
 	if err != nil {
 		return err

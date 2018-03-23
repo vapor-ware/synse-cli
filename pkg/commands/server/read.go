@@ -36,7 +36,9 @@ Example:
 Formatting:
   The 'server read' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // readCommand is the CLI command for Synse Server's "read" API route.
@@ -70,7 +72,7 @@ func cmdRead(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewReadFormatter(c)
+	formatter := formatters.NewReadFormatter(c, read)
 	err = formatter.Add(read)
 	if err != nil {
 		return err

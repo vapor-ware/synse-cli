@@ -46,11 +46,13 @@ func newTransactionFormat(data interface{}) (interface{}, error) {
 
 // NewTransactionFormatter creates a new instance of a Formatter configured
 // for the transaction command.
-func NewTransactionFormatter(c *cli.Context) *Formatter {
+func NewTransactionFormatter(c *cli.Context, data interface{}) *Formatter {
 	f := NewFormatter(
 		c,
 		&Formats{
 			Pretty: prettyTransaction,
+			JSON: data,
+			Yaml: data,
 		},
 	)
 	f.SetHandler(newTransactionFormat)
