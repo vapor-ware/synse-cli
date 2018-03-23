@@ -1,8 +1,8 @@
 package formatters
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-server-grpc/go"
@@ -69,8 +69,8 @@ func NewScanFormatter(c *cli.Context, data interface{}) *Formatter {
 		c,
 		&Formats{
 			Pretty: prettyScan,
-			JSON: data,
-			Yaml: data,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newScanFormat)
@@ -92,7 +92,7 @@ func NewMetaFormatter(c *cli.Context) *Formatter {
 		c,
 		&Formats{
 			Pretty: prettyMeta,
-			JSON: j,
+			JSON:   j,
 		},
 	)
 	f.SetHandler(newMetaFormat)

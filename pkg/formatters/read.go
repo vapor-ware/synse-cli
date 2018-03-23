@@ -47,8 +47,8 @@ func NewReadFormatter(c *cli.Context, data interface{}) *Formatter {
 		c,
 		&Formats{
 			Pretty: prettyRead,
-			JSON: data,
-			Yaml: data,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newReadFormat)

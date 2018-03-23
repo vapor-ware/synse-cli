@@ -47,8 +47,8 @@ func NewListFormatter(c *cli.Context, data interface{}) *Formatter {
 		c,
 		&Formats{
 			Pretty: prettyList,
-			JSON: data,
-			Yaml: data,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newListFormat)

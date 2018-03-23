@@ -51,8 +51,8 @@ func NewTransactionFormatter(c *cli.Context, data interface{}) *Formatter {
 		c,
 		&Formats{
 			Pretty: prettyTransaction,
-			JSON: data,
-			Yaml: data,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newTransactionFormat)

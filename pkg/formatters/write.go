@@ -45,8 +45,8 @@ func NewWriteFormatter(c *cli.Context, data interface{}) *Formatter {
 		c,
 		&Formats{
 			Pretty: prettyWrite,
-			JSON: data,
-			Yaml: data,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newWriteFormat)
