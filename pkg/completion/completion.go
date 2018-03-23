@@ -44,11 +44,16 @@ func CompleteRackBoardDevicePlugin(c *cli.Context) { // nolint: gocyclo
 
 	// If there is one argument, resolve the second arg, board
 	if c.NArg() == 1 {
-		// To get the unique rack id strings, we create a map where the keys will
-		// be the rack id and the value just an empty struct. The value is ignored.
+		// Get the rack ID being used
+		rackID := c.Args().Get(0)
+
+		// To get the unique board id strings, we create a map where the keys will
+		// be the board id and the value just an empty struct. The value is ignored.
 		set := make(map[string]struct{})
 		for _, device := range meta {
-			set[device.Location.Board] = struct{}{}
+			if device.Location.Rack == rackID {
+				set[device.Location.Board] = struct{}{}
+			}
 		}
 
 		for opt := range set {
@@ -58,11 +63,17 @@ func CompleteRackBoardDevicePlugin(c *cli.Context) { // nolint: gocyclo
 
 	// If there are two arguments, resolve the third arg, device
 	if c.NArg() == 2 {
-		// To get the unique rack id strings, we create a map where the keys will
-		// be the rack id and the value just an empty struct. The value is ignored.
+		// Get the rack ID and board ID being used
+		rackID := c.Args().Get(0)
+		boardID := c.Args().Get(1)
+
+		// To get the unique device id strings, we create a map where the keys will
+		// be the device id and the value just an empty struct. The value is ignored.
 		set := make(map[string]struct{})
 		for _, device := range meta {
-			set[device.Uid] = struct{}{}
+			if device.Location.Rack == rackID && device.Location.Board == boardID {
+				set[device.Uid] = struct{}{}
+			}
 		}
 
 		for opt := range set {
@@ -103,11 +114,16 @@ func CompleteRackBoardDevice(c *cli.Context) { // nolint: gocyclo
 
 	// If there is one argument, resolve the second arg, board
 	if c.NArg() == 1 {
-		// To get the unique rack id strings, we create a map where the keys will
-		// be the rack id and the value just an empty struct. The value is ignored.
+		// Get the rack ID being used
+		rackID := c.Args().Get(0)
+
+		// To get the unique board id strings, we create a map where the keys will
+		// be the board id and the value just an empty struct. The value is ignored.
 		set := make(map[string]struct{})
 		for _, device := range devices {
-			set[device.Board] = struct{}{}
+			if device.Rack == rackID {
+				set[device.Board] = struct{}{}
+			}
 		}
 
 		for opt := range set {
@@ -117,11 +133,17 @@ func CompleteRackBoardDevice(c *cli.Context) { // nolint: gocyclo
 
 	// If there are two arguments, resolve the third arg, device
 	if c.NArg() == 2 {
-		// To get the unique rack id strings, we create a map where the keys will
-		// be the rack id and the value just an empty struct. The value is ignored.
+		// Get the rack ID and board ID being used
+		rackID := c.Args().Get(0)
+		boardID := c.Args().Get(1)
+
+		// To get the unique device id strings, we create a map where the keys will
+		// be the device id and the value just an empty struct. The value is ignored.
 		set := make(map[string]struct{})
 		for _, device := range devices {
-			set[device.Device] = struct{}{}
+			if device.Rack == rackID && device.Board == boardID {
+				set[device.Device] = struct{}{}
+			}
 		}
 
 		for opt := range set {
