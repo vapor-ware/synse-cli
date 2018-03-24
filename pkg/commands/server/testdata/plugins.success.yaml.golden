@@ -1,0 +1,6 @@
+- name: foo
+  network: tcp
+  address: localhost:6000
+- name: bar
+  network: unix
+  address: /tmp/synse/proc/bar.sock

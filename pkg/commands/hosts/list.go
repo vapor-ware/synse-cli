@@ -28,7 +28,9 @@ Example:
 Formatting:
   The 'hosts list' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // hostsListCommand is the CLI sub-command for listing all configured hosts.
@@ -67,7 +69,7 @@ func cmdList(c *cli.Context) error {
 	sort.Sort(byHostName(configuredHosts))
 
 	// Format output
-	formatter := formatters.NewListFormatter(c)
+	formatter := formatters.NewListFormatter(c, configuredHosts)
 	err := formatter.Add(configuredHosts)
 	if err != nil {
 		return err

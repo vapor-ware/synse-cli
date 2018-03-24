@@ -35,7 +35,9 @@ Example:
 Formatting:
   The 'plugin read' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // pluginReadCommand is a CLI sub-command for getting a reading from a plugin.
@@ -69,7 +71,7 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 		return err
 	}
 
-	formatter := formatters.NewReadFormatter(c)
+	formatter := formatters.NewReadFormatter(c, resp)
 	for _, read := range resp {
 		err = formatter.Add(&scheme.Read{
 			Type: read.Type,

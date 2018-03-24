@@ -53,7 +53,9 @@ Example:
 Formatting:
   The 'server write' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // writeCommand is the CLI command for Synse Server's "write" API route.
@@ -89,7 +91,7 @@ func cmdWrite(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewWriteFormatter(c)
+	formatter := formatters.NewWriteFormatter(c, write)
 	err = formatter.Add(write)
 	if err != nil {
 		return err

@@ -42,7 +42,9 @@ Example:
 Formatting:
   The 'server transaction' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // transactionCommand is the CLI command for Synse Server's "transaction" API route.
@@ -74,7 +76,7 @@ func cmdTransaction(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewTransactionFormatter(c)
+	formatter := formatters.NewTransactionFormatter(c, transaction)
 	err = formatter.Add(transaction)
 	if err != nil {
 		return err

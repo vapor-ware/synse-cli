@@ -40,11 +40,13 @@ func newWriteFormat(data interface{}) (interface{}, error) {
 
 // NewWriteFormatter creates a new instance of a Formatter configured
 // for write command output.
-func NewWriteFormatter(c *cli.Context) *Formatter {
+func NewWriteFormatter(c *cli.Context, data interface{}) *Formatter {
 	f := NewFormatter(
 		c,
 		&Formats{
 			Pretty: prettyWrite,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newWriteFormat)

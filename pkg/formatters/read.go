@@ -42,11 +42,13 @@ func newReadFormat(data interface{}) (interface{}, error) {
 
 // NewReadFormatter creates a new instance of a Formatter configured
 // for the read command.
-func NewReadFormatter(c *cli.Context) *Formatter {
+func NewReadFormatter(c *cli.Context, data interface{}) *Formatter {
 	f := NewFormatter(
 		c,
 		&Formats{
 			Pretty: prettyRead,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newReadFormat)

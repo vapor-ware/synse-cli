@@ -55,6 +55,9 @@ func TestReadCommandError(t *testing.T) {
 		"rack-1", "board-1", "device-1",
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.nil.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -79,6 +82,9 @@ func TestReadCommandError2(t *testing.T) {
 		"rack-1", "board-1", "device-1",
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	// FIXME: this test fails on CI because the expected output is different
 	//     -Get http://localhost:5151/synse/version: dial tcp [::1]:5151: getsockopt: connection refused
 	//     +Get http://localhost:5151/synse/version: dial tcp 127.0.0.1:5151: connect: connection refused
@@ -100,6 +106,9 @@ func TestReadCommandError3(t *testing.T) {
 		readCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "read.error.no_args.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -118,6 +127,9 @@ func TestReadCommandError4(t *testing.T) {
 		readCommand.Name,
 		"rack-1", "board-1", "device-1", "extra",
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "read.error.extra_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -150,13 +162,16 @@ func TestReadCommandRequestError(t *testing.T) {
 		"rack-1", "board-1", "device-1",
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.500.golden"))
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestReadCommandRequestErrorYaml tests the 'read' command when it gets
+// TestReadCommandRequestSuccessYaml tests the 'read' command when it gets
 // a 200 response from Synse Server, with YAML output.
-func TestReadCommandRequestErrorYaml(t *testing.T) {
+func TestReadCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -181,13 +196,16 @@ func TestReadCommandRequestErrorYaml(t *testing.T) {
 		"rack-1", "board-1", "device-1",
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "read.error.yaml.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.yaml.golden"))
+	test.ExpectNoError(t, err)
 }
 
-// TestReadCommandRequestErrorJson tests the 'read' command when it gets
+// TestReadCommandRequestSuccessJson tests the 'read' command when it gets
 // a 200 response from Synse Server, with JSON output.
-func TestReadCommandRequestErrorJson(t *testing.T) {
+func TestReadCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -212,8 +230,11 @@ func TestReadCommandRequestErrorJson(t *testing.T) {
 		"rack-1", "board-1", "device-1",
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "read.error.json.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.json.golden"))
+	test.ExpectNoError(t, err)
 }
 
 // TestReadCommandRequestSuccessPretty tests the 'read' command when it gets
@@ -242,6 +263,9 @@ func TestReadCommandRequestSuccessPretty(t *testing.T) {
 		readCommand.Name,
 		"rack-1", "board-1", "device-1",
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.pretty.golden"))
 	test.ExpectNoError(t, err)

@@ -41,7 +41,9 @@ Example:
 Formatting:
   The 'plugin transaction' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // pluginTransactionCommand is a CLI sub-command for getting transaction info from a plugin.
@@ -78,7 +80,7 @@ func cmdTransaction(c *cli.Context) error {
 		Updated: status.Updated,
 	}
 
-	formatter := formatters.NewTransactionFormatter(c)
+	formatter := formatters.NewTransactionFormatter(c, status)
 	err = formatter.Add(s)
 	if err != nil {
 		return err

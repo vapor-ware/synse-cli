@@ -54,7 +54,9 @@ Example:
 Formatting:
   The 'plugin write' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+		- yaml
+    - json`
 )
 
 // pluginWriteCommand is a CLI sub-command for writing to a plugin
@@ -112,7 +114,7 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		})
 	}
 
-	formatter := formatters.NewWriteFormatter(c)
+	formatter := formatters.NewWriteFormatter(c, t)
 	err = formatter.Add(t)
 	if err != nil {
 		return err

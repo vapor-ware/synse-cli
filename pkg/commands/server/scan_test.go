@@ -95,6 +95,9 @@ func TestScanCommandError(t *testing.T) {
 		scanCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.nil.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -117,6 +120,9 @@ func TestScanCommandError2(t *testing.T) {
 		ServerCommand.Name,
 		scanCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	// FIXME: this test fails on CI because the expected output is different
 	//     -Get http://localhost:5151/synse/version: dial tcp [::1]:5151: getsockopt: connection refused
@@ -151,13 +157,16 @@ func TestScanCommandRequestError(t *testing.T) {
 		scanCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.500.golden"))
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestScanCommandRequestErrorYaml tests the 'scan' command when it gets
+// TestScanCommandRequestSuccessYaml tests the 'scan' command when it gets
 // a 200 response from Synse Server, with YAML output.
-func TestScanCommandRequestErrorYaml(t *testing.T) {
+func TestScanCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -181,13 +190,16 @@ func TestScanCommandRequestErrorYaml(t *testing.T) {
 		scanCommand.Name,
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "scan.error.yaml.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "scan.success.yaml.golden"))
+	test.ExpectNoError(t, err)
 }
 
-// TestScanCommandRequestErrorJson tests the 'scan' command when it gets
+// TestScanCommandRequestSuccessJson tests the 'scan' command when it gets
 // a 200 response from Synse Server, with JSON output.
-func TestScanCommandRequestErrorJson(t *testing.T) {
+func TestScanCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -211,8 +223,11 @@ func TestScanCommandRequestErrorJson(t *testing.T) {
 		scanCommand.Name,
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "scan.error.json.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "scan.success.json.golden"))
+	test.ExpectNoError(t, err)
 }
 
 // TestScanCommandRequestSuccessPretty tests the 'scan' command when it gets
@@ -240,6 +255,9 @@ func TestScanCommandRequestSuccessPretty(t *testing.T) {
 		ServerCommand.Name,
 		scanCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "scan.success.pretty.golden"))
 	test.ExpectNoError(t, err)

@@ -56,6 +56,9 @@ func TestTransactionCommandError(t *testing.T) {
 		"b9u6ss6q5i6g020lau6g",
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.nil.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -80,6 +83,9 @@ func TestTransactionCommandError2(t *testing.T) {
 		"b9u6ss6q5i6g020lau6g",
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	// FIXME: this test fails on CI because the expected output is different
 	//     -Get http://localhost:5151/synse/version: dial tcp [::1]:5151: getsockopt: connection refused
 	//     +Get http://localhost:5151/synse/version: dial tcp 127.0.0.1:5151: connect: connection refused
@@ -101,6 +107,9 @@ func TestTransactionCommandError3(t *testing.T) {
 		transactionCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "transaction.error.no_args.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -119,6 +128,9 @@ func TestTransactionCommandError4(t *testing.T) {
 		transactionCommand.Name,
 		"b9u6ss6q5i6g020lau6g", "extra",
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "transaction.error.extra_args.golden"))
 	test.ExpectExitCoderError(t, err)
@@ -151,13 +163,16 @@ func TestTransactionCommandRequestError(t *testing.T) {
 		"b9u6ss6q5i6g020lau6g",
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.500.golden"))
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestTransactionCommandRequestErrorYaml tests the 'transaction' command
+// TestTransactionCommandRequestSuccessYaml tests the 'transaction' command
 // when it gets a 200 response from Synse Server, with YAML output.
-func TestTransactionCommandRequestErrorYaml(t *testing.T) {
+func TestTransactionCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -182,13 +197,16 @@ func TestTransactionCommandRequestErrorYaml(t *testing.T) {
 		"b9u6ss6q5i6g020lau6g",
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "transaction.error.yaml.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "transaction.success.yaml.golden"))
+	test.ExpectNoError(t, err)
 }
 
-// TestTransactionCommandRequestErrorJson tests the 'transaction' command
+// TestTransactionCommandRequestSuccessJson tests the 'transaction' command
 // when it gets a 200 response from Synse Server, with JSON output.
-func TestTransactionCommandRequestErrorJson(t *testing.T) {
+func TestTransactionCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -213,8 +231,11 @@ func TestTransactionCommandRequestErrorJson(t *testing.T) {
 		"b9u6ss6q5i6g020lau6g",
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "transaction.error.json.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "transaction.success.json.golden"))
+	test.ExpectNoError(t, err)
 }
 
 // TestTransactionCommandRequestSuccessPretty tests the 'transaction' command
@@ -243,6 +264,9 @@ func TestTransactionCommandRequestSuccessPretty(t *testing.T) {
 		transactionCommand.Name,
 		"b9u6ss6q5i6g020lau6g",
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "transaction.success.pretty.golden"))
 	test.ExpectNoError(t, err)

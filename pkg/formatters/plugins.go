@@ -40,11 +40,13 @@ func newPluginsFormat(data interface{}) (interface{}, error) {
 
 // NewPluginsFormatter creates a new instance of a Formatter configured
 // for the plugins command.
-func NewPluginsFormatter(c *cli.Context) *Formatter {
+func NewPluginsFormatter(c *cli.Context, data interface{}) *Formatter {
 	f := NewFormatter(
 		c,
 		&Formats{
 			Pretty: prettyPlugins,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newPluginsFormat)

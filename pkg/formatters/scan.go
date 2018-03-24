@@ -1,6 +1,7 @@
 package formatters
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/urfave/cli"
@@ -63,11 +64,13 @@ func newMetaFormat(data interface{}) (interface{}, error) {
 
 // NewScanFormatter creates a new instance of a Formatter configured
 // for the scan command.
-func NewScanFormatter(c *cli.Context) *Formatter {
+func NewScanFormatter(c *cli.Context, data interface{}) *Formatter {
 	f := NewFormatter(
 		c,
 		&Formats{
 			Pretty: prettyScan,
+			JSON:   data,
+			Yaml:   data,
 		},
 	)
 	f.SetHandler(newScanFormat)
@@ -84,10 +87,12 @@ func NewScanFormatter(c *cli.Context) *Formatter {
 // NewMetaFormatter creates a new instance of a Formatter configured
 // for the plugin meta command.
 func NewMetaFormatter(c *cli.Context) *Formatter {
+	j, _ := json.Marshal(prettyMeta)
 	f := NewFormatter(
 		c,
 		&Formats{
 			Pretty: prettyMeta,
+			JSON:   j,
 		},
 	)
 	f.SetHandler(newMetaFormat)

@@ -53,6 +53,9 @@ func TestPluginsCommandError(t *testing.T) {
 		pluginsCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.nil.golden"))
 	test.ExpectExitCoderError(t, err)
 }
@@ -75,6 +78,9 @@ func TestPluginsCommandError2(t *testing.T) {
 		ServerCommand.Name,
 		pluginsCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	// FIXME: this test fails on CI because the expected output is different
 	//     -Get http://localhost:5151/synse/version: dial tcp [::1]:5151: getsockopt: connection refused
@@ -109,13 +115,16 @@ func TestPluginsCommandRequestError(t *testing.T) {
 		pluginsCommand.Name,
 	})
 
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
 	assert.Assert(t, golden.String(app.ErrBuffer.String(), "error.500.golden"))
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestPluginsCommandRequestErrorYaml tests the 'plugins' command when it gets
+// TestPluginsCommandRequestSuccessYaml tests the 'plugins' command when it gets
 // a 200 response from Synse Server, with YAML output.
-func TestPluginsCommandRequestErrorYaml(t *testing.T) {
+func TestPluginsCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -139,13 +148,16 @@ func TestPluginsCommandRequestErrorYaml(t *testing.T) {
 		pluginsCommand.Name,
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "plugins.error.yaml.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "plugins.success.yaml.golden"))
+	test.ExpectNoError(t, err)
 }
 
-// TestPluginsCommandRequestErrorJson tests the 'plugins' command when it gets
+// TestPluginsCommandRequestSuccessJson tests the 'plugins' command when it gets
 // a 200 response from Synse Server, with JSON output.
-func TestPluginsCommandRequestErrorJson(t *testing.T) {
+func TestPluginsCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -169,8 +181,11 @@ func TestPluginsCommandRequestErrorJson(t *testing.T) {
 		pluginsCommand.Name,
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "plugins.error.json.golden"))
-	test.ExpectExitCoderError(t, err)
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "plugins.success.json.golden"))
+	test.ExpectNoError(t, err)
 }
 
 // TestPluginsCommandRequestSuccessPretty tests the 'plugins' command when it gets
@@ -198,6 +213,9 @@ func TestPluginsCommandRequestSuccessPretty(t *testing.T) {
 		ServerCommand.Name,
 		pluginsCommand.Name,
 	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "plugins.success.pretty.golden"))
 	test.ExpectNoError(t, err)
