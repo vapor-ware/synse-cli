@@ -164,9 +164,9 @@ func TestWriteCommandRequestError(t *testing.T) {
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestWriteCommandRequestErrorYaml tests the 'write' command when it gets
+// TestWriteCommandRequestSuccessYaml tests the 'write' command when it gets
 // a 200 response from Synse Server, with YAML output.
-func TestWriteCommandRequestErrorYaml(t *testing.T) {
+func TestWriteCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -201,9 +201,9 @@ func TestWriteCommandRequestErrorYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestWriteCommandRequestErrorJson tests the 'write' command when it gets
+// TestWriteCommandRequestSuccessJson tests the 'write' command when it gets
 // a 200 response from Synse Server, with JSON output.
-func TestWriteCommandRequestErrorJson(t *testing.T) {
+func TestWriteCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()

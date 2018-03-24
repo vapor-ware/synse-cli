@@ -122,7 +122,7 @@ func TestPluginsCommandRequestError(t *testing.T) {
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestPluginsCommandRequestErrorYaml tests the 'plugins' command when it gets
+// TestPluginsCommandRequestSuccessYaml tests the 'plugins' command when it gets
 // a 200 response from Synse Server, with YAML output.
 func TestPluginsCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
@@ -155,7 +155,7 @@ func TestPluginsCommandRequestSuccessYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestPluginsCommandRequestErrorJson tests the 'plugins' command when it gets
+// TestPluginsCommandRequestSuccessJson tests the 'plugins' command when it gets
 // a 200 response from Synse Server, with JSON output.
 func TestPluginsCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()

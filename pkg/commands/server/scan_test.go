@@ -164,9 +164,9 @@ func TestScanCommandRequestError(t *testing.T) {
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestScanCommandRequestErrorYaml tests the 'scan' command when it gets
+// TestScanCommandRequestSuccessYaml tests the 'scan' command when it gets
 // a 200 response from Synse Server, with YAML output.
-func TestScanCommandRequestErrorYaml(t *testing.T) {
+func TestScanCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -197,9 +197,9 @@ func TestScanCommandRequestErrorYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestScanCommandRequestErrorJson tests the 'scan' command when it gets
+// TestScanCommandRequestSuccessJson tests the 'scan' command when it gets
 // a 200 response from Synse Server, with JSON output.
-func TestScanCommandRequestErrorJson(t *testing.T) {
+func TestScanCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()

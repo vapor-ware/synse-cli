@@ -169,7 +169,7 @@ func TestReadCommandRequestError(t *testing.T) {
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestReadCommandRequestErrorYaml tests the 'read' command when it gets
+// TestReadCommandRequestSuccessYaml tests the 'read' command when it gets
 // a 200 response from Synse Server, with YAML output.
 func TestReadCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
@@ -203,7 +203,7 @@ func TestReadCommandRequestSuccessYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestReadCommandRequestErrorJson tests the 'read' command when it gets
+// TestReadCommandRequestSuccessJson tests the 'read' command when it gets
 // a 200 response from Synse Server, with JSON output.
 func TestReadCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()

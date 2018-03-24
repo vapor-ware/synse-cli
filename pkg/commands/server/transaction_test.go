@@ -170,9 +170,9 @@ func TestTransactionCommandRequestError(t *testing.T) {
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestTransactionCommandRequestErrorYaml tests the 'transaction' command
+// TestTransactionCommandRequestSuccessYaml tests the 'transaction' command
 // when it gets a 200 response from Synse Server, with YAML output.
-func TestTransactionCommandRequestErrorYaml(t *testing.T) {
+func TestTransactionCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()
@@ -204,9 +204,9 @@ func TestTransactionCommandRequestErrorYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestTransactionCommandRequestErrorJson tests the 'transaction' command
+// TestTransactionCommandRequestSuccessJson tests the 'transaction' command
 // when it gets a 200 response from Synse Server, with JSON output.
-func TestTransactionCommandRequestErrorJson(t *testing.T) {
+func TestTransactionCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
 	mux, server := test.Server()

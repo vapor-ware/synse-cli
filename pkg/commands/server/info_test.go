@@ -414,8 +414,8 @@ func TestInfoCommandRequestSuccessRackJson(t *testing.T) {
 		"rack-1",
 	})
 
-  t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-  t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "info.success.json.rack.golden"))
 	test.ExpectNoError(t, err)
@@ -448,8 +448,8 @@ func TestInfoCommandRequestSuccessBoardYaml(t *testing.T) {
 		"rack-1", "board-1",
 	})
 
-  t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-  t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "info.success.yaml.board.golden"))
 	test.ExpectNoError(t, err)
@@ -482,8 +482,8 @@ func TestInfoCommandRequestSuccessBoardJson(t *testing.T) {
 		"rack-1", "board-1",
 	})
 
-  t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-  t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "info.success.json.board.golden"))
 	test.ExpectNoError(t, err)
@@ -516,8 +516,8 @@ func TestInfoCommandRequestSuccessDeviceYaml(t *testing.T) {
 		"rack-1", "board-1", "device-1",
 	})
 
-  t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-  t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "info.success.yaml.device.golden"))
 	test.ExpectNoError(t, err)
@@ -550,8 +550,8 @@ func TestInfoCommandRequestSuccessDeviceJson(t *testing.T) {
 		"rack-1", "board-1", "device-1",
 	})
 
-  t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-  t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "info.success.json.device.golden"))
 	test.ExpectNoError(t, err)
