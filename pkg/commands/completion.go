@@ -159,7 +159,7 @@ func darwinCompletion(c *cli.Context, shell string) (err error) {
 	// the line that will be added to the file
 	complete := `
 # synse completion
-eval "$(synse completion --%s-completion)"
+eval '$(synse completion --%s-completion)'
 `
 
 	// append the completion to the rc file
@@ -213,7 +213,7 @@ func linuxCompletion(c *cli.Context, shell string) (err error) {
 	}
 
 	_, err = c.App.Writer.Write([]byte(
-		fmt.Sprintf("You can now run `source %s`\n", file)),
+		fmt.Sprintf("You can now run `source %s`\n or reload your shell", file)),
 	)
 	return err
 }
