@@ -42,8 +42,7 @@ const (
 
   TYPE      ACTION    DATA
   --------  --------  -------------------
-  led       state     (on|off)
-            blink     (blink|steady)
+  led       state     (on|off|blink)
             color     RBG HEX string
 
   fan       speed     integer
@@ -55,7 +54,7 @@ Formatting:
   The 'plugin write' command supports the following formatting
   options (via the CLI global --format flag):
     - pretty (default)
-		- yaml
+    - yaml
     - json`
 )
 
