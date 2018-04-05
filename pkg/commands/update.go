@@ -16,9 +16,6 @@ const (
 	//updateoCmdUsage is the usage text for the 'update' command.
 	updateCmdUsage = "Check for and download new releases"
 
-	// updateCmdArgsUsage is the argument usage for the 'update' command.
-	updateCmdArgsUsage = ""
-
 	// updateCmdDesc is the description for the 'update' command.
 	updateCmdDesc = `The update command checks the GitHub repository associated with this
 	application for releases newer than the current releases. If found, it will stream the
