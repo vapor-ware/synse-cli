@@ -13,4 +13,5 @@ var Commands = []cli.Command{
 	plugin.PluginCommand,
 	server.ServerCommand,
 	completionCommand,
+	updateCommand,
 }
