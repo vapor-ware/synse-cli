@@ -20,7 +20,7 @@ import (
 const (
 	appName    = "synse"
 	appUsage   = "Command line tool for interacting with Synse components"
-	appVersion = "2.0.0"
+	appVersion = "2.0.1"
 )
 
 // appBefore defines the action to take before the command is processed. Currently,
