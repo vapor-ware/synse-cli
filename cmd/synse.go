@@ -20,7 +20,11 @@ import (
 const (
 	appName    = "synse"
 	appUsage   = "Command line tool for interacting with Synse components"
-	appVersion = "2.0.1"
+)
+
+var (
+	// AppVersion contains the app version string (stamped at build time)
+	AppVersion string
 )
 
 // appBefore defines the action to take before the command is processed. Currently,
@@ -69,7 +73,7 @@ func main() {
 
 	app.Name = appName
 	app.Usage = appUsage
-	app.Version = appVersion
+	app.Version = AppVersion
 
 	app.Before = appBefore
 	app.After = appAfter
