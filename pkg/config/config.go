@@ -85,7 +85,7 @@ func Persist() error {
 }
 
 // ConstructConfig takes in the cli context and builds the current config from
-// the cascade of configuration sources. It prioritizes configruation options
+// the cascade of configuration sources. It prioritizes configuration options
 // from sources in the following order, with top of the list being highest priority.
 //
 // 	- Run time CLI flags
