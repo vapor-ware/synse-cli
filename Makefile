@@ -1,11 +1,11 @@
 
-VERSION := $(shell (git describe --tags --abbrev=0 --exact-match) || echo "no-tag")
+VERSION := $(shell (git describe --tags --abbrev=0 --exact-match) || echo "not-tagged")
 
 HAS_LINT := $(shell which gometalinter)
 HAS_DEP  := $(shell which dep)
 
 LDFLAGS   := -w \
-	-X github.com/vapor-ware/synse-cli/cmd/main.AppVersion=${VERSION}
+	-X main.AppVersion=${VERSION}
 
 .PHONY: build
 build:  ## Build the CLI locally
