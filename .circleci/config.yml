@@ -81,7 +81,7 @@ jobs:
           name: "Building"
           command: |
             cd cmd/
-            gox --output="../build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386'
+            gox --output="../build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386' -parallel=10
 
       - save_cache:
           when: on_success
