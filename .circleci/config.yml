@@ -144,7 +144,7 @@ jobs:
       - run:
           name: "Upload Binaries to Slack"
           command: |
-            export VERSION=$(git rev-parse --short HEAD 2> /dev/null || true)
+            export GIT_TAG=$(git describe --exact-match --tags HEAD)
             for DISTRO in linux darwin
             do
               curl -F file=@build/${BINARY_NAME}_${DISTRO}_amd64 -F \
@@ -152,7 +152,7 @@ jobs:
               token=${SLACK_TOKEN} -F \
               filename=${BINARY_NAME} -F \
               filetype=binary -F \
-              title="${BINARY_NAME} ${VERSION} ${DISTRO}" \
+              title="${BINARY_NAME} ${GIT_TAG} for ${DISTRO}" \
               https://slack.com/api/files.upload
             done
 
