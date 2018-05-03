@@ -80,8 +80,7 @@ jobs:
       - run:
           name: "Building"
           command: |
-            cd cmd/
-            gox --output="../build/${BINARY_NAME}_{{.OS}}_{{.Arch}}" -osarch='!darwin/386' -parallel=10
+            make build-ci
 
       - save_cache:
           when: on_success

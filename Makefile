@@ -14,6 +14,10 @@ build:  ## Build the CLI locally
 		-ldflags '$(LDFLAGS)' \
 		github.com/vapor-ware/synse-cli/cmd
 
+.PHONY: build-ci
+build-ci: ## Build binaries in CI
+	gox --ldflags "${LDFLAGS}" --parallel=10 -osarch='!darwin/386' --output="build/${BINARY_NAME}_{{ .OS }}_{{ .Arch }}" ${OPTS} ./cmd/...
+
 .PHONY: ci
 ci:  ## Run CI checks locally (build, test, lint)
 	@$(MAKE) build test lint
