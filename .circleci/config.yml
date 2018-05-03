@@ -148,7 +148,7 @@ jobs:
             export VERSION=$(git rev-parse --short HEAD 2> /dev/null || true)
             for DISTRO in linux darwin
             do
-              curl -F file=@bin/${BINARY_NAME}_${DISTRO}_amd64 -F \
+              curl -F file=@build/${BINARY_NAME}_${DISTRO}_amd64 -F \
               channels=${SLACK_CHANNEL} -F \
               token=${SLACK_TOKEN} -F \
               filename=${BINARY_NAME} -F \
