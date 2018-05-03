@@ -142,6 +142,21 @@ jobs:
           name: "Creating Release"
           command: make ci-create-release
 
+      - run:
+          name: "Upload Binaries to Slack"
+          command: |
+            export VERSION=$(git rev-parse --short HEAD 2> /dev/null || true)
+            for DISTRO in linux darwin
+            do
+              curl -F file=@bin/${BINARY_NAME}_${DISTRO}_amd64 -F \
+              channels=${SLACK_CHANNEL} -F \
+              token=${SLACK_TOKEN} -F \
+              filename=${BINARY_NAME} -F \
+              filetype=binary -F \
+              title="${BINARY_NAME} ${VERSION} ${DISTRO}" \
+              https://slack.com/api/files.upload
+            done
+
 workflows:
   version: 2
 
@@ -156,6 +171,7 @@ workflows:
       - release:
           requires:
             - build
+          context: org-global
           filters:
             branches:
               ignore: /.*/
