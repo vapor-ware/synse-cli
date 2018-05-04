@@ -38,7 +38,7 @@ chmod +x /usr/local/bin/synse
 Or:
 
 ```shell
-curl https://github.com/vapor-ware/synse-cli/releases/download/<version number>/synse_darwin_amd64 -o /usr/local/bin/synse
+curl -L -H "Accept: application/octet-stream" https://github.com/vapor-ware/synse-cli/releases/download/<version number>/synse_darwin_amd64 -o /usr/local/bin/synse
 chmod +x /usr/local/bin/synse
 ```
 
