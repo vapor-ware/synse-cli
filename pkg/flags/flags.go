@@ -21,3 +21,10 @@ var FormatFlag = cli.StringFlag{
 	Value: "pretty",
 	Usage: "specify the output format for a command",
 }
+
+// NoHeaderFlag (--no-header) is a flag used to prevent printing the header
+// when pretty printing. It has no effect when the output format is not 'pretty'.
+var NoHeaderFlag = cli.BoolFlag{
+	Name:  "no-header",
+	Usage: "do not print the header when pretty-printing output",
+}

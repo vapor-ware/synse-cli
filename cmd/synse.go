@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	appName    = "synse"
-	appUsage   = "Command line tool for interacting with Synse components"
+	appName  = "synse"
+	appUsage = "Command line tool for interacting with Synse components"
 )
 
 var (
@@ -83,9 +83,10 @@ func main() {
 	app.Commands = commands.Commands
 
 	app.Flags = []cli.Flag{
-		flags.DebugFlag,  // --debug, -d flag to enable debug logging output
-		flags.ConfigFlag, // --config flag to display the YAML configuration for the CLI
-		flags.FormatFlag, // --format flag to specify the output format for a command
+		flags.DebugFlag,    // --debug, -d flag to enable debug logging output
+		flags.ConfigFlag,   // --config flag to display the YAML configuration for the CLI
+		flags.FormatFlag,   // --format flag to specify the output format for a command
+		flags.NoHeaderFlag, // --no-header flag to disable printing the header in pretty format
 	}
 
 	cli.AppHelpTemplate = `
