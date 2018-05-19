@@ -35,7 +35,7 @@ type BinVersion struct {
 	VersionString string
 }
 
-// Get gets the version information for the plugin. It builds
+// Get gets the version information for the CLI. It builds
 // a BinVersion using the variables that should be set as build-time
 // arguments.
 func Get() *BinVersion {
