@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	appName    = "synse"
-	appUsage   = "Command line tool for interacting with Synse components"
+	appName  = "synse"
+	appUsage = "Command line tool for interacting with Synse components"
 )
 
 var (
