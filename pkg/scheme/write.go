@@ -11,3 +11,10 @@ type WriteContext struct {
 	Action string   `json:"action"`
 	Raw    []string `json:"raw"`
 }
+
+// WriteOutput defines the scheme for the data output by a "write" command.
+type WriteOutput struct {
+	Transaction string
+	Action      string
+	Raw         []string
+}

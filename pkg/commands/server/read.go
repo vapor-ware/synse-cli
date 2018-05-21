@@ -5,7 +5,6 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -116,7 +115,7 @@ func cmdRead(c *cli.Context) error {
 	// FIXME - the formatter needs a bit of rework to operate
 	// correctly here. for now, this will work for pretty printing,
 	// but it breaks json/yaml output.
-	formatter := formatters.NewReadFormatter(c, scheme.Read{})
+	formatter := formatters.NewReadFormatter(c)
 
 	for _, device := range devicesToRead {
 		read, err := client.Client.Read(device.rack, device.board, device.device)

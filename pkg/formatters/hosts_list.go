@@ -42,15 +42,10 @@ func newListFormat(data interface{}) (interface{}, error) {
 
 // NewListFormatter creates a new instance of a Formatter configured
 // for the host list command.
-func NewListFormatter(c *cli.Context, data interface{}) *Formatter {
-	f := NewFormatter(
-		c,
-		&Formats{
-			Pretty: prettyList,
-			JSON:   data,
-			Yaml:   data,
-		},
-	)
-	f.SetHandler(newListFormat)
+func NewListFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, newListFormat)
+	f.Template = prettyList
+	f.Decoder = []*config.HostConfig{}
+
 	return f
 }

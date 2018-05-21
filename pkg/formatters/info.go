@@ -6,13 +6,8 @@ import (
 
 // NewInfoFormatter creates a new instance of a Formatter configured
 // for a Synse Server info command.
-func NewInfoFormatter(c *cli.Context, scheme interface{}) *Formatter {
-	f := NewFormatter(
-		c,
-		&Formats{
-			Yaml: scheme,
-			JSON: scheme,
-		},
-	)
+func NewInfoFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, PassthroughHandler)
+
 	return f
 }

@@ -52,6 +52,10 @@ func cmdStatus(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewStatusFormatter(c, status)
+	formatter := formatters.NewStatusFormatter(c)
+	err = formatter.Add(status)
+	if err != nil {
+		return err
+	}
 	return formatter.Write()
 }
