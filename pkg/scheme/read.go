@@ -17,5 +17,6 @@ type ReadData struct {
 type ReadOutput struct {
 	Type      string `json:"type"`
 	Value     string `json:"value"`
+	Unit      string `json:"unit"`
 	Timestamp string `json:"timestamp"`
 }
