@@ -220,14 +220,16 @@ func (formatter *Formatter) writePretty() error {
 		return err
 	}
 
-	// todo: other PR adds in no-header option, this will be checked here.
-	err = formatter.makeHeader()
-	if err != nil {
-		return err
-	}
-	err = tmpl.Execute(w, formatter.Decoder)
-	if err != nil {
-		return err
+	noHeader := formatter.Context.GlobalBool("no-header")
+	if !noHeader{
+		err = formatter.makeHeader()
+		if err != nil {
+			return err
+		}
+		err = tmpl.Execute(w, formatter.Decoder)
+		if err != nil {
+			return err
+		}
 	}
 
 	for _, d := range formatter.Data {
