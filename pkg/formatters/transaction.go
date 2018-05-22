@@ -27,6 +27,8 @@ func newTransactionFormat(data interface{}) (interface{}, error) {
 	}
 
 	return &scheme.Transaction{
+		ID:      transaction.ID,
+		Context: transaction.Context,
 		Status:  transaction.Status,
 		State:   transaction.State,
 		Created: utils.ParseTimestamp(transaction.Created),

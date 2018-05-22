@@ -46,6 +46,11 @@ type Formatter struct {
 	// writing output. The Decoder struct can also have the tag "pretty", which
 	// will specify the header info for pretty formatting. If no "pretty" tag is
 	// set, it will use the field name as the header.
+	//
+	// FIXME (etd): this isn't really used by the JSON and YAML writers because
+	// they just dump whatever is specified in the Data field. We'll either need
+	// to update the above comment, update the functionality, or just call this
+	// something different, since its only used for pretty printing at the moment.
 	Decoder interface{}
 
 	// Output is the io.Writer that the formatter will write to when it's
@@ -149,12 +154,19 @@ func (formatter *Formatter) getFormat() string {
 // are enabled -- that is the responsibility of the caller.
 func (formatter *Formatter) makeHeader() error {
 	v := reflect.ValueOf(formatter.Decoder)
+
 	if v.Kind() != reflect.Ptr {
 		return fmt.Errorf("formatter decoder must be specified as a pointer")
 	}
 
 	e := v.Elem()
 	t := e.Type()
+	setStructPrettyFields(e, t)
+
+	return nil
+}
+
+func setStructPrettyFields(e reflect.Value, t reflect.Type) { // nolint: gocyclo
 	for i := 0; i < t.NumField(); i++ {
 		field := e.Field(i)
 		typeField := t.Field(i)
@@ -164,17 +176,36 @@ func (formatter *Formatter) makeHeader() error {
 		if tag == "" {
 			tag = typeField.Name
 		}
+		tag = strings.ToUpper(tag)
 
-		// A tag of "-" means do not include the field as a header.
-		if tag != "-" {
-			if field.IsValid() && field.CanSet() {
-				if field.Kind() == reflect.String {
-					field.SetString(strings.ToUpper(tag))
+		switch field.Kind() {
+		case reflect.String:
+			// A tag of "-" means do not include the field as a header.
+			if tag != "-" {
+				if field.IsValid() && field.CanSet() {
+					field.SetString(tag)
 				}
 			}
+
+		case reflect.Struct:
+			setStructPrettyFields(field, field.Type())
+
+		case reflect.Slice:
+			if typeField.Type.String() == "[]string" {
+				// A tag of "-" means do not include the field as a header.
+				if tag != "-" {
+					if field.IsValid() && field.CanSet() {
+						toSet := []string{tag}
+						v := reflect.ValueOf(toSet)
+						field.Set(v)
+					}
+				}
+			}
+
+		default:
+			continue
 		}
 	}
-	return nil
 }
 
 // writePretty writes out data in a pretty table format.
@@ -214,7 +245,17 @@ func (formatter *Formatter) writeJSON() error {
 		return fmt.Errorf("'json' formatting not supported for %s", formatter.Context.Command.Name)
 	}
 
-	o, err := json.MarshalIndent(formatter.Data, "", "  ")
+	var data interface{}
+	switch len(formatter.Data) {
+	case 0:
+		return fmt.Errorf("no data to write")
+	case 1:
+		data = formatter.Data[0]
+	default:
+		data = formatter.Data
+	}
+
+	o, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
@@ -228,7 +269,17 @@ func (formatter *Formatter) writeYaml() error {
 		return fmt.Errorf("'yaml' formatting not supported for %s", formatter.Context.Command.Name)
 	}
 
-	o, err := yaml.Marshal(formatter.Data)
+	var data interface{}
+	switch len(formatter.Data) {
+	case 0:
+		return fmt.Errorf("no data to write")
+	case 1:
+		data = formatter.Data[0]
+	default:
+		data = formatter.Data
+	}
+
+	o, err := yaml.Marshal(data)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
