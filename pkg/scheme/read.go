@@ -15,7 +15,7 @@ type ReadData struct {
 
 // ReadOutput defines the scheme for the data output by a "read" command.
 type ReadOutput struct {
-	Type      string
-	Value     string
-	Timestamp string
+	Type      string `json:"type"`
+	Value     string `json:"value"`
+	Timestamp string `json:"timestamp"`
 }
