@@ -105,7 +105,7 @@ func cmdScan(c *cli.Context) error {
 	t.OrderBy(c.String("sort"))
 	t.Apply()
 
-	formatter := formatters.NewScanFormatter(c, scan)
+	formatter := formatters.NewScanFormatter(c)
 	err = formatter.Add(t.Items)
 	if err != nil {
 		return err

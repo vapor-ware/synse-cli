@@ -51,6 +51,10 @@ func cmdConfig(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewConfigFormatter(c, cfg)
+	formatter := formatters.NewConfigFormatter(c)
+	err = formatter.Add(cfg)
+	if err != nil {
+		return err
+	}
 	return formatter.Write()
 }

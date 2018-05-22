@@ -13,13 +13,6 @@ const (
 	prettyRead = "{{.Type}}\t{{.Value}}\t{{.Timestamp}}\n"
 )
 
-// readFormat collects the data that will be parsed into the output template.
-type readFormat struct {
-	Type      string
-	Value     string
-	Timestamp string
-}
-
 // newReadFormat is the handler for read commands that is used by the
 // Formatter to add new read data to the format context.
 func newReadFormat(data interface{}) (interface{}, error) {
@@ -30,7 +23,7 @@ func newReadFormat(data interface{}) (interface{}, error) {
 
 	var out []interface{}
 	for readType, readData := range read.Data {
-		out = append(out, &readFormat{
+		out = append(out, &scheme.ReadOutput{
 			Type:      readType,
 			Value:     fmt.Sprintf("%v", readData.Value),
 			Timestamp: utils.ParseTimestamp(readData.Timestamp),
@@ -42,20 +35,10 @@ func newReadFormat(data interface{}) (interface{}, error) {
 
 // NewReadFormatter creates a new instance of a Formatter configured
 // for the read command.
-func NewReadFormatter(c *cli.Context, data interface{}) *Formatter {
-	f := NewFormatter(
-		c,
-		&Formats{
-			Pretty: prettyRead,
-			JSON:   data,
-			Yaml:   data,
-		},
-	)
-	f.SetHandler(newReadFormat)
-	f.SetHeader(readFormat{
-		Type:      "TYPE",
-		Value:     "VALUE",
-		Timestamp: "TIMESTAMP",
-	})
+func NewReadFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, newReadFormat)
+	f.Template = prettyRead
+	f.Decoder = &scheme.ReadOutput{}
+
 	return f
 }

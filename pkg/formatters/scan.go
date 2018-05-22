@@ -1,10 +1,10 @@
 package formatters
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/urfave/cli"
+	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -15,15 +15,6 @@ const (
 	// the pretty output format for plugin metainfo requests
 	prettyMeta = "{{.ID}}\t{{.Type}}\t{{.Model}}\t{{.Protocol}}\t{{.Rack}}\t{{.Board}}\n"
 )
-
-// scanFormat collects the data that will be parsed into the output template.
-type scanFormat struct {
-	Rack   string
-	Board  string
-	Device string
-	Info   string
-	Type   string
-}
 
 // metaFormat collects the data that will be parsed into the output template.
 type metaFormat struct {
@@ -64,45 +55,20 @@ func newMetaFormat(data interface{}) (interface{}, error) {
 
 // NewScanFormatter creates a new instance of a Formatter configured
 // for the scan command.
-func NewScanFormatter(c *cli.Context, data interface{}) *Formatter {
-	f := NewFormatter(
-		c,
-		&Formats{
-			Pretty: prettyScan,
-			JSON:   data,
-			Yaml:   data,
-		},
-	)
-	f.SetHandler(newScanFormat)
-	f.SetHeader(scanFormat{
-		Rack:   "RACK",
-		Board:  "BOARD",
-		Device: "DEVICE",
-		Info:   "INFO",
-		Type:   "TYPE",
-	})
+func NewScanFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, newScanFormat)
+	f.Template = prettyScan
+	f.Decoder = &scheme.ScanDevice{}
+
 	return f
 }
 
 // NewMetaFormatter creates a new instance of a Formatter configured
 // for the plugin meta command.
 func NewMetaFormatter(c *cli.Context) *Formatter {
-	j, _ := json.Marshal(prettyMeta)
-	f := NewFormatter(
-		c,
-		&Formats{
-			Pretty: prettyMeta,
-			JSON:   j,
-		},
-	)
-	f.SetHandler(newMetaFormat)
-	f.SetHeader(metaFormat{
-		ID:       "ID",
-		Type:     "TYPE",
-		Model:    "MODEL",
-		Protocol: "PROTOCOL",
-		Rack:     "RACK",
-		Board:    "BOARD",
-	})
+	f := NewFormatter(c, newMetaFormat)
+	f.Template = prettyMeta
+	f.Decoder = &scheme.MetaOutput{}
+
 	return f
 }

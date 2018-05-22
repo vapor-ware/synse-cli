@@ -1,29 +1,40 @@
-racks:
-- id: rack-1
-  boards:
-  - id: board-1
-    devices:
-    - id: device-1
-      type: temperature
-      info: Synse Temperature Sensor
-    - id: device-2
-      type: fan
-      info: Synse Fan
-    - id: device-3
-      type: led
-      info: Synse LED
-    - id: device-4
-      type: led
-      info: Synse LED
-    - id: device-5
-      type: temperature
-      info: Synse Temperature Sensor
-    - id: device-6
-      type: temperature
-      info: Synse Temperature Sensor
-    - id: device-7
-      type: temperature
-      info: Synse Temperature Sensor
-    - id: device-8
-      type: temperature
-      info: Synse Temperature Sensor
+- rack: rack-1
+  board: board-1
+  device: device-1
+  info: Synse Temperature Sensor
+  type: temperature
+- rack: rack-1
+  board: board-1
+  device: device-2
+  info: Synse Fan
+  type: fan
+- rack: rack-1
+  board: board-1
+  device: device-3
+  info: Synse LED
+  type: led
+- rack: rack-1
+  board: board-1
+  device: device-4
+  info: Synse LED
+  type: led
+- rack: rack-1
+  board: board-1
+  device: device-5
+  info: Synse Temperature Sensor
+  type: temperature
+- rack: rack-1
+  board: board-1
+  device: device-6
+  info: Synse Temperature Sensor
+  type: temperature
+- rack: rack-1
+  board: board-1
+  device: device-7
+  info: Synse Temperature Sensor
+  type: temperature
+- rack: rack-1
+  board: board-1
+  device: device-8
+  info: Synse Temperature Sensor
+  type: temperature

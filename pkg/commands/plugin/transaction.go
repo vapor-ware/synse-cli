@@ -80,7 +80,7 @@ func cmdTransaction(c *cli.Context) error {
 		Updated: status.Updated,
 	}
 
-	formatter := formatters.NewTransactionFormatter(c, status)
+	formatter := formatters.NewTransactionFormatter(c)
 	err = formatter.Add(s)
 	if err != nil {
 		return err

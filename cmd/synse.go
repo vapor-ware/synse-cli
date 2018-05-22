@@ -61,7 +61,11 @@ func appAfter(c *cli.Context) error {
 // otherwise it will display the usage information.
 func appAction(c *cli.Context) error {
 	if c.IsSet("config") {
-		formatter := formatters.NewConfigFormatter(c, config.Config)
+		formatter := formatters.NewConfigFormatter(c)
+		err := formatter.Add(config.Config)
+		if err != nil {
+			return err
+		}
 		return formatter.Write()
 	}
 	return cli.ShowAppHelp(c)

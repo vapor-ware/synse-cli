@@ -9,15 +9,8 @@ import (
 
 const (
 	// the pretty output format for write requests
-	prettyWrite = "{{.Transaction}}\t{{.Action}}\t{{$n := len .Raw}}{{range $i, $e := .Raw}}{{.}}{{if lt (plus1 $i) $n}}, {{end}}{{end}}\n"
+	prettyWrite = "{{.Transaction}}\t{{.Context.Action}}\t{{$n := len .Context.Raw}}{{range $i, $e := .Context.Raw}}{{.}}{{if lt (plus1 $i) $n}}, {{end}}{{end}}\n"
 )
-
-// writeFormat collects the data that will be parsed into the output template.
-type writeFormat struct {
-	Transaction string
-	Action      string
-	Raw         []string
-}
 
 // newWriteFormat is the handler for write commands that is used by the
 // Formatter to add new write data to the format context.
@@ -29,31 +22,17 @@ func newWriteFormat(data interface{}) (interface{}, error) {
 
 	var out []interface{}
 	for _, t := range write {
-		out = append(out, &writeFormat{
-			Transaction: t.Transaction,
-			Action:      t.Context.Action,
-			Raw:         t.Context.Raw,
-		})
+		out = append(out, t)
 	}
 	return out, nil
 }
 
 // NewWriteFormatter creates a new instance of a Formatter configured
 // for write command output.
-func NewWriteFormatter(c *cli.Context, data interface{}) *Formatter {
-	f := NewFormatter(
-		c,
-		&Formats{
-			Pretty: prettyWrite,
-			JSON:   data,
-			Yaml:   data,
-		},
-	)
-	f.SetHandler(newWriteFormat)
-	f.SetHeader(writeFormat{
-		Transaction: "TRANSACTION ID",
-		Action:      "ACTION",
-		Raw:         []string{"RAW"},
-	})
+func NewWriteFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, newWriteFormat)
+	f.Template = prettyWrite
+	f.Decoder = &scheme.WriteTransaction{}
+
 	return f
 }
