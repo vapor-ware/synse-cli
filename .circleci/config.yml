@@ -2,7 +2,7 @@
 defaults: &defaults
   working_directory: /go/src/github.com/vapor-ware/synse-cli
   docker:
-    - image: golang:latest
+    - image: circleci/golang:latest
   environment:
     BIN_NAME: "synse"
 
