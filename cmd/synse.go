@@ -15,16 +15,12 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/flags"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
+	"github.com/vapor-ware/synse-cli/pkg/version"
 )
 
 const (
 	appName  = "synse"
 	appUsage = "Command line tool for interacting with Synse components"
-)
-
-var (
-	// AppVersion contains the app version string (stamped at build time)
-	AppVersion string
 )
 
 // appBefore defines the action to take before the command is processed. Currently,
@@ -73,11 +69,13 @@ func appAction(c *cli.Context) error {
 
 // Create a new instance of the CLI application and run it.
 func main() {
+	versionInfo := version.Get()
+
 	app := cli.NewApp()
 
 	app.Name = appName
 	app.Usage = appUsage
-	app.Version = AppVersion
+	app.Version = versionInfo.VersionString
 
 	app.Before = appBefore
 	app.After = appAfter
@@ -91,6 +89,16 @@ func main() {
 		flags.ConfigFlag,   // --config flag to display the YAML configuration for the CLI
 		flags.FormatFlag,   // --format flag to specify the output format for a command
 		flags.NoHeaderFlag, // --no-header flag to disable printing the header in pretty format
+	}
+
+	cli.VersionPrinter = func(c *cli.Context) {
+		fmt.Println("synse version:")
+		fmt.Printf("\tVersion:    %s\n", versionInfo.VersionString)
+		fmt.Printf("\tGo Version: %s\n", versionInfo.GoVersion)
+		fmt.Printf("\tGit Commit: %s\n", versionInfo.GitCommit)
+		fmt.Printf("\tGit Tag:    %s\n", versionInfo.GitTag)
+		fmt.Printf("\tBuild Date: %s\n", versionInfo.BuildDate)
+		fmt.Printf("\tOS/Arch:    %s/%s\n", versionInfo.OS, versionInfo.Arch)
 	}
 
 	cli.AppHelpTemplate = `

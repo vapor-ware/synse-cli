@@ -221,7 +221,7 @@ func (formatter *Formatter) writePretty() error {
 	}
 
 	noHeader := formatter.Context.GlobalBool("no-header")
-	if !noHeader{
+	if !noHeader {
 		err = formatter.makeHeader()
 		if err != nil {
 			return err
