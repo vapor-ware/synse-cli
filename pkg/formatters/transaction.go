@@ -13,15 +13,6 @@ const (
 	prettyTransaction = "{{.Status}}\t{{.State}}\t{{.Created}}\t{{.Updated}}\t{{.Message}}\n"
 )
 
-// transactionFormat collects the data that will be parsed into the output template.
-type transactionFormat struct {
-	Status  string
-	State   string
-	Created string
-	Updated string
-	Message string
-}
-
 // newTransactionFormat is the handler for transaction commands that is used by the
 // Formatter to add new transaction data to the format context.
 func newTransactionFormat(data interface{}) (interface{}, error) {
@@ -35,7 +26,9 @@ func newTransactionFormat(data interface{}) (interface{}, error) {
 		transaction.Message = "ok"
 	}
 
-	return &transactionFormat{
+	return &scheme.Transaction{
+		ID:      transaction.ID,
+		Context: transaction.Context,
 		Status:  transaction.Status,
 		State:   transaction.State,
 		Created: utils.ParseTimestamp(transaction.Created),
@@ -46,22 +39,10 @@ func newTransactionFormat(data interface{}) (interface{}, error) {
 
 // NewTransactionFormatter creates a new instance of a Formatter configured
 // for the transaction command.
-func NewTransactionFormatter(c *cli.Context, data interface{}) *Formatter {
-	f := NewFormatter(
-		c,
-		&Formats{
-			Pretty: prettyTransaction,
-			JSON:   data,
-			Yaml:   data,
-		},
-	)
-	f.SetHandler(newTransactionFormat)
-	f.SetHeader(transactionFormat{
-		Status:  "STATUS",
-		State:   "STATE",
-		Created: "CREATED",
-		Updated: "UPDATED",
-		Message: "MESSAGE",
-	})
+func NewTransactionFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, newTransactionFormat)
+	f.Template = prettyTransaction
+	f.Decoder = &scheme.Transaction{}
+
 	return f
 }

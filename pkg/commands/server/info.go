@@ -5,6 +5,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
+	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -68,25 +69,34 @@ func cmdInfo(c *cli.Context) (err error) {
 	board := c.Args().Get(1)
 	device := c.Args().Get(2)
 
+	formatter := formatters.NewInfoFormatter(c)
+
 	var info interface{}
 
 	if board == "" {
 		// No board is defined, so we are querying at the rack level.
 		info, err = client.Client.RackInfo(rack)
+		formatter.Decoder = &scheme.RackInfo{}
 
 	} else if device == "" {
 		// Board is defined, but device is not, so we are querying at the board level.
 		info, err = client.Client.BoardInfo(rack, board)
+		formatter.Decoder = &scheme.BoardInfo{}
 
 	} else {
 		// Rack, Board, Device is defined, so we are querying at the device level.
 		info, err = client.Client.DeviceInfo(rack, board, device)
+		formatter.Decoder = &scheme.DeviceInfo{}
 	}
 
 	if err != nil {
 		return err
 	}
 
-	formatter := formatters.NewInfoFormatter(c, info)
+	err = formatter.Add(info)
+	if err != nil {
+		return err
+	}
+
 	return formatter.Write()
 }

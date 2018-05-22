@@ -26,7 +26,7 @@ Formatting:
   The 'server plugins' command supports the following formatting
   options (via the CLI global --format flag):
     - pretty (default)
-		- yaml
+	- yaml
     - json`
 )
 
@@ -50,7 +50,7 @@ func cmdPlugins(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewPluginsFormatter(c, plugins)
+	formatter := formatters.NewPluginsFormatter(c)
 	err = formatter.Add(plugins)
 	if err != nil {
 		return err

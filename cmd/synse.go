@@ -57,7 +57,11 @@ func appAfter(c *cli.Context) error {
 // otherwise it will display the usage information.
 func appAction(c *cli.Context) error {
 	if c.IsSet("config") {
-		formatter := formatters.NewConfigFormatter(c, config.Config)
+		formatter := formatters.NewConfigFormatter(c)
+		err := formatter.Add(config.Config)
+		if err != nil {
+			return err
+		}
 		return formatter.Write()
 	}
 	return cli.ShowAppHelp(c)
@@ -81,9 +85,10 @@ func main() {
 	app.Commands = commands.Commands
 
 	app.Flags = []cli.Flag{
-		flags.DebugFlag,  // --debug, -d flag to enable debug logging output
-		flags.ConfigFlag, // --config flag to display the YAML configuration for the CLI
-		flags.FormatFlag, // --format flag to specify the output format for a command
+		flags.DebugFlag,    // --debug, -d flag to enable debug logging output
+		flags.ConfigFlag,   // --config flag to display the YAML configuration for the CLI
+		flags.FormatFlag,   // --format flag to specify the output format for a command
+		flags.NoHeaderFlag, // --no-header flag to disable printing the header in pretty format
 	}
 
 	cli.VersionPrinter = func(c *cli.Context) {
