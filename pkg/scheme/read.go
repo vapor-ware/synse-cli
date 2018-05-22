@@ -12,3 +12,10 @@ type ReadData struct {
 	Timestamp string      `json:"timestamp"`
 	Unit      OutputUnit  `json:"unit"`
 }
+
+// ReadOutput defines the scheme for the data output by a "read" command.
+type ReadOutput struct {
+	Type      string
+	Value     string
+	Timestamp string
+}

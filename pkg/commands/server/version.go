@@ -49,6 +49,10 @@ func cmdVersion(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewVersionFormatter(c, version)
+	formatter := formatters.NewVersionFormatter(c)
+	err = formatter.Add(version)
+	if err != nil {
+		return err
+	}
 	return formatter.Write()
 }

@@ -8,98 +8,112 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	"reflect"
+
 	"github.com/urfave/cli"
 	"gopkg.in/yaml.v2"
 )
 
-// Formats specifies the formats that are supported for a given formatter. The
-// Pretty format should be a Go Template string that will be used to format the
-// output into a table. The Yaml and JSON fields should specify a struct with
-// exported fields that can be marshaled to YAML and JSON, respectively.
-type Formats struct {
-	// Pretty will hold the format string for pretty printing the info into a table.
-	Pretty string
-
-	// Yaml will hold the struct for the data to marshal to YAML format.
-	Yaml interface{}
-
-	// JSON will hold the struct for the data to marshal to JSON format.
-	JSON interface{}
-}
-
-// Formatter holds the context necessary to accumulate and format command output.
-type Formatter struct {
-	Formats *Formats
-	Output  io.Writer
-	Context *cli.Context
-
-	// Formatter state for pretty printing
-	prettyHandler func(interface{}) (interface{}, error)
-	header        interface{}
-	data          []interface{}
-}
-
 // templateFns are custom functions that we can call in templates.
 var templateFns = template.FuncMap{
+	// plus1 adds one to the input value
 	"plus1": func(x int) int {
 		return x + 1
 	},
 }
 
+// DataHandler is a function that is called when adding a row to the
+// Formatter Data field. The formatter for each command should set their
+// own handler, since they may all need to manipulate data a bit differently.
+type DataHandler func(interface{}) (interface{}, error)
+
+// PassthroughHandler is a built-in handler that just pass the input through
+// without any modification. This can be used by various simple Formatters.
+func PassthroughHandler(data interface{}) (interface{}, error) {
+	return data, nil
+}
+
+// Formatter holds the context necessary to accumulate and format command output.
+type Formatter struct {
+	// Template is the tab-separated template that defines the output for pretty
+	// formatting. If not specified for the Formatter, it will not support pretty
+	// printing and will return an error when writing output.
+	Template string
+
+	// Decoder is a struct that defines how data should be output. This is used
+	// for JSON and YAML output formatting. If not specified for the Formatter,
+	// it will not support JSON or YAML printing and will return an error when
+	// writing output. The Decoder struct can also have the tag "pretty", which
+	// will specify the header info for pretty formatting. If no "pretty" tag is
+	// set, it will use the field name as the header.
+	//
+	// FIXME (etd): this isn't really used by the JSON and YAML writers because
+	// they just dump whatever is specified in the Data field. We'll either need
+	// to update the above comment, update the functionality, or just call this
+	// something different, since its only used for pretty printing at the moment.
+	Decoder interface{}
+
+	// Output is the io.Writer that the formatter will write to when it's
+	// Write() function is called.
+	Output io.Writer
+
+	// Context is the CLI context for a command.
+	Context *cli.Context
+
+	// Data is the data that will be output on Write(). Data is stored as
+	// a slice to allow multiple data points to be stored (e.g. rows). If
+	// multiple rows exist, all will be output (e.g. for JSON/YAML, as a
+	// list). If a single value exists, it will be output individually
+	// (e.g. for JSON/YAML, as an object).
+	Data []interface{}
+
+	// dataHandler is the function that is called when adding a row to the
+	// Formatter Data field. The formatter for each command should set their
+	// own handler, since they may all need to manipulate data a bit differently.
+	dataHandler DataHandler
+}
+
 // NewFormatter creates a new instance of a Formatter.
-func NewFormatter(c *cli.Context, formats *Formats) *Formatter {
+func NewFormatter(c *cli.Context, handler DataHandler) *Formatter {
 	return &Formatter{
-		Formats: formats,
-		Context: c,
-		Output:  c.App.Writer,
+		Context:     c,
+		Output:      c.App.Writer,
+		dataHandler: handler,
 	}
 }
 
-// SetHandler sets the Formatter handler used by the `Add` function which
-// allows for command-specific "pretty" formatting.
-func (f *Formatter) SetHandler(fn func(interface{}) (interface{}, error)) {
-	f.prettyHandler = fn
-}
-
-// SetHeader sets the header of the formatted output. The header is only
-// output if pretty formatting.
-func (f *Formatter) SetHeader(header interface{}) {
-	f.header = header
-}
-
-// Add adds an additional piece of data to output on `Write` for pretty
-// formatting. This is equivalent to adding a row.
-func (f *Formatter) Add(data interface{}) error {
-	if f.prettyHandler == nil {
-		return fmt.Errorf("no handler set for the formatter")
-	}
-
-	d, err := f.prettyHandler(data)
+// Add adds a row of data to the Formatter's Data field. This is the data that
+// will be output on Write().
+func (formatter *Formatter) Add(data interface{}) error {
+	d, err := formatter.dataHandler(data)
 	if err != nil {
 		return err
 	}
 
-	l, ok := d.([]interface{})
+	dataList, ok := d.([]interface{})
 	if ok {
-		f.data = append(f.data, l...)
+		// If the returned data is a list, append all elements of the
+		// list to the data.
+		formatter.Data = append(formatter.Data, dataList...)
 	} else {
-		f.data = append(f.data, d)
+		// otherwise, we just append the single instance to the data.
+		formatter.Data = append(formatter.Data, d)
 	}
 	return nil
 }
 
 // Write writes out the data and headers (if applicable) accumulated by the
 // Formatter to the output used by the CLI.
-func (f *Formatter) Write() error {
-	format := f.getFormat()
+func (formatter *Formatter) Write() error {
+	format := formatter.getFormat()
 
 	switch format {
 	case "pretty":
-		return f.writePretty()
+		return formatter.writePretty()
 	case "yaml", "yml":
-		return f.writeYaml()
+		return formatter.writeYaml()
 	case "json":
-		return f.writeJSON()
+		return formatter.writeJSON()
 	default:
 		return fmt.Errorf("%s is an unsupported format flag. it should be one of [pretty|yaml|yml|json]", format)
 	}
@@ -107,57 +121,116 @@ func (f *Formatter) Write() error {
 
 // HasPretty is a convenience function to check whether or not the given formatter
 // supports "pretty" output.
-func (f *Formatter) HasPretty() bool {
-	return f.Formats.Pretty != ""
+func (formatter *Formatter) HasPretty() bool {
+	return formatter.Template != ""
 }
 
 // HasYaml is a convenience function to check whether or not the given formatter
 // supports "yaml" output.
-func (f *Formatter) HasYaml() bool {
-	return f.Formats.Yaml != nil
+func (formatter *Formatter) HasYaml() bool {
+	return formatter.Decoder != nil
 }
 
 // HasJSON is a convenience function to check whether or not the given formatter
 // supports "json" output.
-func (f *Formatter) HasJSON() bool {
-	return f.Formats.JSON != nil
+func (formatter *Formatter) HasJSON() bool {
+	return formatter.Decoder != nil
 }
 
 // getFormat gets the format set by the CLI via the --format flag. By default this
 // value is "pretty". If the default is used and the given formatter does not support
-// a "pretty" format, it will fallback to Yaml, if it is supported.
-func (f *Formatter) getFormat() string {
-	var format string
-
+// a "pretty" format, it will fallback to YAML, if it is supported.
+func (formatter *Formatter) getFormat() string {
 	// If the --format flag is not set, it will use the default "pretty", but if
 	// the formatter does not support pretty formatting, use YAML instead.
-	if !f.Context.GlobalIsSet("format") && !f.HasPretty() {
+	if !formatter.Context.GlobalIsSet("format") && !formatter.HasPretty() {
 		return "yaml"
 	}
-	format = strings.ToLower(f.Context.GlobalString("format"))
-	return format
+	return strings.ToLower(formatter.Context.GlobalString("format"))
+}
+
+// makeHeader populates the header info for pretty output into the formatter's
+// Decoder. This does not check if pretty formatting is handled or if headers
+// are enabled -- that is the responsibility of the caller.
+func (formatter *Formatter) makeHeader() error {
+	v := reflect.ValueOf(formatter.Decoder)
+
+	if v.Kind() != reflect.Ptr {
+		return fmt.Errorf("formatter decoder must be specified as a pointer")
+	}
+
+	e := v.Elem()
+	t := e.Type()
+	setStructPrettyFields(e, t)
+
+	return nil
+}
+
+func setStructPrettyFields(e reflect.Value, t reflect.Type) { // nolint: gocyclo
+	for i := 0; i < t.NumField(); i++ {
+		field := e.Field(i)
+		typeField := t.Field(i)
+
+		tag := typeField.Tag.Get("pretty")
+		// If there is no "pretty" tag specified, use the field name
+		if tag == "" {
+			tag = typeField.Name
+		}
+		tag = strings.ToUpper(tag)
+
+		switch field.Kind() {
+		case reflect.String:
+			// A tag of "-" means do not include the field as a header.
+			if tag != "-" {
+				if field.IsValid() && field.CanSet() {
+					field.SetString(tag)
+				}
+			}
+
+		case reflect.Struct:
+			setStructPrettyFields(field, field.Type())
+
+		case reflect.Slice:
+			if typeField.Type.String() == "[]string" {
+				// A tag of "-" means do not include the field as a header.
+				if tag != "-" {
+					if field.IsValid() && field.CanSet() {
+						toSet := []string{tag}
+						v := reflect.ValueOf(toSet)
+						field.Set(v)
+					}
+				}
+			}
+
+		default:
+			continue
+		}
+	}
 }
 
 // writePretty writes out data in a pretty table format.
-func (f *Formatter) writePretty() error {
-	if !f.HasPretty() {
-		return fmt.Errorf("'pretty' formatting not supported for %s", f.Context.Command.Name)
+func (formatter *Formatter) writePretty() error {
+	if !formatter.HasPretty() {
+		return fmt.Errorf("'pretty' formatting not supported for %s", formatter.Context.Command.Name)
 	}
 
-	w := tabwriter.NewWriter(f.Output, 10, 1, 3, ' ', 0)
-	tmpl, err := template.New("").Funcs(templateFns).Parse(f.Formats.Pretty)
+	w := tabwriter.NewWriter(formatter.Output, 10, 1, 3, ' ', 0)
+	tmpl, err := template.New("").Funcs(templateFns).Parse(formatter.Template)
 	if err != nil {
 		return err
 	}
 
-	if f.header != nil {
-		err = tmpl.Execute(w, f.header)
-		if err != nil {
-			return err
-		}
+	// todo: other PR adds in no-header option, this will be checked here.
+	err = formatter.makeHeader()
+	if err != nil {
+		return err
+	}
+	err = tmpl.Execute(w, formatter.Decoder)
+	if err != nil {
+		return err
 	}
 
-	for _, d := range f.data {
+	for _, d := range formatter.Data {
 		err := tmpl.Execute(w, d)
 		if err != nil {
 			return err
@@ -167,29 +240,49 @@ func (f *Formatter) writePretty() error {
 }
 
 // writeJSON writes out data in JSON format.
-func (f *Formatter) writeJSON() error {
-	if !f.HasJSON() {
-		return fmt.Errorf("'json' formatting not supported for %s", f.Context.Command.Name)
+func (formatter *Formatter) writeJSON() error {
+	if !formatter.HasJSON() {
+		return fmt.Errorf("'json' formatting not supported for %s", formatter.Context.Command.Name)
 	}
 
-	o, err := json.MarshalIndent(f.Formats.JSON, "", "  ")
+	var data interface{}
+	switch len(formatter.Data) {
+	case 0:
+		return fmt.Errorf("no data to write")
+	case 1:
+		data = formatter.Data[0]
+	default:
+		data = formatter.Data
+	}
+
+	o, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
-	f.Output.Write(o) // nolint
+	formatter.Output.Write(o) // nolint
 	return nil
 }
 
 // writeYaml writes out data in YAML format.
-func (f *Formatter) writeYaml() error {
-	if !f.HasYaml() {
-		return fmt.Errorf("'yaml' formatting not supported for %s", f.Context.Command.Name)
+func (formatter *Formatter) writeYaml() error {
+	if !formatter.HasYaml() {
+		return fmt.Errorf("'yaml' formatting not supported for %s", formatter.Context.Command.Name)
 	}
 
-	o, err := yaml.Marshal(f.Formats.Yaml)
+	var data interface{}
+	switch len(formatter.Data) {
+	case 0:
+		return fmt.Errorf("no data to write")
+	case 1:
+		data = formatter.Data[0]
+	default:
+		data = formatter.Data
+	}
+
+	o, err := yaml.Marshal(data)
 	if err != nil {
 		return cli.NewExitError(err.Error(), 1)
 	}
-	f.Output.Write(o) // nolint
+	formatter.Output.Write(o) // nolint
 	return nil
 }

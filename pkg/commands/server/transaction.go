@@ -76,7 +76,7 @@ func cmdTransaction(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewTransactionFormatter(c, transaction)
+	formatter := formatters.NewTransactionFormatter(c)
 	err = formatter.Add(transaction)
 	if err != nil {
 		return err

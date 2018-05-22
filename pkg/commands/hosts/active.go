@@ -48,6 +48,10 @@ func cmdActive(c *cli.Context) error {
 		return cli.NewExitError("no active host set", 1)
 	}
 
-	formatter := formatters.NewActiveFormatter(c, config.Config.ActiveHost)
+	formatter := formatters.NewActiveFormatter(c)
+	err := formatter.Add(config.Config.ActiveHost)
+	if err != nil {
+		return err
+	}
 	return formatter.Write()
 }
