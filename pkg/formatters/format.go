@@ -33,10 +33,14 @@ type Formatter struct {
 	Output  io.Writer
 	Context *cli.Context
 
-	// Formatter state for pretty printing
+	// Handler for pretty printing
 	prettyHandler func(interface{}) (interface{}, error)
-	header        interface{}
-	data          []interface{}
+
+	// Header for pretty output
+	header interface{}
+
+	// Data (rows) for pretty output
+	data []interface{}
 }
 
 // templateFns are custom functions that we can call in templates.
@@ -150,7 +154,9 @@ func (f *Formatter) writePretty() error {
 		return err
 	}
 
-	if f.header != nil {
+	noHeader := f.Context.GlobalBool("no-header")
+
+	if f.header != nil && !noHeader {
 		err = tmpl.Execute(w, f.header)
 		if err != nil {
 			return err
