@@ -9,5 +9,5 @@ type WriteTransaction struct {
 // WriteContext describes the context returned with a write transaction.
 type WriteContext struct {
 	Action string   `json:"action"`
-	Raw    []string `json:"raw"`
+	Data   []string `json:"data"`
 }
