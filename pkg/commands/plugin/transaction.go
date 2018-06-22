@@ -68,22 +68,24 @@ func cmdTransaction(c *cli.Context) error {
 
 	tid := c.Args().Get(0)
 
-	status, err := client.Grpc.Transaction(c, tid)
+	resp, err := client.Grpc.Transaction(c, tid)
 	if err != nil {
 		return err
-	}
-	s := &scheme.Transaction{
-		ID:      tid,
-		State:   status.State.String(),
-		Status:  status.Status.String(),
-		Created: status.Created,
-		Updated: status.Updated,
 	}
 
 	formatter := formatters.NewTransactionFormatter(c)
-	err = formatter.Add(s)
-	if err != nil {
-		return err
+	for _, tx := range resp {
+		err = formatter.Add(&scheme.Transaction{
+			ID:      tid,
+			State:   tx.State.String(),
+			Status:  tx.Status.String(),
+			Created: tx.Created,
+			Updated: tx.Updated,
+		})
+		if err != nil {
+			return err
+		}
 	}
+
 	return formatter.Write()
 }
