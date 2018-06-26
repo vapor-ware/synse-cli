@@ -74,7 +74,7 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 	formatter := formatters.NewReadFormatter(c)
 	for _, read := range resp {
 		err = formatter.Add(&scheme.Read{
-			// FIXME: Add data
+			// TODO: Add data.
 			Kind: read.Type,
 		})
 		if err != nil {

@@ -7,4 +7,5 @@ type Config struct {
 	Logging    string                 `json:"logging" yaml:"logging"`
 	Cache      map[string]interface{} `json:"cache" yaml:"cache"`
 	GRPC       map[string]interface{} `json:"grpc" yaml:"grpc"`
+	Plugin     map[string]interface{} `json:"plugin" yaml:"plugin"`
 }
