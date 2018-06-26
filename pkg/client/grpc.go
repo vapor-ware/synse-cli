@@ -108,6 +108,7 @@ func (client *grpcClient) Read(c *cli.Context, rack, board, device string) (out 
 		Board:  board,
 		Device: device,
 	})
+
 	if err != nil {
 		return nil, err
 	}
