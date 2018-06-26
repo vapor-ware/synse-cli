@@ -90,7 +90,6 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		Action: action,
 	}
 	if data != "" {
-		// wd.Data = [][]byte{[]byte(data)}
 		wd.Data = []byte(data)
 	}
 
@@ -98,18 +97,14 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 	if err != nil {
 		return err
 	}
+
 	t := make([]scheme.WriteTransaction, len(transactions.Transactions))
 	for id, ctx := range transactions.Transactions {
-		var data []string
-		for _, r := range ctx.Data {
-			data = append(data, string(r))
-		}
-
 		t = append(t, scheme.WriteTransaction{
 			Transaction: id,
 			Context: scheme.WriteContext{
 				Action: ctx.Action,
-				Data:   data,
+				Data:   string(ctx.Data),
 			},
 		})
 	}

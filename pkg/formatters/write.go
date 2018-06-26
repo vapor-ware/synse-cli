@@ -7,10 +7,10 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 )
 
-const (
-	// the pretty output format for write requests
-	prettyWrite = "{{.Transaction}}\t{{.Context.Action}}\t{{$n := len .Context.Raw}}{{range $i, $e := .Context.Raw}}{{.}}{{if lt (plus1 $i) $n}}, {{end}}{{end}}\n"
-)
+// const (
+// 	// the pretty output format for write requests
+// 	prettyWrite = "{{.Transaction}}\t{{.Context.Action}}\t{{$n := len .Context.Data}}{{range $i, $e := .Context.Data}}{{.}}{{if lt (plus1 $i) $n}}, {{end}}{{end}}\n"
+// )
 
 // newWriteFormat is the handler for write commands that is used by the
 // Formatter to add new write data to the format context.
@@ -31,7 +31,7 @@ func newWriteFormat(data interface{}) (interface{}, error) {
 // for write command output.
 func NewWriteFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(c, newWriteFormat)
-	f.Template = prettyWrite
+	// f.Template = prettyWrite
 	f.Decoder = &scheme.WriteTransaction{}
 
 	return f
