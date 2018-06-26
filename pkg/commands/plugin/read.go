@@ -75,12 +75,7 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 	for _, read := range resp {
 		err = formatter.Add(&scheme.Read{
 			Type: read.Type,
-			Data: map[string]scheme.ReadData{
-				read.Type: {
-					Value:     read.Value,
-					Timestamp: read.Timestamp,
-				},
-			},
+			// FIXME: Add data
 		})
 		if err != nil {
 			return err
