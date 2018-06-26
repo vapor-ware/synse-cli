@@ -2,7 +2,7 @@ package scheme
 
 // Read is the scheme for the Synse Server "read" endpoint response.
 type Read struct {
-	Type string     `json:"type"`
+	Kind string     `json:"kind"`
 	Data []ReadData `json:"data"`
 }
 
