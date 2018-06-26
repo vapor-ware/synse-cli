@@ -7,11 +7,6 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 )
 
-const (
-	// the pretty output format for plugins requests
-	prettyPlugins = "{{.Name}}\t{{.Network}}\t{{.Address}}\n"
-)
-
 // newPluginsFormat is the handler for plugins commands that is used by the
 // Formatter to add new plugin data to the format context.
 func newPluginsFormat(data interface{}) (interface{}, error) {
@@ -23,9 +18,14 @@ func newPluginsFormat(data interface{}) (interface{}, error) {
 	var out []interface{}
 	for _, p := range plugins {
 		out = append(out, &scheme.Plugin{
-			Name:    p.Name,
-			Network: p.Network,
-			Address: p.Address,
+			Name:        p.Name,
+			Tag:         p.Tag,
+			Description: p.Description,
+			Maintainer:  p.Maintainer,
+			VCS:         p.VCS,
+			Network:     p.Network,
+			Health:      p.Health,
+			Version:     p.Version,
 		})
 	}
 	return out, nil
@@ -35,7 +35,6 @@ func newPluginsFormat(data interface{}) (interface{}, error) {
 // for the plugins command.
 func NewPluginsFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(c, newPluginsFormat)
-	f.Template = prettyPlugins
 	f.Decoder = &scheme.Plugin{}
 
 	return f
