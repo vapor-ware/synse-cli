@@ -24,7 +24,7 @@ func newReadFormat(data interface{}) (interface{}, error) {
 	var out []interface{}
 	for _, readData := range read.Data {
 		out = append(out, &scheme.ReadOutput{
-			Type:      read.Kind,
+			Type:      readData.Type,
 			Value:     fmt.Sprintf("%v", readData.Value),
 			Unit:      readData.Unit.Symbol,
 			Timestamp: utils.ParseTimestamp(readData.Timestamp),
