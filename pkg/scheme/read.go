@@ -10,6 +10,8 @@ type Read struct {
 type ReadData struct {
 	Value     interface{} `json:"value"`
 	Timestamp string      `json:"timestamp"`
+	Type      string      `json:"type"`
+	Info      string      `json:"info"`
 	Unit      OutputUnit  `json:"unit"`
 }
 
