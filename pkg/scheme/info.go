@@ -33,7 +33,7 @@ type DeviceOutput struct {
 	Name          string     `json:"name"`
 	Type          string     `json:"type"`
 	Precision     int        `json:"precision,omitempty"`
-	ScalingFactor float64    `json:"scaling_factor,omitempty"`
+	ScalingFactor float64    `json:"scaling_factor,omitempty" yaml:"scaling_factor,omitempty"`
 	Unit          OutputUnit `json:"unit,omitempty"`
 }
 

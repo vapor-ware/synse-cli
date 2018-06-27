@@ -46,28 +46,25 @@ const (
 {
   "timestamp":"2018-02-08 15:58:51.063845404 +0000 UTC m=+3105.953837345",
   "uid":"device-1",
-  "type":"temperature",
-  "model":"emul8-temp",
-  "manufacturer":"Vapor IO",
-  "protocol":"emulator",
-  "info":"Synse Temperature Sensor",
-  "comment":"",
+  "kind":"pressure",
+  "metadata":{
+    "model":"emul8-pressure"
+  },
+  "plugin":"emulator-plugin",
+  "info":"Synse Pressure Sensor 1",
   "location":{
     "rack":"rack-1",
     "board":"board-1"
   },
   "output":[
     {
-      "type":"temperature",
-      "data_type":"float",
-      "precision":2,
+      "name":"pressure",
+	  "type":"pressure",
+	  "precision":3,
+	  "scaling_factor":1.5,
       "unit":{
-        "name":"degrees celsius",
-        "symbol":"C"
-      },
-      "range":{
-        "min":0,
-        "max":100
+        "name":"pascals",
+        "symbol":"Pa"
       }
     }
   ]
