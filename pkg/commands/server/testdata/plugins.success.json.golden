@@ -1,12 +1,84 @@
 [
   {
-    "name": "foo",
-    "network": "tcp",
-    "address": "localhost:6000"
+    "name": "sample-tcp",
+    "tag": "vaporio/emulator-plugin",
+    "description": "A sample emulator plugin",
+    "maintainer": "vaporio",
+    "vcs": "github.com/vapor-ware/synse-emulator-plugin",
+    "network": {
+      "address": "emulator-plugin:5001",
+      "protocol": "tcp"
+    },
+    "health": {
+      "checks": [
+        {
+          "message": "",
+          "name": "read buffer health",
+          "status": "ok",
+          "timestamp": "2018-06-27T18:30:16.531781924Z",
+          "type": "periodic"
+        },
+        {
+          "message": "",
+          "name": "write buffer health",
+          "status": "ok",
+          "timestamp": "2018-06-27T18:30:16.531781924Z",
+          "type": "periodic"
+        }
+      ],
+      "message": "",
+      "status": "ok",
+      "timestamp": "2018-06-27T18:30:46.237254715Z"
+    },
+    "version": {
+      "arch": "amd64",
+      "build_date": "2018-06-25T14:39:18",
+      "git_commit": "4831f12",
+      "git_tag": "1.0.2-8-g4831f12",
+      "os": "linux",
+      "plugin_version": "2.0.0",
+      "sdk_version": "1.0.0"
+    }
   },
   {
-    "name": "bar",
-    "network": "unix",
-    "address": "/tmp/synse/proc/bar.sock"
+    "name": "sample-unix",
+    "tag": "vaporio/unix-plugin",
+    "description": "A sample unix plugin",
+    "maintainer": "vaporio",
+    "vcs": "github.com/vapor-ware/synse-unix-plugin",
+    "network": {
+      "address": "/tmp/synse/proc/bar.sock",
+      "protocol": "unix"
+    },
+    "health": {
+      "checks": [
+        {
+          "message": "",
+          "name": "read buffer health",
+          "status": "ok",
+          "timestamp": "2018-06-27T18:30:16.531781924Z",
+          "type": "periodic"
+        },
+        {
+          "message": "",
+          "name": "write buffer health",
+          "status": "ok",
+          "timestamp": "2018-06-27T18:30:16.531781924Z",
+          "type": "periodic"
+        }
+      ],
+      "message": "",
+      "status": "ok",
+      "timestamp": "2018-06-27T18:30:46.237254715Z"
+    },
+    "version": {
+      "arch": "amd64",
+      "build_date": "2018-06-25T14:39:18",
+      "git_commit": "4831f12",
+      "git_tag": "1.0.2-8-g4831f12",
+      "os": "linux",
+      "plugin_version": "2.0.0",
+      "sdk_version": "1.0.0"
+    }
   }
 ]
