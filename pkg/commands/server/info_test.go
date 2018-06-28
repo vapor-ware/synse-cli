@@ -44,7 +44,7 @@ const (
 	// the mocked 200 OK JSON response for the Synse Server device 'info' route
 	infoDeviceRespOK = `
 {
-  "timestamp":"2018-02-08 15:58:51.063845404 +0000 UTC m=+3105.953837345",
+  "timestamp":"2018-06-28T12:59:47.625842798Z",
   "uid":"device-1",
   "kind":"pressure",
   "metadata":{
