@@ -11,7 +11,7 @@ type ReadData struct {
 	Value     interface{} `json:"value" yaml:"value"`
 	Timestamp string      `json:"timestamp" yaml:"timestamp"`
 	Type      string      `json:"type" yaml:"type"`
-	Info      string      `json:"info yaml:"info"`
+	Info      string      `json:"info" yaml:"info"`
 	Unit      OutputUnit  `json:"unit" yaml:"unit"`
 }
 
