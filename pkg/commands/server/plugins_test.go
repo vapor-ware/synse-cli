@@ -21,82 +21,82 @@ const (
     "name":"sample-tcp",
     "description":"A sample emulator plugin",
     "maintainer":"vaporio",
-	"vcs":"github.com\/vapor-ware\/synse-emulator-plugin",
-	"version":{
-	  "plugin_version":"2.0.0",
-	  "sdk_version":"1.0.0",
-	  "build_date":"2018-06-25T14:39:18",
-	  "git_commit":"4831f12",
-	  "git_tag":"1.0.2-8-g4831f12",
-	  "arch":"amd64",
-	  "os":"linux"
-	},
+    "vcs":"github.com\/vapor-ware\/synse-emulator-plugin",
+    "version":{
+      "plugin_version":"2.0.0",
+      "sdk_version":"1.0.0",
+      "build_date":"2018-06-25T14:39:18",
+      "git_commit":"4831f12",
+      "git_tag":"1.0.2-8-g4831f12",
+      "arch":"amd64",
+      "os":"linux"
+    },
     "network":{
-	  "protocol":"tcp",
-	  "address":"emulator-plugin:5001"
-	},
-	"health":{
-	  "timestamp":"2018-06-27T18:30:46.237254715Z",
-	  "status":"ok",
-	  "message":"",
-	  "checks":[
-	    {
-		  "name":"read buffer health",
-		  "status":"ok",
-		  "message":"",
-		  "timestamp":"2018-06-27T18:30:16.531781924Z",
-		  "type":"periodic"
-	    },
-	    {
-		  "name":"write buffer health",
-		  "status":"ok",
-		  "message":"",
-		  "timestamp":"2018-06-27T18:30:16.531781924Z",
-		  "type":"periodic"
-	    }
-	  ]
-	}
+      "protocol":"tcp",
+      "address":"emulator-plugin:5001"
+    },
+    "health":{
+      "timestamp":"2018-06-27T18:30:46.237254715Z",
+      "status":"ok",
+      "message":"",
+      "checks":[
+        {
+          "name":"read buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        },
+        {
+          "name":"write buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        }
+      ]
+    }
   },
   {
     "tag":"vaporio\/unix-plugin",
     "name":"sample-unix",
     "description":"A sample unix plugin",
     "maintainer":"vaporio",
-	"vcs":"github.com\/vapor-ware\/synse-unix-plugin",
-	"version":{
-	  "plugin_version":"2.0.0",
-	  "sdk_version":"1.0.0",
-	  "build_date":"2018-06-25T14:39:18",
-	  "git_commit":"4831f12",
-	  "git_tag":"1.0.2-8-g4831f12",
-	  "arch":"amd64",
-	  "os":"linux"
-	},
+    "vcs":"github.com\/vapor-ware\/synse-unix-plugin",
+    "version":{
+      "plugin_version":"2.0.0",
+      "sdk_version":"1.0.0",
+      "build_date":"2018-06-25T14:39:18",
+      "git_commit":"4831f12",
+      "git_tag":"1.0.2-8-g4831f12",
+      "arch":"amd64",
+      "os":"linux"
+    },
     "network":{
-	  "protocol":"unix",
-	  "address":"/tmp/synse/proc/bar.sock"
-	},
-	"health":{
-	  "timestamp":"2018-06-27T18:30:46.237254715Z",
-	  "status":"ok",
-	  "message":"",
-	  "checks":[
-	    {
-		  "name":"read buffer health",
-		  "status":"ok",
-		  "message":"",
-		  "timestamp":"2018-06-27T18:30:16.531781924Z",
-		  "type":"periodic"
-	    },
-	    {
-		  "name":"write buffer health",
-		  "status":"ok",
-		  "message":"",
-		  "timestamp":"2018-06-27T18:30:16.531781924Z",
-		  "type":"periodic"
-	    }
-	  ]
-	}
+      "protocol":"unix",
+      "address":"/tmp/synse/proc/bar.sock"
+    },
+    "health":{
+      "timestamp":"2018-06-27T18:30:46.237254715Z",
+      "status":"ok",
+      "message":"",
+      "checks":[
+        {
+          "name":"read buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        },
+        {
+          "name":"write buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        }
+      ]
+    }
   }
 ]`
 
