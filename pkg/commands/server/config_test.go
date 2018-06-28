@@ -33,15 +33,15 @@ const (
   "plugin":{
     "tcp":[
       "emulator-plugin:5001"
-	],
-	"unix":[],
-	"discovery":{
-	  "kubernetes":{
+    ],
+    "unix":[],
+    "discovery":{
+      "kubernetes":{
         "endpoints":{
-		  "labels":{}
-		}
-	  }
-	}
+          "labels":{}
+        }
+      }
+    }
   }
 }`
 

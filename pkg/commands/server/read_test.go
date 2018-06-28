@@ -19,15 +19,15 @@ const (
   "kind":"temperature",
   "data":[
     {
-	  "value":"65",
-	  "timestamp":"2018-06-28T12:41:50.333443322Z",
-	  "unit":{
+      "value":"65",
+      "timestamp":"2018-06-28T12:41:50.333443322Z",
+      "unit":{
         "symbol":"C",
-		"name":"celsius"
-	  },
-	  "type":"state",
-	  "info":""
-	}
+        "name":"celsius"
+      },
+      "type":"state",
+      "info":""
+    }
   ]
 }`
 
