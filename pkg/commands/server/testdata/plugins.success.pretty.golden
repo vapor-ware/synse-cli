@@ -1,3 +1,3 @@
-NAME          PROTOCOL   ADDRESS                    VERSION   STATUS
-sample-tcp    tcp        emulator-plugin:5001       2.0.0     ok
-sample-unix   unix       /tmp/synse/proc/bar.sock   2.0.0     ok
+TAG                       PROTOCOL   ADDRESS                    VERSION   STATUS
+vaporio/emulator-plugin   tcp        emulator-plugin:5001       2.0.0     ok
+vaporio/unix-plugin       unix       /tmp/synse/proc/bar.sock   2.0.0     ok
