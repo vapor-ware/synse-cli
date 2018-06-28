@@ -27,7 +27,7 @@ func (client *grpcClient) Reset() {
 	client.apiClient = nil
 }
 
-// newGrpcClient creates an instance of the Synse Plugin for gRPC
+// newGrpcClient creates an instance of the Synse PluginClient for gRPC
 // communication with plugins.
 func (client *grpcClient) newGrpcClient(c *cli.Context) (synse.PluginClient, error) {
 	t := c.GlobalString("tcp")

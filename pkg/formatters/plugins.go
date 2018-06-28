@@ -9,7 +9,7 @@ import (
 
 const (
 	// the pretty output for plugins requests
-	prettyPlugins = "{{.Name}}\t{{.Network.Protocol}}\t{{.Network.Address}}\t{{.Version.Version}}\t{{.Health.Status}}\n"
+	prettyPlugins = "{{.Tag}}\t{{.Network.Protocol}}\t{{.Network.Address}}\t{{.Version.Version}}\t{{.Health.Status}}\n"
 )
 
 // newPluginsFormat is the handler for plugins commands that is used by the

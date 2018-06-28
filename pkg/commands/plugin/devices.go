@@ -12,11 +12,11 @@ const (
 	devicesCmdName = "devices"
 
 	// devicesCmdUsage is the usage text for the 'devices' command.
-	devicesCmdUsage = "Get devices information from a plugin"
+	devicesCmdUsage = "Get device information from a plugin"
 
 	// devicesCmdDesc is the description for the 'devices' command.
-	devicesCmdDesc = `The devices command gets devices information from a plugin via the
-  Synse gRPC API. The plugin devices info return is similar to that
+	devicesCmdDesc = `The devices command gets device information from a plugin via the
+  Synse gRPC API. The device information returned here is similar to that
   of a 'synse server scan' command, but contains more information
   about the device.
 
