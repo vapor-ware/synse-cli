@@ -59,9 +59,9 @@ const (
   "output":[
     {
       "name":"pressure",
-	  "type":"pressure",
-	  "precision":3,
-	  "scaling_factor":1.5,
+      "type":"pressure",
+      "precision":3,
+      "scaling_factor":1.5,
       "unit":{
         "name":"pascals",
         "symbol":"Pa"
