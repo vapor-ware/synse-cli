@@ -17,7 +17,7 @@ const (
 	statusRespOK = `
 {
   "status": "ok",
-  "timestamp": "2018-01-01 01:01:01.000000"
+  "timestamp": "2018-06-28T12:59:47.625842798Z"
 }`
 
 	// the mocked 500 error JSON response for the Synse Server 'status' route

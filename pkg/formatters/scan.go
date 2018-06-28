@@ -12,18 +12,18 @@ const (
 	// the pretty output format for scan requests
 	prettyScan = "{{.Rack}}\t{{.Board}}\t{{.Device}}\t{{.Info}}\t{{.Type}}\n"
 
-	// the pretty output format for plugin metainfo requests
-	prettyMeta = "{{.ID}}\t{{.Type}}\t{{.Model}}\t{{.Protocol}}\t{{.Rack}}\t{{.Board}}\n"
+	// the pretty output format for plugin devices requests
+	prettyDevices = "{{.ID}}\t{{.Kind}}\t{{.Plugin}}\t{{.Info}}\t{{.Rack}}\t{{.Board}}\n"
 )
 
-// metaFormat collects the data that will be parsed into the output template.
-type metaFormat struct {
-	ID       string
-	Type     string
-	Model    string
-	Protocol string
-	Rack     string
-	Board    string
+// devicesFormat collects the data that will be parsed into the output template.
+type devicesFormat struct {
+	ID     string
+	Kind   string
+	Plugin string
+	Info   string
+	Rack   string
+	Board  string
 }
 
 // newScanFormat is the handler for scan commands that is used by the
@@ -36,20 +36,20 @@ func newScanFormat(data interface{}) (interface{}, error) {
 	return out, nil
 }
 
-// newMetaFormat is the handler for plugin metainfo commands that is used by the
-// Formatter to add new metainfo data to the format context.
-func newMetaFormat(data interface{}) (interface{}, error) {
-	meta, ok := data.(*synse.MetainfoResponse)
+// newDevicesFormat is the handler for plugin devices commands that is used by the
+// Formatter to add new devices data to the format context.
+func newDevicesFormat(data interface{}) (interface{}, error) {
+	device, ok := data.(*synse.Device)
 	if !ok {
-		return nil, fmt.Errorf("formatter data %T not of type *MetainfoResponse", meta)
+		return nil, fmt.Errorf("formatter data %T not of type *Device", device)
 	}
-	return &metaFormat{
-		ID:       meta.Uid,
-		Type:     meta.Type,
-		Model:    meta.Model,
-		Protocol: meta.Protocol,
-		Rack:     meta.Location.Rack,
-		Board:    meta.Location.Board,
+	return &devicesFormat{
+		ID:     device.Uid,
+		Kind:   device.Kind,
+		Plugin: device.Plugin,
+		Info:   device.Info,
+		Rack:   device.Location.Rack,
+		Board:  device.Location.Board,
 	}, nil
 }
 
@@ -63,12 +63,12 @@ func NewScanFormatter(c *cli.Context) *Formatter {
 	return f
 }
 
-// NewMetaFormatter creates a new instance of a Formatter configured
-// for the plugin meta command.
-func NewMetaFormatter(c *cli.Context) *Formatter {
-	f := NewFormatter(c, newMetaFormat)
-	f.Template = prettyMeta
-	f.Decoder = &scheme.MetaOutput{}
+// NewDevicesFormatter creates a new instance of a Formatter configured
+// for the plugin devices command.
+func NewDevicesFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, newDevicesFormat)
+	f.Template = prettyDevices
+	f.Decoder = &scheme.DevicesOutput{}
 
 	return f
 }
