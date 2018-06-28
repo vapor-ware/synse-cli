@@ -12,5 +12,18 @@
   },
   "grpc": {
     "timeout": 20
+  },
+  "plugin": {
+    "discovery": {
+      "kubernetes": {
+        "endpoints": {
+          "labels": {}
+        }
+      }
+    },
+    "tcp": [
+      "emulator-plugin:5001"
+    ],
+    "unix": []
   }
 }

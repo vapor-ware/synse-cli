@@ -19,7 +19,7 @@ var Grpc = grpcClient{}
 
 // grpcClient is a client for making requests against the Synse Server gRPC API.
 type grpcClient struct {
-	apiClient synse.InternalApiClient
+	apiClient synse.PluginClient
 }
 
 // Reset resets the grpcClient state. This is used primarily for testing.
@@ -27,9 +27,9 @@ func (client *grpcClient) Reset() {
 	client.apiClient = nil
 }
 
-// newGrpcClient creates an instance of the Synse InternalApiClient for gRPC
+// newGrpcClient creates an instance of the Synse PluginClient for gRPC
 // communication with plugins.
-func (client *grpcClient) newGrpcClient(c *cli.Context) (synse.InternalApiClient, error) {
+func (client *grpcClient) newGrpcClient(c *cli.Context) (synse.PluginClient, error) {
 	t := c.GlobalString("tcp")
 	s := c.GlobalString("unix")
 
@@ -61,11 +61,11 @@ func (client *grpcClient) newGrpcClient(c *cli.Context) (synse.InternalApiClient
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to plugin: %v", err)
 	}
-	return synse.NewInternalApiClient(grpcConn), nil
+	return synse.NewPluginClient(grpcConn), nil
 }
 
-// Metainfo issues a "metainfo" request to a plugin via the gRPC API.
-func (client *grpcClient) Metainfo(c *cli.Context) (out []*synse.MetainfoResponse, err error) {
+// Devices issues a "device" request to a plugin via the gRPC API.
+func (client *grpcClient) Devices(c *cli.Context) (out []*synse.Device, err error) {
 	if client.apiClient == nil {
 		client.apiClient, err = client.newGrpcClient(c)
 		if err != nil {
@@ -73,9 +73,9 @@ func (client *grpcClient) Metainfo(c *cli.Context) (out []*synse.MetainfoRespons
 		}
 	}
 
-	stream, err := client.apiClient.Metainfo(
+	stream, err := client.apiClient.Devices(
 		context.Background(),
-		&synse.MetainfoRequest{},
+		&synse.DeviceFilter{},
 	)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (client *grpcClient) Metainfo(c *cli.Context) (out []*synse.MetainfoRespons
 }
 
 // Read issues a "read" request to a plugin via the gRPC API.
-func (client *grpcClient) Read(c *cli.Context, rack, board, device string) (out []*synse.ReadResponse, err error) {
+func (client *grpcClient) Read(c *cli.Context, rack, board, device string) (out []*synse.Reading, err error) {
 	if client.apiClient == nil {
 		client.apiClient, err = client.newGrpcClient(c)
 		if err != nil {
@@ -103,11 +103,12 @@ func (client *grpcClient) Read(c *cli.Context, rack, board, device string) (out 
 		}
 	}
 
-	stream, err := client.apiClient.Read(context.Background(), &synse.ReadRequest{
+	stream, err := client.apiClient.Read(context.Background(), &synse.DeviceFilter{
 		Rack:   rack,
 		Board:  board,
 		Device: device,
 	})
+
 	if err != nil {
 		return nil, err
 	}
@@ -134,11 +135,13 @@ func (client *grpcClient) Write(c *cli.Context, rack, board, device string, data
 		}
 	}
 
-	transactions, err := client.apiClient.Write(context.Background(), &synse.WriteRequest{
-		Rack:   rack,
-		Board:  board,
-		Device: device,
-		Data:   []*synse.WriteData{data},
+	transactions, err := client.apiClient.Write(context.Background(), &synse.WriteInfo{
+		DeviceFilter: &synse.DeviceFilter{
+			Rack:   rack,
+			Board:  board,
+			Device: device,
+		},
+		Data: []*synse.WriteData{data},
 	})
 	if err != nil {
 		return nil, err
@@ -147,7 +150,7 @@ func (client *grpcClient) Write(c *cli.Context, rack, board, device string, data
 }
 
 // Transaction issues a "transaction" request to a plugin via the gRPC API.
-func (client *grpcClient) Transaction(c *cli.Context, transactionID string) (out *synse.WriteResponse, err error) {
+func (client *grpcClient) Transaction(c *cli.Context, transactionID string) (out []*synse.WriteResponse, err error) {
 	if client.apiClient == nil {
 		client.apiClient, err = client.newGrpcClient(c)
 		if err != nil {
@@ -155,11 +158,22 @@ func (client *grpcClient) Transaction(c *cli.Context, transactionID string) (out
 		}
 	}
 
-	status, err := client.apiClient.TransactionCheck(context.Background(), &synse.TransactionId{
+	stream, err := client.apiClient.Transaction(context.Background(), &synse.TransactionFilter{
 		Id: transactionID,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return status, nil
+
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, resp)
+	}
+	return out, nil
 }

@@ -19,9 +19,7 @@ const (
   {
     "context":{
       "action":"color",
-      "raw":[
-        "000000"
-      ]
+      "data":"000000"
     },
     "transaction":"b9u6ut6q5i6g020lau70"
   }

@@ -29,6 +29,19 @@ const (
   },
   "grpc":{
     "timeout":20
+  },
+  "plugin":{
+    "tcp":[
+      "emulator-plugin:5001"
+    ],
+    "unix":[],
+    "discovery":{
+      "kubernetes":{
+        "endpoints":{
+          "labels":{}
+        }
+      }
+    }
   }
 }`
 

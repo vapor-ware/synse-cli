@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	// the pretty output format for plugins requests
-	prettyPlugins = "{{.Name}}\t{{.Network}}\t{{.Address}}\n"
+	// the pretty output for plugins requests
+	prettyPlugins = "{{.Tag}}\t{{.Network.Protocol}}\t{{.Network.Address}}\t{{.Version.Version}}\t{{.Health.Status}}\n"
 )
 
 // newPluginsFormat is the handler for plugins commands that is used by the
@@ -23,9 +23,14 @@ func newPluginsFormat(data interface{}) (interface{}, error) {
 	var out []interface{}
 	for _, p := range plugins {
 		out = append(out, &scheme.Plugin{
-			Name:    p.Name,
-			Network: p.Network,
-			Address: p.Address,
+			Name:        p.Name,
+			Tag:         p.Tag,
+			Description: p.Description,
+			Maintainer:  p.Maintainer,
+			VCS:         p.VCS,
+			Network:     p.Network,
+			Health:      p.Health,
+			Version:     p.Version,
 		})
 	}
 	return out, nil

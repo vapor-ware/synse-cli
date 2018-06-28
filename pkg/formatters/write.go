@@ -9,7 +9,7 @@ import (
 
 const (
 	// the pretty output format for write requests
-	prettyWrite = "{{.Transaction}}\t{{.Context.Action}}\t{{$n := len .Context.Raw}}{{range $i, $e := .Context.Raw}}{{.}}{{if lt (plus1 $i) $n}}, {{end}}{{end}}\n"
+	prettyWrite = "{{.Transaction}}\t{{.Context.Action}}\t{{.Context.Data}}\n"
 )
 
 // newWriteFormat is the handler for write commands that is used by the

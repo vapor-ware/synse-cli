@@ -16,17 +16,19 @@ const (
 	// the mocked 200 OK JSON response for the Synse Server 'read' route
 	readRespOK = `
 {
-  "type":"temperature",
-  "data":{
-    "temperature":{
-      "value":51.0,
-      "timestamp":"2018-02-08 15:54:26.255253838 +0000 UTC m=+2841.145248278",
+  "kind":"temperature",
+  "data":[
+    {
+      "value":"65",
+      "timestamp":"2018-06-28T12:41:50.333443322Z",
       "unit":{
         "symbol":"C",
-        "name":"degrees celsius"
-      }
+        "name":"celsius"
+      },
+      "type":"state",
+      "info":""
     }
-  }
+  ]
 }`
 
 	// the mocked 500 error JSON response for the Synse Server 'read' route
