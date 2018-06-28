@@ -2,13 +2,11 @@
   "id": "b9u6ss6q5i6g020lau6g",
   "context": {
     "action": "color",
-    "raw": [
-      "000000"
-    ]
+    "data": "000000"
   },
   "state": "ok",
   "status": "done",
-  "created": "2018-02-08 15:36:16.081873199 +0000 UTC m=+1750.971865639",
-  "updated": "2018-02-08 15:36:16.081873199 +0000 UTC m=+1750.971865639",
+  "created": "Thu Jun 28 12:59:47 UTC 2018",
+  "updated": "Thu Jun 28 12:59:47 UTC 2018",
   "message": "ok"
 }
