@@ -79,7 +79,10 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 			Type:      read.GetType(),
 			Info:      read.GetInfo(),
 			Value:     getValue(read),
-			Unit:      scheme.OutputUnit{read.Unit.Name, read.Unit.Symbol},
+			Unit: scheme.OutputUnit{
+				Name:   read.Unit.Name,
+				Symbol: read.Unit.Symbol,
+			},
 		})
 	}
 
@@ -115,7 +118,9 @@ func getValue(value *synse.Reading) interface{} { // nolint: gocyclo
 	case *synse.Reading_Uint64Value:
 		return value.GetUint64Value()
 	default:
-		// FIXME: Should we return nil here?
+		// FIXME: Should we return nil here? Because if it's nil, the formatter
+		// will output a weird string. Also, need to come up with a strategy to
+		// handle this nil error because there is none at the moment.
 		return nil
 	}
 }
