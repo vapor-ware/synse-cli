@@ -98,7 +98,7 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 		return err
 	}
 
-	t := make([]scheme.WriteTransaction, len(transactions.Transactions))
+	t := make([]scheme.WriteTransaction, 0)
 	for id, ctx := range transactions.Transactions {
 		t = append(t, scheme.WriteTransaction{
 			Transaction: id,
