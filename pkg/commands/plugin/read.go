@@ -7,6 +7,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-server-grpc/go"
 )
 
 const (
@@ -71,15 +72,50 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 		return err
 	}
 
-	formatter := formatters.NewReadFormatter(c)
+	readData := make([]scheme.ReadData, 0)
 	for _, read := range resp {
-		err = formatter.Add(&scheme.Read{
-			// TODO: Add data.
-			Kind: read.Type,
+		readData = append(readData, scheme.ReadData{
+			Timestamp: read.GetTimestamp(),
+			Type:      read.GetType(),
+			Info:      read.GetInfo(),
+			Value:     getValue(read),
+			Unit:      scheme.OutputUnit{read.Unit.Name, read.Unit.Symbol},
 		})
-		if err != nil {
-			return err
-		}
 	}
+
+	formatter := formatters.NewReadFormatter(c)
+	err = formatter.Add(&scheme.Read{Data: readData})
+	if err != nil {
+		return err
+	}
+
 	return formatter.Write()
+}
+
+// getValue determines which oneof Reading.Value is set and returns the
+// corresponding value.
+func getValue(value *synse.Reading) interface{} { // nolint: gocyclo
+	switch value.Value.(type) {
+	case *synse.Reading_StringValue:
+		return value.GetStringValue()
+	case *synse.Reading_BoolValue:
+		return value.GetBoolValue()
+	case *synse.Reading_Float32Value:
+		return value.GetFloat32Value()
+	case *synse.Reading_Float64Value:
+		return value.GetFloat64Value()
+	case *synse.Reading_Int32Value:
+		return value.GetInt32Value()
+	case *synse.Reading_Int64Value:
+		return value.GetInt64Value()
+	case *synse.Reading_BytesValue:
+		return value.GetBytesValue()
+	case *synse.Reading_Uint32Value:
+		return value.GetUint32Value()
+	case *synse.Reading_Uint64Value:
+		return value.GetUint64Value()
+	default:
+		// FIXME: Should we return nil here?
+		return nil
+	}
 }
