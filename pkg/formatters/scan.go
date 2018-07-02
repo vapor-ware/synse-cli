@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	// the pretty output format for `synse server scan` requests
+	// the pretty output format for `server scan` requests
 	prettyScan = "{{.Rack}}\t{{.Board}}\t{{.Device}}\t{{.Info}}\t{{.Type}}\n"
 
-	// the pretty output format for `synse plugin devices` requests
+	// the pretty output format for `plugin devices` requests
 	prettyDevices = "{{.ID}}\t{{.Kind}}\t{{.Plugin}}\t{{.Info}}\t{{.Rack}}\t{{.Board}}\n"
 )
 

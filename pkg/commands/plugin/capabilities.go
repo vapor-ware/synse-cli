@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"fmt"
+
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
