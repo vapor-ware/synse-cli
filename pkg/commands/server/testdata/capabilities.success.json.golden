@@ -1,0 +1,32 @@
+[
+  {
+    "Plugin": "vaporio/emulator-plugin",
+    "Kind": "pressure",
+    "Outputs": "pressure"
+  },
+  {
+    "Plugin": "vaporio/emulator-plugin",
+    "Kind": "humidity",
+    "Outputs": "humidity, temperature"
+  },
+  {
+    "Plugin": "vaporio/emulator-plugin",
+    "Kind": "airflow",
+    "Outputs": "airflow"
+  },
+  {
+    "Plugin": "vaporio/emulator-plugin",
+    "Kind": "temperature",
+    "Outputs": "temperature"
+  },
+  {
+    "Plugin": "vaporio/emulator-plugin",
+    "Kind": "led",
+    "Outputs": "led.color, led.state"
+  },
+  {
+    "Plugin": "vaporio/emulator-plugin",
+    "Kind": "fan",
+    "Outputs": "fan.speed"
+  }
+]

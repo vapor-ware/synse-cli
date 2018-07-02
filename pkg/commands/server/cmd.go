@@ -21,9 +21,9 @@ var ServerCommand = cli.Command{
 	Description: cmdDescription,
 
 	Subcommands: []cli.Command{
-		capabilitiesCommand,
 		configCommand,
 		infoCommand,
+		capabilitiesCommand,
 		pluginsCommand,
 		readCommand,
 		scanCommand,
