@@ -1,8 +1,6 @@
 package plugin
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
@@ -55,7 +53,6 @@ func cmdCapabilities(c *cli.Context) error {
 
 	formatter := formatters.NewPluginCapabilitiesFormatter(c)
 	for _, capability := range capabilities {
-		fmt.Printf("__capability: %+v\n", capability)
 		err = formatter.Add(capability)
 		if err != nil {
 			return err
