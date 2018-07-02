@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"fmt"
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
@@ -46,13 +47,14 @@ var pluginCapabilitiesCommand = cli.Command{
 // cmdCapabilities is the action for pluginCapabilitiesCommand. It prints out
 // the capabilities information provided by the specified plugin.
 func cmdCapabilities(c *cli.Context) error {
-	resp, err := client.Grpc.Capabilities(c)
+	capabilities, err := client.Grpc.Capabilities(c)
 	if err != nil {
 		return err
 	}
 
-	formatter := formatters.NewCapabilitiesFormatter(c)
-	for _, capability := range resp {
+	formatter := formatters.NewPluginCapabilitiesFormatter(c)
+	for _, capability := range capabilities {
+		fmt.Printf("__capability: %+v\n", capability)
 		err = formatter.Add(capability)
 		if err != nil {
 			return err
