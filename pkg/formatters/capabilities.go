@@ -17,19 +17,6 @@ const (
 	prettyPluginCapabilities = "{{.Kind}}\t{{.Outputs}}\t\n"
 )
 
-// serverCapabilityFormat is the format for `server capabilities` command.
-type serverCapabilityFormat struct {
-	Plugin  string `json:"plugin"`
-	Kind    string `json:"kind"`
-	Outputs string `json:"outputs"`
-}
-
-// pluginCapabilityFormat is the format for `plugin capabilities` command.
-type pluginCapabilityFormat struct {
-	Kind    string
-	Outputs string
-}
-
 // newServerCapabilitiesFormat is the handler for `server capabilities` commands that is
 // used by the Formatter to add new capabilities data to the format context.
 func newServerCapabilitiesFormat(data interface{}) (interface{}, error) {
@@ -41,7 +28,7 @@ func newServerCapabilitiesFormat(data interface{}) (interface{}, error) {
 	var out []interface{}
 	for _, c := range capabilities {
 		for _, d := range c.Devices {
-			out = append(out, &serverCapabilityFormat{
+			out = append(out, &scheme.ServerCapabilityOutput{
 				Plugin:  c.Plugin,
 				Kind:    d.Kind,
 				Outputs: fmt.Sprint(strings.Join(d.Outputs, ", ")),
@@ -59,7 +46,7 @@ func newPluginCapabilitiesFormat(data interface{}) (interface{}, error) {
 		return nil, fmt.Errorf("formatter data %T not of type *DeviceCapability", capability)
 	}
 
-	return &pluginCapabilityFormat{
+	return &scheme.PluginCapabilityOutput{
 		Kind:    capability.Kind,
 		Outputs: fmt.Sprint(strings.Join(capability.Outputs, ", ")),
 	}, nil
@@ -70,7 +57,7 @@ func newPluginCapabilitiesFormat(data interface{}) (interface{}, error) {
 func NewServerCapabilitiesFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(c, newServerCapabilitiesFormat)
 	f.Template = prettyServerCapabilities
-	f.Decoder = &serverCapabilityFormat{}
+	f.Decoder = &scheme.ServerCapabilityOutput{}
 
 	return f
 }
@@ -80,7 +67,7 @@ func NewServerCapabilitiesFormatter(c *cli.Context) *Formatter {
 func NewPluginCapabilitiesFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(c, newPluginCapabilitiesFormat)
 	f.Template = prettyPluginCapabilities
-	f.Decoder = &pluginCapabilityFormat{}
+	f.Decoder = &scheme.PluginCapabilityOutput{}
 
 	return f
 }
