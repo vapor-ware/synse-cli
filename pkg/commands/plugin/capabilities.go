@@ -12,13 +12,13 @@ const (
 	capabilitiesCmdName = "capabilities"
 
 	// capabilitiesCmdUsage is the usage text for the 'capabilities' command.
-	capabilitiesCmdUsage = "Get capability information from a plugin"
+	capabilitiesCmdUsage = "Get the device capabilities for a plugin"
 
 	// capabilitiesCmdDesc is the description for the 'capabilities' command.
-	capabilitiesCmdDesc = `The capability command gets capability information from a plugin via the
-  Synse gRPC API. The device information returned here is similar to that
-  of a 'synse server capabilities' command, but contains more information
-  about the device.
+	capabilitiesCmdDesc = `The capabilities command gets information on the kinds of devices
+  that a plugin supports as well as the types of reading outputs 
+  each of those devices support. The device information returned
+  here is similar to that of a 'synse server capabilities' command.
 
   The 'plugin capabilities' command takes no arguments.
 
