@@ -250,8 +250,6 @@ func TestCapabilitiesCommandRequestSuccessPretty(t *testing.T) {
 	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
 	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
 
-	// FIXME: There are some strange behavior here. Tests wound't pass if there
-	// are none extra spacing in the end.
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "capabilities.success.pretty.golden"))
 	test.ExpectNoError(t, err)
 }
