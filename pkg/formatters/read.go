@@ -23,7 +23,6 @@ func newReadFormat(data interface{}) (interface{}, error) {
 
 	var out []interface{}
 	for _, readData := range read.Data {
-		fmt.Printf("%+v\n", readData)
 		out = append(out, &scheme.ReadOutput{
 			Info:      readData.Info,
 			Type:      readData.Type,
