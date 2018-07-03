@@ -17,6 +17,7 @@ type ReadData struct {
 
 // ReadOutput defines the scheme for the data output by a "read" command.
 type ReadOutput struct {
+	Info      string `json:"info" yaml:"info"`
 	Type      string `json:"type" yaml:"type"`
 	Value     string `json:"value" yaml:"value"`
 	Unit      string `json:"unit" yaml:"unit"`
