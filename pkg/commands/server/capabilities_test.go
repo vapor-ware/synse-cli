@@ -252,6 +252,6 @@ func TestCapabilitiesCommandRequestSuccessPretty(t *testing.T) {
 
 	// FIXME: There are some strange behavior here. Tests wound't pass if there
 	// are none extra spacing in the end.
-	// assert.Assert(t, golden.String(app.OutBuffer.String(), "capabilities.success.pretty.golden"))
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "capabilities.success.pretty.golden"))
 	test.ExpectNoError(t, err)
 }

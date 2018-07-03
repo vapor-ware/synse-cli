@@ -11,7 +11,7 @@ import (
 
 const (
 	// the pretty output format for `server capabilities` requests.
-	prettyServerCapabilities = "{{.Plugin}}\t{{.Kind}}\t{{.Outputs}}\t\n"
+	prettyServerCapabilities = "{{.Plugin}}\t{{.Kind}}\t{{.Outputs}}\n"
 
 	// the pretty output format for `plugin capabilities` requests.
 	prettyPluginCapabilities = "{{.Kind}}\t{{.Outputs}}\t\n"
@@ -19,9 +19,9 @@ const (
 
 // serverCapabilityFormat is the format for `server capabilities` command.
 type serverCapabilityFormat struct {
-	Plugin  string
-	Kind    string
-	Outputs string
+	Plugin  string `json:"plugin"`
+	Kind    string `json:"kind"`
+	Outputs string `json:"outputs"`
 }
 
 // pluginCapabilityFormat is the format for `plugin capabilities` command.
