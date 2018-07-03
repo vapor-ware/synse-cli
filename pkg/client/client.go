@@ -31,6 +31,9 @@ const (
 	// configBaseURI is the base URI for the 'config' route.
 	configBaseURI = "config"
 
+	// capabilitiesBaseURI is the base URI for the 'capabilities' route.
+	capabilitiesBaseURI = "capabilities"
+
 	// pluginsBaseURI is the base URI for the 'plugins' route.
 	pluginsBaseURI = "plugins"
 
@@ -235,6 +238,16 @@ func (c *synseClient) Version() (*scheme.Version, error) {
 func (c *synseClient) Config() (*scheme.Config, error) {
 	out := &scheme.Config{}
 	err := getVersioned(configBaseURI, out)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Capabilities gets and parses the response from Synse Server's "capabilities" endpoint.
+func (c *synseClient) Capabilities() ([]scheme.Capability, error) {
+	var out []scheme.Capability
+	err := getVersioned(capabilitiesBaseURI, &out)
 	if err != nil {
 		return nil, err
 	}

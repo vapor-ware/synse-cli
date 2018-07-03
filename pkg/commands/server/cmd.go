@@ -23,6 +23,7 @@ var ServerCommand = cli.Command{
 	Subcommands: []cli.Command{
 		configCommand,
 		infoCommand,
+		capabilitiesCommand,
 		pluginsCommand,
 		readCommand,
 		scanCommand,

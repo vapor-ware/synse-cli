@@ -10,9 +10,9 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/client"
 )
 
-// TestDevicesCommandError tests the 'devices' command when the plugin
+// TestCapabilitiesCommandError tests the `capabilities` command when the plugin
 // network info is not specified.
-func TestDevicesCommandError(t *testing.T) {
+func TestCapabilitiesCommandError(t *testing.T) {
 	client.Grpc.Reset()
 	app := test.NewFakeApp()
 	app.Commands = append(app.Commands, PluginCommand)
@@ -20,16 +20,16 @@ func TestDevicesCommandError(t *testing.T) {
 	err := app.Run([]string{
 		app.Name,
 		PluginCommand.Name,
-		pluginDevicesCommand.Name,
+		pluginCapabilitiesCommand.Name,
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "devices.error.none.golden"))
+	assert.Assert(t, golden.String(app.ErrBuffer.String(), "capabilities.error.none.golden"))
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestDevicesCommandError2 tests the 'devices' command when the plugin
+// TestCapabilitiesCommandError2 tests the `capabilities` command when the plugin
 // network info is specified as unix, but no backend is present.
-func TestDevicesCommandError2(t *testing.T) {
+func TestCapabilitiesCommandError2(t *testing.T) {
 	client.Grpc.Reset()
 	app := test.NewFakeApp()
 	app.Commands = append(app.Commands, PluginCommand)
@@ -38,16 +38,16 @@ func TestDevicesCommandError2(t *testing.T) {
 		app.Name,
 		PluginCommand.Name,
 		"--unix", "tmp/nonexistent",
-		pluginDevicesCommand.Name,
+		pluginCapabilitiesCommand.Name,
 	})
 
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "devices.error.unix.no_backend.golden"))
+	assert.Assert(t, golden.String(app.ErrBuffer.String(), "capabilities.error.unix.no_backend.golden"))
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestDevicesCommandError3 tests the 'devices' command when the plugin
+// TestCapabilitiesCommandError3 tests the `capabilities` command when the plugin
 // network info is specified as tcp, but no backend is present.
-func TestDevicesCommandError3(t *testing.T) {
+func TestCapabilitiesCommandError3(t *testing.T) {
 	client.Grpc.Reset()
 	app := test.NewFakeApp()
 	app.Commands = append(app.Commands, PluginCommand)
@@ -56,10 +56,10 @@ func TestDevicesCommandError3(t *testing.T) {
 		app.Name,
 		PluginCommand.Name,
 		"--tcp", "localhost:5151",
-		pluginDevicesCommand.Name,
+		pluginCapabilitiesCommand.Name,
 	})
 
 	// FIXME: Refer to `rpc error` comment on #181.
-	// assert.Assert(t, golden.String(app.ErrBuffer.String(), "devices.error.tcp.no_backend.golden"))
+	// assert.Assert(t, golden.String(app.ErrBuffer.String(), "capabilities.error.tcp.no_backend.golden"))
 	test.ExpectExitCoderError(t, err)
 }

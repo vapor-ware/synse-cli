@@ -25,6 +25,7 @@ var PluginCommand = cli.Command{
 	Description: cmdDescription,
 
 	Subcommands: []cli.Command{
+		pluginCapabilitiesCommand,
 		pluginDevicesCommand,
 		pluginReadCommand,
 		pluginTransactionCommand,
