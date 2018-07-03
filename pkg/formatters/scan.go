@@ -16,16 +16,6 @@ const (
 	prettyDevices = "{{.ID}}\t{{.Kind}}\t{{.Plugin}}\t{{.Info}}\t{{.Rack}}\t{{.Board}}\n"
 )
 
-// devicesFormat collects the data that will be parsed into the output template.
-type devicesFormat struct {
-	ID     string
-	Kind   string
-	Plugin string
-	Info   string
-	Rack   string
-	Board  string
-}
-
 // newScanFormat is the handler for scan commands that is used by the
 // Formatter to add new scan data to the format context.
 func newScanFormat(data interface{}) (interface{}, error) {
@@ -43,7 +33,7 @@ func newDevicesFormat(data interface{}) (interface{}, error) {
 	if !ok {
 		return nil, fmt.Errorf("formatter data %T not of type *Device", device)
 	}
-	return &devicesFormat{
+	return &scheme.DevicesOutput{
 		ID:     device.Uid,
 		Kind:   device.Kind,
 		Plugin: device.Plugin,

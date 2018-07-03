@@ -1,6 +1,6 @@
 package scheme
 
-// DevicesOutput dines the scheme for the data output by a "plugin devices" command.
+// DevicesOutput is the scheme for `plugin devices` pretty output.
 type DevicesOutput struct {
 	ID     string
 	Kind   string
