@@ -10,7 +10,7 @@ import (
 
 const (
 	// the pretty output format for read requests
-	prettyRead = "{{.Type}}\t{{.Value}}\t{{.Unit}}\t{{.Timestamp}}\n"
+	prettyRead = "{{.Info}}\t{{.Type}}\t{{.Value}}\t{{.Unit}}\t{{.Timestamp}}\n"
 )
 
 // newReadFormat is the handler for read commands that is used by the
@@ -24,6 +24,7 @@ func newReadFormat(data interface{}) (interface{}, error) {
 	var out []interface{}
 	for _, readData := range read.Data {
 		out = append(out, &scheme.ReadOutput{
+			Info:      readData.Info,
 			Type:      readData.Type,
 			Value:     fmt.Sprintf("%v", readData.Value),
 			Unit:      readData.Unit.Symbol,
