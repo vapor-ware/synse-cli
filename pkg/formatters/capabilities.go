@@ -31,7 +31,7 @@ func newServerCapabilitiesFormat(data interface{}) (interface{}, error) {
 			out = append(out, &scheme.ServerCapabilityOutput{
 				Plugin:  c.Plugin,
 				Kind:    d.Kind,
-				Outputs: fmt.Sprint(strings.Join(d.Outputs, ", ")),
+				Outputs: strings.Join(d.Outputs, ", "),
 			})
 		}
 	}
@@ -48,7 +48,7 @@ func newPluginCapabilitiesFormat(data interface{}) (interface{}, error) {
 
 	return &scheme.PluginCapabilityOutput{
 		Kind:    capability.Kind,
-		Outputs: fmt.Sprint(strings.Join(capability.Outputs, ", ")),
+		Outputs: strings.Join(capability.Outputs, ", "),
 	}, nil
 }
 
