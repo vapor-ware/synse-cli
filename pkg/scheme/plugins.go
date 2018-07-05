@@ -45,3 +45,12 @@ type CheckData struct {
 	Timestamp string `json:"timestamp" yaml:"timestamp"`
 	Type      string `json:"type" yaml:"type"`
 }
+
+// ServerPluginOutput is the scheme for `server plugins` command pretty output.
+type ServerPluginOutput struct {
+	Tag      string `json:"tag" yaml:"tag"`
+	Protocol string `json:"protocol" yaml:"protocol"`
+	Address  string `json:"address" yaml:"address"`
+	Version  string `json:"version" yaml:"version"`
+	Status   string `json:"status" yaml:"status"`
+}
