@@ -6,21 +6,6 @@
   network:
     protocol: tcp
     address: emulator-plugin:5001
-  health:
-    status: ok
-    message: ""
-    timestamp: "2018-06-27T18:30:46.237254715Z"
-    checks:
-    - name: read buffer health
-      status: ok
-      message: ""
-      timestamp: "2018-06-27T18:30:16.531781924Z"
-      type: periodic
-    - name: write buffer health
-      status: ok
-      message: ""
-      timestamp: "2018-06-27T18:30:16.531781924Z"
-      type: periodic
   version:
     plugin_version: 2.0.0
     sdk_version: 1.0.0
@@ -37,21 +22,6 @@
   network:
     protocol: unix
     address: /tmp/synse/proc/bar.sock
-  health:
-    status: ok
-    message: ""
-    timestamp: "2018-06-27T18:30:46.237254715Z"
-    checks:
-    - name: read buffer health
-      status: ok
-      message: ""
-      timestamp: "2018-06-27T18:30:16.531781924Z"
-      type: periodic
-    - name: write buffer health
-      status: ok
-      message: ""
-      timestamp: "2018-06-27T18:30:16.531781924Z"
-      type: periodic
   version:
     plugin_version: 2.0.0
     sdk_version: 1.0.0

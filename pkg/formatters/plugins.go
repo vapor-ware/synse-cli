@@ -43,14 +43,13 @@ func newServerPluginsInfoFormat(data interface{}) (interface{}, error) {
 
 	var out []interface{}
 	for _, p := range plugins {
-		out = append(out, &scheme.Plugin{
+		out = append(out, &scheme.ServerPluginInfoOutput{
 			Name:        p.Name,
 			Tag:         p.Tag,
 			Description: p.Description,
 			Maintainer:  p.Maintainer,
 			VCS:         p.VCS,
 			Network:     p.Network,
-			Health:      p.Health,
 			Version:     p.Version,
 		})
 	}
@@ -74,7 +73,7 @@ func NewServerPluginsFormatter(c *cli.Context) *Formatter {
 // available plugins instead.
 func NewServerPluginsInfoFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(c, newServerPluginsInfoFormat)
-	f.Decoder = &scheme.Plugin{}
+	f.Decoder = &scheme.ServerPluginInfoOutput{}
 
 	return f
 }

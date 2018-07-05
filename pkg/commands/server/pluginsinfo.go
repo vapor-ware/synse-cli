@@ -16,11 +16,7 @@ const (
 
 	// pluginsInfoCmdDesc is the description for the 'plugins info' command.
 	pluginsInfoCmdDesc = `The plugins info command hits the active Synse Server host's '/plugins'
-  endpoint, which returns the current set of configured plugins for
-  that instance. This returns more metadata information of plugins 
-  than 'plugins' command alone.
-
-  TODO: Change Description!
+  endpoint, returns metadata information of all configured plugins.
 
 Example:
   synse server plugins info
