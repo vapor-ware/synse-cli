@@ -19,6 +19,8 @@ const (
   endpoint, which returns the current set of configured plugins for
   that instance.
 
+  TODO: Change Description.
+
 Example:
   synse server plugins
 
@@ -40,6 +42,10 @@ var pluginsCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdPlugins(c))
 	},
+
+	Subcommands: []cli.Command{
+		pluginsInfoCommand,
+	},
 }
 
 // cmPlugins is the action for the pluginsCommand. It makes a "plugins" request
@@ -50,7 +56,7 @@ func cmdPlugins(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewPluginsFormatter(c)
+	formatter := formatters.NewServerPluginsFormatter(c)
 	err = formatter.Add(plugins)
 	if err != nil {
 		return err
