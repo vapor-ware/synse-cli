@@ -15,12 +15,12 @@ const (
 	pluginsCmdUsage = "Get the list of plugins that are configured with Synse Server"
 
 	// pluginsCmdDesc is the description for the 'plugins' command.
-	pluginsCmdDesc = `The plugins command hits the active Synse Server host's '/plugins'
-  endpoint, which returns the current set of configured plugins for
-  that instance.
+	pluginsCmdDesc = `This sub-command allows you to get plugin metadata, such as the
+  name, version, tag, etc. It also lets you get a view into the plugin
+  health if any health checks are configured for the plugin.
 
-Example:
-  synse server plugins
+  If no arguments are given, this will return an overview of all 
+  configured plugins.
 
 Formatting:
   The 'server plugins' command supports the following formatting
@@ -40,6 +40,11 @@ var pluginsCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdPlugins(c))
 	},
+
+	Subcommands: []cli.Command{
+		pluginsInfoCommand,
+		pluginsHealthCommand,
+	},
 }
 
 // cmPlugins is the action for the pluginsCommand. It makes a "plugins" request
@@ -50,7 +55,7 @@ func cmdPlugins(c *cli.Context) error {
 		return err
 	}
 
-	formatter := formatters.NewPluginsFormatter(c)
+	formatter := formatters.NewServerPluginsFormatter(c)
 	err = formatter.Add(plugins)
 	if err != nil {
 		return err

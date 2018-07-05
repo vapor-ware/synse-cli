@@ -45,3 +45,35 @@ type CheckData struct {
 	Timestamp string `json:"timestamp" yaml:"timestamp"`
 	Type      string `json:"type" yaml:"type"`
 }
+
+// ServerPluginOutput is the scheme for `server plugins` command pretty output.
+type ServerPluginOutput struct {
+	Tag      string `json:"tag" yaml:"tag"`
+	Protocol string `json:"protocol" yaml:"protocol"`
+	Address  string `json:"address" yaml:"address"`
+	Version  string `json:"version" yaml:"version"`
+	Status   string `json:"status" yaml:"status"`
+}
+
+// ServerPluginInfoOutput is the scheme for `server plugins info` command output.
+// FIXME: This struct is the same as the Plugin above, except the Health field.
+// This might create redundancy but definitely help with readability and
+// consistency because it is separating out Synse Server's response and CLI's
+// output.
+// TODO: If that's the case, need to go through other files and model after this.
+type ServerPluginInfoOutput struct {
+	Name        string      `json:"name" yaml:"name"`
+	Tag         string      `json:"tag" yaml:"tag"`
+	Description string      `json:"description" yaml:"description"`
+	Maintainer  string      `json:"maintainer" yaml:"maintainer"`
+	VCS         string      `json:"vcs" yaml:"vcs"`
+	Network     NetworkData `json:"network" yaml:"network"`
+	Version     VersionData `json:"version" yaml:"version"`
+}
+
+// ServerPluginHealthOutput is the scheme for `server plugins health` command
+// output.
+type ServerPluginHealthOutput struct {
+	Tag    string     `json:"tag" yaml:"tag"`
+	Health HealthData `json:"health" yaml:"health"`
+}
