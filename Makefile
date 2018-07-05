@@ -71,6 +71,7 @@ endif
 	@ # disable gotype: https://github.com/alecthomas/gometalinter/issues/40
 	gometalinter ./... \
 		--disable=gotype \
+		--disable=errcheck \
 		--tests \
 		--vendor \
 		--sort=severity \
