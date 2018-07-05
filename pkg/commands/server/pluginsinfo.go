@@ -12,7 +12,7 @@ const (
 	pluginsInfoCmdName = "info"
 
 	// pluginsInfoCmdUsage is the usage text for the 'plugins info' command.
-	pluginsInfoCmdUsage = "Get the list of plugins' metadata that are configured with Synse Server"
+	pluginsInfoCmdUsage = "Get a list of plugins' metadata that are configured with Synse Server"
 
 	// pluginsInfoCmdDesc is the description for the 'plugins info' command.
 	pluginsInfoCmdDesc = `The plugins info command hits the active Synse Server host's '/plugins'
@@ -28,7 +28,8 @@ Formatting:
     - json`
 )
 
-// pluginsInfoCommand is additional CLI command for Synse Server's "plugins" API route.
+// pluginsInfoCommand is a CLI command for Synse Server's "plugins" API route
+// that gets metadata information.
 var pluginsInfoCommand = cli.Command{
 	Name:        pluginsInfoCmdName,
 	Usage:       pluginsInfoCmdUsage,

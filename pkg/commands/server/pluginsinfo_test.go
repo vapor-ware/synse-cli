@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	// the mocked 200 OK JSON response for the Synse Server 'plugins' route
+	// the mocked 200 OK JSON response for the 'plugins info' command.
 	pluginsInfoRespOK = `
 [
   {
@@ -103,7 +103,7 @@ const (
 	// is already mocked in plugins_test.go.
 )
 
-// TestPluginsInfoCommandRequestSuccessYaml tests the 'plugins' command when it gets
+// TestPluginsInfoCommandRequestSuccessYaml tests the 'plugins info' command when it gets
 // a 200 response from Synse Server, with YAML output.
 func TestPluginsInfoCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
@@ -137,7 +137,7 @@ func TestPluginsInfoCommandRequestSuccessYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestPluginsInfoCommandRequestSuccessJson tests the 'plugins' command when it gets
+// TestPluginsInfoCommandRequestSuccessJson tests the 'plugins info' command when it gets
 // a 200 response from Synse Server, with JSON output.
 func TestPluginsInfoCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
