@@ -16,28 +16,18 @@ const (
 
 	// pluginsCmdDesc is the description for the 'plugins' command.
 	pluginsCmdDesc = `This sub-command allows you to get plugin metadata, such as the
-  name, version, tag, etc. It also lets you get a view into the plugin health
-  if any health checks are configured for the plugin.
+  name, version, tag, etc. It also lets you get a view into the plugin
+  health if any health checks are configured for the plugin.
 
   If no arguments are given, this will return an overview of all 
   configured plugins.
-
-Usage:
-  synse server plugins [command [command options] [arguments...]]
-
-Commands:
-  info         Get a complete view of available plugins' metadata
-  health       Get the health status of available plugins
 
 Formatting:
   The 'server plugins' command supports the following formatting
   options (via the CLI global --format flag):
     - pretty (default)
     - yaml
-    - json
-
-Options:
-  --help, -h  show help`
+    - json`
 )
 
 // pluginsCommand is the CLI command for Synse Server's "plugins" API route.
@@ -53,6 +43,7 @@ var pluginsCommand = cli.Command{
 
 	Subcommands: []cli.Command{
 		pluginsInfoCommand,
+		pluginsHealthCommand,
 	},
 }
 

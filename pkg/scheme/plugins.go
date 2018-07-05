@@ -70,3 +70,10 @@ type ServerPluginInfoOutput struct {
 	Network     NetworkData `json:"network" yaml:"network"`
 	Version     VersionData `json:"version" yaml:"version"`
 }
+
+// ServerPluginHealthOutput is the scheme for `server plugins health` command
+// output.
+type ServerPluginHealthOutput struct {
+	Tag    string     `json:"tag" yaml:"tag"`
+	Health HealthData `json:"health" yaml:"health"`
+}
