@@ -2,7 +2,6 @@ package server
 
 import (
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
@@ -14,12 +13,20 @@ const (
 	// pluginsHealthCmdUsage is the usage text for the 'plugins health' command.
 	pluginsHealthCmdUsage = "Get a list of plugins' health that are configured with Synse Server"
 
+	// pluginsHealthCmdArgsUsage is the argument usage for the `plugins health` command.
+	pluginsHealthCmdArgsUsage = "[PLUGIN TAG]"
+
 	// pluginsHealthCmdDesc is the description for the 'plugins health' command.
 	pluginsHealthCmdDesc = `The plugins health command hits the active Synse Server host's '/plugins'
-  endpoint, returns health information of all configured plugins.
+  endpoint. If a plugin is provided, the CLI will return its health information.
+  Otherwise, it returns health information of all configured plugins.
 
 Example:
+  # Get health of all configured plugins (default)
   synse server plugins health
+
+  # Get health of vaporio/emulator-plugin
+  synse server plugins health vaporio/emulator-plugin
 
 Formatting:
   The 'server plugins health' command supports the following formatting
@@ -34,7 +41,7 @@ var pluginsHealthCommand = cli.Command{
 	Name:        pluginsHealthCmdName,
 	Usage:       pluginsHealthCmdUsage,
 	Description: pluginsHealthCmdDesc,
-	ArgsUsage:   utils.NoArgs,
+	ArgsUsage:   pluginsHealthCmdArgsUsage,
 
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdPluginsHealth(c))
@@ -44,9 +51,19 @@ var pluginsHealthCommand = cli.Command{
 // cmPluginsHealth is the action for the pluginsHealthCommand. It makes a "plugins" request
 // against the active Synse Server instance and returns plugins' health information.
 func cmdPluginsHealth(c *cli.Context) error {
-	plugins, err := client.Client.Plugins()
+	err := utils.RequiresArgsInRange(0, 1, c)
 	if err != nil {
 		return err
+	}
+
+	plugins, err := getPlugins(c.Args().Get(0), c)
+	if err != nil {
+		return err
+	}
+
+	// FIXME: Should we return nil here? Refer to #179.
+	if len(plugins) == 0 {
+		return nil
 	}
 
 	formatter := formatters.NewServerPluginsHealthFormatter(c)

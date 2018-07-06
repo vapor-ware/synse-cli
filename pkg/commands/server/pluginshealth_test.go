@@ -136,3 +136,102 @@ func TestPluginsHealthCommandRequestSuccessJson(t *testing.T) {
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "pluginshealth.success.json.golden"))
 	test.ExpectNoError(t, err)
 }
+
+// TestPluginsHealthCommandExtraArgsRequestSuccessYaml tests the 'plugins health'
+// command using a [PLUGIN TAG] argument when extra arguments are provided.
+func TestPluginsHealthCommandExtraArgsRequestSuccessYaml(t *testing.T) {
+	test.Setup()
+
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		pluginsCommand.Name,
+		pluginsHealthCommand.Name,
+		"vaporio/emulator-plugin", "extra",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	// FIXME: Including the error "command 'health' requires between 0 and 1
+	// arguments, 2 given" in the golden file makes the test fail? It is
+	// currently empty.
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "pluginshealth.error.extra_args.golden"))
+	test.ExpectExitCoderError(t, err)
+}
+
+// TestPluginsHealthCommandArgsRequestSuccessYaml tests the 'plugins health'
+// command using a [PLUGIN TAG] argument when it gets a 200 response
+// from Synse Server, with YAML output.
+func TestPluginsHealthCommandArgsRequestSuccessYaml(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc(
+		"/synse/2.0/plugins",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, pluginsHealthRespOK)
+		},
+	)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		pluginsCommand.Name,
+		pluginsHealthCommand.Name,
+		"vaporio/emulator-plugin",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "pluginshealth.success.yaml.tag.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestPluginsHealthCommandArgsRequestSuccessJson tests the 'plugins health'
+// command using a [PLUGIN TAG] argument  when it gets a 200 response
+// from Synse Server, with JSON output.
+func TestPluginsHealthCommandArgsRequestSuccessJson(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc(
+		"/synse/2.0/plugins",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, pluginsHealthRespOK)
+		},
+	)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		ServerCommand.Name,
+		pluginsCommand.Name,
+		pluginsHealthCommand.Name,
+		"vaporio/unix-plugin",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "pluginshealth.success.json.tag.golden"))
+	test.ExpectNoError(t, err)
+}
