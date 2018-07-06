@@ -64,9 +64,8 @@ func cmdPlugins(c *cli.Context) error {
 	return formatter.Write()
 }
 
-// getPlugins is a helper function that takes the given plugin tag and returns
-// the set of matched plugins. It takes a Context and an arbitrary number of
-// string tags as arguments.
+// getPlugins is a helper function that takes a Context and an arbitrary number
+// of string tags as arguments and returns a set of matched plugins.
 func getPlugins(c *cli.Context, tags ...string) ([]scheme.Plugin, error) {
 	var plugins []scheme.Plugin
 
