@@ -18,8 +18,8 @@ const (
 
 	// pluginsInfoCmdDesc is the description for the 'plugins info' command.
 	pluginsInfoCmdDesc = `The plugins info command hits the active Synse Server host's '/plugins'
-  endpoint. If a plugin tag or mutiple plugins' tags (up to 3) are provided,
-  the CLI returns their metadata information. Otherwise, it returns metadata
+  endpoint. If a plugin tag or mutiple plugins' tags are provided, the CLI
+  returns their metadata information. Otherwise, it returns metadata
   information of all configured plugins.
 
 Example:
@@ -52,17 +52,7 @@ var pluginsInfoCommand = cli.Command{
 // cmPluginsInfo is the action for the pluginsInfoCommand. It makes a "plugins" request
 // against the active Synse Server instance and returns plugins' metadata information.
 func cmdPluginsInfo(c *cli.Context) error {
-	err := utils.RequiresArgsInRange(0, 3, c)
-	if err != nil {
-		return err
-	}
-
-	plugins, err := getPlugins(
-		c,
-		c.Args().Get(0),
-		c.Args().Get(1),
-		c.Args().Get(2),
-	)
+	plugins, err := getPlugins(c, c.Args()...)
 	if err != nil {
 		return err
 	}

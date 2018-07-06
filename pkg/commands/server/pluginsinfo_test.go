@@ -314,27 +314,3 @@ func TestPluginsInfoCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "pluginsinfo.success.json.multiple_args.golden"))
 	test.ExpectNoError(t, err)
 }
-
-// TestPluginsInfoCommandExtraArgsRequestSuccessYaml tests the 'plugins info'
-// command using a [PLUGIN TAG] argument when extra arguments are provided.
-func TestPluginsInfoCommandExtraArgsRequestSuccessYaml(t *testing.T) {
-	test.Setup()
-
-	app := test.NewFakeApp()
-	app.Commands = append(app.Commands, ServerCommand)
-
-	err := app.Run([]string{
-		app.Name,
-		"--format", "yaml",
-		ServerCommand.Name,
-		pluginsCommand.Name,
-		pluginsInfoCommand.Name,
-		"vaporio/emulator-plugin", "vaporio/unix-plugin", "foo", "bar",
-	})
-
-	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
-
-	assert.Assert(t, golden.String(app.ErrBuffer.String(), "pluginsinfo.error.extra_args.golden"))
-	test.ExpectExitCoderError(t, err)
-}
