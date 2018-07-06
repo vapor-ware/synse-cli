@@ -14,20 +14,20 @@ const (
 	pluginsInfoCmdUsage = "Get a list of plugins' metadata that are configured with Synse Server"
 
 	// pluginsInfoCmdArgsUsage is the argument usage for the `plugins info` command.
-	pluginsInfoCmdArgsUsage = "[PLUGIN TAG]"
+	pluginsInfoCmdArgsUsage = "[PLUGIN TAG ...]"
 
 	// pluginsInfoCmdDesc is the description for the 'plugins info' command.
 	pluginsInfoCmdDesc = `The plugins info command hits the active Synse Server host's '/plugins'
-  endpoint. If a plugin is provided, the CLI will return its metadata
-  information. Otherwise, it returns metadata information of all
-  configured plugins.
+  endpoint. If a plugin tag or mutiple plugins' tags (up to 3) are provided,
+  the CLI returns their metadata information. Otherwise, it returns metadata
+  information of all configured plugins.
 
 Example:
   # Get metadata of all configured plugins (default)
   synse server plugins info
 
   # Get metadata of vaporio/emulator-plugin
-  synse server plugins info emulator-plugin
+  synse server plugins info vaporio/emulator-plugin
 
 Formatting:
   The 'server plugins info' command supports the following formatting
@@ -57,15 +57,18 @@ func cmdPluginsInfo(c *cli.Context) error {
 		return err
 	}
 
-	plugins, err := getPlugins(c.Args().Get(0), c)
+	plugins, err := getPlugins(
+		c,
+		c.Args().Get(0),
+		c.Args().Get(1),
+		c.Args().Get(2),
+	)
 	if err != nil {
 		return err
 	}
 
-	// FIXME: Should we return nil here? Refer to #179.
-	if len(plugins) == 0 {
-		return nil
-	}
+	// FIXME: If plugins is empty, formatter raises a "no data to write error".
+	// Refer to #187's comment.
 
 	formatter := formatters.NewServerPluginsInfoFormatter(c)
 	err = formatter.Add(plugins)

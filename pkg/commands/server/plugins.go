@@ -51,7 +51,7 @@ var pluginsCommand = cli.Command{
 // cmPlugins is the action for the pluginsCommand. It makes a "plugins" request
 // against the active Synse Server instance.
 func cmdPlugins(c *cli.Context) error {
-	plugins, err := client.Client.Plugins()
+	plugins, err := getPlugins(c)
 	if err != nil {
 		return err
 	}
@@ -65,16 +65,9 @@ func cmdPlugins(c *cli.Context) error {
 }
 
 // getPlugins is a helper function that takes the given plugin tag and returns
-// the set of matched plugins.
-// FIXME: getPlugins is actually not consumed by cmdPlugins in this file
-// because `plugins` works without arguments. It is used by `plugins
-// info` and `plugins health`, which are in other files. Not sure if we
-// should keep it here or not. In the cmdPlugins, instead of calling
-// client.Client.Plugin(), we can provide an empty string as the first
-// parameter for getPlugins, like so getPlugins("", c), to have the same effect
-// and make use of getPlugins for consistency among all the plugins command.
-// Yet it doesn't look as pretty.
-func getPlugins(pluginTag string, c *cli.Context) ([]scheme.Plugin, error) {
+// the set of matched plugins. It takes a Context and an arbitrary number of
+// string tags as arguments.
+func getPlugins(c *cli.Context, tags ...string) ([]scheme.Plugin, error) {
 	var plugins []scheme.Plugin
 
 	pluginsResults, err := client.Client.Plugins()
@@ -82,14 +75,25 @@ func getPlugins(pluginTag string, c *cli.Context) ([]scheme.Plugin, error) {
 		return nil, err
 	}
 
-	if pluginTag == "" {
-		return pluginsResults, nil
+	// counter keeps count of empty tag string. If all tags are empty, meaning
+	// that no arguments are provided, return all configured plugins.
+	// Otherwise, only return these matched ones.
+	counter := 0
+	for _, tag := range tags {
+		if tag == "" {
+			counter++
+			continue
+		}
+
+		for _, plugin := range pluginsResults {
+			if tag == plugin.Tag {
+				plugins = append(plugins, plugin)
+			}
+		}
 	}
 
-	for _, plugin := range pluginsResults {
-		if pluginTag == plugin.Tag {
-			plugins = append(plugins, plugin)
-		}
+	if len(tags) == counter {
+		return pluginsResults, nil
 	}
 
 	return plugins, nil
