@@ -67,7 +67,7 @@ func cmdPluginsInfo(c *cli.Context) error {
 		return err
 	}
 
-	// FIXME: If plugins is empty, formatter raises a "no data to write error".
+	// FIXME: If plugins is empty, formatter raises a "no data to write" error.
 	// Refer to #187's comment.
 
 	formatter := formatters.NewServerPluginsInfoFormatter(c)

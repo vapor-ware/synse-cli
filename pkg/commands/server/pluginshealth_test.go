@@ -69,8 +69,8 @@ const (
 	// is already mocked in plugins_test.go.
 )
 
-// TestPluginsHealthCommandRequestSuccessYaml tests the 'plugins health' command when it gets
-// a 200 response from Synse Server, with YAML output.
+// TestPluginsHealthCommandRequestSuccessYaml tests the 'plugins health'
+// command when it gets a 200 response from Synse Server, with YAML output.
 func TestPluginsHealthCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
@@ -103,8 +103,8 @@ func TestPluginsHealthCommandRequestSuccessYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestPluginsHealthCommandRequestSuccessJson tests the 'plugins health' command when it gets
-// a 200 response from Synse Server, with JSON output.
+// TestPluginsHealthCommandRequestSuccessJson tests the 'plugins health'
+// command when it gets a 200 response from Synse Server, with JSON output.
 func TestPluginsHealthCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
@@ -138,8 +138,8 @@ func TestPluginsHealthCommandRequestSuccessJson(t *testing.T) {
 }
 
 // TestPluginsHealthCommandSingleArgsRequestSuccessYaml tests the 'plugins health'
-// command using a single argument when it gets a 200 response
-// from Synse Server, with YAML output.
+// command using a single argument when it gets a 200 response from Synse Server,
+// with YAML output.
 func TestPluginsHealthCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
@@ -174,8 +174,8 @@ func TestPluginsHealthCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 }
 
 // TestPluginsHealthCommandMultipleArgsRequestSuccessYaml tests the 'plugins health'
-// command using multiple arguments when it gets a 200 response
-// from Synse Server, with YAML output.
+// command using multiple arguments when it gets a 200 response from Synse Server,
+// with YAML output.
 func TestPluginsHealthCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
@@ -210,8 +210,8 @@ func TestPluginsHealthCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 }
 
 // TestPluginsHealthCommandSingleArgsRequestSuccessJson tests the 'plugins health'
-// command using a single argument when it gets a 200 response
-// from Synse Server, with JSON output.
+// command using a single argument when it gets a 200 response from Synse Server,
+// with JSON output.
 func TestPluginsHealthCommandSingleArgsRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
@@ -246,8 +246,8 @@ func TestPluginsHealthCommandSingleArgsRequestSuccessJson(t *testing.T) {
 }
 
 // TestPluginsHealthCommandMultipleArgsRequestSuccessJson tests the 'plugins health'
-// command using multiple plugin tags arguments when it gets a 200 response
-// from Synse Server, with JSON output.
+// command using multiple plugin tags arguments when it gets a 200 response from
+// Synse Server, with JSON output.
 func TestPluginsHealthCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 	test.Setup()
 

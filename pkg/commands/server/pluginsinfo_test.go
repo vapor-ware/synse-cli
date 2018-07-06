@@ -103,8 +103,8 @@ const (
 	// is already mocked in plugins_test.go.
 )
 
-// TestPluginsInfoCommandRequestSuccessYaml tests the 'plugins info' command when it gets
-// a 200 response from Synse Server, with YAML output.
+// TestPluginsInfoCommandRequestSuccessYaml tests the 'plugins info' command
+// when it gets a 200 response from Synse Server, with YAML output.
 func TestPluginsInfoCommandRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
@@ -137,8 +137,8 @@ func TestPluginsInfoCommandRequestSuccessYaml(t *testing.T) {
 	test.ExpectNoError(t, err)
 }
 
-// TestPluginsInfoCommandRequestSuccessJson tests the 'plugins info' command when it gets
-// a 200 response from Synse Server, with JSON output.
+// TestPluginsInfoCommandRequestSuccessJson tests the 'plugins info' command
+// when it gets a 200 response from Synse Server, with JSON output.
 func TestPluginsInfoCommandRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
@@ -172,8 +172,8 @@ func TestPluginsInfoCommandRequestSuccessJson(t *testing.T) {
 }
 
 // TestPluginsInfoCommandSingleArgsRequestSuccessYaml tests the 'plugins info'
-// command using a single argument when it gets a 200 response
-// from Synse Server, with YAML output.
+// command using a single argument when it gets a 200 response from Synse Server,
+// with YAML output.
 func TestPluginsInfoCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
@@ -208,8 +208,8 @@ func TestPluginsInfoCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 }
 
 // TestPluginsInfoCommandMultipleArgsRequestSuccessYaml tests the 'plugins info'
-// command using a multiple arguments when it gets a 200 response
-// from Synse Server, with YAML output.
+// command using a multiple arguments when it gets a 200 response from Synse Server,
+// with YAML output.
 func TestPluginsInfoCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 	test.Setup()
 
@@ -244,8 +244,8 @@ func TestPluginsInfoCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 }
 
 // TestPluginsInfoCommandSingleArgsRequestSuccessJson tests the 'plugins info'
-// command using a single argument  when it gets a 200 response
-// from Synse Server, with JSON output.
+// command using a single argument  when it gets a 200 response from Synse Server,
+// with JSON output.
 func TestPluginsInfoCommandSingleArgsRequestSuccessJson(t *testing.T) {
 	test.Setup()
 
@@ -280,8 +280,8 @@ func TestPluginsInfoCommandSingleArgsRequestSuccessJson(t *testing.T) {
 }
 
 // TestPluginsInfoCommandMultipleArgsRequestSuccessJson tests the 'plugins info'
-// command using multiple arguments when it gets a 200 response
-// from Synse Server, with JSON output.
+// command using multiple arguments when it gets a 200 response from Synse Server,
+// with JSON output.
 func TestPluginsInfoCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 	test.Setup()
 

@@ -75,8 +75,8 @@ func getPlugins(c *cli.Context, tags ...string) ([]scheme.Plugin, error) {
 	}
 
 	// counter keeps count of empty tag string. If all tags are empty, meaning
-	// that no arguments are provided, return all configured plugins.
-	// Otherwise, only return these matched ones.
+	// that no arguments are provided, the function returns all configured plugins.
+	// Otherwise, it only returns these matched ones.
 	counter := 0
 	for _, tag := range tags {
 		if tag == "" {
