@@ -52,7 +52,7 @@ var pluginsInfoCommand = cli.Command{
 // cmPluginsInfo is the action for the pluginsInfoCommand. It makes a "plugins" request
 // against the active Synse Server instance and returns plugins' metadata information.
 func cmdPluginsInfo(c *cli.Context) error {
-	err := utils.RequiresArgsInRange(0, 1, c)
+	err := utils.RequiresArgsInRange(0, 3, c)
 	if err != nil {
 		return err
 	}
