@@ -2,9 +2,7 @@ package server
 
 import (
 	"github.com/urfave/cli"
-	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
-	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -15,8 +13,7 @@ const (
 	// pluginsInfoCmdUsage is the usage text for the 'plugins info' command.
 	pluginsInfoCmdUsage = "Get a list of plugins' metadata that are configured with Synse Server"
 
-	// pluginsInfoCmdArgsUsage is the argument usage for the `plugins info`
-	// command.
+	// pluginsInfoCmdArgsUsage is the argument usage for the `plugins info` command.
 	pluginsInfoCmdArgsUsage = "[PLUGIN TAG]"
 
 	// pluginsInfoCmdDesc is the description for the 'plugins info' command.
@@ -65,6 +62,7 @@ func cmdPluginsInfo(c *cli.Context) error {
 		return err
 	}
 
+	// FIXME: Should we return nil here? Refer to #179.
 	if len(plugins) == 0 {
 		return nil
 	}
@@ -75,27 +73,4 @@ func cmdPluginsInfo(c *cli.Context) error {
 		return err
 	}
 	return formatter.Write()
-}
-
-// getPlugins is a helper function that takes the given plugin tag and returns
-// the set of matched plugins.
-func getPlugins(pluginTag string, c *cli.Context) ([]scheme.Plugin, error) {
-	var plugins []scheme.Plugin
-
-	pluginsResults, err := client.Client.Plugins()
-	if err != nil {
-		return nil, err
-	}
-
-	if pluginTag == "" {
-		return pluginsResults, nil
-	}
-
-	for _, plugin := range pluginsResults {
-		if pluginTag == plugin.Tag {
-			plugins = append(plugins, plugin)
-		}
-	}
-
-	return plugins, nil
 }

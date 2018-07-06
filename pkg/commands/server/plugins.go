@@ -4,6 +4,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
+	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -61,4 +62,35 @@ func cmdPlugins(c *cli.Context) error {
 		return err
 	}
 	return formatter.Write()
+}
+
+// getPlugins is a helper function that takes the given plugin tag and returns
+// the set of matched plugins.
+// FIXME: getPlugins is actually not consumed by cmdPlugins in this file
+// because `plugins` works without arguments. It is used by `plugins
+// info` and `plugins health`, which are in other files. Not sure if we
+// should keep it here or not. In the cmdPlugins, instead of calling
+// client.Client.Plugin(), we can provide an empty string as the first
+// parameter for getPlugins, like so getPlugins("", c), to have the same effect
+// and make use of getPlugins for consistency among all the plugins command.
+// Yet it doesn't look as pretty.
+func getPlugins(pluginTag string, c *cli.Context) ([]scheme.Plugin, error) {
+	var plugins []scheme.Plugin
+
+	pluginsResults, err := client.Client.Plugins()
+	if err != nil {
+		return nil, err
+	}
+
+	if pluginTag == "" {
+		return pluginsResults, nil
+	}
+
+	for _, plugin := range pluginsResults {
+		if pluginTag == plugin.Tag {
+			plugins = append(plugins, plugin)
+		}
+	}
+
+	return plugins, nil
 }
