@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -114,7 +113,7 @@ func TestPluginsInfoCommandRequestSuccessYaml(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsInfoRespOK)
+			test.Fprint(t, w, pluginsInfoRespOK)
 		},
 	)
 
@@ -148,7 +147,7 @@ func TestPluginsInfoCommandRequestSuccessJson(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsInfoRespOK)
+			test.Fprint(t, w, pluginsInfoRespOK)
 		},
 	)
 
@@ -183,7 +182,7 @@ func TestPluginsInfoCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsInfoRespOK)
+			test.Fprint(t, w, pluginsInfoRespOK)
 		},
 	)
 
@@ -219,7 +218,7 @@ func TestPluginsInfoCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsInfoRespOK)
+			test.Fprint(t, w, pluginsInfoRespOK)
 		},
 	)
 
@@ -255,7 +254,7 @@ func TestPluginsInfoCommandSingleArgsRequestSuccessJson(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsInfoRespOK)
+			test.Fprint(t, w, pluginsInfoRespOK)
 		},
 	)
 
@@ -291,7 +290,7 @@ func TestPluginsInfoCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsInfoRespOK)
+			test.Fprint(t, w, pluginsInfoRespOK)
 		},
 	)
 

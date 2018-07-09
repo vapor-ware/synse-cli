@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -134,7 +133,7 @@ func TestCapabilitiesCommandRequestError(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			fmt.Fprint(w, capabilitiesRespErr)
+			test.Fprint(t, w, capabilitiesRespErr)
 		},
 	)
 
@@ -166,7 +165,7 @@ func TestCapabilitiesCommandRequestSuccessYaml(t *testing.T) {
 		"/synse/2.0/capabilities",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, capabilitiesRespOK)
+			test.Fprint(t, w, capabilitiesRespOK)
 		},
 	)
 
@@ -199,7 +198,7 @@ func TestCapabilitiesCommandRequestSuccessJson(t *testing.T) {
 		"/synse/2.0/capabilities",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, capabilitiesRespOK)
+			test.Fprint(t, w, capabilitiesRespOK)
 		},
 	)
 
@@ -232,7 +231,7 @@ func TestCapabilitiesCommandRequestSuccessPretty(t *testing.T) {
 		"/synse/2.0/capabilities",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, capabilitiesRespOK)
+			test.Fprint(t, w, capabilitiesRespOK)
 		},
 	)
 

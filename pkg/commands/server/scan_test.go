@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -143,7 +142,7 @@ func TestScanCommandRequestError(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			fmt.Fprint(w, scanRespErr)
+			test.Fprint(t, w, scanRespErr)
 		},
 	)
 
@@ -175,7 +174,7 @@ func TestScanCommandRequestSuccessYaml(t *testing.T) {
 		"/synse/2.0/scan",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, scanRespOK)
+			test.Fprint(t, w, scanRespOK)
 		},
 	)
 
@@ -208,7 +207,7 @@ func TestScanCommandRequestSuccessJson(t *testing.T) {
 		"/synse/2.0/scan",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, scanRespOK)
+			test.Fprint(t, w, scanRespOK)
 		},
 	)
 
@@ -241,7 +240,7 @@ func TestScanCommandRequestSuccessPretty(t *testing.T) {
 		"/synse/2.0/scan",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, scanRespOK)
+			test.Fprint(t, w, scanRespOK)
 		},
 	)
 

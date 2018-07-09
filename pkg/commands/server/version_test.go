@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -91,7 +90,7 @@ func TestVersionCommandRequestError(t *testing.T) {
 	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(500)
-		fmt.Fprint(w, versionRespErr)
+		test.Fprint(t, w, versionRespErr)
 	})
 
 	test.AddServerHost(server)
@@ -120,7 +119,7 @@ func TestVersionCommandRequestErrorPretty(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, versionRespOK)
+		test.Fprint(t, w, versionRespOK)
 	})
 
 	test.AddServerHost(server)
@@ -150,7 +149,7 @@ func TestVersionCommandRequestSuccessYaml(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, versionRespOK)
+		test.Fprint(t, w, versionRespOK)
 	})
 
 	test.AddServerHost(server)
@@ -180,7 +179,7 @@ func TestVersionCommandRequestSuccessJson(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, versionRespOK)
+		test.Fprint(t, w, versionRespOK)
 	})
 
 	test.AddServerHost(server)

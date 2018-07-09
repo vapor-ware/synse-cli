@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -146,7 +145,7 @@ func TestTransactionCommandRequestError(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			fmt.Fprint(w, transactionRespErr)
+			test.Fprint(t, w, transactionRespErr)
 		},
 	)
 
@@ -179,7 +178,7 @@ func TestTransactionCommandRequestSuccessYaml(t *testing.T) {
 		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, transactionRespOK)
+			test.Fprint(t, w, transactionRespOK)
 		},
 	)
 
@@ -213,7 +212,7 @@ func TestTransactionCommandRequestSuccessJson(t *testing.T) {
 		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, transactionRespOK)
+			test.Fprint(t, w, transactionRespOK)
 		},
 	)
 
@@ -247,7 +246,7 @@ func TestTransactionCommandRequestSuccessPretty(t *testing.T) {
 		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, transactionRespOK)
+			test.Fprint(t, w, transactionRespOK)
 		},
 	)
 

@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -176,7 +175,7 @@ func TestInfoCommandRequestErrorRack(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			fmt.Fprint(w, infoRespErr)
+			test.Fprint(t, w, infoRespErr)
 		},
 	)
 
@@ -207,7 +206,7 @@ func TestInfoCommandRequestErrorBoard(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			fmt.Fprint(w, infoRespErr)
+			test.Fprint(t, w, infoRespErr)
 		},
 	)
 
@@ -238,7 +237,7 @@ func TestInfoCommandRequestErrorDevice(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			fmt.Fprint(w, infoRespErr)
+			test.Fprint(t, w, infoRespErr)
 		},
 	)
 
@@ -268,7 +267,7 @@ func TestInfoCommandRequestErrorRackPretty(t *testing.T) {
 		"/synse/2.0/info/rack-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoRackRespOK)
+			test.Fprint(t, w, infoRackRespOK)
 		},
 	)
 
@@ -299,7 +298,7 @@ func TestInfoCommandRequestErrorBoardPretty(t *testing.T) {
 		"/synse/2.0/info/rack-1/board-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoBoardRespOK)
+			test.Fprint(t, w, infoBoardRespOK)
 		},
 	)
 
@@ -330,7 +329,7 @@ func TestInfoCommandRequestErrorDevicePretty(t *testing.T) {
 		"/synse/2.0/info/rack-1/board-1/device-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoDeviceRespOK)
+			test.Fprint(t, w, infoDeviceRespOK)
 		},
 	)
 
@@ -361,7 +360,7 @@ func TestInfoCommandRequestSuccessRackYaml(t *testing.T) {
 		"/synse/2.0/info/rack-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoRackRespOK)
+			test.Fprint(t, w, infoRackRespOK)
 		},
 	)
 
@@ -395,7 +394,7 @@ func TestInfoCommandRequestSuccessRackJson(t *testing.T) {
 		"/synse/2.0/info/rack-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoRackRespOK)
+			test.Fprint(t, w, infoRackRespOK)
 		},
 	)
 
@@ -429,7 +428,7 @@ func TestInfoCommandRequestSuccessBoardYaml(t *testing.T) {
 		"/synse/2.0/info/rack-1/board-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoBoardRespOK)
+			test.Fprint(t, w, infoBoardRespOK)
 		},
 	)
 
@@ -463,7 +462,7 @@ func TestInfoCommandRequestSuccessBoardJson(t *testing.T) {
 		"/synse/2.0/info/rack-1/board-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoBoardRespOK)
+			test.Fprint(t, w, infoBoardRespOK)
 		},
 	)
 
@@ -497,7 +496,7 @@ func TestInfoCommandRequestSuccessDeviceYaml(t *testing.T) {
 		"/synse/2.0/info/rack-1/board-1/device-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoDeviceRespOK)
+			test.Fprint(t, w, infoDeviceRespOK)
 		},
 	)
 
@@ -531,7 +530,7 @@ func TestInfoCommandRequestSuccessDeviceJson(t *testing.T) {
 		"/synse/2.0/info/rack-1/board-1/device-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, infoDeviceRespOK)
+			test.Fprint(t, w, infoDeviceRespOK)
 		},
 	)
 

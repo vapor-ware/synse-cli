@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -127,7 +126,7 @@ func TestReadCommandRequestError(t *testing.T) {
 		"/synse/2.0/scan",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, scanRespOK)
+			test.Fprint(t, w, scanRespOK)
 		},
 	)
 	mux.HandleFunc(
@@ -135,7 +134,7 @@ func TestReadCommandRequestError(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			fmt.Fprint(w, readRespErr)
+			test.Fprint(t, w, readRespErr)
 		},
 	)
 
@@ -170,14 +169,14 @@ func TestReadCommandRequestError(t *testing.T) {
 //		"/synse/2.0/scan",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			fmt.Fprint(w, scanRespOK)
+//			test.Fprint(t, w, scanRespOK)
 //		},
 //	)
 //	mux.HandleFunc(
 //		"/synse/2.0/read/rack-1/board-1/device-1",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			fmt.Fprint(w, readRespOK)
+//			test.Fprint(t, w, readRespOK)
 //		},
 //	)
 //
@@ -211,14 +210,14 @@ func TestReadCommandRequestError(t *testing.T) {
 //		"/synse/2.0/scan",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			fmt.Fprint(w, scanRespOK)
+//			test.Fprint(t, w, scanRespOK)
 //		},
 //	)
 //	mux.HandleFunc(
 //		"/synse/2.0/read/rack-1/board-1/device-1",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			fmt.Fprint(w, readRespOK)
+//			test.Fprint(t, w, readRespOK)
 //		},
 //	)
 //
@@ -252,14 +251,14 @@ func TestReadCommandRequestSuccessPretty(t *testing.T) {
 		"/synse/2.0/scan",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, scanRespOK)
+			test.Fprint(t, w, scanRespOK)
 		},
 	)
 	mux.HandleFunc(
 		"/synse/2.0/read/rack-1/board-1/device-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, readRespOK)
+			test.Fprint(t, w, readRespOK)
 		},
 	)
 
