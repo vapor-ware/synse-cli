@@ -64,6 +64,26 @@ func (client *grpcClient) newGrpcClient(c *cli.Context) (synse.PluginClient, err
 	return synse.NewPluginClient(grpcConn), nil
 }
 
+// Health issues a "Health" request to a plugin via the gRPC API.
+func (client *grpcClient) Health(c *cli.Context) (out *synse.PluginHealth, err error) {
+	if client.apiClient == nil {
+		client.apiClient, err = client.newGrpcClient(c)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	health, err := client.apiClient.Health(
+		context.Background(),
+		&synse.Empty{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return health, nil
+}
+
 // Capabilities issues a "capabilities" request to a plugin via the gRPC API.
 func (client *grpcClient) Capabilities(c *cli.Context) (out []*synse.DeviceCapability, err error) {
 	if client.apiClient == nil {
