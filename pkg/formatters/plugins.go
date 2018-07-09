@@ -61,7 +61,7 @@ func newServerPluginsInfoFormat(data interface{}) (interface{}, error) {
 func newPluginHealthFormat(data interface{}) (interface{}, error) {
 	health, ok := data.(*scheme.HealthData)
 	if !ok {
-		return nil, fmt.Errorf("formatter data %T not of type *scheme.PluginHealth", data)
+		return nil, fmt.Errorf("formatter data %T not of type *scheme.HealthData", data)
 	}
 
 	return &scheme.HealthData{
