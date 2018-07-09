@@ -1,6 +1,8 @@
 package test
 
 import (
+	"fmt"
+	"io"
 	"testing"
 
 	"github.com/urfave/cli"
@@ -22,5 +24,14 @@ func ExpectExitCoderError(t *testing.T, err error) {
 	_, ok := err.(cli.ExitCoder)
 	if !ok {
 		t.Error("expected error to fulfill cli.ExitCoder interface, but does not")
+	}
+}
+
+// ValidateFprint is a test utility to validate the returned error of
+// fmt.Fprint.
+func ValidateFprint(t *testing.T, w io.Writer, a interface{}) {
+	_, err := fmt.Fprint(w, a)
+	if err != nil {
+		t.Errorf("expected no error, but got: %v", err)
 	}
 }
