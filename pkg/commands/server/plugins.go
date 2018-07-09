@@ -4,6 +4,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
+	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -50,7 +51,7 @@ var pluginsCommand = cli.Command{
 // cmPlugins is the action for the pluginsCommand. It makes a "plugins" request
 // against the active Synse Server instance.
 func cmdPlugins(c *cli.Context) error {
-	plugins, err := client.Client.Plugins()
+	plugins, err := getPlugins(c)
 	if err != nil {
 		return err
 	}
@@ -61,4 +62,30 @@ func cmdPlugins(c *cli.Context) error {
 		return err
 	}
 	return formatter.Write()
+}
+
+// getPlugins is a helper function that takes a Context and an arbitrary number
+// of string tags as arguments and returns a set of matched plugins.
+func getPlugins(c *cli.Context, tags ...string) ([]scheme.Plugin, error) {
+	var plugins []scheme.Plugin
+
+	pluginsResults, err := client.Client.Plugins()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(tags) == 0 {
+		return pluginsResults, nil
+	}
+
+	for _, tag := range tags {
+		for _, plugin := range pluginsResults {
+			if tag == plugin.Tag {
+				plugins = append(plugins, plugin)
+				break
+			}
+		}
+	}
+
+	return plugins, nil
 }
