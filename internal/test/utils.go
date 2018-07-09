@@ -27,9 +27,8 @@ func ExpectExitCoderError(t *testing.T, err error) {
 	}
 }
 
-// ValidateFprint is a test utility to validate the returned error of
-// fmt.Fprint.
-func ValidateFprint(t *testing.T, w io.Writer, a interface{}) {
+// Fprint calls fmt.Fprint and validates its returned error.
+func Fprint(t *testing.T, w io.Writer, a interface{}) {
 	_, err := fmt.Fprint(w, a)
 	if err != nil {
 		t.Errorf("expected no error, but got: %v", err)

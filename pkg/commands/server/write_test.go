@@ -139,7 +139,7 @@ func TestWriteCommandRequestError(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			test.ValidateFprint(t, w, writeRespErr)
+			test.Fprint(t, w, writeRespErr)
 		},
 	)
 
@@ -175,7 +175,7 @@ func TestWriteCommandRequestSuccessYaml(t *testing.T) {
 				t.Errorf("expected POST request, but was %v", r.Method)
 			}
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, writeRespOK)
+			test.Fprint(t, w, writeRespOK)
 		},
 	)
 
@@ -212,7 +212,7 @@ func TestWriteCommandRequestSuccessJson(t *testing.T) {
 				t.Errorf("expected POST request, but was %v", r.Method)
 			}
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, writeRespOK)
+			test.Fprint(t, w, writeRespOK)
 		},
 	)
 
@@ -249,7 +249,7 @@ func TestWriteCommandRequestSuccessPretty(t *testing.T) {
 				t.Errorf("expected POST request, but was %v", r.Method)
 			}
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, writeRespOK)
+			test.Fprint(t, w, writeRespOK)
 		},
 	)
 

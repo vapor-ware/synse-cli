@@ -90,7 +90,7 @@ func TestStatusCommandRequestError(t *testing.T) {
 	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(500)
-		test.ValidateFprint(t, w, statusRespErr)
+		test.Fprint(t, w, statusRespErr)
 	})
 
 	test.AddServerHost(server)
@@ -119,7 +119,7 @@ func TestStatusCommandRequestErrorPretty(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		test.ValidateFprint(t, w, statusRespOK)
+		test.Fprint(t, w, statusRespOK)
 	})
 
 	test.AddServerHost(server)
@@ -149,7 +149,7 @@ func TestStatusCommandRequestSuccessYaml(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		test.ValidateFprint(t, w, statusRespOK)
+		test.Fprint(t, w, statusRespOK)
 	})
 
 	test.AddServerHost(server)
@@ -179,7 +179,7 @@ func TestStatusCommandRequestSuccessJson(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		test.ValidateFprint(t, w, statusRespOK)
+		test.Fprint(t, w, statusRespOK)
 	})
 
 	test.AddServerHost(server)

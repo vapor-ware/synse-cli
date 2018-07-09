@@ -126,7 +126,7 @@ func TestReadCommandRequestError(t *testing.T) {
 		"/synse/2.0/scan",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, scanRespOK)
+			test.Fprint(t, w, scanRespOK)
 		},
 	)
 	mux.HandleFunc(
@@ -134,7 +134,7 @@ func TestReadCommandRequestError(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			test.ValidateFprint(t, w, readRespErr)
+			test.Fprint(t, w, readRespErr)
 		},
 	)
 
@@ -169,14 +169,14 @@ func TestReadCommandRequestError(t *testing.T) {
 //		"/synse/2.0/scan",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			test.ValidateFprint(t, w, scanRespOK)
+//			test.Fprint(t, w, scanRespOK)
 //		},
 //	)
 //	mux.HandleFunc(
 //		"/synse/2.0/read/rack-1/board-1/device-1",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			test.ValidateFprint(t, w, readRespOK)
+//			test.Fprint(t, w, readRespOK)
 //		},
 //	)
 //
@@ -210,14 +210,14 @@ func TestReadCommandRequestError(t *testing.T) {
 //		"/synse/2.0/scan",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			test.ValidateFprint(t, w, scanRespOK)
+//			test.Fprint(t, w, scanRespOK)
 //		},
 //	)
 //	mux.HandleFunc(
 //		"/synse/2.0/read/rack-1/board-1/device-1",
 //		func(w http.ResponseWriter, r *http.Request) {
 //			w.Header().Set("Content-Type", "application/json")
-//			test.ValidateFprint(t, w, readRespOK)
+//			test.Fprint(t, w, readRespOK)
 //		},
 //	)
 //
@@ -251,14 +251,14 @@ func TestReadCommandRequestSuccessPretty(t *testing.T) {
 		"/synse/2.0/scan",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, scanRespOK)
+			test.Fprint(t, w, scanRespOK)
 		},
 	)
 	mux.HandleFunc(
 		"/synse/2.0/read/rack-1/board-1/device-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, readRespOK)
+			test.Fprint(t, w, readRespOK)
 		},
 	)
 

@@ -92,7 +92,7 @@ func TestGetVersioned(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/2.0/foobar", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		test.ValidateFprint(t, w, `{"status": "ok"}`)
+		test.Fprint(t, w, `{"status": "ok"}`)
 	})
 
 	test.AddServerHost(server)
@@ -119,7 +119,7 @@ func TestGetUnversioned(t *testing.T) {
 	defer server.Close()
 	mux.HandleFunc("/synse/foobar", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		test.ValidateFprint(t, w, `{"status": "ok"}`)
+		test.Fprint(t, w, `{"status": "ok"}`)
 	})
 
 	test.AddServerHost(server)
@@ -149,7 +149,7 @@ func TestPostVersioned(t *testing.T) {
 			t.Errorf("expected request to be POST, but was %s", r.Method)
 		}
 		w.Header().Set("Content-Type", "application/json")
-		test.ValidateFprint(t, w, `{"status": "ok"}`)
+		test.Fprint(t, w, `{"status": "ok"}`)
 	})
 
 	test.AddServerHost(server)

@@ -172,7 +172,7 @@ func TestPluginsCommandRequestError(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(500)
-			test.ValidateFprint(t, w, pluginsRespErr)
+			test.Fprint(t, w, pluginsRespErr)
 		},
 	)
 
@@ -204,7 +204,7 @@ func TestPluginsCommandRequestSuccessYaml(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, pluginsRespOK)
+			test.Fprint(t, w, pluginsRespOK)
 		},
 	)
 
@@ -237,7 +237,7 @@ func TestPluginsCommandRequestSuccessJson(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, pluginsRespOK)
+			test.Fprint(t, w, pluginsRespOK)
 		},
 	)
 
@@ -270,7 +270,7 @@ func TestPluginsCommandRequestSuccessPretty(t *testing.T) {
 		"/synse/2.0/plugins",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
-			test.ValidateFprint(t, w, pluginsRespOK)
+			test.Fprint(t, w, pluginsRespOK)
 		},
 	)
 
