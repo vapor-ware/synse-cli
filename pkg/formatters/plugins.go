@@ -56,6 +56,21 @@ func newServerPluginsInfoFormat(data interface{}) (interface{}, error) {
 	return out, nil
 }
 
+// newPluginHealthFormat is the handler for `plugin health` commands that is used by the
+// Formatter to add new plugin data to the format context.
+func newPluginHealthFormat(data interface{}) (interface{}, error) {
+	health, ok := data.(*scheme.HealthData)
+	if !ok {
+		return nil, fmt.Errorf("formatter data %T not of type *scheme.HealthData", data)
+	}
+
+	return &scheme.HealthData{
+		Timestamp: health.Timestamp,
+		Status:    health.Status,
+		Checks:    health.Checks,
+	}, nil
+}
+
 // newServerPluginsHealthFormat is the handler for `server plugins health` commands that is used by the
 // Formatter to add new plugin data to the format context.
 func newServerPluginsHealthFormat(data interface{}) (interface{}, error) {
@@ -92,6 +107,15 @@ func NewServerPluginsFormatter(c *cli.Context) *Formatter {
 func NewServerPluginsInfoFormatter(c *cli.Context) *Formatter {
 	f := NewFormatter(c, newServerPluginsInfoFormat)
 	f.Decoder = &scheme.ServerPluginInfoOutput{}
+
+	return f
+}
+
+// NewPluginHealthFormatter creates a new instance of a Formatter configured
+// for the `plugin health` command.
+func NewPluginHealthFormatter(c *cli.Context) *Formatter {
+	f := NewFormatter(c, newPluginHealthFormat)
+	f.Decoder = &scheme.HealthData{}
 
 	return f
 }
