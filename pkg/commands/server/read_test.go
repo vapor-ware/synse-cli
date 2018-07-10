@@ -130,6 +130,14 @@ func TestReadCommandRequestError(t *testing.T) {
 		},
 	)
 	mux.HandleFunc(
+		"/synse/2.0/info/rack-1/board-1/device-1",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(500)
+			test.Fprint(t, w, infoRespErr)
+		},
+	)
+	mux.HandleFunc(
 		"/synse/2.0/read/rack-1/board-1/device-1",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
@@ -252,6 +260,13 @@ func TestReadCommandRequestSuccessPretty(t *testing.T) {
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			test.Fprint(t, w, scanRespOK)
+		},
+	)
+	mux.HandleFunc(
+		"/synse/2.0/info/rack-1/board-1/device-1",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			test.Fprint(t, w, infoDeviceRespOK)
 		},
 	)
 	mux.HandleFunc(
