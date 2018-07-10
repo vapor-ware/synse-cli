@@ -102,22 +102,22 @@ func cmdRead(c *cli.Context) error {
 		return err
 	}
 
-	devicesToRead, err := getDevicesToRead(
-		c.Args().Get(0),
-		c.Args().Get(1),
-		c.Args().Get(2),
-		c,
-	)
+	rackID := c.Args().Get(0)
+	boardID := c.Args().Get(1)
+	deviceID := c.Args().Get(2)
+
+	err = validateDevices(rackID, boardID, deviceID)
 	if err != nil {
 		return err
 	}
 
-	// FIXME - the formatter needs a bit of rework to operate
-	// correctly here. for now, this will work for pretty printing,
-	// but it breaks json/yaml output.
-	formatter := formatters.NewReadFormatter(c)
+	devices, err := filterDevices(rackID, boardID, deviceID, c)
+	if err != nil {
+		return err
+	}
 
-	for _, device := range devicesToRead {
+	formatter := formatters.NewReadFormatter(c)
+	for _, device := range devices {
 		read, err := client.Client.Read(device.rack, device.board, device.device)
 		if err != nil {
 			return err
@@ -131,10 +131,25 @@ func cmdRead(c *cli.Context) error {
 	return formatter.Write()
 }
 
-// getDevicesToRead is a helper function that takes the given rack, board, and device
+// validateDevices checks if the given rack, board, devices are valid, in other
+// word, available in the system. If not, it returns the corresponding error
+// from Synse Server.
+func validateDevices(rackID, boardID, deviceID string) (err error) {
+	if boardID == "" {
+		_, err = client.Client.RackInfo(rackID)
+	} else if deviceID == "" {
+		_, err = client.Client.BoardInfo(rackID, boardID)
+	} else {
+		_, err = client.Client.DeviceInfo(rackID, boardID, deviceID)
+	}
+
+	return err
+}
+
+// filterDevices is a helper function that takes the given rack, board, and device
 // (each can be unspecified) and returns the set of devices that match those search
-// parameters.
-func getDevicesToRead(rackID, boardID, deviceID string, c *cli.Context) ([]*device, error) { // nolint: gocyclo
+// parameters. It assumes that the rack, board and device ID are valid.
+func filterDevices(rackID, boardID, deviceID string, c *cli.Context) ([]*device, error) { // nolint: gocyclo
 	var toRead []*device
 
 	scanResults, err := client.Client.Scan()
