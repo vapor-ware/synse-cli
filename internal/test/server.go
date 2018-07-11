@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"testing"
 
 	"github.com/vapor-ware/synse-cli/pkg/config"
 )
@@ -39,4 +40,17 @@ func AddServerHost(server *httptest.Server) {
 	host := config.NewHostConfig("test", parsedURL)
 	config.Config.Hosts["test"] = host
 	config.Config.ActiveHost = host
+}
+
+// Serve is a test helper to quickly register the handler function for the
+// given pattern and write to its response.
+func Serve(t *testing.T, mux *http.ServeMux, pattern string, statusCode int, response interface{}) {
+	mux.HandleFunc(
+		pattern,
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(statusCode)
+			Fprint(t, w, response)
+		},
+	)
 }

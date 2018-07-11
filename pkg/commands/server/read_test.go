@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -132,29 +131,10 @@ func TestReadCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, scanRespOK)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, infoRespErr)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/read/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, readRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 500, infoRespErr)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 500, readRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -181,27 +161,10 @@ func TestReadCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, scanRespOK)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoDeviceRespOK)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/read/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, readRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, readRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -229,27 +192,10 @@ func TestReadCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, scanRespOK)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoDeviceRespOK)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/read/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, readRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, readRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -277,27 +223,10 @@ func TestReadCommandRequestSuccessPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, scanRespOK)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoDeviceRespOK)
-		},
-	)
-	mux.HandleFunc(
-		"/synse/2.0/read/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, readRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, readRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
