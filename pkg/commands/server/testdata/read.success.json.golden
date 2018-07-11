@@ -1,13 +1,16 @@
-{
-  "type": "temperature",
-  "data": {
-    "temperature": {
-      "value": 51,
-      "timestamp": "2018-02-08 15:54:26.255253838 +0000 UTC m=+2841.145248278",
-      "unit": {
-        "name": "degrees celsius",
-        "symbol": "C"
-      }
-    }
+[
+  {
+    "info": "Mock info 1",
+    "type": "state.foo",
+    "value": "65",
+    "unit": "C",
+    "timestamp": "Thu Jun 28 12:41:50 UTC 2018"
+  },
+  {
+    "info": "Mock info 2",
+    "type": "state.bar",
+    "value": "149",
+    "unit": "F",
+    "timestamp": "Thu Jun 28 12:41:50 UTC 2018"
   }
-}
+]

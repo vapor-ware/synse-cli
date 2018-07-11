@@ -24,8 +24,18 @@ const (
         "symbol":"C",
         "name":"celsius"
       },
-      "type":"state",
-      "info":""
+      "type":"state.foo",
+      "info":"Mock info 1"
+    },
+    {
+      "value":"149",
+      "timestamp":"2018-06-28T12:41:50.333443322Z",
+      "unit":{
+        "symbol":"F",
+        "name":"fahrenheit"
+      },
+      "type":"state.bar",
+      "info":"Mock info 2"
     }
   ]
 }`
@@ -164,89 +174,101 @@ func TestReadCommandRequestError(t *testing.T) {
 	test.ExpectExitCoderError(t, err)
 }
 
-// FIXME: these are temporarily broken -- need updates to the formatter to get these outputting correctly
+// TestReadCommandRequestSuccessYaml tests the 'read' command when it gets
+// a 200 response from Synse Server, with YAML output.
+func TestReadCommandRequestSuccessYaml(t *testing.T) {
+	test.Setup()
 
-//// TestReadCommandRequestSuccessYaml tests the 'read' command when it gets
-//// a 200 response from Synse Server, with YAML output.
-//func TestReadCommandRequestSuccessYaml(t *testing.T) {
-//	test.Setup()
-//
-//	mux, server := test.Server()
-//	defer server.Close()
-//	mux.HandleFunc(
-//		"/synse/2.0/scan",
-//		func(w http.ResponseWriter, r *http.Request) {
-//			w.Header().Set("Content-Type", "application/json")
-//			test.Fprint(t, w, scanRespOK)
-//		},
-//	)
-//	mux.HandleFunc(
-//		"/synse/2.0/read/rack-1/board-1/device-1",
-//		func(w http.ResponseWriter, r *http.Request) {
-//			w.Header().Set("Content-Type", "application/json")
-//			test.Fprint(t, w, readRespOK)
-//		},
-//	)
-//
-//	test.AddServerHost(server)
-//	app := test.NewFakeApp()
-//	app.Commands = append(app.Commands, ServerCommand)
-//
-//	err := app.Run([]string{
-//		app.Name,
-//		"--format", "yaml",
-//		ServerCommand.Name,
-//		readCommand.Name,
-//		"rack-1", "board-1", "device-1",
-//	})
-//
-//	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-//	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
-//
-//	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.yaml.golden"))
-//	test.ExpectNoError(t, err)
-//}
-//
-//// TestReadCommandRequestSuccessJson tests the 'read' command when it gets
-//// a 200 response from Synse Server, with JSON output.
-//func TestReadCommandRequestSuccessJson(t *testing.T) {
-//	test.Setup()
-//
-//	mux, server := test.Server()
-//	defer server.Close()
-//	mux.HandleFunc(
-//		"/synse/2.0/scan",
-//		func(w http.ResponseWriter, r *http.Request) {
-//			w.Header().Set("Content-Type", "application/json")
-//			test.Fprint(t, w, scanRespOK)
-//		},
-//	)
-//	mux.HandleFunc(
-//		"/synse/2.0/read/rack-1/board-1/device-1",
-//		func(w http.ResponseWriter, r *http.Request) {
-//			w.Header().Set("Content-Type", "application/json")
-//			test.Fprint(t, w, readRespOK)
-//		},
-//	)
-//
-//	test.AddServerHost(server)
-//	app := test.NewFakeApp()
-//	app.Commands = append(app.Commands, ServerCommand)
-//
-//	err := app.Run([]string{
-//		app.Name,
-//		"--format", "json",
-//		ServerCommand.Name,
-//		readCommand.Name,
-//		"rack-1", "board-1", "device-1",
-//	})
-//
-//	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
-//	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
-//
-//	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.json.golden"))
-//	test.ExpectNoError(t, err)
-//}
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc(
+		"/synse/2.0/scan",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			test.Fprint(t, w, scanRespOK)
+		},
+	)
+	mux.HandleFunc(
+		"/synse/2.0/info/rack-1/board-1/device-1",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			test.Fprint(t, w, infoDeviceRespOK)
+		},
+	)
+	mux.HandleFunc(
+		"/synse/2.0/read/rack-1/board-1/device-1",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			test.Fprint(t, w, readRespOK)
+		},
+	)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1", "device-1",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.yaml.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestSuccessJson tests the 'read' command when it gets
+// a 200 response from Synse Server, with JSON output.
+func TestReadCommandRequestSuccessJson(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+	mux.HandleFunc(
+		"/synse/2.0/scan",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			test.Fprint(t, w, scanRespOK)
+		},
+	)
+	mux.HandleFunc(
+		"/synse/2.0/info/rack-1/board-1/device-1",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			test.Fprint(t, w, infoDeviceRespOK)
+		},
+	)
+	mux.HandleFunc(
+		"/synse/2.0/read/rack-1/board-1/device-1",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			test.Fprint(t, w, readRespOK)
+		},
+	)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1", "device-1",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.json.golden"))
+	test.ExpectNoError(t, err)
+}
 
 // TestReadCommandRequestSuccessPretty tests the 'read' command when it gets
 // a 200 response from Synse Server, with pretty output.
