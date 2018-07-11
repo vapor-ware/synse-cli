@@ -135,7 +135,9 @@ func cmdRead(c *cli.Context) error {
 // word, available in the system. If not, it returns the corresponding error
 // from Synse Server.
 func validateDevices(rackID, boardID, deviceID string) (err error) {
-	if boardID == "" {
+	if rackID == "" {
+		return nil
+	} else if boardID == "" {
 		_, err = client.Client.RackInfo(rackID)
 	} else if deviceID == "" {
 		_, err = client.Client.BoardInfo(rackID, boardID)
