@@ -90,10 +90,8 @@ func TestGetVersioned(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/foobar", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		test.Fprint(t, w, `{"status": "ok"}`)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/foobar", 200, `{"status": "ok"}`)
 
 	test.AddServerHost(server)
 
@@ -117,10 +115,8 @@ func TestGetUnversioned(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/foobar", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		test.Fprint(t, w, `{"status": "ok"}`)
-	})
+
+	test.Serve(t, mux, "/synse/foobar", 200, `{"status": "ok"}`)
 
 	test.AddServerHost(server)
 
@@ -144,13 +140,8 @@ func TestPostVersioned(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/foobar", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "POST" {
-			t.Errorf("expected request to be POST, but was %s", r.Method)
-		}
-		w.Header().Set("Content-Type", "application/json")
-		test.Fprint(t, w, `{"status": "ok"}`)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/foobar", 200, `{"status": "ok"}`)
 
 	test.AddServerHost(server)
 
