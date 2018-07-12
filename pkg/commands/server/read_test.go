@@ -656,3 +656,494 @@ func TestReadCommandRequestDeviceLevelSuccessPretty(t *testing.T) {
 	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.pretty.device.golden"))
 	test.ExpectNoError(t, err)
 }
+
+// TestReadCommandRequestRackLevelSingleFlagSuccessYaml tests the 'read'
+// command using a single 'type' flag at rack-level when it gets a 200 response
+// from Synse Server, with YAML output.
+func TestReadCommandRequestRackLevelSingleFlagSuccessYaml(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1",
+		"--type", "temperature",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.yaml.single_flag.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestRackLevelSingleFlagSuccessJson tests the 'read'
+// command using a single 'type' flag at rack-level when it gets a 200 response
+// from Synse Server, with JSON output.
+func TestReadCommandRequestRackLevelSingleFlagSuccessJson(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1",
+		"--type", "temperature",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.json.single_flag.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestRackLevelSingleFlagSuccessPretty tests the 'read'
+// command using a single 'type' flag at rack-level when it gets a 200 response
+// from Synse Server, with pretty output.
+func TestReadCommandRequestRackLevelSingleFlagSuccessPretty(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "pretty",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1",
+		"--type", "temperature",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.pretty.single_flag.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestBoardLevelSingleFlagSuccessYaml tests the 'read'
+// command using a single 'type' flag at board-level when it gets a 200 response
+// from Synse Server, with YAML output.
+func TestReadCommandRequestBoardLevelSingleFlagSuccessYaml(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1",
+		"--type", "temperature",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.yaml.single_flag.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestBoardLevelSingleFlagSuccessJson tests the 'read'
+// command using a single 'type' flag at board-level when it gets a 200 response
+// from Synse Server, with JSON output.
+func TestReadCommandRequestBoardLevelSingleFlagSuccessJson(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1",
+		"--type", "temperature",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.json.single_flag.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestBoardLevelSingleFlagSuccessPretty tests the 'read'
+// command using a single 'type' flag at board-level when it gets a 200 response
+// from Synse Server, with pretty output.
+func TestReadCommandRequestBoardLevelSingleFlagSuccessPretty(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "pretty",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1",
+		"--type", "temperature",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.pretty.single_flag.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestRackLevelMutipleFlagsSuccessYaml tests the 'read'
+// command using multiple 'type' flags at rack-level when it gets a 200 response
+// from Synse Server, with YAML output.
+// FIXME: The type we get from `scan` is different from the type we get from
+// `read`. That affects the way we do filtering devices. For example, if we
+// want to filter out type `speed`, we have to use `fan` flag instead. Refer
+// to #192 for more information. All the tests below this point will be
+// associated with this issue.
+func TestReadCommandRequestRackLevelMultipleFlagsSuccessYaml(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1",
+		"--type", "fan",
+		"--type", "led",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.yaml.multiple_flags.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestRackLevelMultipleFlagsSuccessJson tests the 'read'
+// command using multiple 'type' flags at rack-level when it gets a 200 response
+// from Synse Server, with JSON output.
+func TestReadCommandRequestRackLevelMultipleFlagsSuccessJson(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1",
+		"--type", "fan",
+		"--type", "led",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.json.multiple_flags.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestRackLevelMultipleFlagsSuccessPretty tests the 'read'
+// command using multiple 'type' flags at rack-level when it gets a 200 response
+// from Synse Server, with pretty output.
+func TestReadCommandRequestMultipleFlagsSuccessPretty(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "pretty",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1",
+		"--type", "fan",
+		"--type", "led",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.pretty.multiple_flags.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestBoardLevelMultipleFlagsSuccessYaml tests the 'read'
+// command using multiple 'type' flags at board-level when it gets a 200 response
+// from Synse Server, with YAML output.
+func TestReadCommandRequestBoardLevelMultipleFlagsSuccessYaml(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "yaml",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1",
+		"--type", "fan",
+		"--type", "led",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.yaml.multiple_flags.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestBoardLevelMultipleFlagsSuccessJson tests the 'read'
+// command using multiple 'type' flags at board-level when it gets a 200 response
+// from Synse Server, with JSON output.
+func TestReadCommandRequestBoardLevelMultipleFlagsSuccessJson(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "json",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1",
+		"--type", "fan",
+		"--type", "led",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.json.multiple_flags.golden"))
+	test.ExpectNoError(t, err)
+}
+
+// TestReadCommandRequestBoardLevelMultipleFlagsSuccessPretty tests the 'read'
+// command using multiple 'type' flags at board-level when it gets a 200 response
+// from Synse Server, with pretty output.
+func TestReadCommandRequestBoardLevelMultipleFlagsSuccessPretty(t *testing.T) {
+	test.Setup()
+
+	mux, server := test.Server()
+	defer server.Close()
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-2", 200, fanReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-3", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-4", 200, ledReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-5", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-6", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-7", 200, temperatureReadRespOK)
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-8", 200, temperatureReadRespOK)
+
+	test.AddServerHost(server)
+	app := test.NewFakeApp()
+	app.Commands = append(app.Commands, ServerCommand)
+
+	err := app.Run([]string{
+		app.Name,
+		"--format", "pretty",
+		ServerCommand.Name,
+		readCommand.Name,
+		"rack-1", "board-1",
+		"--type", "fan",
+		"--type", "led",
+	})
+
+	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
+	t.Logf("Standard Error: \n%s", app.ErrBuffer.String())
+
+	assert.Assert(t, golden.String(app.OutBuffer.String(), "read.success.pretty.multiple_flags.golden"))
+	test.ExpectNoError(t, err)
+}

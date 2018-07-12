@@ -1,0 +1,25 @@
+- info: mock temperature response
+  type: temperature
+  value: "65"
+  unit: C
+  timestamp: Thu Jun 28 12:41:50 UTC 2018
+- info: mock temperature response
+  type: temperature
+  value: "65"
+  unit: C
+  timestamp: Thu Jun 28 12:41:50 UTC 2018
+- info: mock temperature response
+  type: temperature
+  value: "65"
+  unit: C
+  timestamp: Thu Jun 28 12:41:50 UTC 2018
+- info: mock temperature response
+  type: temperature
+  value: "65"
+  unit: C
+  timestamp: Thu Jun 28 12:41:50 UTC 2018
+- info: mock temperature response
+  type: temperature
+  value: "65"
+  unit: C
+  timestamp: Thu Jun 28 12:41:50 UTC 2018
