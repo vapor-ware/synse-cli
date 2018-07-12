@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -75,13 +74,8 @@ func TestPluginsHealthCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsHealthRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -109,13 +103,8 @@ func TestPluginsHealthCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsHealthRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -144,13 +133,8 @@ func TestPluginsHealthCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsHealthRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -180,13 +164,8 @@ func TestPluginsHealthCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsHealthRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -198,7 +177,8 @@ func TestPluginsHealthCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 		ServerCommand.Name,
 		pluginsCommand.Name,
 		pluginsHealthCommand.Name,
-		"vaporio/emulator-plugin", "vaporio/unix-plugin",
+		"vaporio/emulator-plugin",
+		"vaporio/unix-plugin",
 	})
 
 	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
@@ -216,13 +196,8 @@ func TestPluginsHealthCommandSingleArgsRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsHealthRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -252,13 +227,8 @@ func TestPluginsHealthCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsHealthRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -270,7 +240,8 @@ func TestPluginsHealthCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 		ServerCommand.Name,
 		pluginsCommand.Name,
 		pluginsHealthCommand.Name,
-		"vaporio/emulator-plugin", "vaporio/unix-plugin",
+		"vaporio/emulator-plugin",
+		"vaporio/unix-plugin",
 	})
 
 	t.Logf("Standard Out: \n%s", app.OutBuffer.String())

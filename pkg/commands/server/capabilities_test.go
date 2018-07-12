@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -128,14 +127,8 @@ func TestCapabilitiesCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/capabilities",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, capabilitiesRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/capabilities", 500, capabilitiesRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -161,13 +154,8 @@ func TestCapabilitiesCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/capabilities",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, capabilitiesRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/capabilities", 200, capabilitiesRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -194,13 +182,8 @@ func TestCapabilitiesCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/capabilities",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, capabilitiesRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/capabilities", 200, capabilitiesRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -227,13 +210,8 @@ func TestCapabilitiesCommandRequestSuccessPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/capabilities",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, capabilitiesRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/capabilities", 200, capabilitiesRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
