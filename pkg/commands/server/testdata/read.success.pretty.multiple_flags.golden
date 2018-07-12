@@ -1,0 +1,6 @@
+INFO                      TYPE      VALUE     UNIT      TIMESTAMP
+mock fan.speed response   speed     0         RPM       Thu Jun 28 12:41:50 UTC 2018
+mock led.state response   state     off                 Thu Jun 28 12:41:50 UTC 2018
+mock led.color response   color     000000              Thu Jun 28 12:41:50 UTC 2018
+mock led.state response   state     off                 Thu Jun 28 12:41:50 UTC 2018
+mock led.color response   color     000000              Thu Jun 28 12:41:50 UTC 2018
