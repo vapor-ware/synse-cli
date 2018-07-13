@@ -362,3 +362,323 @@ func TestPlugins(t *testing.T) {
 		t.Errorf("expected %+v, but was %+v", out, resp)
 	}
 }
+
+// FIXME: The current definition scheme of ScanResponse is not consistent with
+// other schemes. This also makes it harder to test. Need to decouple it first.
+func TestScan(t *testing.T) {}
+
+func TestRackInfo(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+{
+  "rack":"rack-1",
+  "boards":[
+    "board-1"
+  ]
+}`
+
+	out := &scheme.RackInfo{
+		Rack: "rack-1",
+		Boards: []string{
+			"board-1",
+		},
+	}
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, in)
+
+	test.AddServerHost(server)
+
+	resp, err := client.RackInfo("rack-1")
+	test.ExpectNoError(t, err)
+
+	if !reflect.DeepEqual(out, resp) {
+		t.Errorf("expected %+v, but was %+v", out, resp)
+	}
+}
+
+func TestBoardInfo(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+{
+  "board":"board-1",
+  "location":{
+    "rack":"rack-1"
+  },
+  "devices":[
+    "device-1",
+    "device-2",
+    "device-3"
+  ]
+}`
+	out := &scheme.BoardInfo{
+		Board: "board-1",
+		Location: map[string]string{
+			"rack": "rack-1",
+		},
+		Devices: []string{
+			"device-1",
+			"device-2",
+			"device-3",
+		},
+	}
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, in)
+
+	test.AddServerHost(server)
+
+	resp, err := client.BoardInfo("rack-1", "board-1")
+	test.ExpectNoError(t, err)
+
+	if !reflect.DeepEqual(out, resp) {
+		t.Errorf("expected %+v, but was %+v", out, resp)
+	}
+}
+
+func TestDeviceInfo(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+{
+  "timestamp":"2018-06-28T12:59:47.625842798Z",
+  "uid":"device-1",
+  "kind":"pressure",
+  "metadata":{
+    "model":"emul8-pressure"
+  },
+  "plugin":"emulator-plugin",
+  "info":"Synse Pressure Sensor 1",
+  "location":{
+    "rack":"rack-1",
+    "board":"board-1"
+  },
+  "output":[
+    {
+      "name":"pressure",
+      "type":"pressure",
+      "precision":3,
+      "scaling_factor":1.5,
+      "unit":{
+        "name":"pascals",
+        "symbol":"Pa"
+      }
+    }
+  ]
+}`
+	out := &scheme.DeviceInfo{
+		Timestamp: "2018-06-28T12:59:47.625842798Z",
+		UID:       "device-1",
+		Kind:      "pressure",
+		Metadata: map[string]string{
+			"model": "emul8-pressure",
+		},
+		Plugin: "emulator-plugin",
+		Info:   "Synse Pressure Sensor 1",
+		Location: map[string]string{
+			"rack":  "rack-1",
+			"board": "board-1",
+		},
+		Output: []scheme.DeviceOutput{
+			scheme.DeviceOutput{
+				Name:          "pressure",
+				Type:          "pressure",
+				Precision:     int(3),
+				ScalingFactor: float64(1.5),
+				Unit: scheme.OutputUnit{
+					Name:   "pascals",
+					Symbol: "Pa",
+				},
+			},
+		},
+	}
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, in)
+
+	test.AddServerHost(server)
+
+	resp, err := client.DeviceInfo("rack-1", "board-1", "device-1")
+	test.ExpectNoError(t, err)
+
+	if !reflect.DeepEqual(out, resp) {
+		t.Errorf("expected %+v, but was %+v", out, resp)
+	}
+}
+
+func TestRead(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+{
+  "kind":"temperature",
+  "data":[
+    {
+      "value":"65",
+      "timestamp":"2018-06-28T12:41:50.333443322Z",
+      "unit":{
+        "symbol":"C",
+        "name":"celsius"
+      },
+      "type":"temperature",
+      "info":"mock temperature response"
+    }
+  ]
+}`
+
+	out := &scheme.Read{
+		Kind: "temperature",
+		Data: []scheme.ReadData{
+			scheme.ReadData{
+				Value:     "65",
+				Timestamp: "2018-06-28T12:41:50.333443322Z",
+				Unit: scheme.OutputUnit{
+					Symbol: "C",
+					Name:   "celsius",
+				},
+				Type: "temperature",
+				Info: "mock temperature response",
+			},
+		},
+	}
+
+	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, in)
+
+	test.AddServerHost(server)
+
+	resp, err := client.Read("rack-1", "board-1", "device-1")
+	test.ExpectNoError(t, err)
+
+	if !reflect.DeepEqual(out, resp) {
+		t.Errorf("expected %+v, but was %+v", out, resp)
+	}
+}
+
+func TestTransaction(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+{
+  "id":"b9u6ss6q5i6g020lau6g",
+  "context":{
+    "action":"color",
+    "data":"000000"
+  },
+  "state":"ok",
+  "status":"done",
+  "created":"2018-06-28T12:59:47.625842798Z",
+  "updated":"2018-06-28T12:59:47.625842798Z",
+  "message":""
+}`
+
+	out := &scheme.Transaction{
+		ID: "b9u6ss6q5i6g020lau6g",
+		Context: scheme.WriteContext{
+			Action: "color",
+			Data:   "000000",
+		},
+		State:   "ok",
+		Status:  "done",
+		Created: "2018-06-28T12:59:47.625842798Z",
+		Updated: "2018-06-28T12:59:47.625842798Z",
+		Message: "",
+	}
+
+	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, in)
+
+	test.AddServerHost(server)
+
+	resp, err := client.Transaction("b9u6ss6q5i6g020lau6g")
+	test.ExpectNoError(t, err)
+
+	if !reflect.DeepEqual(out, resp) {
+		t.Errorf("expected %+v, but was %+v", out, resp)
+	}
+}
+
+func TestTransactionList(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+[
+  "b9u6ss6q5i6g020lau6g"
+]`
+
+	out := &[]string{
+		"b9u6ss6q5i6g020lau6g",
+	}
+
+	test.Serve(t, mux, "/synse/2.0/transaction", 200, in)
+
+	test.AddServerHost(server)
+
+	resp, err := client.TransactionList()
+	test.ExpectNoError(t, err)
+
+	if !reflect.DeepEqual(out, resp) {
+		t.Errorf("expected %+v, but was %+v", out, resp)
+	}
+}
+
+func TestWrite(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+[
+  {
+    "context":{
+      "action":"color",
+      "data":"000000"
+    },
+    "transaction":"b9u6ss6q5i6g020lau6g"
+  }
+]`
+
+	out := []scheme.WriteTransaction{
+		scheme.WriteTransaction{
+			Context: scheme.WriteContext{
+				Action: "color",
+				Data:   "000000",
+			},
+			Transaction: "b9u6ss6q5i6g020lau6g",
+		},
+	}
+
+	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, in)
+
+	test.AddServerHost(server)
+
+	resp, err := client.Write("rack-1", "board-1", "device-1", "color", "000000")
+	test.ExpectNoError(t, err)
+
+	if !reflect.DeepEqual(out, resp) {
+		t.Errorf("expected %+v, but was %+v", out, resp)
+	}
+}
