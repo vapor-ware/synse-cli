@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -19,14 +17,12 @@ const (
   "id":"b9u6ss6q5i6g020lau6g",
   "context":{
     "action":"color",
-    "raw":[
-      "000000"
-    ]
+    "data":"000000"
   },
   "state":"ok",
   "status":"done",
-  "created":"2018-02-08 15:36:16.081873199 +0000 UTC m=+1750.971865639",
-  "updated":"2018-02-08 15:36:16.081873199 +0000 UTC m=+1750.971865639",
+  "created":"2018-06-28T12:59:47.625842798Z",
+  "updated":"2018-06-28T12:59:47.625842798Z",
   "message":""
 }`
 
@@ -143,14 +139,8 @@ func TestTransactionCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			fmt.Fprint(w, transactionRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 500, transactionRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -177,13 +167,8 @@ func TestTransactionCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, transactionRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -211,13 +196,8 @@ func TestTransactionCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, transactionRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -245,13 +225,8 @@ func TestTransactionCommandRequestSuccessPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/transaction/b9u6ss6q5i6g020lau6g",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, transactionRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

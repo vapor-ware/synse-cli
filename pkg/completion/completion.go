@@ -21,9 +21,9 @@ func CompleteHostNames(c *cli.Context) {
 
 // CompleteRackBoardDevicePlugin is a bash completion function for plugin commands. It
 // will auto-complete on the rack, board, and device ids returned from a plugin
-// "metainfo" request.
+// "devices" request.
 func CompleteRackBoardDevicePlugin(c *cli.Context) { // nolint: gocyclo
-	meta, err := client.Grpc.Metainfo(c)
+	meta, err := client.Grpc.Devices(c)
 	if err != nil {
 		return
 	}

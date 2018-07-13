@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -29,6 +27,19 @@ const (
   },
   "grpc":{
     "timeout":20
+  },
+  "plugin":{
+    "tcp":[
+      "emulator-plugin:5001"
+    ],
+    "unix":[],
+    "discovery":{
+      "kubernetes":{
+        "endpoints":{
+          "labels":{}
+        }
+      }
+    }
   }
 }`
 
@@ -94,11 +105,8 @@ func TestConfigCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
-		fmt.Fprint(w, configRespErr)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 500, configRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -121,10 +129,8 @@ func TestConfigCommandRequestErrorPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, configRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -148,10 +154,8 @@ func TestConfigCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, configRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -178,10 +182,8 @@ func TestConfigCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, configRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

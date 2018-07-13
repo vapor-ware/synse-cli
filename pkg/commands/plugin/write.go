@@ -84,31 +84,27 @@ func cmdWrite(c *cli.Context) error { // nolint: gocyclo
 	board := c.Args().Get(1)
 	device := c.Args().Get(2)
 	action := c.Args().Get(3)
-	raw := c.Args().Get(4)
+	data := c.Args().Get(4)
 
 	wd := &synse.WriteData{
 		Action: action,
 	}
-	if raw != "" {
-		wd.Raw = [][]byte{[]byte(raw)}
+	if data != "" {
+		wd.Data = []byte(data)
 	}
 
 	transactions, err := client.Grpc.Write(c, rack, board, device, wd)
 	if err != nil {
 		return err
 	}
-	t := make([]scheme.WriteTransaction, len(transactions.Transactions))
-	for id, ctx := range transactions.Transactions {
-		var raw []string
-		for _, r := range ctx.Raw {
-			raw = append(raw, string(r))
-		}
 
+	t := make([]scheme.WriteTransaction, 0)
+	for id, ctx := range transactions.Transactions {
 		t = append(t, scheme.WriteTransaction{
 			Transaction: id,
 			Context: scheme.WriteContext{
 				Action: ctx.Action,
-				Raw:    raw,
+				Data:   string(ctx.Data),
 			},
 		})
 	}

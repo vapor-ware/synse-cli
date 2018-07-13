@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -17,7 +15,7 @@ const (
 	statusRespOK = `
 {
   "status": "ok",
-  "timestamp": "2018-01-01 01:01:01.000000"
+  "timestamp": "2018-06-28T12:59:47.625842798Z"
 }`
 
 	// the mocked 500 error JSON response for the Synse Server 'status' route
@@ -88,11 +86,8 @@ func TestStatusCommandRequestError(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
-		fmt.Fprint(w, statusRespErr)
-	})
+
+	test.Serve(t, mux, "/synse/test", 500, statusRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -118,10 +113,8 @@ func TestStatusCommandRequestErrorPretty(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, statusRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/test", 200, statusRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -148,10 +141,8 @@ func TestStatusCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, statusRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/test", 200, statusRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -178,10 +169,8 @@ func TestStatusCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/test", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, statusRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/test", 200, statusRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

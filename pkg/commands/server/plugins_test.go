@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -17,14 +15,86 @@ const (
 	pluginsRespOK = `
 [
   {
-    "name": "foo",
-    "network": "tcp",
-    "address": "localhost:6000"
+    "tag":"vaporio\/emulator-plugin",
+    "name":"sample-tcp",
+    "description":"A sample emulator plugin",
+    "maintainer":"vaporio",
+    "vcs":"github.com\/vapor-ware\/synse-emulator-plugin",
+    "version":{
+      "plugin_version":"2.0.0",
+      "sdk_version":"1.0.0",
+      "build_date":"2018-06-25T14:39:18",
+      "git_commit":"4831f12",
+      "git_tag":"1.0.2-8-g4831f12",
+      "arch":"amd64",
+      "os":"linux"
+    },
+    "network":{
+      "protocol":"tcp",
+      "address":"emulator-plugin:5001"
+    },
+    "health":{
+      "timestamp":"2018-06-27T18:30:46.237254715Z",
+      "status":"ok",
+      "message":"",
+      "checks":[
+        {
+          "name":"read buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        },
+        {
+          "name":"write buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        }
+      ]
+    }
   },
   {
-    "name": "bar",
-    "network": "unix",
-    "address": "/tmp/synse/proc/bar.sock"
+    "tag":"vaporio\/unix-plugin",
+    "name":"sample-unix",
+    "description":"A sample unix plugin",
+    "maintainer":"vaporio",
+    "vcs":"github.com\/vapor-ware\/synse-unix-plugin",
+    "version":{
+      "plugin_version":"2.0.0",
+      "sdk_version":"1.0.0",
+      "build_date":"2018-06-25T14:39:18",
+      "git_commit":"4831f12",
+      "git_tag":"1.0.2-8-g4831f12",
+      "arch":"amd64",
+      "os":"linux"
+    },
+    "network":{
+      "protocol":"unix",
+      "address":"/tmp/synse/proc/bar.sock"
+    },
+    "health":{
+      "timestamp":"2018-06-27T18:30:46.237254715Z",
+      "status":"ok",
+      "message":"",
+      "checks":[
+        {
+          "name":"read buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        },
+        {
+          "name":"write buffer health",
+          "status":"ok",
+          "message":"",
+          "timestamp":"2018-06-27T18:30:16.531781924Z",
+          "type":"periodic"
+        }
+      ]
+    }
   }
 ]`
 
@@ -96,14 +166,8 @@ func TestPluginsCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			fmt.Fprint(w, pluginsRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 500, pluginsRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -129,13 +193,8 @@ func TestPluginsCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -162,13 +221,8 @@ func TestPluginsCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -195,13 +249,8 @@ func TestPluginsCommandRequestSuccessPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, pluginsRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

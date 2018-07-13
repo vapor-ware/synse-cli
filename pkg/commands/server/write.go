@@ -83,9 +83,9 @@ func cmdWrite(c *cli.Context) error {
 	board := c.Args().Get(1)
 	device := c.Args().Get(2)
 	action := c.Args().Get(3)
-	raw := c.Args().Get(4)
+	data := c.Args().Get(4)
 
-	write, err := client.Client.Write(rack, board, device, action, raw)
+	write, err := client.Client.Write(rack, board, device, action, data)
 	if err != nil {
 		return err
 	}

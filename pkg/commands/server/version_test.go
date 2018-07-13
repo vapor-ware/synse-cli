@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -88,11 +86,8 @@ func TestVersionCommandRequestError(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
-		fmt.Fprint(w, versionRespErr)
-	})
+
+	test.Serve(t, mux, "/synse/version", 500, versionRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -118,10 +113,8 @@ func TestVersionCommandRequestErrorPretty(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, versionRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/version", 200, versionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -148,10 +141,8 @@ func TestVersionCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, versionRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/version", 200, versionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -178,10 +169,8 @@ func TestVersionCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.UnversionedServer()
 	defer server.Close()
-	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, versionRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/version", 200, versionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

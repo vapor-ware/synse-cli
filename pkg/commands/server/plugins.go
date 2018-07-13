@@ -4,6 +4,7 @@ import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
+	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
@@ -15,18 +16,18 @@ const (
 	pluginsCmdUsage = "Get the list of plugins that are configured with Synse Server"
 
 	// pluginsCmdDesc is the description for the 'plugins' command.
-	pluginsCmdDesc = `The plugins command hits the active Synse Server host's '/plugins'
-  endpoint, which returns the current set of configured plugins for
-  that instance.
+	pluginsCmdDesc = `This sub-command allows you to get plugin metadata, such as the
+  name, version, tag, etc. It also lets you get a view into the plugin
+  health if any health checks are configured for the plugin.
 
-Example:
-  synse server plugins
+  If no arguments are given, this will return an overview of all 
+  configured plugins.
 
 Formatting:
   The 'server plugins' command supports the following formatting
   options (via the CLI global --format flag):
     - pretty (default)
-	- yaml
+    - yaml
     - json`
 )
 
@@ -40,20 +41,51 @@ var pluginsCommand = cli.Command{
 	Action: func(c *cli.Context) error {
 		return utils.CmdHandler(cmdPlugins(c))
 	},
+
+	Subcommands: []cli.Command{
+		pluginsInfoCommand,
+		pluginsHealthCommand,
+	},
 }
 
 // cmPlugins is the action for the pluginsCommand. It makes a "plugins" request
 // against the active Synse Server instance.
 func cmdPlugins(c *cli.Context) error {
-	plugins, err := client.Client.Plugins()
+	plugins, err := getPlugins(c)
 	if err != nil {
 		return err
 	}
 
-	formatter := formatters.NewPluginsFormatter(c)
+	formatter := formatters.NewServerPluginsFormatter(c)
 	err = formatter.Add(plugins)
 	if err != nil {
 		return err
 	}
 	return formatter.Write()
+}
+
+// getPlugins is a helper function that takes a Context and an arbitrary number
+// of string tags as arguments and returns a set of matched plugins.
+func getPlugins(c *cli.Context, tags ...string) ([]scheme.Plugin, error) {
+	var plugins []scheme.Plugin
+
+	pluginsResults, err := client.Client.Plugins()
+	if err != nil {
+		return nil, err
+	}
+
+	if len(tags) == 0 {
+		return pluginsResults, nil
+	}
+
+	for _, tag := range tags {
+		for _, plugin := range pluginsResults {
+			if tag == plugin.Tag {
+				plugins = append(plugins, plugin)
+				break
+			}
+		}
+	}
+
+	return plugins, nil
 }

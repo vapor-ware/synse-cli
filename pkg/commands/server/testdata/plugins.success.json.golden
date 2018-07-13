@@ -1,12 +1,16 @@
 [
   {
-    "name": "foo",
-    "network": "tcp",
-    "address": "localhost:6000"
+    "tag": "vaporio/emulator-plugin",
+    "protocol": "tcp",
+    "address": "emulator-plugin:5001",
+    "version": "2.0.0",
+    "status": "ok"
   },
   {
-    "name": "bar",
-    "network": "unix",
-    "address": "/tmp/synse/proc/bar.sock"
+    "tag": "vaporio/unix-plugin",
+    "protocol": "unix",
+    "address": "/tmp/synse/proc/bar.sock",
+    "version": "2.0.0",
+    "status": "ok"
   }
 ]

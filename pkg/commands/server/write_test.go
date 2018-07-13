@@ -1,8 +1,6 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -19,9 +17,7 @@ const (
   {
     "context":{
       "action":"color",
-      "raw":[
-        "000000"
-      ]
+      "data":"000000"
     },
     "transaction":"b9u6ut6q5i6g020lau70"
   }
@@ -137,14 +133,8 @@ func TestWriteCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/write/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			fmt.Fprint(w, writeRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 500, writeRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -171,16 +161,8 @@ func TestWriteCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/write/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != "POST" {
-				t.Errorf("expected POST request, but was %v", r.Method)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, writeRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, writeRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -208,16 +190,8 @@ func TestWriteCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/write/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != "POST" {
-				t.Errorf("expected POST request, but was %v", r.Method)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, writeRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, writeRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -245,16 +219,8 @@ func TestWriteCommandRequestSuccessPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/write/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			if r.Method != "POST" {
-				t.Errorf("expected POST request, but was %v", r.Method)
-			}
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprint(w, writeRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, writeRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

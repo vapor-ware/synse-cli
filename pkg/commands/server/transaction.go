@@ -43,7 +43,7 @@ Formatting:
   The 'server transaction' command supports the following formatting
   options (via the CLI global --format flag):
     - pretty (default)
-	- yaml
+    - yaml
     - json`
 )
 
