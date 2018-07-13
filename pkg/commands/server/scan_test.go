@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -137,14 +136,8 @@ func TestScanCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, scanRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 500, scanRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -170,13 +163,8 @@ func TestScanCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, scanRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -203,13 +191,8 @@ func TestScanCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, scanRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -236,13 +219,8 @@ func TestScanCommandRequestSuccessPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/scan",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, scanRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

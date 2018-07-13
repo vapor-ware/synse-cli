@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -109,13 +108,8 @@ func TestPluginsInfoCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsInfoRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsInfoRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -143,13 +137,8 @@ func TestPluginsInfoCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsInfoRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsInfoRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -178,13 +167,8 @@ func TestPluginsInfoCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsInfoRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsInfoRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -214,13 +198,8 @@ func TestPluginsInfoCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsInfoRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsInfoRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -232,7 +211,8 @@ func TestPluginsInfoCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 		ServerCommand.Name,
 		pluginsCommand.Name,
 		pluginsInfoCommand.Name,
-		"vaporio/emulator-plugin", "vaporio/unix-plugin",
+		"vaporio/emulator-plugin",
+		"vaporio/unix-plugin",
 	})
 
 	t.Logf("Standard Out: \n%s", app.OutBuffer.String())
@@ -250,13 +230,8 @@ func TestPluginsInfoCommandSingleArgsRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsInfoRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsInfoRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -286,13 +261,8 @@ func TestPluginsInfoCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsInfoRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsInfoRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

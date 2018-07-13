@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -170,14 +169,8 @@ func TestInfoCommandRequestErrorRack(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, infoRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 500, infoRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -201,14 +194,8 @@ func TestInfoCommandRequestErrorBoard(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, infoRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 500, infoRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -232,14 +219,8 @@ func TestInfoCommandRequestErrorDevice(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, infoRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 500, infoRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -263,13 +244,8 @@ func TestInfoCommandRequestErrorRackPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoRackRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoRackRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -294,13 +270,8 @@ func TestInfoCommandRequestErrorBoardPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoBoardRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -325,13 +296,8 @@ func TestInfoCommandRequestErrorDevicePretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoDeviceRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -356,13 +322,8 @@ func TestInfoCommandRequestSuccessRackYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoRackRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoRackRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -390,13 +351,8 @@ func TestInfoCommandRequestSuccessRackJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoRackRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoRackRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -424,13 +380,8 @@ func TestInfoCommandRequestSuccessBoardYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoBoardRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -458,13 +409,8 @@ func TestInfoCommandRequestSuccessBoardJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoBoardRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -492,13 +438,8 @@ func TestInfoCommandRequestSuccessDeviceYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoDeviceRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -526,13 +467,8 @@ func TestInfoCommandRequestSuccessDeviceJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/info/rack-1/board-1/device-1",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, infoDeviceRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

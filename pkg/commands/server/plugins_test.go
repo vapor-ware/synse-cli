@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -167,14 +166,8 @@ func TestPluginsCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
-			test.Fprint(t, w, pluginsRespErr)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 500, pluginsRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -200,13 +193,8 @@ func TestPluginsCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -233,13 +221,8 @@ func TestPluginsCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -266,13 +249,8 @@ func TestPluginsCommandRequestSuccessPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc(
-		"/synse/2.0/plugins",
-		func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "application/json")
-			test.Fprint(t, w, pluginsRespOK)
-		},
-	)
+
+	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

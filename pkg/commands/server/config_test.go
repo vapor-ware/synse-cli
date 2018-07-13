@@ -1,7 +1,6 @@
 package server
 
 import (
-	"net/http"
 	"testing"
 
 	"github.com/gotestyourself/gotestyourself/assert"
@@ -106,11 +105,8 @@ func TestConfigCommandRequestError(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
-		test.Fprint(t, w, configRespErr)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 500, configRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -133,10 +129,8 @@ func TestConfigCommandRequestErrorPretty(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		test.Fprint(t, w, configRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -160,10 +154,8 @@ func TestConfigCommandRequestSuccessYaml(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		test.Fprint(t, w, configRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -190,10 +182,8 @@ func TestConfigCommandRequestSuccessJson(t *testing.T) {
 
 	mux, server := test.Server()
 	defer server.Close()
-	mux.HandleFunc("/synse/2.0/config", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		test.Fprint(t, w, configRespOK)
-	})
+
+	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
