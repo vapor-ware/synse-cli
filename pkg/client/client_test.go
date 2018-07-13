@@ -3,7 +3,6 @@ package client
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
 
 	"github.com/urfave/cli"
@@ -181,10 +180,7 @@ func TestStatus(t *testing.T) {
 
 	resp, err := client.Status()
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestConfig(t *testing.T) {
@@ -213,10 +209,7 @@ func TestConfig(t *testing.T) {
 
 	resp, err := client.Config()
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestCapabilities(t *testing.T) {
@@ -263,10 +256,7 @@ func TestCapabilities(t *testing.T) {
 
 	resp, err := client.Capabilities()
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestPlugins(t *testing.T) {
@@ -357,10 +347,7 @@ func TestPlugins(t *testing.T) {
 
 	resp, err := client.Plugins()
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 // FIXME: The current definition scheme of ScanResponse is not consistent with
@@ -395,10 +382,7 @@ func TestRackInfo(t *testing.T) {
 
 	resp, err := client.RackInfo("rack-1")
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestBoardInfo(t *testing.T) {
@@ -438,10 +422,7 @@ func TestBoardInfo(t *testing.T) {
 
 	resp, err := client.BoardInfo("rack-1", "board-1")
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestDeviceInfo(t *testing.T) {
@@ -511,10 +492,7 @@ func TestDeviceInfo(t *testing.T) {
 
 	resp, err := client.DeviceInfo("rack-1", "board-1", "device-1")
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestRead(t *testing.T) {
@@ -563,10 +541,7 @@ func TestRead(t *testing.T) {
 
 	resp, err := client.Read("rack-1", "board-1", "device-1")
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestTransaction(t *testing.T) {
@@ -609,10 +584,7 @@ func TestTransaction(t *testing.T) {
 
 	resp, err := client.Transaction("b9u6ss6q5i6g020lau6g")
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestTransactionList(t *testing.T) {
@@ -637,10 +609,7 @@ func TestTransactionList(t *testing.T) {
 
 	resp, err := client.TransactionList()
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
 
 func TestWrite(t *testing.T) {
@@ -677,8 +646,5 @@ func TestWrite(t *testing.T) {
 
 	resp, err := client.Write("rack-1", "board-1", "device-1", "color", "000000")
 	test.ExpectNoError(t, err)
-
-	if !reflect.DeepEqual(out, resp) {
-		t.Errorf("expected %+v, but was %+v", out, resp)
-	}
+	test.AssertEqual(t, out, resp)
 }
