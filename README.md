@@ -2,6 +2,7 @@
 <p align="center">
     <a href="https://circleci.com/gh/vapor-ware/synse-cli"><img src="https://circleci.com/gh/vapor-ware/synse-cli.svg?style=shield&circle-token=7e11598b349e1d280c7cd78517ababef0f837bc3"></a>
     <a href="http://godoc.org/github.com/vapor-ware/synse-cli"><img src="https://godoc.org/github.com/vapor-ware/synse-cli?status.svg"></a>
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli.svg?type=shield"/></a>
     <a href="https://goreportcard.com/report/github.com/vapor-ware/synse-cli"><img src="https://goreportcard.com/badge/github.com/vapor-ware/synse-cli"></a>
     <a href="https://codecov.io/gh/vapor-ware/synse-cli"><img src="https://codecov.io/gh/vapor-ware/synse-cli/branch/master/graph/badge.svg" /></a>
 
@@ -162,3 +163,7 @@ We happily accept issues and pull requests logged in this repository. Please jus
 appropriate rules when submitting anything.
 
 Any code in this repository is governed under the license given therein.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli?ref=badge_large)
