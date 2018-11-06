@@ -50,10 +50,10 @@ const (
 
 Example:
   # read a specific device
-  synse read rack-1 board 29d1a03e8cddfbf1cf68e14e60e5f5cc
+  synse server read rack-1 board 29d1a03e8cddfbf1cf68e14e60e5f5cc
 
   # read all temperature devices on the rack
-  synse read rack-1 --type temperature
+  synse server read rack-1 --type temperature
 
 Formatting:
   The 'server read' command supports the following formatting
@@ -79,6 +79,11 @@ var readCommand = cli.Command{
 		// This flag is applicable to rack, board, and device scope, but
 		// if the specified type does not match the device type at the
 		// device scope, nothing will be read.
+		//
+		// FIXME: The `type` here is actually the `kind`. For example, filtering
+		// the `state` or `color` will yield no result, but filtering `led` will
+		// result both `state` and `color` devices. So technically, it's not
+		// possible to filter out just `state` nor `color` devices.
 		cli.StringSliceFlag{
 			Name:  "type, t",
 			Usage: "specify the type of devices to read",
