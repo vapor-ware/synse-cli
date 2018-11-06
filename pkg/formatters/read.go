@@ -57,9 +57,11 @@ func newReadCachedFormat(data interface{}) (interface{}, error) {
 	}
 
 	return scheme.ReadCachedOutput{
-		Rack:      readData.Location.Rack,
-		Board:     readData.Location.Board,
-		Device:    readData.Location.Device,
+		DeviceLocation: scheme.DeviceLocation{
+			Rack:   readData.Location.Rack,
+			Board:  readData.Location.Board,
+			Device: readData.Location.Device,
+		},
 		Info:      readData.Info,
 		Type:      readData.Type,
 		Value:     fmt.Sprintf("%v", readData.Value),

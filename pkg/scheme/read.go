@@ -52,12 +52,7 @@ type ReadCachedParams struct {
 
 // ReadCachedOutput defines the scheme for the data output by a "readcached" command.
 type ReadCachedOutput struct {
-	// FIXME: Embedded DeviceLocation doesn't work here for some reasons.
-	// Have to define Rack, Board, Device again.
-	Rack   string
-	Board  string
-	Device string
-
+	DeviceLocation
 	Info      string
 	Type      string
 	Value     string
