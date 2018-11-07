@@ -52,10 +52,10 @@ type ReadCachedParams struct {
 
 // ReadCachedOutput defines the scheme for the data output by a "readcached" command.
 type ReadCachedOutput struct {
-	DeviceLocation
-	Info      string
-	Type      string
-	Value     string
-	Unit      string
-	Timestamp string
+	Location  DeviceLocation `json:"location" yaml:"location"`
+	Info      string         `json:"info" yaml:"info"`
+	Type      string         `json:"type" yaml:"type"`
+	Value     string         `json:"value" yaml:"value"`
+	Unit      string         `json:"unit" yaml:"unit"`
+	Timestamp string         `json:"timestamp" yaml:"timestamp"`
 }

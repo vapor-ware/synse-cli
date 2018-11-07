@@ -13,7 +13,7 @@ const (
 	prettyRead = "{{.Info}}\t{{.Type}}\t{{.Value}}\t{{.Unit}}\t{{.Timestamp}}\n"
 
 	// pterryReadCached the pretty output format for `readcache` requests
-	prettyReadCached = "{{.Rack}}\t{{.Board}}\t{{.Device}}\t{{.Info}}\t{{.Type}}\t{{.Value}}\t{{.Unit}}\t{{.Timestamp}}\n"
+	prettyReadCached = "{{.Location.Rack}}\t{{.Location.Board}}\t{{.Location.Device}}\t{{.Info}}\t{{.Type}}\t{{.Value}}\t{{.Unit}}\t{{.Timestamp}}\n"
 )
 
 // newReadFormat is the handler for read commands that is used by the
@@ -57,7 +57,7 @@ func newReadCachedFormat(data interface{}) (interface{}, error) {
 	}
 
 	return scheme.ReadCachedOutput{
-		DeviceLocation: scheme.DeviceLocation{
+		Location: scheme.DeviceLocation{
 			Rack:   readData.Location.Rack,
 			Board:  readData.Location.Board,
 			Device: readData.Location.Device,
