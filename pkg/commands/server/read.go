@@ -83,7 +83,8 @@ var readCommand = cli.Command{
 		// FIXME: The `type` here is actually the `kind`. For example, filtering
 		// the `state` or `color` will yield no result, but filtering `led` will
 		// result both `state` and `color` devices. So technically, it's not
-		// possible to filter out just `state` nor `color` devices.
+		// possible to filter out just `state` nor `color` devices. Refer to
+		// #192 for more information.
 		cli.StringSliceFlag{
 			Name:  "type, t",
 			Usage: "specify the type of devices to read",
