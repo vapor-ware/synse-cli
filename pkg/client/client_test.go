@@ -524,7 +524,7 @@ func TestRead(t *testing.T) {
 		Data: []scheme.ReadData{
 			scheme.ReadData{
 				// FIXME: If we change the type of value to anything other than
-				// string, the test will fail. The interface{} type maybe the
+				// string, the test will fail. The interface{} type might be the
 				// cause of this.
 				Value:     "65",
 				Timestamp: "2018-06-28T12:41:50.333443322Z",
@@ -604,81 +604,99 @@ func TestReadCachedNoParams(t *testing.T) {
 	test.AssertEqual(t, out, resp)
 }
 
-// func TestReadCachedSingleParams(t *testing.T) {
-// 	test.Setup()
+func TestReadCachedParams(t *testing.T) {
+	// Since the caching option is not enabled in the plugin side, similar to
+	// the test above, the query parameters will have no effect.
+	test.Setup()
 
-// 	client := &synseClient{}
-// 	mux, server := test.Server()
-// 	defer server.Close()
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
 
-// 	in := `
-// {
-//   "location":{
-//     "rack":"rack-1",
-//     "board":"board-1",
-//     "device":"device-1"
-//   },
-//   "kind":"temperature",
-//   "value":"65",
-//   "timestamp":"2018-11-01T12:41:50.333443322Z",
-//   "unit":{
-//     "symbol":"C",
-//     "name":"celsius"
-//   },
-//   "type":"temperature",
-//   "info":"mock temperature response"
-// }
-// {
-//   "location":{
-//     "rack":"rack-1",
-//     "board":"board-1",
-//     "device":"device-1"
-//   },
-//   "kind":"temperature",
-//   "value":"66",
-//   "timestamp":"2018-11-11T12:41:50.333443322Z",
-//   "unit":{
-//     "symbol":"C",
-//     "name":"celsius"
-//   },
-//   "type":"temperature",
-//   "info":"mock temperature response"
-// }`
+	in := `
+{
+  "location":{
+    "rack":"rack-1",
+    "board":"board-1",
+    "device":"device-1"
+  },
+  "kind":"temperature",
+  "value":"65",
+  "timestamp":"2018-11-01T12:41:50.333443322Z",
+  "unit":{
+    "symbol":"C",
+    "name":"celsius"
+  },
+  "type":"temperature",
+  "info":"mock temperature response"
+}
+{
+  "location":{
+    "rack":"rack-1",
+    "board":"board-1",
+    "device":"device-1"
+  },
+  "kind":"temperature",
+  "value":"66",
+  "timestamp":"2018-11-11T12:41:50.333443322Z",
+  "unit":{
+    "symbol":"C",
+    "name":"celsius"
+  },
+  "type":"temperature",
+  "info":"mock temperature response"
+}`
 
-// 	out := []scheme.ReadCached{
-// 		scheme.ReadCached{
-// 			Location: scheme.DeviceLocation{
-// 				Rack:   "rack-1",
-// 				Board:  "board-1",
-// 				Device: "device-1",
-// 			},
-// 			Kind: "temperature",
-// 			ReadData: scheme.ReadData{
-// 				// FIXME: Same as above.
-// 				Value:     "66",
-// 				Timestamp: "2018-11-11T12:41:50.333443322Z",
-// 				Unit: scheme.OutputUnit{
-// 					Symbol: "C",
-// 					Name:   "celsius",
-// 				},
-// 				Type: "temperature",
-// 				Info: "mock temperature response",
-// 			},
-// 		},
-// 	}
+	out := []scheme.ReadCached{
+		scheme.ReadCached{
+			Location: scheme.DeviceLocation{
+				Rack:   "rack-1",
+				Board:  "board-1",
+				Device: "device-1",
+			},
+			Kind: "temperature",
+			ReadData: scheme.ReadData{
+				Value:     "65",
+				Timestamp: "2018-11-01T12:41:50.333443322Z",
+				Unit: scheme.OutputUnit{
+					Symbol: "C",
+					Name:   "celsius",
+				},
+				Type: "temperature",
+				Info: "mock temperature response",
+			},
+		},
+		scheme.ReadCached{
+			Location: scheme.DeviceLocation{
+				Rack:   "rack-1",
+				Board:  "board-1",
+				Device: "device-1",
+			},
+			Kind: "temperature",
+			ReadData: scheme.ReadData{
+				Value:     "66",
+				Timestamp: "2018-11-11T12:41:50.333443322Z",
+				Unit: scheme.OutputUnit{
+					Symbol: "C",
+					Name:   "celsius",
+				},
+				Type: "temperature",
+				Info: "mock temperature response",
+			},
+		},
+	}
 
-// 	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
+	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
 
-// 	test.AddServerHost(server)
+	test.AddServerHost(server)
 
-// 	params := scheme.ReadCachedParams{
-// 		Start: "2018-11-10T12:41:50.333443322Z",
-// 	}
-// 	resp, err := client.ReadCached(params)
-// 	test.ExpectNoError(t, err)
-// 	// FIXME: Should only return 1 value?
-// 	// test.AssertEqual(t, out, resp)
-// }
+	params := scheme.ReadCachedParams{
+		Start: "2018-11-10T12:41:50.333443322Z",
+	}
+	resp, err := client.ReadCached(params)
+	test.ExpectNoError(t, err)
+	test.AssertEqual(t, out, resp)
+}
 
 func TestTransaction(t *testing.T) {
 	test.Setup()
