@@ -176,6 +176,41 @@ func (client *grpcClient) Read(c *cli.Context, rack, board, device string) (out 
 	return out, nil
 }
 
+// ReadCached issues a "readcached" request to a plugin via the gRPC API.
+// FIXME: Small notes on the use of params and consistency.
+// Here we specify the params of the starting and ending bound to be string.
+// However, in the client.go, we use a struct parameter. Need to think more
+// about this and might decide to go with with one way for consistency.
+func (client *grpcClient) ReadCached(c *cli.Context, start, end string) (out []*synse.DeviceReading, err error) {
+	if client.apiClient == nil {
+		client.apiClient, err = client.newGrpcClient(c)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	stream, err := client.apiClient.ReadCached(context.Background(), &synse.Bounds{
+		Start: start,
+		End:   end,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, resp)
+	}
+	return out, nil
+}
+
 // Write issues a "write" request to a plugin via the gRPC API.
 func (client *grpcClient) Write(c *cli.Context, rack, board, device string, data *synse.WriteData) (out *synse.Transactions, err error) {
 	if client.apiClient == nil {
