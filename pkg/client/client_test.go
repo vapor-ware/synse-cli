@@ -656,6 +656,7 @@ func TestReadCachedParams(t *testing.T) {
 			},
 			Kind: "temperature",
 			ReadData: scheme.ReadData{
+				// FIXME: Same as above.
 				Value:     "65",
 				Timestamp: "2018-11-01T12:41:50.333443322Z",
 				Unit: scheme.OutputUnit{
