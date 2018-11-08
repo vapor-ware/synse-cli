@@ -3,7 +3,6 @@ package server
 import (
 	"github.com/urfave/cli"
 	"github.com/vapor-ware/synse-cli/pkg/client"
-	"github.com/vapor-ware/synse-cli/pkg/completion"
 	"github.com/vapor-ware/synse-cli/pkg/formatters"
 	"github.com/vapor-ware/synse-cli/pkg/scheme"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -14,19 +13,19 @@ const (
 	readCachedCmdName = "readcached"
 
 	// readCachedCmdUsage is the usage text for the 'readcached' command.
-	readCachedCmdUsage = "Stream reading data from all configured plugins"
+	readCachedCmdUsage = "Get cached reading from all configured plugins"
 
 	// readCachedCmdDesc is the description for the 'readcached' command.
 	readCachedCmdDesc = `The readcached command hits the active Synse Server host's
   '/readcached' endpoint to stream reading data from all configured
   plugins.
 
-  The 'readcached' command does not require any further routing information
-  to be specified. If no routing info is specified, the CLI will
-  stream all the reading data from all available devices. This
-  can be a lot of devices, so it is recommended to scope the
-  read by providing some level of context, which are timestamp
-  in this case.
+  The 'readcached' command does not require any further routing
+  information to be specified. If no routing info is specified,
+  the CLI will stream all the reading data from all available
+  devices. This can be a lot of devices, so it is recommended
+  to scope the read by providing some level of context,
+  which are timestamp in this case.
 
   Timestamp is formatted in RFC3339/RFC3339Nano and is used
   to specify a bounding on the cache data to return. There
@@ -36,17 +35,16 @@ const (
   constraint and the CLI will return all reading data.
 
 Example:
-  # stream reading data from all configured plugins
+  # read all cached reading from all configured plugins
   synse server readcached
 
-  # stream reading data after '2018-11-01T19:13:00.9184028Z'
+  # read cached reading after '2018-11-01T19:13:00.9184028Z'
   synse server readcached --start 2018-11-01T19:13:00.9184028Z
 
-
-  # stream reading data before '2018-11-01T19:13:00.9184028Z'
+  # read cached reading before '2018-11-01T19:13:00.9184028Z'
   synse server readcached --end 2018-11-11T19:13:00.9184028Z
 
-  # stream reading data within '2018-11-01T19:13:00.9184028Z' and '2018-11-11T19:13:00.9184028Z'
+  # read cached reading within '2018-11-01T19:13:00.9184028Z' and '2018-11-11T19:13:00.9184028Z'
   synse server readcached --start 2018-11-01T19:13:00.9184028Z --end 2018-11-11T19:13:00.9184028Z
 
 Formatting:
@@ -83,8 +81,6 @@ var readCachedCommand = cli.Command{
 			Usage: "specify the ending bound on the cache data",
 		},
 	},
-
-	BashComplete: completion.CompleteRackBoardDevice,
 }
 
 // cmdReadCached is the action for the readCachedCommand. It makes a
@@ -102,7 +98,20 @@ func cmdReadCached(c *cli.Context) error {
 
 	formatter := formatters.NewReadCachedFormatter(c)
 	for _, device := range devices {
-		err = formatter.Add(device)
+		err = formatter.Add(scheme.ReadCached{
+			Location: scheme.DeviceLocation{
+				Rack:   device.Location.Rack,
+				Board:  device.Location.Board,
+				Device: device.Location.Device,
+			},
+			ReadData: scheme.ReadData{
+				Info:      device.Info,
+				Value:     device.Value,
+				Unit:      device.Unit,
+				Timestamp: device.Timestamp,
+				Type:      device.Type,
+			},
+		})
 		if err != nil {
 			return err
 		}
