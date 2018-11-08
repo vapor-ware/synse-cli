@@ -29,6 +29,7 @@ var PluginCommand = cli.Command{
 		pluginCapabilitiesCommand,
 		pluginDevicesCommand,
 		pluginReadCommand,
+		pluginReadCachedCommand,
 		pluginTransactionCommand,
 		pluginWriteCommand,
 	},

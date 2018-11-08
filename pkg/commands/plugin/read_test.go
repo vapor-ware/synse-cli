@@ -104,7 +104,7 @@ func TestReadCommandError5(t *testing.T) {
 	test.ExpectExitCoderError(t, err)
 }
 
-// TestGetValue tests the getValue function.
+// TestGetValue tests the GetValue function.
 func TestGetValue(t *testing.T) {
 	tests := []struct {
 		in  *synse.Reading
@@ -161,14 +161,14 @@ func TestGetValue(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		r := getValue(test.in)
+		r := GetValue(test.in)
 		if r != test.out {
-			t.Errorf("getValue(%v) => %v Out:%v", test.in, r, test.out)
+			t.Errorf("GetValue(%v) => %v Out:%v", test.in, r, test.out)
 		}
 	}
 }
 
-// TestGetValueBytes tests getValue function where input is a slice of byte.
+// TestGetValueBytes tests GetValue function where input is a slice of byte.
 func TestGetValueBytes(t *testing.T) {
 	tests := []struct {
 		in  *synse.Reading
@@ -183,9 +183,9 @@ func TestGetValueBytes(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		r := getValue(test.in).([]byte)
+		r := GetValue(test.in).([]byte)
 		if !bytes.Equal(r, test.out) {
-			t.Errorf("getValue(%v) => %v Out:%v", test.in, r, test.out)
+			t.Errorf("GetValue(%v) => %v Out:%v", test.in, r, test.out)
 		}
 	}
 }
