@@ -264,12 +264,12 @@
   revision = "8e01ec4cd3e2d84ab2fe90d8210528ffbb06d8ff"
 
 [[projects]]
-  digest = "1:c5908710cff839f035b3e80ffc09d5636fc3ab25e03e22c38ecb1a841f1f3e4e"
+  digest = "1:a95be5a656edf57b48a06335bbb627fc2eb5f37890df1183bbaab9443c43cae1"
   name = "github.com/vapor-ware/synse-server-grpc"
   packages = ["go"]
   pruneopts = "UT"
-  revision = "e0c079f1b85081c6a536fb7c5c63cf9b9370c22e"
-  version = "1.0.0"
+  revision = "3bc0b24b2bfbc8df1d67f02607d13380318d68ee"
+  version = "1.1.0"
 
 [[projects]]
   branch = "master"
