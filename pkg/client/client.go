@@ -321,37 +321,40 @@ func (c *synseClient) Read(rack, board, device string) (*scheme.Read, error) {
 }
 
 // ReadCached gets and parses the response from Synse Server's "readcached" endpoint.
-// Since the returned response is stream JSON, have to use a different way to
-// get these values out.
-// FIXME: Maybe there's a better way to do this.
 func (c *synseClient) ReadCached(params scheme.ReadCachedParams) ([]scheme.ReadCached, error) {
 	var readings []scheme.ReadCached
-	errScheme := new(scheme.Error)
 
+	// Create a new Synse Server's client.
 	client, err := newVersioned()
 	if err != nil {
 		return nil, err
 	}
 
-	// Check for Synse Server's failure response.
-	r, e := client.Get(readCachedBaseURI).Receive(nil, errScheme)
-	synseError := check(r, e, errScheme)
-	if synseError != nil {
-		return nil, synseError
-	}
-
+	// Prepare a request.
 	req, err := client.Get(readCachedBaseURI).QueryStruct(params).Request()
 	if err != nil {
 		return nil, err
 	}
 
+	// Send the request.
 	httpClient := &http.Client{}
 	res, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
+	// Handle failure response.
 	dec := json.NewDecoder(res.Body)
+	if res.StatusCode != http.StatusOK {
+		var e scheme.Error
+		err := dec.Decode(&e)
+		synseError := check(res, err, &e)
+		if synseError != nil {
+			return nil, synseError
+		}
+	}
+
+	// Decode a streaming array of JSON objects.
 	for dec.More() {
 		var r scheme.ReadCached
 		err := dec.Decode(&r)
