@@ -66,14 +66,14 @@ var readCachedCommand = cli.Command{
 	},
 
 	Flags: []cli.Flag{
-		// --start, -s flag specifies specifies a starting bound on the cache
+		// --start, -s flag specifies a starting bound on the cache
 		// data to return. If the specified timestamp does not exist, nothing
 		// will be read.
 		cli.StringFlag{
 			Name:  "start, s",
 			Usage: "specify the starting bound on the cache data",
 		},
-		// --end, -e flag specifies specifies a ending bound on the cache
+		// --end, -e flag specifies a ending bound on the cache
 		// data to return. If the specified timestamp does not exist, nothing
 		// will be read.
 		cli.StringFlag{
