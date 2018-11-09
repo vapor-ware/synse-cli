@@ -15,7 +15,7 @@ const (
 	versionRespOK = `
 {
   "version": "2.0.0",
-  "api_version": "2.0"
+  "api_version": "v2"
 }`
 
 	// the mocked 500 error JSON response for the Synse Server 'version' route

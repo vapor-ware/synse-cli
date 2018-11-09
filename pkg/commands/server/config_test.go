@@ -106,7 +106,7 @@ func TestConfigCommandRequestError(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/config", 500, configRespErr)
+	test.Serve(t, mux, "/synse/v2/config", 500, configRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -130,7 +130,7 @@ func TestConfigCommandRequestErrorPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
+	test.Serve(t, mux, "/synse/v2/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -155,7 +155,7 @@ func TestConfigCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
+	test.Serve(t, mux, "/synse/v2/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -183,7 +183,7 @@ func TestConfigCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/config", 200, configRespOK)
+	test.Serve(t, mux, "/synse/v2/config", 200, configRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

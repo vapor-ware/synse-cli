@@ -137,7 +137,7 @@ func TestScanCommandRequestError(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/scan", 500, scanRespErr)
+	test.Serve(t, mux, "/synse/v2/scan", 500, scanRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -164,7 +164,7 @@ func TestScanCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/v2/scan", 200, scanRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -192,7 +192,7 @@ func TestScanCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/v2/scan", 200, scanRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -220,7 +220,7 @@ func TestScanCommandRequestSuccessPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/scan", 200, scanRespOK)
+	test.Serve(t, mux, "/synse/v2/scan", 200, scanRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
