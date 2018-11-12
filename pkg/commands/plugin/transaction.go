@@ -42,7 +42,7 @@ Formatting:
   The 'plugin transaction' command supports the following formatting
   options (via the CLI global --format flag):
     - pretty (default)
-		- yaml
+    - yaml
     - json`
 )
 

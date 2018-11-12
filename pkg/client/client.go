@@ -46,6 +46,9 @@ const (
 	// readBaseURI is the base URI for the 'read' route.
 	readBaseURI = "read"
 
+	// readCachedBaseURI is the base URI for the 'readcached' route.
+	readCachedBaseURI = "readcached"
+
 	// transactionBaseURI is the base URI for the 'transaction' route.
 	transactionBaseURI = "transaction"
 
@@ -315,6 +318,54 @@ func (c *synseClient) Read(rack, board, device string) (*scheme.Read, error) {
 		return nil, err
 	}
 	return out, nil
+}
+
+// ReadCached gets and parses the response from Synse Server's "readcached" endpoint.
+func (c *synseClient) ReadCached(params scheme.ReadCachedParams) ([]scheme.ReadCached, error) {
+	var readings []scheme.ReadCached
+
+	// Create a new Synse Server's client.
+	client, err := newVersioned()
+	if err != nil {
+		return nil, err
+	}
+
+	// Prepare a request.
+	req, err := client.Get(readCachedBaseURI).QueryStruct(params).Request()
+	if err != nil {
+		return nil, err
+	}
+
+	// Send the request.
+	httpClient := &http.Client{}
+	res, err := httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	// Handle failure response.
+	dec := json.NewDecoder(res.Body)
+	if res.StatusCode != http.StatusOK {
+		var e scheme.Error
+		err := dec.Decode(&e)
+		synseError := check(res, err, &e)
+		if synseError != nil {
+			return nil, synseError
+		}
+	}
+
+	// Decode a streaming array of JSON objects.
+	for dec.More() {
+		var r scheme.ReadCached
+		err := dec.Decode(&r)
+		if err != nil {
+			return nil, err
+		}
+
+		readings = append(readings, r)
+	}
+
+	return readings, nil
 }
 
 // Transaction gets and parses the response from Synse Server's "transaction" endpoint.

@@ -78,7 +78,7 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 			Timestamp: read.GetTimestamp(),
 			Type:      read.GetType(),
 			Info:      read.GetInfo(),
-			Value:     getValue(read),
+			Value:     GetValue(read),
 			Unit: scheme.OutputUnit{
 				Name:   read.Unit.Name,
 				Symbol: read.Unit.Symbol,
@@ -95,9 +95,9 @@ func cmdRead(c *cli.Context) error { // nolint: gocyclo
 	return formatter.Write()
 }
 
-// getValue determines which oneof Reading.Value is set and returns the
+// GetValue determines which oneof Reading.Value is set and returns the
 // corresponding value.
-func getValue(value *synse.Reading) interface{} { // nolint: gocyclo
+func GetValue(value *synse.Reading) interface{} { // nolint: gocyclo
 	switch value.Value.(type) {
 	case *synse.Reading_StringValue:
 		return value.GetStringValue()

@@ -28,6 +28,14 @@ type DeviceInfo struct {
 	Output    []DeviceOutput    `json:"output"`
 }
 
+// DeviceLocation describes the location of a device by providing the
+// rack, board, and device ID which is used as routing info to that device.
+type DeviceLocation struct {
+	Rack   string `json:"rack"`
+	Board  string `json:"board"`
+	Device string `json:"device"`
+}
+
 // DeviceOutput is the scheme for the output meta-info belonging to a device.
 type DeviceOutput struct {
 	Name          string     `json:"name"`

@@ -30,7 +30,9 @@ Example:
 Formatting:
   The 'plugin health' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+    - yaml
+    - json`
 )
 
 // pluginHealthCommand is a CLI sub-command for getting health info from a plugin.

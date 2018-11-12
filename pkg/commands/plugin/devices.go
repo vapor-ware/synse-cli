@@ -28,7 +28,9 @@ Example:
 Formatting:
   The 'plugin devices' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+    - yaml
+    - json`
 )
 
 // pluginDevicesCommand is a CLI sub-command for getting devices info from a plugin.
