@@ -596,7 +596,7 @@ func TestReadCachedNoParams(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, in)
 
 	test.AddServerHost(server)
 
@@ -688,7 +688,7 @@ func TestReadCachedParams(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, in)
 
 	test.AddServerHost(server)
 
