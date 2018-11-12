@@ -507,7 +507,7 @@ func TestRead(t *testing.T) {
   "kind":"temperature",
   "data":[
     {
-      "value":"65",
+      "value":65,
       "timestamp":"2018-06-28T12:41:50.333443322Z",
       "unit":{
         "symbol":"C",
@@ -523,10 +523,13 @@ func TestRead(t *testing.T) {
 		Kind: "temperature",
 		Data: []scheme.ReadData{
 			scheme.ReadData{
-				// FIXME: If we change the type of value to anything other than
-				// string, the test will fail. The interface{} type might be the
-				// cause of this.
-				Value:     "65",
+				// NOTE: We define the type of Value to be interface{} so that
+				// it can store any value from Synse Server's response. It will
+				// then be converted to a corresponding built-in type,
+				// depending on the architecture (I think), which is float64 in
+				// this case.
+				// This scenario will hold true for all Read related cases below.
+				Value:     float64(65),
 				Timestamp: "2018-06-28T12:41:50.333443322Z",
 				Unit: scheme.OutputUnit{
 					Symbol: "C",
@@ -562,7 +565,7 @@ func TestReadCachedNoParams(t *testing.T) {
     "device":"device-1"
   },
   "kind":"temperature",
-  "value":"65",
+  "value":65,
   "timestamp":"2018-11-01T12:41:50.333443322Z",
   "unit":{
     "symbol":"C",
@@ -581,8 +584,7 @@ func TestReadCachedNoParams(t *testing.T) {
 			},
 			Kind: "temperature",
 			ReadData: scheme.ReadData{
-				// FIXME: Same as above.
-				Value:     "65",
+				Value:     float64(65),
 				Timestamp: "2018-11-01T12:41:50.333443322Z",
 				Unit: scheme.OutputUnit{
 					Symbol: "C",
@@ -621,7 +623,7 @@ func TestReadCachedParams(t *testing.T) {
     "device":"device-1"
   },
   "kind":"temperature",
-  "value":"65",
+  "value":65,
   "timestamp":"2018-11-01T12:41:50.333443322Z",
   "unit":{
     "symbol":"C",
@@ -637,7 +639,7 @@ func TestReadCachedParams(t *testing.T) {
     "device":"device-1"
   },
   "kind":"temperature",
-  "value":"66",
+  "value":66,
   "timestamp":"2018-11-11T12:41:50.333443322Z",
   "unit":{
     "symbol":"C",
@@ -656,8 +658,7 @@ func TestReadCachedParams(t *testing.T) {
 			},
 			Kind: "temperature",
 			ReadData: scheme.ReadData{
-				// FIXME: Same as above.
-				Value:     "65",
+				Value:     float64(65),
 				Timestamp: "2018-11-01T12:41:50.333443322Z",
 				Unit: scheme.OutputUnit{
 					Symbol: "C",
@@ -675,7 +676,7 @@ func TestReadCachedParams(t *testing.T) {
 			},
 			Kind: "temperature",
 			ReadData: scheme.ReadData{
-				Value:     "66",
+				Value:     float64(66),
 				Timestamp: "2018-11-11T12:41:50.333443322Z",
 				Unit: scheme.OutputUnit{
 					Symbol: "C",
