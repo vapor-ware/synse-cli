@@ -507,7 +507,7 @@ func TestRead(t *testing.T) {
   "kind":"temperature",
   "data":[
     {
-      "value":"65",
+      "value":65,
       "timestamp":"2018-06-28T12:41:50.333443322Z",
       "unit":{
         "symbol":"C",
@@ -523,7 +523,13 @@ func TestRead(t *testing.T) {
 		Kind: "temperature",
 		Data: []scheme.ReadData{
 			scheme.ReadData{
-				Value:     "65",
+				// NOTE: We define the type of Value to be interface{} so that
+				// it can store any value from Synse Server's response. It will
+				// then be converted to a corresponding built-in type,
+				// depending on the architecture (I think), which is float64 in
+				// this case.
+				// This scenario will hold true for all Read related cases below.
+				Value:     float64(65),
 				Timestamp: "2018-06-28T12:41:50.333443322Z",
 				Unit: scheme.OutputUnit{
 					Symbol: "C",
@@ -540,6 +546,156 @@ func TestRead(t *testing.T) {
 	test.AddServerHost(server)
 
 	resp, err := client.Read("rack-1", "board-1", "device-1")
+	test.ExpectNoError(t, err)
+	test.AssertEqual(t, out, resp)
+}
+
+func TestReadCachedNoParams(t *testing.T) {
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+{
+  "location":{
+    "rack":"rack-1",
+    "board":"board-1",
+    "device":"device-1"
+  },
+  "kind":"temperature",
+  "value":65,
+  "timestamp":"2018-11-01T12:41:50.333443322Z",
+  "unit":{
+    "symbol":"C",
+    "name":"celsius"
+  },
+  "type":"temperature",
+  "info":"mock temperature response"
+}`
+
+	out := []scheme.ReadCached{
+		scheme.ReadCached{
+			Location: scheme.DeviceLocation{
+				Rack:   "rack-1",
+				Board:  "board-1",
+				Device: "device-1",
+			},
+			Kind: "temperature",
+			ReadData: scheme.ReadData{
+				Value:     float64(65),
+				Timestamp: "2018-11-01T12:41:50.333443322Z",
+				Unit: scheme.OutputUnit{
+					Symbol: "C",
+					Name:   "celsius",
+				},
+				Type: "temperature",
+				Info: "mock temperature response",
+			},
+		},
+	}
+
+	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
+
+	test.AddServerHost(server)
+
+	params := scheme.ReadCachedParams{}
+	resp, err := client.ReadCached(params)
+	test.ExpectNoError(t, err)
+	test.AssertEqual(t, out, resp)
+}
+
+func TestReadCachedParams(t *testing.T) {
+	// Since the caching option is not enabled in the plugin side, similar to
+	// the test above, the query parameters will have no effect.
+	test.Setup()
+
+	client := &synseClient{}
+	mux, server := test.Server()
+	defer server.Close()
+
+	in := `
+{
+  "location":{
+    "rack":"rack-1",
+    "board":"board-1",
+    "device":"device-1"
+  },
+  "kind":"temperature",
+  "value":65,
+  "timestamp":"2018-11-01T12:41:50.333443322Z",
+  "unit":{
+    "symbol":"C",
+    "name":"celsius"
+  },
+  "type":"temperature",
+  "info":"mock temperature response"
+}
+{
+  "location":{
+    "rack":"rack-1",
+    "board":"board-1",
+    "device":"device-1"
+  },
+  "kind":"temperature",
+  "value":66,
+  "timestamp":"2018-11-11T12:41:50.333443322Z",
+  "unit":{
+    "symbol":"C",
+    "name":"celsius"
+  },
+  "type":"temperature",
+  "info":"mock temperature response"
+}`
+
+	out := []scheme.ReadCached{
+		scheme.ReadCached{
+			Location: scheme.DeviceLocation{
+				Rack:   "rack-1",
+				Board:  "board-1",
+				Device: "device-1",
+			},
+			Kind: "temperature",
+			ReadData: scheme.ReadData{
+				Value:     float64(65),
+				Timestamp: "2018-11-01T12:41:50.333443322Z",
+				Unit: scheme.OutputUnit{
+					Symbol: "C",
+					Name:   "celsius",
+				},
+				Type: "temperature",
+				Info: "mock temperature response",
+			},
+		},
+		scheme.ReadCached{
+			Location: scheme.DeviceLocation{
+				Rack:   "rack-1",
+				Board:  "board-1",
+				Device: "device-1",
+			},
+			Kind: "temperature",
+			ReadData: scheme.ReadData{
+				Value:     float64(66),
+				Timestamp: "2018-11-11T12:41:50.333443322Z",
+				Unit: scheme.OutputUnit{
+					Symbol: "C",
+					Name:   "celsius",
+				},
+				Type: "temperature",
+				Info: "mock temperature response",
+			},
+		},
+	}
+
+	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
+
+	test.AddServerHost(server)
+
+	params := scheme.ReadCachedParams{
+		Start: "2018-11-10T12:41:50.333443322Z",
+	}
+	resp, err := client.ReadCached(params)
 	test.ExpectNoError(t, err)
 	test.AssertEqual(t, out, resp)
 }

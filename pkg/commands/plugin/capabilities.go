@@ -28,7 +28,9 @@ Example:
 Formatting:
   The 'plugin capabilities' command supports the following formatting
   options (via the CLI global --format flag):
-    - pretty (default)`
+    - pretty (default)
+    - yaml
+    - json`
 )
 
 // pluginCapabilitiesCommand is a CLI sub-command for getting capabilities info from a plugin.

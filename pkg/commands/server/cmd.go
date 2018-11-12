@@ -26,6 +26,7 @@ var ServerCommand = cli.Command{
 		capabilitiesCommand,
 		pluginsCommand,
 		readCommand,
+		readCachedCommand,
 		scanCommand,
 		statusCommand,
 		transactionCommand,

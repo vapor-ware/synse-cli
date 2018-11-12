@@ -21,6 +21,6 @@ type ServerCapabilityOutput struct {
 
 // PluginCapabilityOutput is the scheme for `plugin capabilities` pretty output.
 type PluginCapabilityOutput struct {
-	Kind    string
-	Outputs string
+	Kind    string `json:"kind"`
+	Outputs string `json:"outputs"`
 }
