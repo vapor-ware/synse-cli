@@ -167,7 +167,7 @@ func TestPluginsCommandRequestError(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 500, pluginsRespErr)
+	test.Serve(t, mux, "/synse/v2/plugins", 500, pluginsRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -194,7 +194,7 @@ func TestPluginsCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -222,7 +222,7 @@ func TestPluginsCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -250,7 +250,7 @@ func TestPluginsCommandRequestSuccessPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

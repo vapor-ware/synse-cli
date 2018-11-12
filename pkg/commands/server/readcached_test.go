@@ -115,7 +115,7 @@ func TestReadCachedCommandRequestError(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 500, readCachedRespErr)
+	test.Serve(t, mux, "/synse/v2/readcached", 500, readCachedRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -142,7 +142,7 @@ func TestReadCachedCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -170,7 +170,7 @@ func TestReadCachedCommandRequestSuccessSingleParamsYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -199,7 +199,7 @@ func TestReadCachedCommandRequestSuccessMultipleParamsYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -229,7 +229,7 @@ func TestReadCachedCommandRequestSuccessInvalidParamsYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -258,7 +258,7 @@ func TestReadCachedCommandRequestSuccessExtraArgsYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 
@@ -288,7 +288,7 @@ func TestReadCachedCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -316,7 +316,7 @@ func TestReadCachedCommandRequestSuccessSingleParamsJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -345,7 +345,7 @@ func TestReadCachedCommandRequestSuccessMultipleParamsJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -374,7 +374,7 @@ func TestReadCachedCommandRequestSuccessInvalidParamsJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -403,7 +403,7 @@ func TestReadCachedCommandRequestSuccessExtraArgsJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 
@@ -433,7 +433,7 @@ func TestReadCachedCommandRequestSuccessPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -461,7 +461,7 @@ func TestReadCachedCommandRequestSuccessSingleParamsPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -490,7 +490,7 @@ func TestReadCachedCommandRequestSuccessMultipleParamsPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -520,7 +520,7 @@ func TestReadCachedCommandRequestSuccessInvalidParamsPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -549,7 +549,7 @@ func TestReadCachedCommandRequestSuccessExtraArgsPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, readCachedRespOk)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, readCachedRespOk)
 
 	test.AddServerHost(server)
 

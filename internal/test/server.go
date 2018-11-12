@@ -16,7 +16,7 @@ func Server() (*http.ServeMux, *httptest.Server) {
 
 	mux.HandleFunc("/synse/version", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, `{"version": "2.0.0", "api_version": "2.0"}`) // nolint
+		fmt.Fprint(w, `{"version": "2.0.0", "api_version": "v2"}`) // nolint
 	})
 	return mux, server
 }

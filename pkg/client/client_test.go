@@ -92,7 +92,7 @@ func TestGetVersioned(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/foobar", 200, `{"status": "ok"}`)
+	test.Serve(t, mux, "/synse/v2/foobar", 200, `{"status": "ok"}`)
 
 	test.AddServerHost(server)
 
@@ -142,7 +142,7 @@ func TestPostVersioned(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/foobar", 200, `{"status": "ok"}`)
+	test.Serve(t, mux, "/synse/v2/foobar", 200, `{"status": "ok"}`)
 
 	test.AddServerHost(server)
 
@@ -203,7 +203,7 @@ func TestConfig(t *testing.T) {
 		Logging:    "debug",
 	}
 
-	test.Serve(t, mux, "/synse/2.0/config", 200, in)
+	test.Serve(t, mux, "/synse/v2/config", 200, in)
 
 	test.AddServerHost(server)
 
@@ -250,7 +250,7 @@ func TestCapabilities(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/capabilities", 200, in)
+	test.Serve(t, mux, "/synse/v2/capabilities", 200, in)
 
 	test.AddServerHost(server)
 
@@ -341,7 +341,7 @@ func TestPlugins(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, in)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, in)
 
 	test.AddServerHost(server)
 
@@ -376,7 +376,7 @@ func TestRackInfo(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, in)
+	test.Serve(t, mux, "/synse/v2/info/rack-1", 200, in)
 
 	test.AddServerHost(server)
 
@@ -416,7 +416,7 @@ func TestBoardInfo(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, in)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1", 200, in)
 
 	test.AddServerHost(server)
 
@@ -486,7 +486,7 @@ func TestDeviceInfo(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, in)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1/device-1", 200, in)
 
 	test.AddServerHost(server)
 
@@ -541,7 +541,7 @@ func TestRead(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/read/rack-1/board-1/device-1", 200, in)
+	test.Serve(t, mux, "/synse/v2/read/rack-1/board-1/device-1", 200, in)
 
 	test.AddServerHost(server)
 
@@ -596,7 +596,7 @@ func TestReadCachedNoParams(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, in)
 
 	test.AddServerHost(server)
 
@@ -688,7 +688,7 @@ func TestReadCachedParams(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/readcached", 200, in)
+	test.Serve(t, mux, "/synse/v2/readcached", 200, in)
 
 	test.AddServerHost(server)
 
@@ -734,7 +734,7 @@ func TestTransaction(t *testing.T) {
 		Message: "",
 	}
 
-	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, in)
+	test.Serve(t, mux, "/synse/v2/transaction/b9u6ss6q5i6g020lau6g", 200, in)
 
 	test.AddServerHost(server)
 
@@ -759,7 +759,7 @@ func TestTransactionList(t *testing.T) {
 		"b9u6ss6q5i6g020lau6g",
 	}
 
-	test.Serve(t, mux, "/synse/2.0/transaction", 200, in)
+	test.Serve(t, mux, "/synse/v2/transaction", 200, in)
 
 	test.AddServerHost(server)
 
@@ -796,7 +796,7 @@ func TestWrite(t *testing.T) {
 		},
 	}
 
-	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, in)
+	test.Serve(t, mux, "/synse/v2/write/rack-1/board-1/device-1", 200, in)
 
 	test.AddServerHost(server)
 

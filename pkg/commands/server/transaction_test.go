@@ -140,7 +140,7 @@ func TestTransactionCommandRequestError(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 500, transactionRespErr)
+	test.Serve(t, mux, "/synse/v2/transaction/b9u6ss6q5i6g020lau6g", 500, transactionRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -168,7 +168,7 @@ func TestTransactionCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
+	test.Serve(t, mux, "/synse/v2/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -197,7 +197,7 @@ func TestTransactionCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
+	test.Serve(t, mux, "/synse/v2/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -226,7 +226,7 @@ func TestTransactionCommandRequestSuccessPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
+	test.Serve(t, mux, "/synse/v2/transaction/b9u6ss6q5i6g020lau6g", 200, transactionRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

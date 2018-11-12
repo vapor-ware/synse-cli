@@ -128,7 +128,7 @@ func TestCapabilitiesCommandRequestError(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/capabilities", 500, capabilitiesRespErr)
+	test.Serve(t, mux, "/synse/v2/capabilities", 500, capabilitiesRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -155,7 +155,7 @@ func TestCapabilitiesCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/capabilities", 200, capabilitiesRespOK)
+	test.Serve(t, mux, "/synse/v2/capabilities", 200, capabilitiesRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -183,7 +183,7 @@ func TestCapabilitiesCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/capabilities", 200, capabilitiesRespOK)
+	test.Serve(t, mux, "/synse/v2/capabilities", 200, capabilitiesRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -211,7 +211,7 @@ func TestCapabilitiesCommandRequestSuccessPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/capabilities", 200, capabilitiesRespOK)
+	test.Serve(t, mux, "/synse/v2/capabilities", 200, capabilitiesRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

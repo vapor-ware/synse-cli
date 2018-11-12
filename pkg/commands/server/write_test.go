@@ -134,7 +134,7 @@ func TestWriteCommandRequestError(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 500, writeRespErr)
+	test.Serve(t, mux, "/synse/v2/write/rack-1/board-1/device-1", 500, writeRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -162,7 +162,7 @@ func TestWriteCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, writeRespOK)
+	test.Serve(t, mux, "/synse/v2/write/rack-1/board-1/device-1", 200, writeRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -191,7 +191,7 @@ func TestWriteCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, writeRespOK)
+	test.Serve(t, mux, "/synse/v2/write/rack-1/board-1/device-1", 200, writeRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -220,7 +220,7 @@ func TestWriteCommandRequestSuccessPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/write/rack-1/board-1/device-1", 200, writeRespOK)
+	test.Serve(t, mux, "/synse/v2/write/rack-1/board-1/device-1", 200, writeRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

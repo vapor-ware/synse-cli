@@ -75,7 +75,7 @@ func TestPluginsHealthCommandRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -104,7 +104,7 @@ func TestPluginsHealthCommandRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -134,7 +134,7 @@ func TestPluginsHealthCommandSingleArgsRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -165,7 +165,7 @@ func TestPluginsHealthCommandMultipleArgsRequestSuccessYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -197,7 +197,7 @@ func TestPluginsHealthCommandSingleArgsRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -228,7 +228,7 @@ func TestPluginsHealthCommandMultipleArgsRequestSuccessJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/plugins", 200, pluginsHealthRespOK)
+	test.Serve(t, mux, "/synse/v2/plugins", 200, pluginsHealthRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()

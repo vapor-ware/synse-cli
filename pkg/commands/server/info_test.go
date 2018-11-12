@@ -170,7 +170,7 @@ func TestInfoCommandRequestErrorRack(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1", 500, infoRespErr)
+	test.Serve(t, mux, "/synse/v2/info/rack-1", 500, infoRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -195,7 +195,7 @@ func TestInfoCommandRequestErrorBoard(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 500, infoRespErr)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1", 500, infoRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -220,7 +220,7 @@ func TestInfoCommandRequestErrorDevice(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 500, infoRespErr)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1/device-1", 500, infoRespErr)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -245,7 +245,7 @@ func TestInfoCommandRequestErrorRackPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoRackRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1", 200, infoRackRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -271,7 +271,7 @@ func TestInfoCommandRequestErrorBoardPretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1", 200, infoBoardRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -297,7 +297,7 @@ func TestInfoCommandRequestErrorDevicePretty(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -323,7 +323,7 @@ func TestInfoCommandRequestSuccessRackYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoRackRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1", 200, infoRackRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -352,7 +352,7 @@ func TestInfoCommandRequestSuccessRackJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1", 200, infoRackRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1", 200, infoRackRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -381,7 +381,7 @@ func TestInfoCommandRequestSuccessBoardYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1", 200, infoBoardRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -410,7 +410,7 @@ func TestInfoCommandRequestSuccessBoardJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1", 200, infoBoardRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1", 200, infoBoardRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -439,7 +439,7 @@ func TestInfoCommandRequestSuccessDeviceYaml(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
@@ -468,7 +468,7 @@ func TestInfoCommandRequestSuccessDeviceJson(t *testing.T) {
 	mux, server := test.Server()
 	defer server.Close()
 
-	test.Serve(t, mux, "/synse/2.0/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
+	test.Serve(t, mux, "/synse/v2/info/rack-1/board-1/device-1", 200, infoDeviceRespOK)
 
 	test.AddServerHost(server)
 	app := test.NewFakeApp()
