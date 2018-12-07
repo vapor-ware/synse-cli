@@ -35,7 +35,7 @@ build-ci: ## Build binaries in CI
 ifndef HAS_GOX
 	go get -v github.com/mitchellh/gox
 endif
-	gox --ldflags "${LDFLAGS}" --parallel=10 -osarch='!darwin/386' --output="build/${BIN_NAME}_{{ .OS }}_{{ .Arch }}" ${OPTS} ./cmd/...
+	gox --ldflags "${LDFLAGS}" --parallel=10 -osarch='!darwin/386' --output="build/${BIN_NAME}_{{ .OS }}_{{ .Arch }}" ${OPTS} github.com/vapor-ware/synse-cli/cmd/...
 
 
 .PHONY: ci
@@ -47,9 +47,8 @@ clean:  ## Remove temporary files
 	go clean -v
 
 .PHONY: cover
-cover:  ## Run tests and open the coverage report
-	./bin/coverage.sh
-	go tool cover -html=coverage.txt
+cover: test  ## Run tests and open the coverage report
+	go tool cover -html=coverage.out
 
 .PHONY: dep
 dep:  ## Ensure and prune dependencies
@@ -89,7 +88,8 @@ endif
 
 .PHONY: test
 test:  ## Run all tests
-	go test -race -cover ./...
+	@ # Note: this requires go1.10+ in order to do multi-package coverage reports
+	go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
 .PHONY: version
 version: ## Print the version of the CLI
