@@ -30,6 +30,7 @@ type BinVersion struct {
 	BuildDate     string
 	GitCommit     string
 	GitTag        string
+	GoCompiler    string
 	GoVersion     string
 	OS            string
 	VersionString string
@@ -45,6 +46,7 @@ func Get() *BinVersion {
 		BuildDate:     BuildDate,
 		GitCommit:     GitCommit,
 		GitTag:        GitTag,
+		GoCompiler:    runtime.Compiler,
 		GoVersion:     GoVersion,
 		VersionString: VersionString,
 	}
