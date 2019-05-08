@@ -14,12 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package server
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/cmd/server/plugins"
 )
 
-func main() {
-	cmd.Execute()
+// New returns a new instance of the 'server' command.
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "server",
+		Short: "Issue commands to Synse Server",
+		Long:  heredoc.Doc(`Issue commands to Synse Server via its HTTP API.`),
+	}
+
+	// Add sub-commands
+	cmd.AddCommand(
+		plugins.New(),
+		cmdConfig,
+		cmdInfo,
+		cmdRead,
+		cmdReadCache,
+		cmdScan,
+		cmdStatus,
+		cmdTags,
+		cmdTransaction,
+		cmdVersion,
+		cmdWrite,
+	)
+
+	return cmd
 }

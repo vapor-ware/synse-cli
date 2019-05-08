@@ -14,12 +14,42 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package server
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"encoding/json"
+	"io"
+
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
-func main() {
-	cmd.Execute()
+var cmdConfig = &cobra.Command{
+	Use:   "config",
+	Short: "",
+	Long:  heredoc.Doc(``),
+	Run: func(cmd *cobra.Command, args []string) {
+		utils.Err(serverConfig(cmd.OutOrStdout()))
+	},
+}
+
+func serverConfig(out io.Writer) error {
+	client, err := utils.NewSynseHTTPClient()
+	if err != nil {
+		return err
+	}
+
+	response, err := client.Config()
+	if err != nil {
+		return err
+	}
+
+	// TODO: figure out output formatting
+	o, err := json.MarshalIndent(response, "", "  ")
+	if err != nil {
+		return err
+	}
+	_, err = out.Write(append(o, '\n'))
+	return err
 }

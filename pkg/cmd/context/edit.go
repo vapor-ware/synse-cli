@@ -14,12 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package context
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"fmt"
+
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	cmd.Execute()
+var cmdEdit = &cobra.Command{
+	Use:   "edit",
+	Short: "Edit a context record",
+	Long: heredoc.Doc(`
+		Edit the context configuration records.
+
+		This allows you to update information about a context, such as the name
+		or address.
+	`),
+	Run: func(cmd *cobra.Command, args []string) {
+		// todo: implement editing.
+		// see: https://github.com/kubernetes/kubernetes/blob/aef117999658b24628c6ba49685b4d5ca5998308/pkg/kubectl/cmd/util/editor/editor.go
+		// for reference around how kubectl does this.
+		fmt.Println("not yet implemented")
+	},
 }

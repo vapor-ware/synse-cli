@@ -29,17 +29,14 @@ _testmain.go
 # External packages folder
 vendor/
 
-# `go build` binary
-/synse
-
 # Shell autocompletion
 /*_autocomplete
 
 # Configuration file
-/.synse.y*
-
-# Build output
-build/
+/.synse.y*ml
 
 # Editors / IDEs
 .idea/
+
+# Executable binary
+synse

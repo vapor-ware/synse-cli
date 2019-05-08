@@ -14,12 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package utils
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"os"
+
+	"github.com/liggitt/tabwriter"
 )
 
-func main() {
-	cmd.Execute()
+const (
+	tabwriterFlags    = tabwriter.RememberWidths
+	tabwriterMinWidth = 6
+	tabwriterPadding  = 3
+	tabwriterWidth    = 4
+	tabwriterPadChar  = ' '
+)
+
+// NewTabWriter creates a tabwriter with default configurations to align
+// input text into tab-spaced columns.
+func NewTabWriter() *tabwriter.Writer {
+	return tabwriter.NewWriter(os.Stdout, tabwriterMinWidth, tabwriterWidth, tabwriterPadding, tabwriterPadChar, tabwriterFlags)
 }

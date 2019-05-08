@@ -1,0 +1,44 @@
+# For details, see the GoReleaser documentation at http://goreleaser.com
+project_name: synse-cli
+before:
+  hooks:
+    - go clean -v
+    - rm -rf dist
+builds:
+  -
+    main: ./cmd/synse.go
+    binary: synse
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -w
+      - -X github.com/vapor-ware/synse-cli/pkg.BuildDate={{ .Date }}
+      - -X github.com/vapor-ware/synse-cli/pkg.Commit={{ .ShortCommit }}
+      - -X github.com/vapor-ware/synse-cli/pkg.Tag={{ .Tag }}
+      - -X github.com/vapor-ware/synse-cli/pkg.GoVersion={{ .Env.GOVERSION }}
+      - -X github.com/vapor-ware/synse-cli/pkg.Version={{ .Version }}
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+archive:
+  format: tar.gz
+checksum:
+  name_template: 'checksums-{{ .Tag }}.txt'
+release:
+  github:
+    owner: vapor-ware
+    name: synse-cli
+  draft: false
+  prerelease: auto
+  name_template: "{{ .Version }}"
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '*[norel]*'
