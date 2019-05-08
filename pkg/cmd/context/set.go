@@ -14,12 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package context
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"github.com/MakeNowJust/heredoc"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/config"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
-func main() {
-	cmd.Execute()
+var cmdSet = &cobra.Command{
+	Use:   "set",
+	Short: "Set the current context",
+	Long: heredoc.Doc(`
+		Set the currently active context for the CLI.
+	`),
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		utils.Err(setContext(args[0]))
+	},
+}
+
+func setContext(name string) error {
+	log.WithFields(log.Fields{
+		"name": name,
+	}).Debug("setting current context")
+
+	return config.SetCurrentContext(name)
 }

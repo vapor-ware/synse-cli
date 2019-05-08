@@ -1,7 +1,0 @@
-PLUGIN                    KIND          OUTPUTS
-vaporio/emulator-plugin   pressure      pressure
-vaporio/emulator-plugin   humidity      humidity, temperature
-vaporio/emulator-plugin   airflow       airflow
-vaporio/emulator-plugin   temperature   temperature
-vaporio/emulator-plugin   led           led.color, led.state
-vaporio/emulator-plugin   fan           fan.speed

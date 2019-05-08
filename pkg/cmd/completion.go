@@ -14,12 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package cmd
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"fmt"
+	"os"
+
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	cmd.Execute()
+var cmdCompletion = &cobra.Command{
+	Use:   "completion",
+	Short: "Generate bash completion scripts",
+	Long: heredoc.Doc(`
+		Generate bash completion scripts.
+
+		To load bash completion for the current session, run:
+
+		  . <(synse completion)
+
+		To configure your bash shell to load synse completion for all
+		new sessions, add the above to your bashrc, e.g.
+
+		  echo ". <(synse completion)" >> ~/.bashrc
+	`),
+
+	Run: func(cmd *cobra.Command, args []string) {
+		if err := rootCmd.GenBashCompletion(os.Stdout); err != nil {
+			// TODO: error out in a consistent way.
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	},
 }

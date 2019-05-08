@@ -14,12 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package plugin
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"fmt"
+
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	cmd.Execute()
+var cmdReadCache = &cobra.Command{
+	Use:   "read-cache",
+	Short: "",
+	Long:  heredoc.Doc(``),
+	Run: func(cmd *cobra.Command, args []string) {
+		// todo
+		fmt.Println("< plugin readcached")
+	},
 }

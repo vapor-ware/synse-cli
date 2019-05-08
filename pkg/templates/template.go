@@ -14,12 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package templates
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"github.com/MakeNowJust/heredoc"
 )
 
-func main() {
-	cmd.Execute()
-}
+var (
+	CmdVersionTemplate = heredoc.Doc(`
+	synse:
+	 version     : {{.Version}}
+	 build date  : {{.BuildDate}}
+	 git commit  : {{.Commit}}
+	 git tag     : {{.Tag}}
+	 go version  : {{.GoVersion}}
+	 go compiler : {{.GoCompiler}}
+	 platform    : {{.OS}}/{{.Arch}}
+	`)
+)

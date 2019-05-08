@@ -14,12 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package context
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	cmd.Execute()
+// Define variables which hold values passed in via flags. These are
+// defined here because they are used by multiple commands in the package.
+var (
+	flagFull     bool
+	flagNoHeader bool
+)
+
+// New returns a new instance of the 'hosts' command.
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "context",
+		Short: "Manage Synse component configuration",
+		Long: heredoc.Doc(`
+			Manage the CLI configuration(s) for interfacing
+			with Synse components (server, plugin).
+		`),
+	}
+
+	// Add sub-commands
+	cmd.AddCommand(
+		cmdAdd,
+		cmdCurrent,
+		cmdEdit,
+		cmdList,
+		cmdRemove,
+		cmdSet,
+	)
+
+	return cmd
 }

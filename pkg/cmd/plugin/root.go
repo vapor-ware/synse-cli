@@ -14,12 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package plugin
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"fmt"
+
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	cmd.Execute()
+// New returns a new instance of the 'plugin' command.
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "plugin",
+		Short: "Issue commands to Synse plugins",
+		Long: heredoc.Doc(`
+			Issue commands to Synse plugins via the Synse gRPC API.
+		`),
+		Run: func(cmd *cobra.Command, args []string) {
+			// todo
+			fmt.Println("< plugin")
+		},
+	}
+
+	// Add sub-commands
+	cmd.AddCommand(
+		cmdDevices,
+		cmdHealth,
+		cmdMetadata,
+		cmdRead,
+		cmdReadCache,
+		cmdTest,
+		cmdTransaction,
+		cmdVersion,
+		cmdWrite,
+	)
+
+	return cmd
 }

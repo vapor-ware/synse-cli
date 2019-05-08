@@ -14,12 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package main
+package plugins
 
 import (
-	"github.com/vapor-ware/synse-cli/pkg/cmd"
+	"fmt"
+
+	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	cmd.Execute()
+// New returns a new instance of the 'server plugin' command.
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "plugins",
+		Short: "",
+		Long:  heredoc.Doc(``),
+		Run: func(cmd *cobra.Command, args []string) {
+			// todo
+			fmt.Println("< server plugins")
+		},
+	}
+
+	// Add sub-commands
+	cmd.AddCommand(
+		cmdHealth,
+		cmdInfo,
+		cmdList,
+	)
+
+	return cmd
 }
