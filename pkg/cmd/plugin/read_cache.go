@@ -14,21 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package plugin
 
 import (
+	"fmt"
+
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+var cmdReadCache = &cobra.Command{
+	Use:   "read-cache",
+	Short: "",
+	Long:  heredoc.Doc(``),
+	Run: func(cmd *cobra.Command, args []string) {
+		// todo
+		fmt.Println("< plugin readcached")
+	},
+}

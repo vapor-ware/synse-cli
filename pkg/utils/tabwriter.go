@@ -14,21 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package utils
 
 import (
-	"github.com/MakeNowJust/heredoc"
+	"os"
+
+	"github.com/liggitt/tabwriter"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
+const (
+	tabwriterFlags    = tabwriter.RememberWidths
+	tabwriterMinWidth = 6
+	tabwriterPadding  = 3
+	tabwriterWidth    = 4
+	tabwriterPadChar  = ' '
 )
+
+// NewTabWriter creates a tabwriter with default configurations to align
+// input text into tab-spaced columns.
+func NewTabWriter() *tabwriter.Writer {
+	return tabwriter.NewWriter(os.Stdout, tabwriterMinWidth, tabwriterWidth, tabwriterPadding, tabwriterPadChar, tabwriterFlags)
+}

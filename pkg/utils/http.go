@@ -14,21 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package utils
 
 import (
-	"github.com/MakeNowJust/heredoc"
+	"fmt"
+
+	"github.com/vapor-ware/synse-cli/pkg/config"
+	"github.com/vapor-ware/synse-client-go/synse"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+func NewSynseHTTPClient() (synse.Client, error) {
+	currentContexts := config.GetCurrentContext()
+	serverCtx := currentContexts["server"]
+	if serverCtx == nil {
+		return nil, fmt.Errorf("cannot create HTTP client for server: no current server context")
+	}
+
+	return synse.NewHTTPClientV3(&synse.Options{
+		Address: serverCtx.Context.Address,
+	})
+}

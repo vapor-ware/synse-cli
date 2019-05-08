@@ -14,21 +14,43 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package plugin
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+var cmdTest = &cobra.Command{
+	Use:   "test",
+	Short: "",
+	Long:  heredoc.Doc(``),
+	Run: func(cmd *cobra.Command, args []string) {
+		utils.Err(testPlugin())
+	},
+}
+
+func testPlugin() error {
+	conn, client, err := utils.NewSynseGrpcClient()
+	defer conn.Close()
+	if err != nil {
+		return err
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	response, err := client.Test(ctx, &synse.Empty{})
+	if err != nil {
+		return err
+	}
+
+	// TODO: figure out response formatting
+	fmt.Println(response)
+	return nil
+}

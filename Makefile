@@ -3,96 +3,51 @@
 #
 
 BIN_NAME    := synse
-BIN_VERSION ?= local
+BIN_VERSION := 3.0.0
 
-GIT_COMMIT ?= $(shell git rev-parse --short HEAD 2> /dev/null || true)
-GIT_TAG    ?= $(shell git describe --tags 2> /dev/null || true)
-BUILD_DATE := $(shell date -u +%Y-%m-%dT%T 2> /dev/null)
+GIT_COMMIT  ?= $(shell git rev-parse --short HEAD 2> /dev/null || true)
+GIT_TAG     ?= $(shell git describe --tags 2> /dev/null || true)
+BUILD_DATE  := $(shell date -u +%Y-%m-%dT%T 2> /dev/null)
 GO_VERSION := $(shell go version | awk '{ print $$3 }')
 
-PKG_CTX := github.com/vapor-ware/synse-cli/pkg/version
 LDFLAGS := -w \
-	-X ${PKG_CTX}.BuildDate=${BUILD_DATE} \
-	-X ${PKG_CTX}.GitCommit=${GIT_COMMIT} \
-	-X ${PKG_CTX}.GitTag=${GIT_TAG} \
-	-X ${PKG_CTX}.GoVersion=${GO_VERSION} \
-	-X ${PKG_CTX}.VersionString=${BIN_VERSION}
-
-HAS_LINT := $(shell which gometalinter)
-HAS_DEP  := $(shell which dep)
-HAS_GOX  := $(shell which gox)
+	-X github.com/vapor-ware/synse-cli/pkg.BuildDate=${BUILD_DATE} \
+	-X github.com/vapor-ware/synse-cli/pkg.Commit=${GIT_COMMIT} \
+	-X github.com/vapor-ware/synse-cli/pkg.Tag=${GIT_TAG} \
+	-X github.com/vapor-ware/synse-cli/pkg.GoVersion=${GO_VERSION} \
+	-X github.com/vapor-ware/synse-cli/pkg.Version=${BIN_VERSION}
 
 
 .PHONY: build
-build:  ## Build the CLI locally
-	go build \
-		-o build/${BIN_NAME} \
-		-ldflags "$(LDFLAGS)" \
-		github.com/vapor-ware/synse-cli/cmd
-
-.PHONY: build-ci
-build-ci: ## Build binaries in CI
-ifndef HAS_GOX
-	go get -v github.com/mitchellh/gox
-endif
-	gox --ldflags "${LDFLAGS}" --parallel=10 -osarch='!darwin/386' --output="build/${BIN_NAME}_{{ .OS }}_{{ .Arch }}" ${OPTS} github.com/vapor-ware/synse-cli/cmd/...
-
-
-.PHONY: ci
-ci:  ## Run CI checks locally (build, test, lint)
-	@$(MAKE) build test lint
+build:  ## Build the executable binary
+	CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "${LDFLAGS}" -o ${BIN_NAME} cmd/synse.go
 
 .PHONY: clean
-clean:  ## Remove temporary files
+clean:  ## Remove temporary files and build artifacts
 	go clean -v
+	rm -rf dist
+	rm -f ${BIN_NAME} coverage.out
 
 .PHONY: cover
-cover: test  ## Run tests and open the coverage report
+cover: test  ## Run unit tests and open the coverage report
 	go tool cover -html=coverage.out
-
-.PHONY: dep
-dep:  ## Ensure and prune dependencies
-ifndef HAS_DEP
-	go get -u github.com/golang/dep/cmd/dep
-endif
-	dep ensure -v
 
 .PHONY: fmt
 fmt:  ## Run goimports on all go files
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do goimports -w "$$file"; done
 
-.PHONY: lint
-lint:  ## Lint project source files
-ifndef HAS_LINT
-	go get -u github.com/alecthomas/gometalinter
-	gometalinter --install
-endif
-	@ # disable gotype: https://github.com/alecthomas/gometalinter/issues/40
-	gometalinter ./... \
-		--disable=gotype \
-		--tests \
-		--vendor \
-		--sort=severity \
-		--aggregate \
-		--deadline=5m
-
-.PHONY: setup
-setup:  ## Install the build and development dependencies and set up vendoring
-	go get -u github.com/alecthomas/gometalinter
-	go get -u github.com/golang/dep/cmd/dep
-	gometalinter --install
-ifeq (,$(wildcard ./Gopkg.toml))
-	dep init
-endif
-	@$(MAKE) dep
+.PHONY: github-tag
+github-tag:  ## Create and push a tag with the current version
+	git tag -a ${BIN_VERSION} -m "synse-cli v${BIN_VERSION}"
+	git push -u origin ${BIN_VERSION}
 
 .PHONY: test
-test:  ## Run all tests
+test:  ## Run unit tests
 	@ # Note: this requires go1.10+ in order to do multi-package coverage reports
 	go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
 .PHONY: version
-version: ## Print the version of the CLI
+version: ## Print the version
 	@echo "$(BIN_VERSION)"
 
 .PHONY: help

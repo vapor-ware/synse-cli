@@ -14,21 +14,42 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package plugins
 
 import (
+	"encoding/json"
+	"io"
+
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+var cmdHealth = &cobra.Command{
+	Use:   "health",
+	Short: "",
+	Long:  heredoc.Doc(``),
+	Run: func(cmd *cobra.Command, args []string) {
+		utils.Err(serverPluginHealth(cmd.OutOrStdout()))
+	},
+}
+
+func serverPluginHealth(out io.Writer) error {
+	client, err := utils.NewSynseHTTPClient()
+	if err != nil {
+		return err
+	}
+
+	response, err := client.PluginHealth()
+	if err != nil {
+		return err
+	}
+
+	// TODO: figure out output formatting
+	o, err := json.MarshalIndent(response, "", "  ")
+	if err != nil {
+		return err
+	}
+	_, err = out.Write(append(o, '\n'))
+	return err
+}

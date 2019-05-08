@@ -14,21 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package template
 
 import (
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+// New returns a new instance of the 'template' command.
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "template",
+		Short: "Templating utilities for Synse development",
+		Long: heredoc.Doc(`
+			Templating utilities for Synse development
+		`),
+	}
+
+	// Add sub-commands
+	cmd.AddCommand(
+		cmdPlugin,
+	)
+
+	return cmd
+}

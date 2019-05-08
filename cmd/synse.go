@@ -1,154 +1,25 @@
-// synse is a CLI which allows you to interact with Synse components and perform
-// other utility tasks related to the Synse platform from the command line.
+// Synse CLI
+// Copyright (c) 2019 Vapor IO
 //
-// For usage information, see the help text or the project README.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 package main
 
 import (
 	"github.com/vapor-ware/synse-cli/pkg/cmd"
 )
 
-//const (
-//	appName  = "synse"
-//	appUsage = "Command line tool for interacting with Synse components"
-//	appVcs   = "https://github.com/vapor-ware/synse-cli"
-//)
-
 func main() {
 	cmd.Execute()
 }
-
-//
-//// appBefore defines the action to take before the command is processed. Currently,
-//// this reads in any existing CLI configuration and sets the logging level based on
-//// the configuration it finds, if any.
-//func appBefore(c *cli.Context) error {
-//	// Allow debugging of the config loading process
-//	if c.Bool("debug") {
-//		log.SetLevel(log.DebugLevel)
-//	}
-//
-//	// Construct the config for this session.
-//	err := config.ConstructConfig(c)
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//
-//	if config.Config.Debug {
-//		log.SetLevel(log.DebugLevel)
-//	}
-//	return nil
-//}
-//
-//// appAfter defines the action to take after a command has completed. Currently,
-//// this persists the configuration state for future runs of the CLI application.
-//func appAfter(c *cli.Context) error {
-//	return config.Persist()
-//}
-//
-//// appAction defines the action to take if the application is called
-//// with no commands.
-////
-//// If the --config flag is set, it will display the application configuration,
-//// otherwise it will display the usage information.
-//func appAction(c *cli.Context) error {
-//	if c.IsSet("config") {
-//		formatter := formatters.NewConfigFormatter(c)
-//		err := formatter.Add(config.Config)
-//		if err != nil {
-//			return err
-//		}
-//		return formatter.Write()
-//	}
-//	return cli.ShowAppHelp(c)
-//}
-//
-//// Create a new instance of the CLI application and run it.
-//func main() {
-//	versionInfo := version.Get()
-//
-//	app := cli.NewApp()
-//
-//	app.Name = appName
-//	app.Usage = appUsage
-//	app.Version = versionInfo.VersionString
-//
-//	app.Before = appBefore
-//	app.After = appAfter
-//	app.Action = appAction
-//
-//	app.EnableBashCompletion = true
-//	app.Commands = commands.Commands
-//
-//	app.Flags = []cli.Flag{
-//		flags.DebugFlag,    // --debug, -d flag to enable debug logging output
-//		flags.ConfigFlag,   // --config flag to display the YAML configuration for the CLI
-//		flags.FormatFlag,   // --format flag to specify the output format for a command
-//		flags.NoHeaderFlag, // --no-header flag to disable printing the header in pretty format
-//	}
-//
-//	cli.VersionPrinter = func(c *cli.Context) {
-//		fmt.Println("synse version:")
-//		fmt.Printf("\tVersion:    %s\n", versionInfo.VersionString)
-//		fmt.Printf("\tGo Version: %s\n", versionInfo.GoVersion)
-//		fmt.Printf("\tGit Commit: %s\n", versionInfo.GitCommit)
-//		fmt.Printf("\tGit Tag:    %s\n", versionInfo.GitTag)
-//		fmt.Printf("\tBuild Date: %s\n", versionInfo.BuildDate)
-//		fmt.Printf("\tOS/Arch:    %s/%s\n", versionInfo.OS, versionInfo.Arch)
-//	}
-//
-//	cli.AppHelpTemplate = `
-//{{.Usage}}
-//
-//Usage:
-//  {{.HelpName}} {{if .VisibleFlags}}[global options]{{end}}{{if .Commands}} COMMAND [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}
-//{{if .Commands}}
-//Commands:
-//{{range .Commands}}{{if not .HideHelp}}  {{join .Names ", "}}{{ "\t"}}{{.Usage}}{{ "\n" }}{{end}}{{end}}{{end}}{{if .VisibleFlags}}
-//Global Options:
-//  {{range .VisibleFlags}}{{.}}
-//  {{end}}{{end}}
-//Use 'synse COMMAND --help' for more information on a command.
-//`
-//
-//	cli.CommandHelpTemplate = `
-//{{.Usage}}
-//
-//Usage:
-//  {{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}}{{if .VisibleFlags}} [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}{{if .Category}}
-//
-//Category:
-//  {{.Category}}{{end}}{{if .Description}}
-//
-//Description:
-//  {{.Description}}{{end}}{{if .VisibleFlags}}
-//
-//Options:
-//  {{range .VisibleFlags}}{{.}}
-//  {{end}}{{end}}
-//`
-//
-//	cli.SubcommandHelpTemplate = `
-//{{.Usage}}{{if .Description}}
-//
-//Description:
-//  {{.Description}}{{end}}
-//
-//Usage:
-//  {{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} command{{if .VisibleFlags}} [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}
-//
-//Commands:{{range .VisibleCategories}}{{if .Name}}
-//  {{.Name}}:{{end}}{{range .VisibleCommands}}
-//  {{join .Names ", "}}{{"\t"}}{{.Usage}}{{end}}
-//{{end}}{{if .VisibleFlags}}
-//Options:
-//  {{range .VisibleFlags}}{{.}}
-//  {{end}}{{end}}
-//`
-//
-//	// Run the CLI
-//	err := app.Run(os.Args)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//}

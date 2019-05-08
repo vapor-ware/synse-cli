@@ -14,21 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package plugins
 
 import (
+	"fmt"
+
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+// New returns a new instance of the 'server plugin' command.
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "plugins",
+		Short: "",
+		Long:  heredoc.Doc(``),
+		Run: func(cmd *cobra.Command, args []string) {
+			// todo
+			fmt.Println("< server plugins")
+		},
+	}
+
+	// Add sub-commands
+	cmd.AddCommand(
+		cmdHealth,
+		cmdInfo,
+		cmdList,
+	)
+
+	return cmd
+}

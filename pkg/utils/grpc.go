@@ -14,21 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package utils
 
 import (
-	"github.com/MakeNowJust/heredoc"
+	"fmt"
+
+	"github.com/vapor-ware/synse-cli/pkg/config"
+	synse "github.com/vapor-ware/synse-server-grpc/go"
+	"google.golang.org/grpc"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+func NewSynseGrpcClient() (*grpc.ClientConn, synse.V3PluginClient, error) {
+	// TODO: secure transport
+
+	currentContexts := config.GetCurrentContext()
+	pluginCtx := currentContexts["plugin"]
+	if pluginCtx == nil {
+		return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: no current plugin context")
+	}
+
+	conn, err := grpc.Dial(pluginCtx.Context.Address, grpc.WithInsecure())
+	if err != nil {
+		return nil, nil, err
+	}
+	client := synse.NewV3PluginClient(conn)
+
+	return conn, client, nil
+}

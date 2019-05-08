@@ -14,21 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package plugin
 
 import (
+	"fmt"
+
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+// New returns a new instance of the 'plugin' command.
+func New() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "plugin",
+		Short: "Issue commands to Synse plugins",
+		Long: heredoc.Doc(`
+			Issue commands to Synse plugins via the Synse gRPC API.
+		`),
+		Run: func(cmd *cobra.Command, args []string) {
+			// todo
+			fmt.Println("< plugin")
+		},
+	}
+
+	// Add sub-commands
+	cmd.AddCommand(
+		cmdDevices,
+		cmdHealth,
+		cmdMetadata,
+		cmdRead,
+		cmdReadCache,
+		cmdTest,
+		cmdTransaction,
+		cmdVersion,
+		cmdWrite,
+	)
+
+	return cmd
+}

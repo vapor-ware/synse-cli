@@ -14,21 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package templates
+package context
 
 import (
+	"fmt"
+
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
 )
 
-var (
-	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
-	`)
-)
+var cmdEdit = &cobra.Command{
+	Use:   "edit",
+	Short: "Edit a context record",
+	Long: heredoc.Doc(`
+		Edit the context configuration records.
+
+		This allows you to update information about a context, such as the name
+		or address.
+	`),
+	Run: func(cmd *cobra.Command, args []string) {
+		// todo: implement editing.
+		// see: https://github.com/kubernetes/kubernetes/blob/aef117999658b24628c6ba49685b4d5ca5998308/pkg/kubectl/cmd/util/editor/editor.go
+		// for reference around how kubectl does this.
+		fmt.Println("not yet implemented")
+	},
+}
