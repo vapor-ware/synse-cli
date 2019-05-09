@@ -17,22 +17,27 @@
 package plugins
 
 import (
-	"fmt"
-
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+)
+
+// Define variables which hold values passed in via flags. These are
+// defined here because they are used by multiple commands in the package.
+var (
+	flagNoHeader bool
+	flagJson     bool
+	flagYaml     bool
 )
 
 // New returns a new instance of the 'server plugin' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plugins",
-		Short: "",
-		Long:  heredoc.Doc(``),
-		Run: func(cmd *cobra.Command, args []string) {
-			// todo
-			fmt.Println("< server plugins")
-		},
+		Short: "Get info about plugins registered with the server",
+		Long: utils.Doc(`
+			Get information about plugins registered with the Synse Server
+			instance.
+		`),
 	}
 
 	// Add sub-commands

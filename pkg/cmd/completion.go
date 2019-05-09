@@ -20,15 +20,16 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/MakeNowJust/heredoc"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+
 	"github.com/spf13/cobra"
 )
 
 var cmdCompletion = &cobra.Command{
 	Use:   "completion",
-	Short: "Generate bash completion scripts",
-	Long: heredoc.Doc(`
-		Generate bash completion scripts.
+	Short: "Generate completion scripts (bash)",
+	Long: utils.Doc(`
+		Generate completion scripts (bash).
 
 		To load bash completion for the current session, run:
 

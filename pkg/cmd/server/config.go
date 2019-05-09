@@ -20,15 +20,27 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	cmdConfig.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+}
 
 var cmdConfig = &cobra.Command{
 	Use:   "config",
-	Short: "",
-	Long:  heredoc.Doc(``),
+	Short: "Display the configuration for the server",
+	Long: utils.Doc(`
+		Display the application configuration for the Synse Server instance.
+
+		The output of this command can be formatted as JSON (default) or as
+		YAML.
+
+		For more information, see:
+		<underscore>https://vapor-ware.github.io/synse-server/#config</>
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.Err(serverConfig(cmd.OutOrStdout()))
 	},
@@ -45,11 +57,24 @@ func serverConfig(out io.Writer) error {
 		return err
 	}
 
-	// TODO: figure out output formatting
-	o, err := json.MarshalIndent(response, "", "  ")
-	if err != nil {
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagYaml {
+
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
 		return err
 	}
-	_, err = out.Write(append(o, '\n'))
-	return err
 }

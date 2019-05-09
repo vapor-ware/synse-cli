@@ -17,9 +17,25 @@
 package server
 
 import (
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/cmd/server/plugins"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+)
+
+// Define variables which hold values passed in via flags. These are
+// defined here because they are used by multiple commands in the package.
+var (
+	flagNoHeader bool
+	flagJson     bool
+	flagYaml     bool
+	flagForce    bool
+	flagFull     bool
+	flagIds      bool
+	flagWait     bool
+	flagNS       string
+	flagStart    string
+	flagEnd      string
+	flagTags     []string
 )
 
 // New returns a new instance of the 'server' command.
@@ -27,7 +43,12 @@ func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "server",
 		Short: "Issue commands to Synse Server",
-		Long:  heredoc.Doc(`Issue commands to Synse Server via its HTTP API.`),
+		Long: utils.Doc(`
+			Issue commands to Synse Server via its HTTP API.
+
+			In order to issue commands to a Synse Server instance, there must be
+			a current server context. See 'synse context' for details.
+		`),
 	}
 
 	// Add sub-commands

@@ -17,10 +17,10 @@
 package context
 
 import (
-	"github.com/MakeNowJust/heredoc"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 func init() {
@@ -30,15 +30,25 @@ func init() {
 var flagAll bool
 
 var cmdRemove = &cobra.Command{
-	Use:   "remove [context name]",
-	Short: "Remove a context record.",
-	Long: heredoc.Doc(`
+	Use:   "remove [CONTEXT_NAME]",
+	Short: "Remove a context record",
+	Long: utils.Doc(`
 		Remove a context record from the synse configuration.
 
 		The context record to remove should be specified by name. If the
-		context being removed is the current context, no new context will
-		be set as current. This must be done manually via 'synse context set'
+		context being removed is the current context, no new current context
+		will be set to replace it -- this must be done manually via 
+		'synse context set'.
+
+		If the --all flag is set, this will purge all contexts.
 	`),
+	Aliases: []string{
+		"rm",
+	},
+	SuggestFor: []string{
+		"delete",
+		"del",
+	},
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		name := ""

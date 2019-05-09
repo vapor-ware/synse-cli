@@ -19,17 +19,20 @@ package context
 import (
 	"fmt"
 
-	"github.com/MakeNowJust/heredoc"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
+func init() {
+	cmdAdd.Flags().BoolVarP(&flagSet, "set", "", false, "set as the current context after adding")
+}
+
 var cmdAdd = &cobra.Command{
 	Use:   "add TYPE NAME ADDRESS",
 	Short: "Add a new context",
-	Long: heredoc.Doc(`
+	Long: utils.Doc(`
 		Add a new context to the synse configuration.
 
 		Each context serves as a reference to an instance of a Synse component
@@ -38,14 +41,17 @@ var cmdAdd = &cobra.Command{
 
 		In order to add a context, you must specify the following args:
 
-		TYPE    : The type of the component.
-		NAME    : The name that will be used to reference the context.
-		ADDRESS : The address of the component.
+		<bold>TYPE</>    : The type of the component.
+		<bold>NAME</>    : The name that will be used to reference the context.
+		<bold>ADDRESS</> : The address of the component.
 
 		Currently, the supported types are:
 		- plugin
 		- server
 	`),
+	SuggestFor: []string{
+		"new",
+	},
 	Args: cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.Err(addContext(args[0], args[1], args[2]))
@@ -64,11 +70,19 @@ func addContext(ctxType, ctxName, ctxAddress string) error {
 		return fmt.Errorf("unsupported context type: %s", ctxType)
 	}
 
-	return config.AddContext(&config.ContextRecord{
+	err := config.AddContext(&config.ContextRecord{
 		Name: ctxName,
 		Type: ctxType,
 		Context: config.Context{
 			Address: ctxAddress,
 		},
 	})
+	if err != nil {
+		return err
+	}
+
+	if flagSet {
+		return config.SetCurrentContext(ctxName)
+	}
+	return nil
 }

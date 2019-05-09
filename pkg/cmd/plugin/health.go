@@ -17,18 +17,92 @@
 package plugin
 
 import (
-	"fmt"
+	"context"
+	"encoding/json"
+	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+	synse "github.com/vapor-ware/synse-server-grpc/go"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	cmdHealth.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdHealth.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdHealth.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+}
 
 var cmdHealth = &cobra.Command{
 	Use:   "health",
-	Short: "",
-	Long:  heredoc.Doc(``),
+	Short: "Get the health status of the plugin",
+	Long: utils.Doc(`
+		Get the health status of the plugin.
+
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
+
+		The default table view only provides a summary of the data. To see
+		see the data in its entirety, use the JSON or YAML output formats.
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
-		// todo
-		fmt.Println("< plugin health")
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			utils.Err("cannot use multiple formatting flags at once")
+		}
+
+		utils.Err(pluginHealth(cmd.OutOrStdout()))
 	},
+}
+
+func pluginHealth(out io.Writer) error {
+	conn, client, err := utils.NewSynseGrpcClient()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	response, err := client.Health(ctx, &synse.Empty{})
+	if err != nil {
+		return err
+	}
+
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
+		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printHealthHeader(w); err != nil {
+				return err
+			}
+		}
+
+		if err := printHealthRow(w, response); err != nil {
+			return err
+		}
+	}
+	return nil
 }

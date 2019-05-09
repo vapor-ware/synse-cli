@@ -19,15 +19,17 @@ package template
 import (
 	"fmt"
 
-	"github.com/MakeNowJust/heredoc"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+
 	"github.com/spf13/cobra"
 )
 
 var cmdPlugin = &cobra.Command{
 	Use:   "plugin",
 	Short: "",
-	Long:  heredoc.Doc(``),
+	Long: utils.Doc(`
 
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		// todo
 		fmt.Println("< template plugin")

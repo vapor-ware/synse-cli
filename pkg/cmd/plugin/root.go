@@ -17,10 +17,22 @@
 package plugin
 
 import (
-	"fmt"
-
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+)
+
+// Define variables which hold values passed in via flags. These are
+// defined here because they are used by multiple commands in the package.
+var (
+	flagNoHeader bool
+	flagJson     bool
+	flagYaml     bool
+	flagIds      bool
+	flagWait     bool
+	flagNS       string
+	flagStart    string
+	flagEnd      string
+	flagTags     []string
 )
 
 // New returns a new instance of the 'plugin' command.
@@ -28,13 +40,12 @@ func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plugin",
 		Short: "Issue commands to Synse plugins",
-		Long: heredoc.Doc(`
+		Long: utils.Doc(`
 			Issue commands to Synse plugins via the Synse gRPC API.
+
+			In order to issue commands to a plugin instance, there must be
+			a current plugin context. See 'synse context' for details.
 		`),
-		Run: func(cmd *cobra.Command, args []string) {
-			// todo
-			fmt.Println("< plugin")
-		},
 	}
 
 	// Add sub-commands

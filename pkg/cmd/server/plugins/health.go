@@ -20,16 +20,36 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	cmdHealth.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdHealth.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdHealth.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+}
 
 var cmdHealth = &cobra.Command{
 	Use:   "health",
-	Short: "",
-	Long:  heredoc.Doc(``),
+	Short: "Display a summary of plugin health",
+	Long: utils.Doc(`
+		Display a summary of plugin health for the Synse Server instance.
+
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
+
+		For more information, see:
+		<underscore>https://vapor-ware.github.io/synse-server/#plugin-health</>
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			utils.Err("cannot use multiple formatting flags at once")
+		}
+
 		utils.Err(serverPluginHealth(cmd.OutOrStdout()))
 	},
 }
@@ -45,11 +65,38 @@ func serverPluginHealth(out io.Writer) error {
 		return err
 	}
 
-	// TODO: figure out output formatting
-	o, err := json.MarshalIndent(response, "", "  ")
-	if err != nil {
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
 		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printPluginHealthHeader(w); err != nil {
+				return err
+			}
+		}
+
+		if err := printPluginHealthRow(w, response); err != nil {
+			return err
+		}
 	}
-	_, err = out.Write(append(o, '\n'))
-	return err
+	return nil
 }

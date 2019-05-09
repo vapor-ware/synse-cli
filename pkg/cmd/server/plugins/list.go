@@ -20,16 +20,36 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	cmdList.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdList.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdList.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+}
 
 var cmdList = &cobra.Command{
 	Use:   "list",
-	Short: "",
-	Long:  heredoc.Doc(``),
+	Short: "List all plugins registered with the server",
+	Long: utils.Doc(`
+		List all plugins registered with the Synse Server instance.
+
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
+
+		For more information, see:
+		<underscore>https://vapor-ware.github.io/synse-server/#plugins</>
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			utils.Err("cannot use multiple formatting flags at once")
+		}
+
 		utils.Err(serverPluginList(cmd.OutOrStdout()))
 	},
 }
@@ -45,11 +65,46 @@ func serverPluginList(out io.Writer) error {
 		return err
 	}
 
-	// TODO: figure out output formatting
-	o, err := json.MarshalIndent(response, "", "  ")
-	if err != nil {
-		return err
+	if len(*response) == 0 {
+		// TODO: on no reading, should it print a message "no readings",
+		//   should it print nothing, or should it just print header info
+		//   with no rows?
 	}
-	_, err = out.Write(append(o, '\n'))
-	return err
+
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
+		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printPluginSummaryHeader(w); err != nil {
+				return err
+			}
+		}
+
+		for _, r := range *response {
+			if err := printPluginSummaryRow(w, &r); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

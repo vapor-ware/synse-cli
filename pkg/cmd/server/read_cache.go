@@ -20,35 +20,40 @@ import (
 	"encoding/json"
 	"io"
 
+	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
-
-	"github.com/MakeNowJust/heredoc"
-	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
-var (
-	start string
-	end   string
-)
+func init() {
+	cmdReadCache.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdReadCache.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdReadCache.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+	cmdReadCache.Flags().StringVarP(&flagStart, "start", "s", "", "timestamp specifying the starting bound for windowing")
+	cmdReadCache.Flags().StringVarP(&flagEnd, "end", "e", "", "timestamp specifying the ending bound for windowing")
+}
 
 var cmdReadCache = &cobra.Command{
 	Use:   "read-cache",
-	Short: "Get cached readings from all configured plugins",
-	Long: heredoc.Doc(`
-		Get the cached readings from all of the plugins registered with Synse Server.
+	Short: "Get cached readings for available devices",
+	Long: utils.Doc(`
+		Get cached readings for all devices available to the server.
 
-		This command operates on all plugins, so it does not require any routing
-		information to be specified. Start and end timestamps can be set in order
-		to bound the reading data. It is suggested to use timestamp bounding to
-		keep output manageable.
+		The readings returned by this command are cached by the plugin. A start
+		and end bound can be provided to window the readings within a time
+		period. It is recommended to bound the request start/end times to limit
+		the potentially large number of readings that would be provided otherwise.
 
-		The start and end timestamps should be formatted in RFC3339 or RFC3339Nano
-		format. If no bounding timestamps are specified, all readings will be
-		returned.
+		The start and end bounding timestamps should be specified in FRC3339
+		format. An invalidly formatted timestamp may render the bound ineffective.
+
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
 
 		For more information, see:
-		https://vapor-ware.github.io/synse-server/#read-cached
+		<underscore>https://vapor-ware.github.io/synse-server/#read-cache</>
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -62,21 +67,54 @@ func serverReadCache(out io.Writer) error {
 		return err
 	}
 
-	response, err := client.ReadCache(scheme.ReadCacheOptions{})
+	response, err := client.ReadCache(scheme.ReadCacheOptions{
+		Start: flagStart,
+		End:   flagEnd,
+	})
 	if err != nil {
 		return err
 	}
 
-	// TODO: figure out output formatting
-	o, err := json.MarshalIndent(response, "", "  ")
-	if err != nil {
-		return err
+	if len(*response) == 0 {
+		// TODO: on no reading, should it print a message "no readings",
+		//   should it print nothing, or should it just print header info
+		//   with no rows?
 	}
-	_, err = out.Write(append(o, '\n'))
-	return err
+
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
+		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printReadingHeader(w); err != nil {
+				return err
+			}
+		}
+
+		for _, reading := range *response {
+			if err := printReadingRow(w, reading); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
-
-// Add flag options to the command.
-// FIXME
-//cmd.PersistentFlags().StringVar(&start, "start", "", "the starting timestamp bound for the read cache data")
-//cmd.PersistentFlags().StringVar(&end, "end", "", "the ending timestamp bound for the read cache data")

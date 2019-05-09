@@ -20,16 +20,32 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"gopkg.in/yaml.v2"
 )
 
+func init() {
+	cmdInfo.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+}
+
 var cmdInfo = &cobra.Command{
-	Use:   "info",
-	Short: "",
-	Long:  heredoc.Doc(``),
-	Args:  cobra.ExactArgs(1),
+	Use:   "info DEVICE",
+	Short: "Get details about a device",
+	Long: utils.Doc(`
+		Get details about a device.
+
+		This command will get detailed information for the specified device,
+		including its metadata, tags, read-write capabilities, and supported
+		outputs.
+
+		The output of this command can be formatted as JSON (default) or as
+		YAML.
+
+		For more information, see:
+		<underscore>https://vapor-ware.github.io/synse-server/#info</>
+	`),
+	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.Err(serverInfo(cmd.OutOrStdout(), args[0]))
 	},
@@ -46,11 +62,24 @@ func serverInfo(out io.Writer, device string) error {
 		return err
 	}
 
-	// TODO: figure out output formatting
-	o, err := json.MarshalIndent(response, "", "  ")
-	if err != nil {
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagYaml {
+
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
 		return err
 	}
-	_, err = out.Write(append(o, '\n'))
-	return err
 }

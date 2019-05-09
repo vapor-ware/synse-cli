@@ -18,8 +18,8 @@ package context
 
 import (
 	"fmt"
+	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
@@ -32,13 +32,21 @@ func init() {
 }
 
 var cmdCurrent = &cobra.Command{
-	Use:   "current",
+	Use:   "current [TYPE]",
 	Short: "Display the current context",
-	Long: heredoc.Doc(`
-		Display the name of the context which is set as currently active.
+	Long: utils.Doc(`
+		Display the name of the current context(s).
 
 		If no context is active, this command will result in an error.
+
+		To get the current context for a specific Synse component, the
+		TYPE may be specified. Valid types include:
+		- <bold>server</>
+		- <bold>plugin</>
 	`),
+	SuggestFor: []string{
+		"active",
+	},
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var ctxType string
@@ -46,11 +54,11 @@ var cmdCurrent = &cobra.Command{
 			ctxType = args[0]
 		}
 
-		utils.Err(getCurrentContext(ctxType))
+		utils.Err(getCurrentContext(cmd.OutOrStdout(), ctxType))
 	},
 }
 
-func getCurrentContext(ctxType string) error {
+func getCurrentContext(out io.Writer, ctxType string) error {
 	log.WithFields(log.Fields{
 		"type": ctxType,
 	}).Debug("getting current context")
@@ -69,11 +77,11 @@ func getCurrentContext(ctxType string) error {
 		return fmt.Errorf("no current context is set for type '%s' (see 'synse context set')", ctxType)
 	}
 
-	out := utils.NewTabWriter()
-	defer out.Flush()
+	w := utils.NewTabWriter(out)
+	defer w.Flush()
 
 	if !flagNoHeader {
-		if err := printContextHeader(out, flagFull); err != nil {
+		if err := printContextHeader(w, flagFull); err != nil {
 			return err
 		}
 	}
@@ -82,7 +90,7 @@ func getCurrentContext(ctxType string) error {
 		if ctxType != "" && ctx.Type != ctxType {
 			continue
 		}
-		if err := printContext(out, ctx, flagFull); err != nil {
+		if err := printContext(w, ctx, flagFull); err != nil {
 			return err
 		}
 	}
