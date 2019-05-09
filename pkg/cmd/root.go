@@ -17,7 +17,6 @@
 package cmd
 
 import (
-	"github.com/MakeNowJust/heredoc"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/cmd/context"
@@ -41,9 +40,9 @@ var flagDebug bool
 // rootCmd is the root command for synse.
 var rootCmd = &cobra.Command{
 	Use:   "synse",
-	Short: "Command-line interface for components of the Synse platform",
-	Long: heredoc.Doc(`
-		Command-line interface for components of the Synse platform.
+	Short: "Command-line interface for the Synse platform",
+	Long: utils.Doc(`
+		Command-line interface for the Synse platform.
 
 		Synse is a platform for monitoring and controlling physical and virtual
 		devices at data center scale.
@@ -51,7 +50,7 @@ var rootCmd = &cobra.Command{
 		This tool provides simple access to Synse APIs as well as simple
 		management and development utilities for the Synse platform.
 
-		For more information, see: https://github.com/vapor-ware/synse
+		<underscore>https://github.com/vapor-ware/synse</>
 	`),
 
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {

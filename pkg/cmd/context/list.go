@@ -17,7 +17,8 @@
 package context
 
 import (
-	"github.com/MakeNowJust/heredoc"
+	"io"
+
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -31,34 +32,36 @@ func init() {
 var cmdList = &cobra.Command{
 	Use:   "list",
 	Short: "List all configured contexts",
-	Long: heredoc.Doc(`
+	Long: utils.Doc(`
 		List all configured contexts.
 
-		This will display all information for each configured context record.
+		This will display each configured context record.
 	`),
-
+	Aliases: []string{
+		"ls",
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.Err(listContexts())
+		utils.Err(listContexts(cmd.OutOrStdout()))
 	},
 }
 
-func listContexts() error {
+func listContexts(out io.Writer) error {
 	contexts := config.GetContexts()
 	if len(contexts) == 0 {
 		return nil
 	}
 
-	out := utils.NewTabWriter()
-	defer out.Flush()
+	w := utils.NewTabWriter(out)
+	defer w.Flush()
 
 	if !flagNoHeader {
-		if err := printContextHeader(out, flagFull); err != nil {
+		if err := printContextHeader(w, flagFull); err != nil {
 			return err
 		}
 	}
 
 	for _, ctx := range contexts {
-		if err := printContext(out, &ctx, flagFull); err != nil {
+		if err := printContext(w, &ctx, flagFull); err != nil {
 			return err
 		}
 	}

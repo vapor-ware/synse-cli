@@ -21,7 +21,6 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg"
 	"github.com/vapor-ware/synse-cli/pkg/templates"
@@ -36,9 +35,9 @@ var flagSimple bool
 
 var cmdVersion = &cobra.Command{
 	Use:   "version",
-	Short: "Print version information for synse",
-	Long: heredoc.Doc(`
-		Print the version and build-time information for the synse CLI binary.
+	Short: "Display version information for synse",
+	Long: utils.Doc(`
+		Display the version and build-time information for the synse CLI binary.
 
 		Version information for Synse components (e.g. server, plugin) can
 		be printed from their corresponding sub-command.
@@ -54,17 +53,17 @@ var cmdVersion = &cobra.Command{
 		   go compiler : gc
 		   platform    : darwin/amd64
 
-		- version: The semantic version of the CLI binary.
-		- build date: The date and time at which the binary was built.
-		- git commit: The commit at which the binary was built.
-		- git tag: The tag at which the binary was built.
-		- go version: The version of Go used to build the binary.
-		- go compiler: The compiler used to build the binary.
-		- platform: The operating system and architecture of the system used to
+		- <bold>version</>: The semantic version of the CLI binary.
+		- <bold>build date</>: The date and time at which the binary was built.
+		- <bold>git commit</>: The commit at which the binary was built.
+		- <bold>git tag</>: The tag at which the binary was built.
+		- <bold>go version</>: The version of Go used to build the binary.
+		- <bold>go compiler</>: The compiler used to build the binary.
+		- <bold>platform</>: The operating system and architecture of the system used to
 		    build the binary.
 
 		More information about a specific release version can be found on the
-		project's GitHub page: https://github.com/vapor-ware/synse-cli/releases
+		project's GitHub page: <underscore>https://github.com/vapor-ware/synse-cli/releases</>
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {

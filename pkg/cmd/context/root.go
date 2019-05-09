@@ -17,8 +17,8 @@
 package context
 
 import (
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 // Define variables which hold values passed in via flags. These are
@@ -26,16 +26,17 @@ import (
 var (
 	flagFull     bool
 	flagNoHeader bool
+	flagSet      bool
 )
 
 // New returns a new instance of the 'hosts' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "context",
-		Short: "Manage Synse component configuration",
-		Long: heredoc.Doc(`
-			Manage the CLI configuration(s) for interfacing
-			with Synse components (server, plugin).
+		Short: "Manage contexts for Synse components",
+		Long: utils.Doc(`
+			Manage the CLI context configuration(s) for interfacing with Synse
+			components (server, plugin).
 		`),
 	}
 

@@ -19,19 +19,23 @@ package context
 import (
 	"fmt"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 var cmdEdit = &cobra.Command{
+
+	// FIXME: this needs to be implemented. Until then, make this hidden.
+	Hidden: true,
+
 	Use:   "edit",
 	Short: "Edit a context record",
-	Long: heredoc.Doc(`
-		Edit the context configuration records.
-
-		This allows you to update information about a context, such as the name
-		or address.
+	Long: utils.Doc(`
+		Edit context records in the synse configuration.
 	`),
+	SuggestFor: []string{
+		"update",
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// todo: implement editing.
 		// see: https://github.com/kubernetes/kubernetes/blob/aef117999658b24628c6ba49685b4d5ca5998308/pkg/kubectl/cmd/util/editor/editor.go

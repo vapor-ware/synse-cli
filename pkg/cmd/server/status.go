@@ -20,26 +20,36 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	cmdStatus.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdStatus.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdStatus.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+}
 
 var cmdStatus = &cobra.Command{
 	Use:   "status",
-	Short: "Get the status of Synse Server",
-	Long: heredoc.Doc(`
-		Get the connectivity status of a Synse Server instance.
+	Short: "Get the status of the server instance",
+	Long: utils.Doc(`
+		Get the connectivity status for the configured Synse Server instance.
 
-		This uses the '/test' endpoint, which is dependency-free and is used
-		to determine whether the server instance is reachable or not. It does
-		not provide any other indication of health.
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
 
-		For more information on the status endpoint, see:
-		https://vapor-ware.github.io/synse-server/#test
+		For more information, see:
+		<underscore>https://vapor-ware.github.io/synse-server/#test</>
 	`),
-
 	Run: func(cmd *cobra.Command, args []string) {
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			utils.Err("cannot use multiple formatting flags at once")
+		}
+
 		utils.Err(serverStatus(cmd.OutOrStdout()))
 	},
 }
@@ -55,11 +65,38 @@ func serverStatus(out io.Writer) error {
 		return err
 	}
 
-	// TODO: figure out output formatting
-	o, err := json.MarshalIndent(response, "", "  ")
-	if err != nil {
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
 		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printStatusHeader(w); err != nil {
+				return err
+			}
+		}
+
+		if err := printStatusRow(w, response); err != nil {
+			return err
+		}
 	}
-	_, err = out.Write(append(o, '\n'))
-	return err
+	return nil
 }

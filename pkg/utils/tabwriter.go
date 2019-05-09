@@ -17,7 +17,7 @@
 package utils
 
 import (
-	"os"
+	"io"
 
 	"github.com/liggitt/tabwriter"
 )
@@ -32,6 +32,6 @@ const (
 
 // NewTabWriter creates a tabwriter with default configurations to align
 // input text into tab-spaced columns.
-func NewTabWriter() *tabwriter.Writer {
-	return tabwriter.NewWriter(os.Stdout, tabwriterMinWidth, tabwriterWidth, tabwriterPadding, tabwriterPadChar, tabwriterFlags)
+func NewTabWriter(out io.Writer) *tabwriter.Writer {
+	return tabwriter.NewWriter(out, tabwriterMinWidth, tabwriterWidth, tabwriterPadding, tabwriterPadChar, tabwriterFlags)
 }

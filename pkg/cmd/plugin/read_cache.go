@@ -17,18 +17,125 @@
 package plugin
 
 import (
-	"fmt"
+	"context"
+	"encoding/json"
+	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+	synse "github.com/vapor-ware/synse-server-grpc/go"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	cmdReadCache.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdReadCache.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdReadCache.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+	cmdReadCache.Flags().StringVarP(&flagStart, "start", "s", "", "timestamp specifying the starting bound for windowing")
+	cmdReadCache.Flags().StringVarP(&flagEnd, "end", "e", "", "timestamp specifying the ending bound for windowing")
+}
 
 var cmdReadCache = &cobra.Command{
 	Use:   "read-cache",
-	Short: "",
-	Long:  heredoc.Doc(``),
+	Short: "Get cached readings for available devices",
+	Long: utils.Doc(`
+		Get cached readings for available devices.
+
+		The readings returned by this command are cached by the plugin. A start
+		and end bound can be provided to window the readings within a time
+		period. It is recommended to bound the request start/end times to limit
+		the potentially large number of readings that would be provided otherwise.
+
+		The start and end bounding timestamps should be specified in FRC3339
+		format. An invalidly formatted timestamp may render the bound ineffective.
+
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
+
+		The default table view only provides a summary of the data. To see
+		see the data in its entirety, use the JSON or YAML output formats.
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
-		// todo
-		fmt.Println("< plugin readcached")
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			utils.Err("cannot use multiple formatting flags at once")
+		}
+
+		utils.Err(pluginReadCache(cmd.OutOrStdout()))
 	},
+}
+
+func pluginReadCache(out io.Writer) error {
+	conn, client, err := utils.NewSynseGrpcClient()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	stream, err := client.ReadCache(ctx, &synse.V3Bounds{
+		Start: flagStart,
+		End:   flagEnd,
+	})
+	if err != nil {
+		return err
+	}
+
+	var readings []*synse.V3Reading
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		readings = append(readings, resp)
+	}
+
+	if len(readings) == 0 {
+		// TODO: on no reading, should it print a message "no readings",
+		//   should it print nothing, or should it just print header info
+		//   with no rows?
+	}
+
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(readings, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
+		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(readings)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printReadingHeader(w); err != nil {
+				return err
+			}
+		}
+
+		for _, reading := range readings {
+			if err := printReadingRow(w, reading); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

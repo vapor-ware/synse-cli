@@ -20,18 +20,39 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	cmdTags.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdTags.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdTags.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+	cmdTags.Flags().BoolVarP(&flagIds, "ids", "", false, "include id tags in the output")
+	cmdTags.Flags().StringVarP(&flagNS, "ns", "", "", "default tag namespace for tags with no explicit namespace set")
+}
 
 var cmdTags = &cobra.Command{
 	Use:   "tags",
-	Short: "",
-	Long:  heredoc.Doc(``),
+	Short: "List tags associated with devices",
+	Long: utils.Doc(`
+		List tags currently associated with devices.
 
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
+
+		For more information, see:
+		<underscore>https://vapor-ware.github.io/synse-server/#tags</>
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			utils.Err("cannot use multiple formatting flags at once")
+		}
+
 		utils.Err(serverTags(cmd.OutOrStdout()))
 	},
 }
@@ -42,16 +63,54 @@ func serverTags(out io.Writer) error {
 		return err
 	}
 
-	response, err := client.Tags(scheme.TagsOptions{})
+	response, err := client.Tags(scheme.TagsOptions{
+		NS:  []string{flagNS},
+		IDs: flagIds,
+	})
 	if err != nil {
 		return err
 	}
 
-	// TODO: figure out output formatting
-	o, err := json.MarshalIndent(response, "", "  ")
-	if err != nil {
-		return err
+	if len(*response) == 0 {
+		// TODO: on no reading, should it print a message "no readings",
+		//   should it print nothing, or should it just print header info
+		//   with no rows?
 	}
-	_, err = out.Write(append(o, '\n'))
-	return err
+
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(response, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
+		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(response)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printTagsHeader(w); err != nil {
+				return err
+			}
+		}
+
+		for _, reading := range *response {
+			if err := printTagsRow(w, reading); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

@@ -17,18 +17,139 @@
 package plugin
 
 import (
-	"fmt"
+	"context"
+	"encoding/json"
+	"io"
 
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
+	synse "github.com/vapor-ware/synse-server-grpc/go"
+	"gopkg.in/yaml.v2"
 )
 
+func init() {
+	cmdRead.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdRead.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdRead.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+}
+
 var cmdRead = &cobra.Command{
-	Use:   "read",
-	Short: "",
-	Long:  heredoc.Doc(``),
+	Use:   "read [DEVICE...]",
+	Short: "Get current readings for available devices",
+	Long: utils.Doc(`
+		Get current reading data for available devices.
+
+		The output of this command can be formatted as a table (default), as
+		JSON, or as YAML. If specifying the output format, only one flag may
+		be used. Using multiple output format flags will result in an error.
+
+		The default table view only provides a summary of the data. To see
+		see the data in its entirety, use the JSON or YAML output formats.
+	`),
 	Run: func(cmd *cobra.Command, args []string) {
-		// todo
-		fmt.Println("< plugin read")
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			utils.Err("cannot use multiple formatting flags at once")
+		}
+
+		utils.Err(pluginRead(cmd.OutOrStdout(), args))
 	},
+}
+
+func pluginRead(out io.Writer, devices []string) error {
+	conn, client, err := utils.NewSynseGrpcClient()
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var readings []*synse.V3Reading
+
+	if len(devices) == 0 {
+		stream, err := client.Read(ctx, &synse.V3ReadRequest{
+			Selector: &synse.V3DeviceSelector{},
+		})
+		if err != nil {
+			return err
+		}
+
+		for {
+			resp, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				return err
+			}
+			readings = append(readings, resp)
+		}
+	} else {
+		for _, device := range devices {
+			stream, err := client.Read(ctx, &synse.V3ReadRequest{
+				Selector: &synse.V3DeviceSelector{
+					Id: device,
+				},
+			})
+			if err != nil {
+				return err
+			}
+
+			for {
+				resp, err := stream.Recv()
+				if err == io.EOF {
+					break
+				}
+				if err != nil {
+					return err
+				}
+				readings = append(readings, resp)
+			}
+		}
+	}
+
+	if len(readings) == 0 {
+		// TODO: on no reading, should it print a message "no readings",
+		//   should it print nothing, or should it just print header info
+		//   with no rows?
+	}
+
+	// Format output
+	// FIXME: there is probably a way to clean this up / generalize this, but
+	//   that can be done later.
+	if flagJson {
+		o, err := json.MarshalIndent(readings, "", "  ")
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(append(o, '\n'))
+		return err
+
+	} else if flagYaml {
+		o, err := yaml.Marshal(readings)
+		if err != nil {
+			return err
+		}
+		_, err = out.Write(o)
+		return err
+
+	} else {
+		w := utils.NewTabWriter(out)
+		defer w.Flush()
+
+		if !flagNoHeader {
+			if err := printReadingHeader(w); err != nil {
+				return err
+			}
+		}
+
+		for _, reading := range readings {
+			if err := printReadingRow(w, reading); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

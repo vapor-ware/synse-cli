@@ -17,16 +17,20 @@
 package template
 
 import (
-	"github.com/MakeNowJust/heredoc"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 // New returns a new instance of the 'template' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{
+
+		// FIXME: this is not yet implemented - hide until ready
+		Hidden: true,
+
 		Use:   "template",
 		Short: "Templating utilities for Synse development",
-		Long: heredoc.Doc(`
+		Long: utils.Doc(`
 			Templating utilities for Synse development
 		`),
 	}

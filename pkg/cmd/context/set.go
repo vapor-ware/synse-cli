@@ -17,7 +17,6 @@
 package context
 
 import (
-	"github.com/MakeNowJust/heredoc"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
@@ -25,11 +24,14 @@ import (
 )
 
 var cmdSet = &cobra.Command{
-	Use:   "set",
+	Use:   "set CONTEXT_NAME",
 	Short: "Set the current context",
-	Long: heredoc.Doc(`
-		Set the currently active context for the CLI.
+	Long: utils.Doc(`
+		Set the current active context for the CLI.
 	`),
+	SuggestFor: []string{
+		"change",
+	},
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		utils.Err(setContext(args[0]))
