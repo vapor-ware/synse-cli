@@ -19,13 +19,13 @@ pipeline {
     stage('Test') {
       steps {
         script {
-          docker.image('vaporio/jenkins-agent-golang:latest').inside('-v $WORKSPACE:$PROJ_PATH') {
+          docker.image('vaporio/jenkins-agent-golang:latest') {
             // All the deps to build this project are provided by the runtime container
             // Skip the configuration management and let the pipeline assets do that for you.
             //sh 'cd ${PROJ_PATH} && dep ensure'
             sh 'go version'
             sh 'go mod download'
-            sh 'cd ${PROJ_PATH} && CGO_ENABLED=0 go test -covermode=atomic ./pkg/...'
+            sh 'CGO_ENABLED=0 go test -covermode=atomic ./pkg/...'
           }
         }
       }
