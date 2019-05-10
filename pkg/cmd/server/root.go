@@ -29,7 +29,6 @@ var (
 	flagJson     bool
 	flagYaml     bool
 	flagForce    bool
-	flagFull     bool
 	flagIds      bool
 	flagWait     bool
 	flagNS       string
@@ -37,6 +36,12 @@ var (
 	flagEnd      string
 	flagTags     []string
 )
+
+var exitutil utils.Exiter
+
+func init() {
+	exitutil = &utils.DefaultExiter{}
+}
 
 // New returns a new instance of the 'server' command.
 func New() *cobra.Command {

@@ -25,8 +25,9 @@ import (
 )
 
 func init() {
-	cmdList.Flags().BoolVarP(&flagFull, "full", "f", false, "display the full context record")
 	cmdList.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdList.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdList.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 }
 
 var cmdList = &cobra.Command{
@@ -41,7 +42,12 @@ var cmdList = &cobra.Command{
 		"ls",
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.Err(listContexts(cmd.OutOrStdout()))
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			exitutil.Err("cannot use multiple formatting flags at once")
+		}
+
+		exitutil.Err(listContexts(cmd.OutOrStdout()))
 	},
 }
 
@@ -51,19 +57,9 @@ func listContexts(out io.Writer) error {
 		return nil
 	}
 
-	w := utils.NewTabWriter(out)
-	defer w.Flush()
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
+	printer.SetRowFunc(contextRowFunc)
 
-	if !flagNoHeader {
-		if err := printContextHeader(w, flagFull); err != nil {
-			return err
-		}
-	}
-
-	for _, ctx := range contexts {
-		if err := printContext(w, &ctx, flagFull); err != nil {
-			return err
-		}
-	}
-	return nil
+	return printer.Write(contexts)
 }

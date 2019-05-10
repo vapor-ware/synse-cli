@@ -17,12 +17,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/vapor-ware/synse-cli/pkg/utils"
-
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 var cmdCompletion = &cobra.Command{
@@ -42,10 +40,6 @@ var cmdCompletion = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
-		if err := rootCmd.GenBashCompletion(os.Stdout); err != nil {
-			// TODO: error out in a consistent way.
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		exitutil.Err(rootCmd.GenBashCompletion(os.Stdout))
 	},
 }

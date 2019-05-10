@@ -2,124 +2,129 @@ package plugin
 
 import (
 	"fmt"
-	"io"
-	"strings"
 
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
-func printTestHeader(out io.Writer) error {
-	columns := []string{"STATUS"}
+func pluginTestRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3TestStatus)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printTestRow(out io.Writer, status *synse.V3TestStatus) error {
 	var s = "OK"
-	if !status.Ok {
+	if !i.Ok {
 		s = "ERROR"
 	}
 
-	row := fmt.Sprintf("%s\n", s)
-	_, err := fmt.Fprintf(out, row)
-	return err
+	return []interface{}{
+		s,
+	}, nil
 }
 
-func printVersionHeader(out io.Writer) error {
-	columns := []string{"VERSION", "SDK", "BUILD DATE", "OS", "ARCH"}
+func pluginVersionRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3Version)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
+	return []interface{}{
+		i.PluginVersion,
+		i.SdkVersion,
+		i.BuildDate,
+		i.Os,
+		i.Arch,
+	}, nil
 }
 
-func printVersionRow(out io.Writer, v *synse.V3Version) error {
-	row := fmt.Sprintf("%s\t%s\t%s\t%s\t%s\n", v.PluginVersion, v.SdkVersion, v.BuildDate, v.Os, v.Arch)
-	_, err := fmt.Fprintf(out, row)
-	return err
-}
+func pluginReadingRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3Reading)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-func printReadingHeader(out io.Writer) error {
-	columns := []string{"ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP"}
-
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printReadingRow(out io.Writer, r *synse.V3Reading) error {
 	// Special casing for reading unit symbol. % is a formatting
 	// directive, so it needs to be escaped as a double percent.
-	symbol := r.Unit.Symbol
+	symbol := i.Unit.Symbol
 	if symbol == "%" {
 		symbol = "%%"
 	}
 
-	row := fmt.Sprintf("%s\t%v\t%s\t%s\t%s\n", r.Id, r.Value, r.Unit.Symbol, r.Type, r.Timestamp)
-	_, err := fmt.Fprintf(out, row)
-	return err
+	return []interface{}{
+		i.Id,
+		i.Value,
+		symbol,
+		i.Type,
+		i.Timestamp,
+	}, nil
 }
 
-func printTransactionStatusHeader(out io.Writer) error {
-	columns := []string{"ID", "STATUS", "MESSAGE", "CREATED", "UPDATED"}
+func pluginTransactionStatusRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3TransactionStatus)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
+	return []interface{}{
+		i.Id,
+		i.Status,
+		i.Message,
+		i.Created,
+		i.Updated,
+	}, nil
 }
 
-func printTransactionStatusRow(out io.Writer, s *synse.V3TransactionStatus) error {
-	row := fmt.Sprintf("%s\t%s\t%s\t%s\t%s\n", s.Id, s.Status, s.Message, s.Created, s.Updated)
-	_, err := fmt.Fprintf(out, row)
-	return err
+func pluginTransactionInfoRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3WriteTransaction)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
+
+	return []interface{}{
+		i.Id,
+		i.Context.Action,
+		i.Context.Data,
+		i.Device,
+	}, nil
 }
 
-func printTransactionInfoHeader(out io.Writer) error {
-	columns := []string{"TRANSACTION", "ACTION", "DATA", "DEVICE"}
+func pluginMetadataRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3Metadata)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
+	return []interface{}{
+		i.Id,
+		i.Tag,
+		i.Description,
+	}, nil
 }
 
-func printTransactionInfoRow(out io.Writer, t *synse.V3WriteTransaction) error {
-	row := fmt.Sprintf("%s\t%s\t%s\t%s\n", t.Id, t.Context.Action, t.Context.Data, t.Device)
-	_, err := fmt.Fprintf(out, row)
-	return err
+func pluginDeviceRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3Device)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
+
+	return []interface{}{
+		i.Id,
+		i.Alias,
+		i.Type,
+		i.Info,
+		i.Plugin,
+	}, nil
 }
 
-func printMetadataHeader(out io.Writer) error {
-	columns := []string{"ID", "TAG", "DESCRIPTION"}
+func pluginHealthRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*synse.V3Health)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printMetadataRow(out io.Writer, m *synse.V3Metadata) error {
-	row := fmt.Sprintf("%s\t%s\t%s\n", m.Id, m.Tag, m.Description)
-	_, err := fmt.Fprintf(out, row)
-	return err
-}
-
-func printDeviceHeader(out io.Writer) error {
-	columns := []string{"ID", "ALIAS", "TYPE", "INFO", "PLUGIN"}
-
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printDeviceRow(out io.Writer, d *synse.V3Device) error {
-	row := fmt.Sprintf("%s\t%s\t%s\t%s\t%s\n", d.Id, d.Alias, d.Type, d.Info, d.Plugin)
-	_, err := fmt.Fprintf(out, row)
-	return err
-}
-
-func printHealthHeader(out io.Writer) error {
-	columns := []string{"STATUS", "TIMESTAMP", "CHECKS"}
-
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printHealthRow(out io.Writer, h *synse.V3Health) error {
-	row := fmt.Sprintf("%s\t%s\t%d\n", h.Status, h.Timestamp, len(h.Checks))
-	_, err := fmt.Fprintf(out, row)
-	return err
+	return []interface{}{
+		i.Status,
+		i.Timestamp,
+		len(i.Checks),
+	}, nil
 }

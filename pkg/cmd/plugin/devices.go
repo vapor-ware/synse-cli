@@ -18,13 +18,11 @@ package plugin
 
 import (
 	"context"
-	"encoding/json"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
-	"gopkg.in/yaml.v2"
 )
 
 func init() {
@@ -49,10 +47,10 @@ var cmdDevices = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
 		if flagJson && flagYaml {
-			utils.Err("cannot use multiple formatting flags at once")
+			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
-		utils.Err(pluginDevices(cmd.OutOrStdout()))
+		exitutil.Err(pluginDevices(cmd.OutOrStdout()))
 	},
 }
 
@@ -84,45 +82,12 @@ func pluginDevices(out io.Writer) error {
 	}
 
 	if len(devices) == 0 {
-		// TODO: on no reading, should it print a message "no readings",
-		//   should it print nothing, or should it just print header info
-		//   with no rows?
+		exitutil.Exitf(0, "No devices found.")
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagJson {
-		o, err := json.MarshalIndent(devices, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("ID", "ALIAS", "TYPE", "INFO", "PLUGIN")
+	printer.SetRowFunc(pluginDeviceRowFunc)
 
-	} else if flagYaml {
-		o, err := yaml.Marshal(devices)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		w := utils.NewTabWriter(out)
-		defer w.Flush()
-
-		if !flagNoHeader {
-			if err := printDeviceHeader(w); err != nil {
-				return err
-			}
-		}
-
-		for _, device := range devices {
-			if err := printDeviceRow(w, device); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+	return printer.Write(devices)
 }

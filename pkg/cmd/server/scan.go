@@ -17,20 +17,17 @@
 package server
 
 import (
-	"encoding/json"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
-	"gopkg.in/yaml.v2"
 )
 
 func init() {
 	cmdScan.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
 	cmdScan.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
 	cmdScan.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
-	cmdScan.Flags().BoolVarP(&flagFull, "full", "f", false, "display the full scan record")
 	cmdScan.Flags().BoolVarP(&flagForce, "force", "", false, "force a cache rebuild on the server")
 	cmdScan.Flags().StringVarP(&flagNS, "ns", "", "", "default tag namespace for tags with no explicit namespace set")
 	cmdScan.Flags().StringSliceVarP(&flagTags, "tag", "t", []string{}, "specify tags to use as device selectors")
@@ -66,10 +63,10 @@ var cmdScan = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
 		if flagJson && flagYaml {
-			utils.Err("cannot use multiple formatting flags at once")
+			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
-		utils.Err(serverScan(cmd.OutOrStdout()))
+		exitutil.Err(serverScan(cmd.OutOrStdout()))
 	},
 }
 
@@ -88,46 +85,13 @@ func serverScan(out io.Writer) error {
 		return err
 	}
 
-	if len(*response) == 0 {
-		// TODO: on no reading, should it print a message "no readings",
-		//   should it print nothing, or should it just print header info
-		//   with no rows?
+	if len(response) == 0 {
+		exitutil.Exitf(0, "No devices found.")
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagJson {
-		o, err := json.MarshalIndent(response, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("DEVICE_ID", "TYPE", "INFO")
+	printer.SetRowFunc(serverScanRowFunc)
 
-	} else if flagYaml {
-		o, err := yaml.Marshal(response)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		w := utils.NewTabWriter(out)
-		defer w.Flush()
-
-		if !flagNoHeader {
-			if err := printScanHeader(w, flagFull); err != nil {
-				return err
-			}
-		}
-
-		for _, dev := range *response {
-			if err := printScanRow(w, &dev, flagFull); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+	return printer.Write(response)
 }

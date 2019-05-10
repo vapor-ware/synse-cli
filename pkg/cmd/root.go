@@ -27,7 +27,11 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
+var exitutil utils.Exiter
+
 func init() {
+	exitutil = &utils.DefaultExiter{}
+
 	// Set the logging level to panic, which effectively disables logging.
 	// It can be enabled with the debug flag.
 	log.SetLevel(log.PanicLevel)
@@ -59,12 +63,12 @@ var rootCmd = &cobra.Command{
 		}
 
 		// Load CLI config from file prior to running any command.
-		utils.Err(config.Load())
+		exitutil.Err(config.Load())
 	},
 
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
 		// Persist the CLI config to file after running any command.
-		utils.Err(config.Persist())
+		exitutil.Err(config.Persist())
 	},
 }
 

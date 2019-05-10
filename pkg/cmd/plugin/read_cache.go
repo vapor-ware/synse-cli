@@ -18,13 +18,11 @@ package plugin
 
 import (
 	"context"
-	"encoding/json"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
-	"gopkg.in/yaml.v2"
 )
 
 func init() {
@@ -59,10 +57,10 @@ var cmdReadCache = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
 		if flagJson && flagYaml {
-			utils.Err("cannot use multiple formatting flags at once")
+			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
-		utils.Err(pluginReadCache(cmd.OutOrStdout()))
+		exitutil.Err(pluginReadCache(cmd.OutOrStdout()))
 	},
 }
 
@@ -97,45 +95,12 @@ func pluginReadCache(out io.Writer) error {
 	}
 
 	if len(readings) == 0 {
-		// TODO: on no reading, should it print a message "no readings",
-		//   should it print nothing, or should it just print header info
-		//   with no rows?
+		exitutil.Exitf(0, "No readings found.")
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagJson {
-		o, err := json.MarshalIndent(readings, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
+	printer.SetRowFunc(pluginReadingRowFunc)
 
-	} else if flagYaml {
-		o, err := yaml.Marshal(readings)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		w := utils.NewTabWriter(out)
-		defer w.Flush()
-
-		if !flagNoHeader {
-			if err := printReadingHeader(w); err != nil {
-				return err
-			}
-		}
-
-		for _, reading := range readings {
-			if err := printReadingRow(w, reading); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+	return printer.Write(readings)
 }

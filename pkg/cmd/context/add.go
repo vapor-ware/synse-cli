@@ -54,7 +54,7 @@ var cmdAdd = &cobra.Command{
 	},
 	Args: cobra.ExactArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.Err(addContext(args[0], args[1], args[2]))
+		exitutil.Err(addContext(args[0], args[1], args[2]))
 	},
 }
 

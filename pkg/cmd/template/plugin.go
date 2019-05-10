@@ -19,9 +19,8 @@ package template
 import (
 	"fmt"
 
-	"github.com/vapor-ware/synse-cli/pkg/utils"
-
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 var cmdPlugin = &cobra.Command{
