@@ -55,7 +55,7 @@ var cmdDevices = &cobra.Command{
 }
 
 func pluginDevices(out io.Writer) error {
-	conn, client, err := utils.NewSynseGrpcClient()
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
 	if err != nil {
 		return err
 	}

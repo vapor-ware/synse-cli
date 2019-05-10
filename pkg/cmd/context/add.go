@@ -27,6 +27,7 @@ import (
 
 func init() {
 	cmdAdd.Flags().BoolVarP(&flagSet, "set", "", false, "set as the current context after adding")
+	cmdAdd.Flags().StringVarP(&flagClientCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./synse.pem)")
 }
 
 var cmdAdd = &cobra.Command{
@@ -63,6 +64,7 @@ func addContext(ctxType, ctxName, ctxAddress string) error {
 		"type":    ctxType,
 		"name":    ctxName,
 		"address": ctxAddress,
+		"tlscert": flagClientCert,
 	}).Debug("adding new context")
 
 	// Verify that the provided context type is supported.
@@ -74,7 +76,8 @@ func addContext(ctxType, ctxName, ctxAddress string) error {
 		Name: ctxName,
 		Type: ctxType,
 		Context: config.Context{
-			Address: ctxAddress,
+			Address:    ctxAddress,
+			ClientCert: flagClientCert,
 		},
 	})
 	if err != nil {

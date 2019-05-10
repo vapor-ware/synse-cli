@@ -33,6 +33,9 @@ var (
 	flagStart    string
 	flagEnd      string
 	flagTags     []string
+
+	flagTlsCert string
+	flagContext string
 )
 
 var exitutil utils.Exiter
@@ -53,6 +56,10 @@ func New() *cobra.Command {
 			a current plugin context. See 'synse context' for details.
 		`),
 	}
+
+	// Add flag options
+	cmd.PersistentFlags().StringVarP(&flagTlsCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./plugin.pem)")
+	cmd.PersistentFlags().StringVarP(&flagTlsCert, "with-context", "", "", "the name of the plugin context to use")
 
 	// Add sub-commands
 	cmd.AddCommand(
