@@ -3,7 +3,6 @@ project_name: synse-cli
 before:
   hooks:
     - go mod download
-    - go clean -v
 builds:
   -
     main: ./cmd/synse.go
