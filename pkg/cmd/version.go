@@ -75,9 +75,9 @@ var cmdVersion = &cobra.Command{
 		}
 
 		tmpl, err := template.New("version").Parse(templates.CmdVersionTemplate)
-		utils.Err(err)
+		exitutil.Err(err)
 
 		err = tmpl.ExecuteTemplate(os.Stdout, "version", v)
-		utils.Err(err)
+		exitutil.Err(err)
 	},
 }

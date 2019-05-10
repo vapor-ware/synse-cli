@@ -18,13 +18,11 @@ package plugin
 
 import (
 	"context"
-	"encoding/json"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
-	"gopkg.in/yaml.v2"
 )
 
 func init() {
@@ -59,7 +57,7 @@ var cmdWrite = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
 		if flagJson && flagYaml {
-			utils.Err("cannot use multiple formatting flags at once")
+			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
 		device := args[0]
@@ -70,9 +68,9 @@ var cmdWrite = &cobra.Command{
 		}
 
 		if flagWait {
-			utils.Err(pluginWriteSync(cmd.OutOrStdout(), device, action, data))
+			exitutil.Err(pluginWriteSync(cmd.OutOrStdout(), device, action, data))
 		} else {
-			utils.Err(pluginWriteAsync(cmd.OutOrStdout(), device, action, data))
+			exitutil.Err(pluginWriteAsync(cmd.OutOrStdout(), device, action, data))
 		}
 	},
 }
@@ -113,47 +111,14 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 	}
 
 	if len(txns) == 0 {
-		// TODO: on no reading, should it print a message "no readings",
-		//   should it print nothing, or should it just print header info
-		//   with no rows?
+		exitutil.Fatal("failed device write")
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagJson {
-		o, err := json.MarshalIndent(txns, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("TRANSACTION", "ACTION", "DATA", "DEVICE")
+	printer.SetRowFunc(pluginTransactionInfoRowFunc)
 
-	} else if flagYaml {
-		o, err := yaml.Marshal(txns)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		w := utils.NewTabWriter(out)
-		defer w.Flush()
-
-		if !flagNoHeader {
-			if err := printTransactionInfoHeader(w); err != nil {
-				return err
-			}
-		}
-
-		for _, t := range txns {
-			if err := printTransactionInfoRow(w, t); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+	return printer.Write(txns)
 }
 
 func pluginWriteSync(out io.Writer, device, action, data string) error {
@@ -192,45 +157,12 @@ func pluginWriteSync(out io.Writer, device, action, data string) error {
 	}
 
 	if len(txns) == 0 {
-		// TODO: on no reading, should it print a message "no readings",
-		//   should it print nothing, or should it just print header info
-		//   with no rows?
+		exitutil.Fatal("failed device write")
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagJson {
-		o, err := json.MarshalIndent(txns, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
+	printer.SetRowFunc(pluginTransactionStatusRowFunc)
 
-	} else if flagYaml {
-		o, err := yaml.Marshal(txns)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		w := utils.NewTabWriter(out)
-		defer w.Flush()
-
-		if !flagNoHeader {
-			if err := printTransactionStatusHeader(w); err != nil {
-				return err
-			}
-		}
-
-		for _, t := range txns {
-			if err := printTransactionStatusRow(w, t); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+	return printer.Write(txns)
 }

@@ -17,12 +17,10 @@
 package server
 
 import (
-	"encoding/json"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
-	"gopkg.in/yaml.v2"
 )
 
 func init() {
@@ -42,7 +40,7 @@ var cmdConfig = &cobra.Command{
 		<underscore>https://vapor-ware.github.io/synse-server/#config</>
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.Err(serverConfig(cmd.OutOrStdout()))
+		exitutil.Err(serverConfig(cmd.OutOrStdout()))
 	},
 }
 
@@ -57,24 +55,6 @@ func serverConfig(out io.Writer) error {
 		return err
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagYaml {
-
-		o, err := yaml.Marshal(response)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		o, err := json.MarshalIndent(response, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
-	}
+	printer := utils.NewPrinter(out, !flagYaml, flagYaml, flagNoHeader)
+	return printer.Write(response)
 }

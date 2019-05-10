@@ -17,13 +17,11 @@
 package server
 
 import (
-	"encoding/json"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
-	"gopkg.in/yaml.v2"
 )
 
 func init() {
@@ -66,15 +64,15 @@ var cmdRead = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if device IDs and tag selectors are both specified.
 		if len(args) != 0 && len(flagTags) != 0 {
-			utils.Err("cannot specify device IDs and device tags together")
+			exitutil.Err("cannot specify device IDs and device tags together")
 		}
 
 		// Error out if multiple output formats are specified.
 		if flagJson && flagYaml {
-			utils.Err("cannot use multiple formatting flags at once")
+			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
-		utils.Err(serverRead(cmd.OutOrStdout(), args))
+		exitutil.Err(serverRead(cmd.OutOrStdout(), args))
 	},
 }
 
@@ -84,14 +82,14 @@ func serverRead(out io.Writer, devices []string) error {
 		return err
 	}
 
-	var readings []scheme.Read
+	var readings []*scheme.Read
 	if len(devices) != 0 {
 		for _, device := range devices {
 			response, err := client.ReadDevice(device, scheme.ReadOptions{})
 			if err != nil {
 				return err
 			}
-			readings = append(readings, *response...)
+			readings = append(readings, response...)
 		}
 	} else {
 		response, err := client.Read(scheme.ReadOptions{
@@ -101,49 +99,16 @@ func serverRead(out io.Writer, devices []string) error {
 		if err != nil {
 			return err
 		}
-		readings = *response
+		readings = response
 	}
 
 	if len(readings) == 0 {
-		// TODO: on no reading, should it print a message "no readings",
-		//   should it print nothing, or should it just print header info
-		//   with no rows?
+		exitutil.Exitf(0, "No readings found.")
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagJson {
-		o, err := json.MarshalIndent(readings, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
+	printer.SetRowFunc(serverReadRowFunc)
 
-	} else if flagYaml {
-		o, err := yaml.Marshal(readings)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		w := utils.NewTabWriter(out)
-		defer w.Flush()
-
-		if !flagNoHeader {
-			if err := printReadingHeader(w); err != nil {
-				return err
-			}
-		}
-
-		for _, reading := range readings {
-			if err := printReadingRow(w, reading); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+	return printer.Write(readings)
 }

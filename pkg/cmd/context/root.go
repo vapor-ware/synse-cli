@@ -24,10 +24,17 @@ import (
 // Define variables which hold values passed in via flags. These are
 // defined here because they are used by multiple commands in the package.
 var (
-	flagFull     bool
 	flagNoHeader bool
 	flagSet      bool
+	flagJson     bool
+	flagYaml     bool
 )
+
+var exitutil utils.Exiter
+
+func init() {
+	exitutil = &utils.DefaultExiter{}
+}
 
 // New returns a new instance of the 'hosts' command.
 func New() *cobra.Command {

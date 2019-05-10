@@ -27,8 +27,9 @@ import (
 )
 
 func init() {
-	cmdCurrent.Flags().BoolVarP(&flagFull, "full", "f", false, "display the full context record")
 	cmdCurrent.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
+	cmdCurrent.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdCurrent.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 }
 
 var cmdCurrent = &cobra.Command{
@@ -49,12 +50,17 @@ var cmdCurrent = &cobra.Command{
 	},
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		// Error out if multiple output formats are specified.
+		if flagJson && flagYaml {
+			exitutil.Err("cannot use multiple formatting flags at once")
+		}
+
 		var ctxType string
 		if len(args) != 0 {
 			ctxType = args[0]
 		}
 
-		utils.Err(getCurrentContext(cmd.OutOrStdout(), ctxType))
+		exitutil.Err(getCurrentContext(cmd.OutOrStdout(), ctxType))
 	},
 }
 
@@ -77,22 +83,9 @@ func getCurrentContext(out io.Writer, ctxType string) error {
 		return fmt.Errorf("no current context is set for type '%s' (see 'synse context set')", ctxType)
 	}
 
-	w := utils.NewTabWriter(out)
-	defer w.Flush()
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
+	printer.SetRowFunc(contextRowFunc)
 
-	if !flagNoHeader {
-		if err := printContextHeader(w, flagFull); err != nil {
-			return err
-		}
-	}
-
-	for _, ctx := range config.GetCurrentContext() {
-		if ctxType != "" && ctx.Type != ctxType {
-			continue
-		}
-		if err := printContext(w, ctx, flagFull); err != nil {
-			return err
-		}
-	}
-	return nil
+	return printer.Write(currentContexts)
 }

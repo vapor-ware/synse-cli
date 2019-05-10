@@ -17,13 +17,11 @@
 package server
 
 import (
-	"encoding/json"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
-	"gopkg.in/yaml.v2"
 )
 
 func init() {
@@ -57,7 +55,7 @@ var cmdReadCache = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.Err(serverReadCache(cmd.OutOrStdout()))
+		exitutil.Err(serverReadCache(cmd.OutOrStdout()))
 	},
 }
 
@@ -75,46 +73,13 @@ func serverReadCache(out io.Writer) error {
 		return err
 	}
 
-	if len(*response) == 0 {
-		// TODO: on no reading, should it print a message "no readings",
-		//   should it print nothing, or should it just print header info
-		//   with no rows?
+	if len(response) == 0 {
+		exitutil.Exitf(0, "No readings found.")
 	}
 
-	// Format output
-	// FIXME: there is probably a way to clean this up / generalize this, but
-	//   that can be done later.
-	if flagJson {
-		o, err := json.MarshalIndent(response, "", "  ")
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(append(o, '\n'))
-		return err
+	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
+	printer.SetRowFunc(serverReadRowFunc)
 
-	} else if flagYaml {
-		o, err := yaml.Marshal(response)
-		if err != nil {
-			return err
-		}
-		_, err = out.Write(o)
-		return err
-
-	} else {
-		w := utils.NewTabWriter(out)
-		defer w.Flush()
-
-		if !flagNoHeader {
-			if err := printReadingHeader(w); err != nil {
-				return err
-			}
-		}
-
-		for _, reading := range *response {
-			if err := printReadingRow(w, reading); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
+	return printer.Write(response)
 }

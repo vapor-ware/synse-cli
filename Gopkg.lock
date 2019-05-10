@@ -40,6 +40,14 @@
   version = "v1.3.1"
 
 [[projects]]
+  digest = "1:a0cc264456743e2c8f9798dbe251c28bacbc3e60a4fbcf140997e8aaae5a0cf8"
+  name = "github.com/gookit/color"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "55e2fd773974775d0bda6daef1fe74bd47ccc260"
+  version = "v1.1.7"
+
+[[projects]]
   digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
   name = "github.com/gorilla/websocket"
   packages = ["."]
@@ -91,12 +99,12 @@
   revision = "89fcab3d43de07060e4fd4c1547430ed57e87f24"
 
 [[projects]]
-  digest = "1:c568d7727aa262c32bdf8a3f7db83614f7af0ed661474b24588de635c20024c7"
+  digest = "1:5a0ef768465592efca0412f7e838cdc0826712f8447e70e6ccc52eb441e9ab13"
   name = "github.com/magiconair/properties"
   packages = ["."]
   pruneopts = "UT"
-  revision = "c2353362d570a7bfa228149c62842019201cfb71"
-  version = "v1.8.0"
+  revision = "de8848e004dd33dc07a2947b3d76f618a7fc7ef1"
+  version = "v1.8.1"
 
 [[projects]]
   digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
@@ -183,14 +191,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:927f284b00544a46b15a5d8a57aa60fa69f325a174def2dbc8a811dca9a0c629"
+  digest = "1:56835bb4d9d8c957afe3fa63c90357d89ce10e681184f403dfc2f3ac22ee3ff4"
   name = "github.com/vapor-ware/synse-client-go"
   packages = [
     "synse",
     "synse/scheme",
   ]
   pruneopts = "UT"
-  revision = "82943a5ece88be1df570d0e95fbfb8118f03fdc8"
+  revision = "b8cbc98b352f20ae18902f93adb440c5e67e9daa"
 
 [[projects]]
   branch = "v3/staging"
@@ -215,15 +223,15 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "f4e77d36d62c17c2336347bb2670ddbd02d092b7"
+  revision = "a4d6f7feada510cc50e69a37b484cb0fdc6b7876"
 
 [[projects]]
   branch = "master"
-  digest = "1:f42e547cbcaa2cf6548b0bb27a350f75db23340d062877fb534c06eb57934e8c"
+  digest = "1:4fc43e824f7e546353de724c00507b1d9c0bab56344b10c2330a97f166a0fba7"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "12bbe5a7a5209180b72cc7e3ed9da40442fe3246"
+  revision = "a5b02f93d862f065920dd6a40dddc66b60d0dec4"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -320,6 +328,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/MakeNowJust/heredoc",
+    "github.com/gookit/color",
     "github.com/liggitt/tabwriter",
     "github.com/sirupsen/logrus",
     "github.com/spf13/cobra",

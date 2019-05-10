@@ -2,59 +2,64 @@ package plugins
 
 import (
 	"fmt"
-	"io"
-	"strings"
 
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
 )
 
-func printPluginSummaryHeader(out io.Writer) error {
-	columns := []string{"ACTIVE", "ID", "VERSION", "TAG", "DESCRIPTION"}
+func serverPluginSummaryRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*scheme.PluginMeta)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printPluginSummaryRow(out io.Writer, p *scheme.PluginMeta) error {
 	var isActive = "✓"
-	if !p.Active {
+	if !i.Active {
 		isActive = "✗"
 	}
 
-	row := fmt.Sprintf("%s\t%s\t%s\t%s\t%s\n", isActive, p.ID, p.Version.PluginVersion, p.Tag, p.Description)
-	_, err := fmt.Fprintf(out, row)
-	return err
+	return []interface{}{
+		isActive,
+		i.ID,
+		i.Version.PluginVersion,
+		i.Tag,
+		i.Description,
+	}, nil
 }
 
-func printPluginHeader(out io.Writer) error {
-	columns := []string{"ACTIVE", "ID", "TAG", "ADDRESS", "STATUS", "LAST_CHECK"}
+func serverPluginRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*scheme.Plugin)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printPluginRow(out io.Writer, p *scheme.Plugin) error {
 	var isActive = "✓"
-	if !p.Active {
+	if !i.Active {
 		isActive = "✗"
 	}
 
-	addr := fmt.Sprintf("%s://%s", p.Network.Protocol, p.Network.Address)
+	addr := fmt.Sprintf("%s://%s", i.Network.Protocol, i.Network.Address)
 
-	row := fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%s\n", isActive, p.ID, p.Tag, addr, p.Health.Status, p.Health.Timestamp)
-	_, err := fmt.Fprintf(out, row)
-	return err
+	return []interface{}{
+		isActive,
+		i.ID,
+		i.Tag,
+		addr,
+		i.Health.Status,
+		i.Health.Timestamp,
+	}, nil
 }
 
-func printPluginHealthHeader(out io.Writer) error {
-	columns := []string{"STATUS", "HEALTHY", "UNHEALTHY", "ACTIVE", "INACTIVE"}
+func serverPluginHealthRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*scheme.PluginHealth)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
+	}
 
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printPluginHealthRow(out io.Writer, p *scheme.PluginHealth) error {
-	row := fmt.Sprintf("%s\t%d\t%d\t%d\t%d\n", p.Status, len(p.Healthy), len(p.Unhealthy), p.Active, p.Inactive)
-	_, err := fmt.Fprintf(out, row)
-	return err
+	return []interface{}{
+		i.Status,
+		len(i.Healthy),
+		len(i.Unhealthy),
+		i.Active,
+		i.Inactive,
+	}, nil
 }

@@ -18,35 +18,25 @@ package context
 
 import (
 	"fmt"
-	"io"
-	"strings"
 
 	"github.com/vapor-ware/synse-cli/pkg/config"
 )
 
-func printContextHeader(out io.Writer, full bool) error {
-	columns := []string{"CURRENT", "NAME", "TYPE", "ADDRESS"}
-	if !full {
-		columns = columns[:3]
+func contextRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(*config.ContextRecord)
+	if !ok {
+		return nil, fmt.Errorf("invalid row data")
 	}
-	_, err := fmt.Fprintf(out, "%s\n", strings.Join(columns, "\t"))
-	return err
-}
-
-func printContext(out io.Writer, ctx *config.ContextRecord, full bool) error {
 
 	isCurrent := " "
-	if config.IsCurrentContext(ctx) {
+	if config.IsCurrentContext(i) {
 		isCurrent = "*"
 	}
 
-	var row string
-	if full {
-		row = fmt.Sprintf("%s\t%s\t%s\t%s\n", isCurrent, ctx.Name, ctx.Type, ctx.Context.Address)
-	} else {
-		row = fmt.Sprintf("%s\t%s\t%s\n", isCurrent, ctx.Name, ctx.Type)
-	}
-
-	_, err := fmt.Fprintf(out, row)
-	return err
+	return []interface{}{
+		isCurrent,
+		i.Name,
+		i.Type,
+		i.Context.Address,
+	}, nil
 }
