@@ -46,3 +46,37 @@ var cmdCompletion = &cobra.Command{
 		)
 	},
 }
+
+
+const bash_completion_func = `
+
+__synse_server_parse_scan() {
+	local synse_server_output out
+	if synse_server_output=$(synse server scan -n "$1" 2>/dev/null); then
+		out=($(echo "${synse_server_output}" | awk '{print $1}'))
+		COMPREPLY=( $( compgen -W "${out[*]}" -- "$cur" ) )
+	fi
+}
+
+__synse_server_read_device() {
+	if [[ ${#nouns[@]} -eq 0 ]]; then
+		return 1
+	fi
+	__synse_server_parse_scan ${nouns[${#nouns[@]} -1]}
+    if [[ $? -eq 0 ]]; then
+        return 0
+    fi
+}
+
+__synse_custom_func() {
+	echo "calling custom func"
+	case ${last_command} in 
+		synse_server_read)
+			__synse_server_read_device
+			return
+			;;
+		*)
+			;;
+	esac
+}
+`
