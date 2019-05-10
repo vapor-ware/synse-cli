@@ -22,7 +22,7 @@ pipeline {
           docker.image('vaporio/jenkins-agent-golang:latest').inside('-v $WORKSPACE:$PROJ_PATH') {
             // All the deps to build this project are provided by the runtime container
             // Skip the configuration management and let the pipeline assets do that for you.
-            sh 'cd ${PROJ_PATH} && dep ensure'
+            //sh 'cd ${PROJ_PATH} && dep ensure'
             sh 'cd ${PROJ_PATH} && CGO_ENABLED=0 go test -covermode=atomic ./pkg/...'
           }
         }
