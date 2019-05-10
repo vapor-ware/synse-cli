@@ -76,7 +76,7 @@ var cmdWrite = &cobra.Command{
 }
 
 func pluginWriteAsync(out io.Writer, device, action, data string) error {
-	conn, client, err := utils.NewSynseGrpcClient()
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
 	if err != nil {
 		return err
 	}
@@ -122,7 +122,7 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 }
 
 func pluginWriteSync(out io.Writer, device, action, data string) error {
-	conn, client, err := utils.NewSynseGrpcClient()
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
 	defer conn.Close()
 	if err != nil {
 		return err

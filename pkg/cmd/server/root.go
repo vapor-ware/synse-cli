@@ -35,6 +35,8 @@ var (
 	flagStart    string
 	flagEnd      string
 	flagTags     []string
+
+	flagTlsCert string
 )
 
 var exitutil utils.Exiter
@@ -55,6 +57,9 @@ func New() *cobra.Command {
 			a current server context. See 'synse context' for details.
 		`),
 	}
+
+	// Add flag options
+	cmd.PersistentFlags().StringVarP(&flagTlsCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./server.pem)")
 
 	// Add sub-commands
 	cmd.AddCommand(

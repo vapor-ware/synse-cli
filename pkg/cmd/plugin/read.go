@@ -55,7 +55,7 @@ var cmdRead = &cobra.Command{
 }
 
 func pluginRead(out io.Writer, devices []string) error {
-	conn, client, err := utils.NewSynseGrpcClient()
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
 	if err != nil {
 		return err
 	}

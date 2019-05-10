@@ -23,13 +23,13 @@ import (
 )
 
 func contextRowFunc(data interface{}) ([]interface{}, error) {
-	i, ok := data.(*config.ContextRecord)
+	i, ok := data.(config.ContextRecord)
 	if !ok {
 		return nil, fmt.Errorf("invalid row data")
 	}
 
 	isCurrent := " "
-	if config.IsCurrentContext(i) {
+	if config.IsCurrentContext(&i) {
 		isCurrent = "*"
 	}
 

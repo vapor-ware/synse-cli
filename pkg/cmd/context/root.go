@@ -24,10 +24,11 @@ import (
 // Define variables which hold values passed in via flags. These are
 // defined here because they are used by multiple commands in the package.
 var (
-	flagNoHeader bool
-	flagSet      bool
-	flagJson     bool
-	flagYaml     bool
+	flagNoHeader   bool
+	flagSet        bool
+	flagJson       bool
+	flagYaml       bool
+	flagClientCert string
 )
 
 var exitutil utils.Exiter
