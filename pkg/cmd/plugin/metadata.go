@@ -55,7 +55,7 @@ var cmdMetadata = &cobra.Command{
 }
 
 func pluginMetadata(out io.Writer) error {
-	conn, client, err := utils.NewSynseGrpcClient()
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
 	if err != nil {
 		return err
 	}

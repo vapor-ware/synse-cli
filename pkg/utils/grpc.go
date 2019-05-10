@@ -19,21 +19,52 @@ package utils
 import (
 	"fmt"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
-func NewSynseGrpcClient() (*grpc.ClientConn, synse.V3PluginClient, error) {
-	// TODO: secure transport
+func NewSynseGrpcClient(ctx string, certFile string) (*grpc.ClientConn, synse.V3PluginClient, error) {
+	var pluginContext *config.ContextRecord
 
-	currentContexts := config.GetCurrentContext()
-	pluginCtx := currentContexts["plugin"]
-	if pluginCtx == nil {
-		return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: no current plugin context")
+	if ctx == "" {
+		currentContexts := config.GetCurrentContext()
+		pluginContext = currentContexts["plugin"]
+		if pluginContext == nil {
+			return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: no current plugin context")
+		}
+	} else {
+		pluginContext = config.GetContext(ctx)
+		if pluginContext == nil {
+			return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: specified context does not exist")
+		}
+		if pluginContext.Type != "plugin" {
+			return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: specified context is not a plugin context")
+		}
 	}
 
-	conn, err := grpc.Dial(pluginCtx.Context.Address, grpc.WithInsecure())
+	// If a cert file was provided, use it to override any cert file which may
+	// already be configured for the context.
+	if certFile != "" {
+		pluginContext.Context.ClientCert = certFile
+	}
+
+	var dialOptions []grpc.DialOption
+	if pluginContext.Context.ClientCert == "" {
+		log.Debug("grpc client: with insecure")
+		dialOptions = append(dialOptions, grpc.WithInsecure())
+	} else {
+		creds, err := credentials.NewClientTLSFromFile(pluginContext.Context.ClientCert, "")
+		if err != nil {
+			return nil, nil, err
+		}
+		log.WithField("cert", pluginContext.Context.ClientCert).Debug("grpc client: with credentials")
+		dialOptions = append(dialOptions, grpc.WithTransportCredentials(creds))
+	}
+
+	conn, err := grpc.Dial(pluginContext.Context.Address, dialOptions...)
 	if err != nil {
 		return nil, nil, err
 	}

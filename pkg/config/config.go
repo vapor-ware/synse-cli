@@ -22,6 +22,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
@@ -45,23 +46,24 @@ var config Config
 
 // Config specifies the persisted configuration for the CLI.
 type Config struct {
-	Contexts       []ContextRecord   `yaml:"contexts"`
-	CurrentContext map[string]string `yaml:"current_context"`
+	Contexts       []ContextRecord   `yaml:"contexts" mapstructure:"contexts"`
+	CurrentContext map[string]string `yaml:"current_context" mapstructure:"current_context"`
 }
 
 // ContextRecord describes the record for a Synse component
 // and how the CLI should connect to it.
 type ContextRecord struct {
-	Name    string  `yaml:"name"`
-	Type    string  `yaml:"type"`
-	Context Context `yaml:"context"`
+	Name    string  `yaml:"name" mapstructure:"name"`
+	Type    string  `yaml:"type" mapstructure:"type"`
+	Context Context `yaml:"context" mapstructure:"context"`
 }
 
 // Context specifies any contextual information associated
 // with a ContextRecord that can be used by the CLI to connect
 // to the Synse component.
 type Context struct {
-	Address string `yaml:"address"`
+	Address    string `yaml:"address" mapstructure:"address"`
+	ClientCert string `yaml:"client_cert" mapstructure:"client_cert"`
 }
 
 // Load loads the configuration for the CLI. If a configuration file
@@ -69,15 +71,14 @@ type Context struct {
 func Load() error {
 	v := readConfigFromFile()
 
-	// There is a strange bug with Viper that prevents us from just using
-	// v.Unmarshal here. If we don't explicitly UnmarshalKey, it will not
-	// unmarshal the current context map at all.
-	if err := v.UnmarshalKey("contexts", &config.Contexts); err != nil {
+	// Use mapstructure.Decode here instead of Viper's built-in Unmarshal
+	// since that appears to be broken and does not properly load all keys.
+	err := mapstructure.Decode(v.AllSettings(), &config)
+	if err != nil {
 		return err
 	}
-	if err := v.UnmarshalKey("current_context", &config.CurrentContext); err != nil {
-		return err
-	}
+
+	log.WithField("config", config).Debug("unmarshaled config")
 	return nil
 }
 
@@ -106,6 +107,22 @@ func Persist() error {
 // GetContexts gets the contexts for the default configuration.
 func GetContexts() []ContextRecord {
 	return config.Contexts
+}
+
+// GetContext gets the named context for the config. If a context
+// with the given name does not exist, nil is returned.
+func (c *Config) GetContext(name string) *ContextRecord {
+	for _, ctx := range c.Contexts {
+		if ctx.Name == name {
+			return &ctx
+		}
+	}
+	return nil
+}
+
+// GetContext gets the named context from the default configuration.
+func GetContext(name string) *ContextRecord {
+	return config.GetContext(name)
 }
 
 // AddContext adds a context to the configuration. If a context with the

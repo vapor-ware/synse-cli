@@ -25,18 +25,18 @@ import (
 
 var cmdCompletion = &cobra.Command{
 	Use:   "completion",
-	Short: "Generate completion scripts (bash)",
+	Short: "Generate bash completion scripts",
 	Long: utils.Doc(`
-		Generate completion scripts (bash).
+		Generate bash completion scripts.
 
 		To load bash completion for the current session, run:
 
-		  . <(synse completion)
+		  <bold>. <(synse completion)</>
 
 		To configure your bash shell to load synse completion for all
 		new sessions, add the above to your bashrc, e.g.
 
-		  echo ". <(synse completion)" >> ~/.bashrc
+		  <bold>echo ". <(synse completion)" >> ~/.bashrc</>
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
