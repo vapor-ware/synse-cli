@@ -21,6 +21,7 @@ import (
 )
 
 var (
+	// CmdVersionTemplate is the template string for the version command response.
 	CmdVersionTemplate = heredoc.Doc(`
 	synse:
 	 version     : {{.Version}}

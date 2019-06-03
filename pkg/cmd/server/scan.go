@@ -26,7 +26,7 @@ import (
 
 func init() {
 	cmdScan.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdScan.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdScan.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdScan.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 	cmdScan.Flags().BoolVarP(&flagForce, "force", "", false, "force a cache rebuild on the server")
 	cmdScan.Flags().StringVarP(&flagNS, "ns", "", "", "default tag namespace for tags with no explicit namespace set")
@@ -62,7 +62,7 @@ var cmdScan = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -89,7 +89,7 @@ func serverScan(out io.Writer) error {
 		exitutil.Exitf(0, "No devices found.")
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("DEVICE_ID", "TYPE", "INFO")
 	printer.SetRowFunc(serverScanRowFunc)
 

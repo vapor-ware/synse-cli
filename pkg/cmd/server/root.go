@@ -26,7 +26,7 @@ import (
 // defined here because they are used by multiple commands in the package.
 var (
 	flagNoHeader bool
-	flagJson     bool
+	flagJSON     bool
 	flagYaml     bool
 	flagForce    bool
 	flagIds      bool
@@ -36,7 +36,7 @@ var (
 	flagEnd      string
 	flagTags     []string
 
-	flagTlsCert string
+	flagTLSCert string
 )
 
 var exitutil utils.Exiter
@@ -59,7 +59,7 @@ func New() *cobra.Command {
 	}
 
 	// Add flag options
-	cmd.PersistentFlags().StringVarP(&flagTlsCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./server.pem)")
+	cmd.PersistentFlags().StringVarP(&flagTLSCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./server.pem)")
 
 	// Add sub-commands
 	cmd.AddCommand(

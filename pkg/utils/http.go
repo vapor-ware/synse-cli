@@ -23,6 +23,8 @@ import (
 	"github.com/vapor-ware/synse-client-go/synse"
 )
 
+// NewSynseHTTPClient creates a new Synse HTTP client for communicating with
+// Synse Server instances.
 func NewSynseHTTPClient() (synse.Client, error) {
 	currentContexts := config.GetCurrentContext()
 	serverCtx := currentContexts["server"]

@@ -10,6 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Printer defines the printing capabilities for CLI output.
 type Printer struct {
 	table    bool
 	json     bool
@@ -23,15 +24,15 @@ type Printer struct {
 }
 
 // NewPrinter creates a new printer to use for output formatting.
-func NewPrinter(out io.Writer, useJson, useYaml, noHeader bool) *Printer {
+func NewPrinter(out io.Writer, useJSON, useYaml, noHeader bool) *Printer {
 	useTable := true
-	if useJson || useYaml {
+	if useJSON || useYaml {
 		useTable = false
 	}
 
 	return &Printer{
 		table:    useTable,
-		json:     useJson,
+		json:     useJSON,
 		yaml:     useYaml,
 		noHeader: noHeader,
 		out:      out,
@@ -48,10 +49,9 @@ func (p *Printer) Write(data interface{}) error {
 
 	} else if p.yaml {
 		return p.toYAML(data)
-
-	} else {
-		return fmt.Errorf("no output mode set for printer")
 	}
+
+	return fmt.Errorf("no output mode set for printer")
 }
 
 // SetRowFunc sets the table row printer function, which specifies which

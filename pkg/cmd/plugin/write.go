@@ -27,7 +27,7 @@ import (
 
 func init() {
 	cmdWrite.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdWrite.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdWrite.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdWrite.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 	cmdWrite.Flags().BoolVarP(&flagWait, "wait", "w", false, "wait for the write to complete")
 }
@@ -56,7 +56,7 @@ var cmdWrite = &cobra.Command{
 	Args: cobra.RangeArgs(2, 3),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -76,7 +76,7 @@ var cmdWrite = &cobra.Command{
 }
 
 func pluginWriteAsync(out io.Writer, device, action, data string) error {
-	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 		exitutil.Fatal("failed device write")
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("TRANSACTION", "ACTION", "DATA", "DEVICE")
 	printer.SetRowFunc(pluginTransactionInfoRowFunc)
 
@@ -122,7 +122,7 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 }
 
 func pluginWriteSync(out io.Writer, device, action, data string) error {
-	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	defer conn.Close()
 	if err != nil {
 		return err
@@ -160,7 +160,7 @@ func pluginWriteSync(out io.Writer, device, action, data string) error {
 		exitutil.Fatal("failed device write")
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
 
