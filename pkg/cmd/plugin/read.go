@@ -27,7 +27,7 @@ import (
 
 func init() {
 	cmdRead.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdRead.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdRead.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdRead.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 }
 
@@ -46,7 +46,7 @@ var cmdRead = &cobra.Command{
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -55,7 +55,7 @@ var cmdRead = &cobra.Command{
 }
 
 func pluginRead(out io.Writer, devices []string) error {
-	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func pluginRead(out io.Writer, devices []string) error {
 		exitutil.Exitf(0, "No readings found.")
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(pluginReadingRowFunc)
 

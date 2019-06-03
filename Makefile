@@ -41,6 +41,10 @@ github-tag:  ## Create and push a tag with the current version
 	git tag -a ${BIN_VERSION} -m "synse-cli v${BIN_VERSION}"
 	git push -u origin ${BIN_VERSION}
 
+.PHONY: lint
+lint:  ## Lint project source files
+	golint -set_exit_status ./cmd/... ./pkg/...
+
 .PHONY: test
 test:  ## Run unit tests
 	@ # Note: this requires go1.10+ in order to do multi-package coverage reports
@@ -48,7 +52,7 @@ test:  ## Run unit tests
 
 .PHONY: version
 version: ## Print the version
-	@echo "$(BIN_VERSION)"
+	@echo "${BIN_VERSION}"
 
 .PHONY: help
 help:  ## Print usage information

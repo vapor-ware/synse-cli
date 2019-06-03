@@ -25,7 +25,7 @@ import (
 
 func init() {
 	cmdHealth.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdHealth.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdHealth.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdHealth.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 }
 
@@ -44,7 +44,7 @@ var cmdHealth = &cobra.Command{
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -63,7 +63,7 @@ func serverPluginHealth(out io.Writer) error {
 		return err
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("STATUS", "HEALTHY", "UNHEALTHY", "ACTIVE", "INACTIVE")
 	printer.SetRowFunc(serverPluginHealthRowFunc)
 

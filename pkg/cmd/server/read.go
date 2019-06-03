@@ -26,7 +26,7 @@ import (
 
 func init() {
 	cmdRead.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdRead.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdRead.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdRead.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 	cmdRead.Flags().StringVarP(&flagNS, "ns", "", "", "default tag namespace for tags with no explicit namespace set")
 	cmdRead.Flags().StringSliceVarP(&flagTags, "tag", "t", []string{}, "specify tags to use as device selectors")
@@ -68,7 +68,7 @@ var cmdRead = &cobra.Command{
 		}
 
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -106,7 +106,7 @@ func serverRead(out io.Writer, devices []string) error {
 		exitutil.Exitf(0, "No readings found.")
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(serverReadRowFunc)
 

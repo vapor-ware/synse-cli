@@ -25,7 +25,7 @@ import (
 
 func init() {
 	cmdVersion.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdVersion.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdVersion.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdVersion.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 }
 
@@ -44,7 +44,7 @@ var cmdVersion = &cobra.Command{
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -63,7 +63,7 @@ func serverVersion(out io.Writer) error {
 		return err
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("VERSION", "API_VERSION")
 	printer.SetRowFunc(serverVersionRowFunc)
 

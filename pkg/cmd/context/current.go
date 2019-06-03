@@ -28,7 +28,7 @@ import (
 
 func init() {
 	cmdCurrent.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdCurrent.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdCurrent.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdCurrent.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 }
 
@@ -51,7 +51,7 @@ var cmdCurrent = &cobra.Command{
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -83,7 +83,7 @@ func getCurrentContext(out io.Writer, ctxType string) error {
 		return fmt.Errorf("no current context is set for type '%s' (see 'synse context set')", ctxType)
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
 	printer.SetRowFunc(contextRowFunc)
 

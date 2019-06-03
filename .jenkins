@@ -11,11 +11,30 @@ pipeline {
       }
     }
 
+    stage('Download Deps') {
+          steps {
+            script {
+              docker.image('vaporio/jenkins-agent-golang:latest').inside() {
+                sh 'go mod download'
+              }
+            }
+          }
+        }
+
+    stage('Lint') {
+          steps {
+            script {
+              docker.image('vaporio/jenkins-agent-golang:latest').inside() {
+                sh 'golint -set_exit_status ./cmd/... ./pkg/...'
+              }
+            }
+          }
+        }
+
     stage('Test') {
       steps {
         script {
           docker.image('vaporio/jenkins-agent-golang:latest').inside() {
-            sh 'go mod download'
             sh 'CGO_ENABLED=0 go test -covermode=atomic ./pkg/...'
           }
         }

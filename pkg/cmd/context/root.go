@@ -26,7 +26,7 @@ import (
 var (
 	flagNoHeader   bool
 	flagSet        bool
-	flagJson       bool
+	flagJSON       bool
 	flagYaml       bool
 	flagClientCert string
 )
