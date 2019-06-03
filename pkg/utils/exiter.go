@@ -43,7 +43,7 @@ func (exiter *DefaultExiter) Exit(code int) {
 	os.Exit(code)
 }
 
-// Exit prints a message and terminates the application.
+// Exitf prints a message and terminates the application.
 func (exiter *DefaultExiter) Exitf(code int, format string, a ...interface{}) {
 	fmt.Printf(format, a...)
 	os.Exit(code)

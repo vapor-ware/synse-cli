@@ -26,6 +26,8 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
+// NewSynseGrpcClient creates a new instance of a Synse gRPC client
+// for communicating with Synse plugins.
 func NewSynseGrpcClient(ctx string, certFile string) (*grpc.ClientConn, synse.V3PluginClient, error) {
 	var pluginContext *config.ContextRecord
 

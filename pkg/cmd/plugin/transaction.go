@@ -27,7 +27,7 @@ import (
 
 func init() {
 	cmdTransaction.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdTransaction.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdTransaction.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdTransaction.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 }
 
@@ -62,7 +62,7 @@ var cmdTransaction = &cobra.Command{
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -71,7 +71,7 @@ var cmdTransaction = &cobra.Command{
 }
 
 func pluginTransaction(out io.Writer, transactions []string) error {
-	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 		exitutil.Exitf(0, "No transactions found.")
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
 

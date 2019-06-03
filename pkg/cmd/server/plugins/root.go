@@ -25,7 +25,7 @@ import (
 // defined here because they are used by multiple commands in the package.
 var (
 	flagNoHeader bool
-	flagJson     bool
+	flagJSON     bool
 	flagYaml     bool
 )
 

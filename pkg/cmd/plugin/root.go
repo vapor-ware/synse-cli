@@ -25,7 +25,7 @@ import (
 // defined here because they are used by multiple commands in the package.
 var (
 	flagNoHeader bool
-	flagJson     bool
+	flagJSON     bool
 	flagYaml     bool
 	flagIds      bool
 	flagWait     bool
@@ -34,7 +34,7 @@ var (
 	flagEnd      string
 	flagTags     []string
 
-	flagTlsCert string
+	flagTLSCert string
 	flagContext string
 )
 
@@ -58,8 +58,8 @@ func New() *cobra.Command {
 	}
 
 	// Add flag options
-	cmd.PersistentFlags().StringVarP(&flagTlsCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./plugin.pem)")
-	cmd.PersistentFlags().StringVarP(&flagTlsCert, "with-context", "", "", "the name of the plugin context to use")
+	cmd.PersistentFlags().StringVarP(&flagTLSCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./plugin.pem)")
+	cmd.PersistentFlags().StringVarP(&flagTLSCert, "with-context", "", "", "the name of the plugin context to use")
 
 	// Add sub-commands
 	cmd.AddCommand(

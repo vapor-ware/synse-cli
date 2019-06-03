@@ -27,7 +27,7 @@ import (
 
 func init() {
 	cmdReadCache.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
-	cmdReadCache.Flags().BoolVarP(&flagJson, "json", "", false, "print output as JSON")
+	cmdReadCache.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdReadCache.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
 	cmdReadCache.Flags().StringVarP(&flagStart, "start", "s", "", "timestamp specifying the starting bound for windowing")
 	cmdReadCache.Flags().StringVarP(&flagEnd, "end", "e", "", "timestamp specifying the ending bound for windowing")
@@ -56,7 +56,7 @@ var cmdReadCache = &cobra.Command{
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Error out if multiple output formats are specified.
-		if flagJson && flagYaml {
+		if flagJSON && flagYaml {
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
@@ -65,7 +65,7 @@ var cmdReadCache = &cobra.Command{
 }
 
 func pluginReadCache(out io.Writer) error {
-	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTlsCert)
+	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func pluginReadCache(out io.Writer) error {
 		exitutil.Exitf(0, "No readings found.")
 	}
 
-	printer := utils.NewPrinter(out, flagJson, flagYaml, flagNoHeader)
+	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(pluginReadingRowFunc)
 
