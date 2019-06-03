@@ -82,7 +82,7 @@ func serverTransactionSummaryRowFunc(data interface{}) ([]interface{}, error) {
 		return nil, fmt.Errorf("invalid row data")
 	}
 	return []interface{}{
-		i.Transaction,
+		i.ID,
 		i.Context.Action,
 		i.Context.Data,
 		i.Device,
