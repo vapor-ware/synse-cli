@@ -33,8 +33,6 @@ type Exiter interface {
 	Fatal(msg interface{})
 }
 
-// TODO: could specify an IO Writer for the exiter.. makes it easier for testing.
-
 // DefaultExiter is the default Exiter implementation that the CLI uses.
 type DefaultExiter struct{}
 

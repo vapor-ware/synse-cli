@@ -1,6 +1,7 @@
 module github.com/vapor-ware/synse-cli
 
 require (
+	bou.ke/monkey v1.0.1
 	github.com/MakeNowJust/heredoc v0.0.0-20171113091838-e9091a26100e
 	github.com/creasty/defaults v1.3.0 // indirect
 	github.com/golang/protobuf v1.3.1 // indirect
@@ -18,6 +19,7 @@ require (
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.3.2
+	github.com/stretchr/testify v1.3.0
 	github.com/vapor-ware/synse-client-go v0.0.0-20190517124328-e99df182805a
 	github.com/vapor-ware/synse-server-grpc v0.0.2-0.20190603152926-74d87001fc21
 	golang.org/x/net v0.0.0-20190509222800-a4d6f7feada5 // indirect

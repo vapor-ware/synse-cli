@@ -1,13 +1,36 @@
+// Synse CLI
+// Copyright (c) 2019 Vapor IO
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"reflect"
 	"strings"
 
 	"gopkg.in/yaml.v2"
+)
+
+// Printer-specific errors.
+var (
+	ErrNoOutputMode = errors.New("no output mode set for printer")
+	ErrNoRowFunc = errors.New("table output requires a row function")
 )
 
 // Printer defines the printing capabilities for CLI output.
@@ -51,7 +74,7 @@ func (p *Printer) Write(data interface{}) error {
 		return p.toYAML(data)
 	}
 
-	return fmt.Errorf("no output mode set for printer")
+	return ErrNoOutputMode
 }
 
 // SetRowFunc sets the table row printer function, which specifies which
@@ -68,7 +91,7 @@ func (p *Printer) SetHeader(header ...string) {
 // toTable prints the data out in tabular format.
 func (p *Printer) toTable(data interface{}) error {
 	if p.rowFunc == nil {
-		return fmt.Errorf("table output requires row function")
+		return ErrNoRowFunc
 	}
 
 	w := NewTabWriter(p.out)

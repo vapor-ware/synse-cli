@@ -16,14 +16,17 @@
 
 package utils
 
-import "strings"
+import (
+	"bytes"
+	"testing"
 
-// NormalizeTags takes a slice specifying tags which may be comma-separated
-// and produces a slice of tags where each element is an individual tag.
-func NormalizeTags(tags []string) []string {
-	var final []string
-	for _, tag := range tags {
-		final = append(final, strings.Split(tag, ",")...)
-	}
-	return final
+	"github.com/liggitt/tabwriter"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestNewTabWriter(t *testing.T) {
+	writer := NewTabWriter(&bytes.Buffer{})
+
+	assert.NotNil(t, writer)
+	assert.IsType(t, &tabwriter.Writer{}, writer)
 }
