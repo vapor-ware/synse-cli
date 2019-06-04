@@ -48,7 +48,7 @@ var cmdVersion = &cobra.Command{
 			exitutil.Err("cannot use multiple formatting flags at once")
 		}
 
-		utils.Err(serverVersion(cmd.OutOrStdout()))
+		exitutil.Err(serverVersion(cmd.OutOrStdout()))
 	},
 }
 

@@ -18,10 +18,11 @@ package utils
 
 import (
 	"fmt"
+	"io"
 	"os"
-)
 
-var defaultExiter DefaultExiter
+	log "github.com/sirupsen/logrus"
+)
 
 // Exiter is an interface for exiting the CLI.
 //
@@ -31,10 +32,26 @@ type Exiter interface {
 	Exitf(code int, format string, a ...interface{})
 	Err(err interface{})
 	Fatal(msg interface{})
+	SetWriter(writer io.Writer)
 }
 
 // DefaultExiter is the default Exiter implementation that the CLI uses.
-type DefaultExiter struct{}
+type DefaultExiter struct {
+	writer io.Writer
+}
+
+// NewDefaultExiter creates a new DefaultExiter configured to write out
+// to stderr.
+func NewDefaultExiter() *DefaultExiter {
+	return &DefaultExiter{
+		writer: os.Stderr,
+	}
+}
+
+// SetWriter sets the writer for the DefaultExiter.
+func (exiter *DefaultExiter) SetWriter(writer io.Writer) {
+	exiter.writer = writer
+}
 
 // Exit terminates the application.
 func (exiter *DefaultExiter) Exit(code int) {
@@ -43,8 +60,10 @@ func (exiter *DefaultExiter) Exit(code int) {
 
 // Exitf prints a message and terminates the application.
 func (exiter *DefaultExiter) Exitf(code int, format string, a ...interface{}) {
-	fmt.Printf(format, a...)
-	os.Exit(code)
+	if _, err := fmt.Fprintf(exiter.writer, format, a...); err != nil {
+		log.Fatal(err)
+	}
+	exiter.Exit(code)
 }
 
 // Err checks if the input is nil; if not it will exit via Fatal.
@@ -57,10 +76,4 @@ func (exiter *DefaultExiter) Err(err interface{}) {
 // Fatal prints a message to console and terminates the application.
 func (exiter *DefaultExiter) Fatal(msg interface{}) {
 	exiter.Exitf(1, "Error: %s\n", msg)
-}
-
-// Err is a utility function which prints an error message and terminates
-// the application if it is passed an error.
-func Err(err interface{}) {
-	defaultExiter.Err(err)
 }

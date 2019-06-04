@@ -17,8 +17,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
 	"text/template"
 
 	"github.com/spf13/cobra"
@@ -70,14 +68,16 @@ var cmdVersion = &cobra.Command{
 		v := pkg.GetVersion()
 
 		if flagSimple {
-			fmt.Println(v.Version)
+			if _, err := cmd.OutOrStdout().Write([]byte(v.Version)); err != nil {
+				exitutil.Err(err)
+			}
 			return
 		}
 
 		tmpl, err := template.New("version").Parse(templates.CmdVersionTemplate)
 		exitutil.Err(err)
 
-		err = tmpl.ExecuteTemplate(os.Stdout, "version", v)
+		err = tmpl.ExecuteTemplate(cmd.OutOrStdout(), "version", v)
 		exitutil.Err(err)
 	},
 }

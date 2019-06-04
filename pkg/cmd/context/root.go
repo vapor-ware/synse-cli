@@ -34,7 +34,7 @@ var (
 var exitutil utils.Exiter
 
 func init() {
-	exitutil = &utils.DefaultExiter{}
+	exitutil = utils.NewDefaultExiter()
 }
 
 // New returns a new instance of the 'hosts' command.
