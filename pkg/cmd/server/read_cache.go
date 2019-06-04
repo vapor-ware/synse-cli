@@ -60,7 +60,7 @@ var cmdReadCache = &cobra.Command{
 }
 
 func serverReadCache(out io.Writer) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

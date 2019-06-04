@@ -18,19 +18,19 @@ package utils
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"reflect"
 	"strings"
 
+	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
 
 // Printer-specific errors.
 var (
 	ErrNoOutputMode = errors.New("no output mode set for printer")
-	ErrNoRowFunc = errors.New("table output requires a row function")
+	ErrNoRowFunc    = errors.New("table output requires a row function")
 )
 
 // Printer defines the printing capabilities for CLI output.

@@ -71,7 +71,7 @@ var cmdScan = &cobra.Command{
 }
 
 func serverScan(out io.Writer) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

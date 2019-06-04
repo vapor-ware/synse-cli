@@ -19,15 +19,16 @@ package utils
 import (
 	"bytes"
 	"fmt"
-	"github.com/MakeNowJust/heredoc"
 	"testing"
+
+	"github.com/MakeNowJust/heredoc"
 
 	"github.com/stretchr/testify/assert"
 )
 
 type testOutput struct {
 	Foo string `json:"foo" yaml:"foo"`
-	Bar int `json:"bar" yaml:"bar"`
+	Bar int    `json:"bar" yaml:"bar"`
 }
 
 func TestNewPrinter_Table(t *testing.T) {
@@ -132,11 +133,10 @@ func TestPrinter_toYAML(t *testing.T) {
 	)
 }
 
-
 func TestPrinter_toTable_sliceOK(t *testing.T) {
 	out := &bytes.Buffer{}
 	p := Printer{
-		out: out,
+		out:    out,
 		header: []string{"FOO"},
 		rowFunc: func(data interface{}) (i []interface{}, e error) {
 			return []interface{}{data}, nil
@@ -159,7 +159,7 @@ func TestPrinter_toTable_sliceOK(t *testing.T) {
 func TestPrinter_toTable_defaultOK(t *testing.T) {
 	out := &bytes.Buffer{}
 	p := Printer{
-		out: out,
+		out:    out,
 		header: []string{"FOO"},
 		rowFunc: func(data interface{}) (i []interface{}, e error) {
 			return []interface{}{data}, nil
@@ -181,7 +181,7 @@ func TestPrinter_toTable_defaultOK(t *testing.T) {
 func TestPrinter_toTable_sliceErr(t *testing.T) {
 	out := &bytes.Buffer{}
 	p := Printer{
-		out: out,
+		out:    out,
 		header: []string{"FOO"},
 		rowFunc: func(data interface{}) (i []interface{}, e error) {
 			return nil, fmt.Errorf("test error")
@@ -202,7 +202,7 @@ func TestPrinter_toTable_sliceErr(t *testing.T) {
 func TestPrinter_toTable_defaultErr(t *testing.T) {
 	out := &bytes.Buffer{}
 	p := Printer{
-		out: out,
+		out:    out,
 		header: []string{"FOO"},
 		rowFunc: func(data interface{}) (i []interface{}, e error) {
 			return nil, fmt.Errorf("test error")
@@ -228,11 +228,10 @@ func TestPrinter_toTable_noRowFn(t *testing.T) {
 	assert.Equal(t, ErrNoRowFunc, err)
 }
 
-
 func TestPrinter_writeHeader_noHeader(t *testing.T) {
 	out := &bytes.Buffer{}
 	p := Printer{
-		header: []string{"FOO", "BAR"},
+		header:   []string{"FOO", "BAR"},
 		noHeader: true,
 	}
 
@@ -244,7 +243,7 @@ func TestPrinter_writeHeader_noHeader(t *testing.T) {
 func TestPrinter_writeHeader_withHeader(t *testing.T) {
 	out := &bytes.Buffer{}
 	p := Printer{
-		header: []string{"FOO", "BAR"},
+		header:   []string{"FOO", "BAR"},
 		noHeader: false,
 	}
 

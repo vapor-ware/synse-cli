@@ -78,7 +78,7 @@ var cmdWrite = &cobra.Command{
 }
 
 func serverWriteAsync(out io.Writer, device, action, data string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ func serverWriteAsync(out io.Writer, device, action, data string) error {
 }
 
 func serverWriteSync(out io.Writer, device, action, data string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

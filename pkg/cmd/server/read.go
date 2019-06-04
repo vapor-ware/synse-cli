@@ -77,7 +77,7 @@ var cmdRead = &cobra.Command{
 }
 
 func serverRead(out io.Writer, devices []string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

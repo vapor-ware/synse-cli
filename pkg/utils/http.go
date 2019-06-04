@@ -17,22 +17,45 @@
 package utils
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-client-go/synse"
 )
 
+// Errors relating to gRPC client creation.
+var (
+	ErrNoCurrentServerCtx = errors.New("failed creating server HTTP client: no current server context")
+	ErrInvalidServerCtx   = errors.New("failed creating server HTTP client: specified context does not exist")
+	ErrNotAServerCtx      = errors.New("failed creating server HTTP client: specified context is not a server context")
+)
+
 // NewSynseHTTPClient creates a new Synse HTTP client for communicating with
 // Synse Server instances.
-func NewSynseHTTPClient() (synse.Client, error) {
-	currentContexts := config.GetCurrentContext()
-	serverCtx := currentContexts["server"]
-	if serverCtx == nil {
-		return nil, fmt.Errorf("cannot create HTTP client for server: no current server context")
+func NewSynseHTTPClient(ctx string, certFile string) (synse.Client, error) {
+	var serverContext *config.ContextRecord
+
+	if ctx == "" {
+		// If no specific context is specified, get the current context.
+		currentContexts := config.GetCurrentContext()
+		serverContext = currentContexts["server"]
+		if serverContext == nil {
+			return nil, ErrNoCurrentServerCtx
+		}
+	} else {
+		// Get the named context.
+		serverContext = config.GetContext(ctx)
+		if serverContext == nil {
+			return nil, ErrInvalidServerCtx
+		}
+		if serverContext.Type != "server" {
+			return nil, ErrNotAServerCtx
+		}
 	}
 
 	return synse.NewHTTPClientV3(&synse.Options{
-		Address: serverCtx.Context.Address,
+		Address: serverContext.Context.Address,
+		TLS: synse.TLSOptions{
+			CertFile: certFile,
+		},
 	})
 }

@@ -58,7 +58,7 @@ var cmdInfo = &cobra.Command{
 }
 
 func serverPluginInfo(out io.Writer, plugin string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

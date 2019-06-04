@@ -73,7 +73,7 @@ var cmdTransaction = &cobra.Command{
 }
 
 func serverTransaction(out io.Writer, transactions []string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

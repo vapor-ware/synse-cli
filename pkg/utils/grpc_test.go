@@ -15,3 +15,106 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package utils
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/vapor-ware/synse-cli/pkg/config"
+)
+
+func TestNewSynseGrpcClient_noContext(t *testing.T) {
+	conn, client, err := NewSynseGrpcClient("", "")
+
+	assert.Nil(t, conn)
+	assert.Nil(t, client)
+	assert.Error(t, err)
+}
+
+func TestNewSynseGrpcClient_currentContext(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "plugin",
+		Context: config.Context{
+			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	err = config.SetCurrentContext("testctx")
+	assert.NoError(t, err)
+
+	conn, client, err := NewSynseGrpcClient("", "")
+	assert.NotNil(t, conn)
+	assert.NotNil(t, client)
+	assert.NoError(t, err)
+}
+
+func TestNewSynseGrpcClient_namedContext(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "plugin",
+		Context: config.Context{
+			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	conn, client, err := NewSynseGrpcClient("testctx", "")
+	assert.NotNil(t, conn)
+	assert.NotNil(t, client)
+	assert.NoError(t, err)
+}
+
+func TestNewSynseGrpcClient_currentContextNotSet(t *testing.T) {
+	conn, client, err := NewSynseGrpcClient("", "")
+	assert.Nil(t, conn)
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Equal(t, ErrNoCurrentPluginCtx, err)
+}
+
+func TestNewSynseGrpcClient_namedContextNotFound(t *testing.T) {
+	conn, client, err := NewSynseGrpcClient("testctx", "")
+	assert.Nil(t, conn)
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Equal(t, ErrInvalidPluginCtx, err)
+}
+
+func TestNewSynseGrpcClient_notAPluginCtx(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "server",
+		Context: config.Context{
+			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	conn, client, err := NewSynseGrpcClient("testctx", "")
+	assert.Nil(t, conn)
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Equal(t, ErrNotAPluginCtx, err)
+}
+
+func TestNewSynseGrpcClient_invalidCert(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "plugin",
+		Context: config.Context{
+			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	conn, client, err := NewSynseGrpcClient("testctx", "not-a-cert")
+	assert.Nil(t, conn)
+	assert.Nil(t, client)
+	assert.Error(t, err)
+}

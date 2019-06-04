@@ -53,7 +53,7 @@ var cmdStatus = &cobra.Command{
 }
 
 func serverStatus(out io.Writer) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

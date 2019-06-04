@@ -50,7 +50,7 @@ var cmdInfo = &cobra.Command{
 }
 
 func serverInfo(out io.Writer, device string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

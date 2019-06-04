@@ -15,3 +15,83 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package utils
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/vapor-ware/synse-cli/pkg/config"
+)
+
+func TestNewSynseHTTPClient_noContext(t *testing.T) {
+	client, err := NewSynseHTTPClient("", "")
+
+	assert.Nil(t, client)
+	assert.Error(t, err)
+}
+
+func TestNewSynseHTTPClient_noCurrentCtx(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "server",
+		Context: config.Context{
+			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	err = config.SetCurrentContext("testctx")
+	assert.NoError(t, err)
+
+	client, err := NewSynseHTTPClient("", "")
+	assert.NotNil(t, client)
+	assert.NoError(t, err)
+}
+
+func TestNewSynseHTTPClient_namedContext(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "server",
+		Context: config.Context{
+			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	client, err := NewSynseHTTPClient("testctx", "")
+	assert.NotNil(t, client)
+	assert.NoError(t, err)
+}
+
+func TestNewSynseHTTPClient_currentContextNotSet(t *testing.T) {
+	client, err := NewSynseHTTPClient("", "")
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Equal(t, ErrNoCurrentServerCtx, err)
+}
+
+func TestNewSynseHTTPClient_namedContextNotFound(t *testing.T) {
+	client, err := NewSynseHTTPClient("testctx", "")
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Equal(t, ErrInvalidServerCtx, err)
+}
+
+func TestNewSynseHTTPClient_notAServerCtx(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "plugin",
+		Context: config.Context{
+			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	client, err := NewSynseHTTPClient("testctx", "")
+	assert.Nil(t, client)
+	assert.Error(t, err)
+	assert.Equal(t, ErrNotAServerCtx, err)
+}
