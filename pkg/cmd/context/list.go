@@ -18,11 +18,13 @@ package context
 
 import (
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
+	"github.com/vapor-ware/synse-cli/pkg/utils/sortable"
 )
 
 func init() {
@@ -64,9 +66,6 @@ func listContexts(out io.Writer) error {
 	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
 	printer.SetRowFunc(contextRowFunc)
 
-	var ctxs = make([]*config.ContextRecord, len(contexts))
-	for i := 0; i < len(contexts); i++ {
-		ctxs[i] = &contexts[i]
-	}
-	return printer.Write(ctxs)
+	sort.Sort(sortable.ContextRecords(contexts))
+	return printer.Write(contexts)
 }

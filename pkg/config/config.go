@@ -154,6 +154,10 @@ func AddContext(ctx *ContextRecord) error {
 // If the context being removed is the current context, the current context
 // will be cleared.
 func (c *Config) RemoveContext(name string) {
+	if name == "" {
+		return
+	}
+
 	var context ContextRecord
 	var idx *int
 	for i, ctx := range c.Contexts {
@@ -191,7 +195,11 @@ func Purge() {
 
 // IsCurrentContext checks if the specified ContextRecord is currently active.
 func (c *Config) IsCurrentContext(ctx *ContextRecord) bool {
-	return c.CurrentContext[ctx.Type] == ctx.Name
+	current, ok := c.CurrentContext[ctx.Type]
+	if !ok {
+		return false
+	}
+	return current == ctx.Name
 }
 
 // IsCurrentContext checks if the context is the current context for the

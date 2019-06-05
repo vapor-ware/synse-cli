@@ -48,6 +48,8 @@ func (exiter *commandExiter) Fatal(msg interface{}) {
 	exiter.Exitf(1, "Error: %s\n", msg)
 }
 
+// FromCmd creates a command exiter from the specified command, using the
+// command's configured output as the exiter output writer.
 func FromCmd(cmd *cobra.Command) Exiter {
 	return &commandExiter{
 		cmd.OutOrStderr(),
