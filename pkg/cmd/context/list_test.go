@@ -40,7 +40,7 @@ func TestCmdList_noContexts(t *testing.T) {
 	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
-func TestCmdList(t *testing.T) {
+func TestCmdList_table(t *testing.T) {
 	defer func() {
 		config.Purge()
 		resetFlags()
@@ -69,7 +69,118 @@ func TestCmdList(t *testing.T) {
 
 	result := test.Cmd(cmdList).Run(t)
 	result.AssertNoErr()
-	result.AssertGolden("list.golden")
+	result.AssertGolden("list.table.golden")
+
+	assert.Len(t, config.GetContexts(), 2)
+	assert.Len(t, config.GetCurrentContext(), 1)
+}
+
+func TestCmdList_tableNoHeader(t *testing.T) {
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
+
+	// Set a current server context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "server-ctx",
+		Type: "server",
+		Context: config.Context{
+			Address:    "0.0.0.0",
+			ClientCert: "/tmp/test/dir",
+		},
+	}))
+	assert.NoError(t, config.SetCurrentContext("server-ctx"))
+
+	// Add a plugin context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "plugin-ctx",
+		Type: "plugin",
+		Context: config.Context{
+			Address:    "foo/bar",
+			ClientCert: "/tmp/test/dir",
+		},
+	}))
+
+	result := test.Cmd(cmdList).Args(
+		"--no-header",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("list.table-no-header.golden")
+
+	assert.Len(t, config.GetContexts(), 2)
+	assert.Len(t, config.GetCurrentContext(), 1)
+}
+
+func TestCmdList_yaml(t *testing.T) {
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
+
+	// Set a current server context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "server-ctx",
+		Type: "server",
+		Context: config.Context{
+			Address:    "0.0.0.0",
+			ClientCert: "/tmp/test/dir",
+		},
+	}))
+	assert.NoError(t, config.SetCurrentContext("server-ctx"))
+
+	// Add a plugin context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "plugin-ctx",
+		Type: "plugin",
+		Context: config.Context{
+			Address:    "foo/bar",
+			ClientCert: "/tmp/test/dir",
+		},
+	}))
+
+	result := test.Cmd(cmdList).Args(
+		"--yaml",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("list.yaml.golden")
+
+	assert.Len(t, config.GetContexts(), 2)
+	assert.Len(t, config.GetCurrentContext(), 1)
+}
+
+func TestCmdList_json(t *testing.T) {
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
+
+	// Set a current server context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "server-ctx",
+		Type: "server",
+		Context: config.Context{
+			Address:    "0.0.0.0",
+			ClientCert: "/tmp/test/dir",
+		},
+	}))
+	assert.NoError(t, config.SetCurrentContext("server-ctx"))
+
+	// Add a plugin context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "plugin-ctx",
+		Type: "plugin",
+		Context: config.Context{
+			Address:    "foo/bar",
+			ClientCert: "/tmp/test/dir",
+		},
+	}))
+
+	result := test.Cmd(cmdList).Args(
+		"--json",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("list.json.golden")
 
 	assert.Len(t, config.GetContexts(), 2)
 	assert.Len(t, config.GetCurrentContext(), 1)

@@ -1,3 +1,0 @@
-CURRENT   NAME         TYPE     ADDRESS
-*         test-ctx-1   server   0.0.0.0
-          test-ctx-2   plugin   foo/bar
