@@ -22,6 +22,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -61,12 +62,14 @@ var cmdTransaction = &cobra.Command{
 		be used. Using multiple output format flags will result in an error.
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		exitutil.Err(pluginTransaction(cmd.OutOrStdout(), args))
+		exiter.Err(pluginTransaction(cmd.OutOrStdout(), args))
 	},
 }
 
@@ -113,7 +116,7 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 	}
 
 	if len(txns) == 0 {
-		exitutil.Exitf(0, "No transactions found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)

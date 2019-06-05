@@ -17,12 +17,14 @@
 package cmd
 
 import (
+	"io"
 	"text/template"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg"
 	"github.com/vapor-ware/synse-cli/pkg/templates"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
 func init() {
@@ -65,19 +67,25 @@ var cmdVersion = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
-		v := pkg.GetVersion()
-
-		if flagSimple {
-			if _, err := cmd.OutOrStdout().Write([]byte(v.Version)); err != nil {
-				exitutil.Err(err)
-			}
-			return
-		}
-
-		tmpl, err := template.New("version").Parse(templates.CmdVersionTemplate)
-		exitutil.Err(err)
-
-		err = tmpl.ExecuteTemplate(cmd.OutOrStdout(), "version", v)
-		exitutil.Err(err)
+		exit.FromCmd(cmd).Err(
+			displayVersion(cmd.OutOrStdout()),
+		)
 	},
+}
+
+func displayVersion(out io.Writer) error {
+	v := pkg.GetVersion()
+
+	if flagSimple {
+		if _, err := out.Write([]byte(v.Version)); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	tmpl, err := template.New("version").Parse(templates.CmdVersionTemplate)
+	if err != nil {
+		return err
+	}
+	return tmpl.ExecuteTemplate(out, "version", v)
 }

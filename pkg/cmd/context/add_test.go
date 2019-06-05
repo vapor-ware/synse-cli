@@ -17,135 +17,126 @@
 package context
 
 import (
-	"bytes"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/vapor-ware/synse-cli/internal/golden"
 	"github.com/vapor-ware/synse-cli/internal/test"
 	"github.com/vapor-ware/synse-cli/pkg/config"
-	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
 func TestCmdAdd_notEnoughArgs(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdAdd.SetOutput(&out)
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
 
-	os.Args = []string{"add"}
-	err := cmdAdd.Execute()
-	assert.Error(t, err)
-	golden.Check(t, out.Bytes(), "add.no-args.golden")
+	result := test.Cmd(cmdAdd).Run(t)
+	result.AssertErr()
+	result.AssertGolden("add.no-args.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
 func TestCmdAdd_badCtxType(t *testing.T) {
-	out := bytes.Buffer{}
-	fakeExiter := test.FakeExiter{Writer: &out}
-	exitutil = &fakeExiter
 	defer func() {
-		exitutil = utils.NewDefaultExiter()
+		config.Purge()
+		resetFlags()
 	}()
 
-	os.Args = []string{"add", "bad-type", "test-name", "test-address"}
-	_ = cmdAdd.Execute()
-	golden.Check(t, out.Bytes(), "add.bad-type.golden")
+	result := test.Cmd(cmdAdd).Args(
+		"bad-type",
+		"test-name",
+		"test-address",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertExited()
+	result.AssertGolden("add.bad-type.golden")
 
-	assert.True(t, fakeExiter.IsExited)
-
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
 func TestCmdAdd_duplicate(t *testing.T) {
-	out := bytes.Buffer{}
-	fakeExiter := test.FakeExiter{Writer: &out}
-	exitutil = &fakeExiter
 	defer func() {
 		config.Purge()
-		exitutil = utils.NewDefaultExiter()
+		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "test-ctx",
 		Type: "server",
-	})
-	assert.NoError(t, err)
+	}))
 
-	os.Args = []string{"add", "server", "test-ctx", "test-address"}
-	_ = cmdAdd.Execute()
-	golden.Check(t, out.Bytes(), "add.duplicate-add.golden")
+	result := test.Cmd(cmdAdd).Args(
+		"server",
+		"test-ctx",
+		"test-address",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertExited()
+	result.AssertGolden("add.duplicate-add.golden")
 
-	assert.True(t, fakeExiter.IsExited)
-
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 0)
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
 func TestCmdAdd_addContext(t *testing.T) {
-	defer config.Purge()
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
 
-	out := bytes.Buffer{}
-	cmdAdd.SetOutput(&out)
+	result := test.Cmd(cmdAdd).Args(
+		"server",
+		"test-name",
+		"test-address",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("empty.golden")
 
-	os.Args = []string{"add", "server", "test_name", "test_address"}
-	err := cmdAdd.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "empty.golden")
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 0)
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 0)
-
-	assert.Equal(t, contexts[0].Name, "test_name")
-	assert.Equal(t, contexts[0].Type, "server")
-	assert.Equal(t, contexts[0].Context.Address, "test_address")
-	assert.Equal(t, contexts[0].Context.ClientCert, "")
+	ctx := config.GetContexts()[0]
+	assert.Equal(t, ctx.Name, "test-name")
+	assert.Equal(t, ctx.Type, "server")
+	assert.Equal(t, ctx.Context.Address, "test-address")
+	assert.Equal(t, ctx.Context.ClientCert, "")
 }
 
 func TestCmdAdd_addAndSetContext(t *testing.T) {
-	defer config.Purge()
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
 
-	out := bytes.Buffer{}
-	cmdAdd.SetOutput(&out)
+	result := test.Cmd(cmdAdd).Args(
+		"server",
+		"test-name",
+		"test-address",
+		"--set",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("empty.golden")
 
-	os.Args = []string{"add", "server", "test_name", "test_address", "--set"}
-	err := cmdAdd.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "empty.golden")
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 1)
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
+	ctx := config.GetContexts()[0]
+	assert.Equal(t, ctx.Name, "test-name")
+	assert.Equal(t, ctx.Type, "server")
+	assert.Equal(t, ctx.Context.Address, "test-address")
+	assert.Equal(t, ctx.Context.ClientCert, "")
 
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 1)
-
-	assert.Equal(t, contexts[0].Name, "test_name")
-	assert.Equal(t, contexts[0].Type, "server")
-	assert.Equal(t, contexts[0].Context.Address, "test_address")
-	assert.Equal(t, contexts[0].Context.ClientCert, "")
-
-	serverCtx, ok := current["server"]
+	serverCtx, ok := config.GetCurrentContext()["server"]
 	assert.True(t, ok)
-	assert.Equal(t, serverCtx.Name, "test_name")
+	assert.Equal(t, serverCtx.Name, "test-name")
 	assert.Equal(t, serverCtx.Type, "server")
-	assert.Equal(t, serverCtx.Context.Address, "test_address")
+	assert.Equal(t, serverCtx.Context.Address, "test-address")
 	assert.Equal(t, serverCtx.Context.ClientCert, "")
 
-	pluginCtx, ok := current["plugin"]
+	pluginCtx, ok := config.GetCurrentContext()["plugin"]
 	assert.False(t, ok)
 	assert.Nil(t, pluginCtx)
 }

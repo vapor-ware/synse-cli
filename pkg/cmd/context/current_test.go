@@ -17,391 +17,324 @@
 package context
 
 import (
-	"bytes"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/vapor-ware/synse-cli/internal/golden"
 	"github.com/vapor-ware/synse-cli/internal/test"
 	"github.com/vapor-ware/synse-cli/pkg/config"
-	"github.com/vapor-ware/synse-cli/pkg/utils"
-	"os"
-	"testing"
 )
 
 func TestCmdCurrent_multipleFmtFlags(t *testing.T) {
-	out := bytes.Buffer{}
-	fakeExiter := test.FakeExiter{Writer: &out}
-	exitutil = &fakeExiter
 	defer func() {
-		exitutil = utils.NewDefaultExiter()
 		config.Purge()
 		resetFlags()
 	}()
 
-	os.Args = []string{"current", "--yaml", "--json"}
-	err := cmdCurrent.Execute()
-	assert.NoError(t, err)
-	assert.True(t, fakeExiter.IsExited)
-	golden.Check(t, out.Bytes(), "current.multiple-fmt-flags.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"--yaml",
+		"--json",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertExited()
+	result.AssertGolden("current.multiple-fmt-flags.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
 func TestCmdCurrent_extraArgs(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
 
-	os.Args = []string{"current", "foo", "bar"}
-	err := cmdCurrent.Execute()
-	assert.Error(t, err)
-	golden.Check(t, out.Bytes(), "current.extra-args.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"foo",
+		"bar",
+	).Run(t)
+	result.AssertErr()
+	result.AssertGolden("current.extra-args.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
 func TestCmdCurrent_badCtxType(t *testing.T) {
-	out := bytes.Buffer{}
-	fakeExiter := test.FakeExiter{Writer: &out}
-	exitutil = &fakeExiter
 	defer func() {
-		exitutil = utils.NewDefaultExiter()
+		config.Purge()
 		resetFlags()
 	}()
 
-	os.Args = []string{"current", "bad-ctx"}
-	_ = cmdCurrent.Execute()
-	golden.Check(t, out.Bytes(), "current.bad-ctx.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"bad-ctx",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertExited()
+	result.AssertGolden("current.bad-ctx.golden")
 
-	assert.True(t, fakeExiter.IsExited)
-
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
 func TestCmdCurrent_noCurrentServerContext(t *testing.T) {
-	out := bytes.Buffer{}
-	fakeExiter := test.FakeExiter{Writer: &out}
-	exitutil = &fakeExiter
 	defer func() {
-		exitutil = utils.NewDefaultExiter()
-		resetFlags()
-	}()
-
-	os.Args = []string{"current", "server"}
-	_ = cmdCurrent.Execute()
-	golden.Check(t, out.Bytes(), "current.no-server.golden")
-
-	assert.True(t, fakeExiter.IsExited)
-
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
-}
-
-func TestCmdCurrent_noCurrenPluginContext(t *testing.T) {
-	out := bytes.Buffer{}
-	fakeExiter := test.FakeExiter{Writer: &out}
-	exitutil = &fakeExiter
-	defer func() {
-		exitutil = utils.NewDefaultExiter()
 		config.Purge()
 		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
+	result := test.Cmd(cmdCurrent).Args(
+		"server",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertExited()
+	result.AssertGolden("current.no-server.golden")
+
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
+}
+
+func TestCmdCurrent_noCurrentPluginContext(t *testing.T) {
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
+
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "test-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("test-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("test-ctx"))
 
-	os.Args = []string{"current", "plugin"}
-	_ = cmdCurrent.Execute()
-	golden.Check(t, out.Bytes(), "current.no-plugin.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"plugin",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertExited()
+	result.AssertGolden("current.no-plugin.golden")
 
-	assert.True(t, fakeExiter.IsExited)
-
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 1)
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 1)
 }
 
 func TestCmdCurrent_table(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "test-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("test-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("test-ctx"))
 
-	os.Args = []string{"current", "server"}
-	err = cmdCurrent.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "current.table.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"server",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("current.table.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 1)
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 1)
 }
 
 func TestCmdCurrent_table2(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
+	// Set a current server context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "server-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("server-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("server-ctx"))
 
-	err = config.AddContext(&config.ContextRecord{
+	// Set a current plugin context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "plugin-ctx",
 		Type: "plugin",
 		Context: config.Context{
-			Address: "foo/bar",
+			Address:    "foo/bar",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("plugin-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("plugin-ctx"))
 
-	os.Args = []string{"current"}
-	err = cmdCurrent.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "current.table2.golden")
+	result := test.Cmd(cmdCurrent).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("current.table2.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 2)
-	assert.Len(t, current, 2)
+	assert.Len(t, config.GetContexts(), 2)
+	assert.Len(t, config.GetCurrentContext(), 2)
 }
 
 func TestCmdCurrent_tableNoHeader(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-
-	err := config.AddContext(&config.ContextRecord{
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "test-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("test-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("test-ctx"))
 
-	os.Args = []string{"current", "server", "--no-header"}
-	err = cmdCurrent.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "current.table-no-header.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"server",
+		"--no-header",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("current.table-no-header.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 1)
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 1)
 }
 
 func TestCmdCurrent_yaml(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "test-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("test-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("test-ctx"))
 
-	os.Args = []string{"current", "server", "--yaml"}
-	err = cmdCurrent.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "current.yaml.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"server",
+		"--yaml",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("current.yaml.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 1)
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 1)
 }
 
 func TestCmdCurrent_yaml2(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
+	// Set a current server context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "server-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("server-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("server-ctx"))
 
-	err = config.AddContext(&config.ContextRecord{
+	// Set a current plugin context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "plugin-ctx",
 		Type: "plugin",
 		Context: config.Context{
-			Address: "foo/bar",
+			Address:    "foo/bar",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("plugin-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("plugin-ctx"))
 
-	os.Args = []string{"current", "--yaml"}
-	err = cmdCurrent.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "current.yaml2.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"--yaml",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("current.yaml2.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 2)
-	assert.Len(t, current, 2)
+	assert.Len(t, config.GetContexts(), 2)
+	assert.Len(t, config.GetCurrentContext(), 2)
 }
 
 func TestCmdCurrent_json(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-
-	err := config.AddContext(&config.ContextRecord{
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "test-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("test-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("test-ctx"))
 
-	os.Args = []string{"current", "server", "--json"}
-	err = cmdCurrent.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "current.json.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"server",
+		"--json",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("current.json.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 1)
-	assert.Len(t, current, 1)
+	assert.Len(t, config.GetContexts(), 1)
+	assert.Len(t, config.GetCurrentContext(), 1)
 }
 
 func TestCmdCurrent_json2(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdCurrent.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
+	// Set a current server context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "server-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("server-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("server-ctx"))
 
-	err = config.AddContext(&config.ContextRecord{
+	// Set a current plugin context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
 		Name: "plugin-ctx",
 		Type: "plugin",
 		Context: config.Context{
-			Address: "foo/bar",
+			Address:    "foo/bar",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("plugin-ctx")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("plugin-ctx"))
 
-	os.Args = []string{"current", "--json"}
-	err = cmdCurrent.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "current.json2.golden")
+	result := test.Cmd(cmdCurrent).Args(
+		"--json",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("current.json2.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-
-	assert.Len(t, contexts, 2)
-	assert.Len(t, current, 2)
+	assert.Len(t, config.GetContexts(), 2)
+	assert.Len(t, config.GetCurrentContext(), 2)
 }

@@ -40,12 +40,6 @@ var (
 	flagContext string
 )
 
-var exitutil utils.Exiter
-
-func init() {
-	exitutil = &utils.DefaultExiter{}
-}
-
 // New returns a new instance of the 'server' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{

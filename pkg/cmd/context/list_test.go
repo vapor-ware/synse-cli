@@ -1,90 +1,76 @@
 package context
 
 import (
-	"bytes"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/vapor-ware/synse-cli/internal/golden"
 	"github.com/vapor-ware/synse-cli/internal/test"
 	"github.com/vapor-ware/synse-cli/pkg/config"
-	"github.com/vapor-ware/synse-cli/pkg/utils"
-	"os"
-	"testing"
 )
 
-func TestCmdList_noContexts(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdList.SetOutput(&out)
-
-	os.Args = []string{"list"}
-	err := cmdList.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "empty.golden")
-
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
-}
-
 func TestCmdList_multipleFmtFlags(t *testing.T) {
-	out := bytes.Buffer{}
-	fakeExiter := test.FakeExiter{Writer: &out}
-	exitutil = &fakeExiter
 	defer func() {
-		exitutil = utils.NewDefaultExiter()
 		config.Purge()
 		resetFlags()
 	}()
 
-	os.Args = []string{"list", "--yaml", "--json"}
-	err := cmdList.Execute()
-	assert.NoError(t, err)
-	assert.True(t, fakeExiter.IsExited)
-	golden.Check(t, out.Bytes(), "list.multiple-fmt-flags.golden")
+	result := test.Cmd(cmdList).Args(
+		"--yaml",
+		"--json",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertExited()
+	result.AssertGolden("list.multiple-fmt-flags.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-	assert.Len(t, contexts, 0)
-	assert.Len(t, current, 0)
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
+}
+
+func TestCmdList_noContexts(t *testing.T) {
+	defer func() {
+		config.Purge()
+		resetFlags()
+	}()
+
+	result := test.Cmd(cmdList).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("empty.golden")
+
+	assert.Len(t, config.GetContexts(), 0)
+	assert.Len(t, config.GetCurrentContext(), 0)
 }
 
 func TestCmdList(t *testing.T) {
-	out := bytes.Buffer{}
-	cmdList.SetOutput(&out)
 	defer func() {
 		config.Purge()
 		resetFlags()
 	}()
 
-	err := config.AddContext(&config.ContextRecord{
-		Name: "test-ctx-1",
+	// Set a current server context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "server-ctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "0.0.0.0",
+			Address:    "0.0.0.0",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
-	err = config.SetCurrentContext("test-ctx-1")
-	assert.NoError(t, err)
+	}))
+	assert.NoError(t, config.SetCurrentContext("server-ctx"))
 
-	err = config.AddContext(&config.ContextRecord{
-		Name: "test-ctx-2",
+	// Add a plugin context
+	assert.NoError(t, config.AddContext(&config.ContextRecord{
+		Name: "plugin-ctx",
 		Type: "plugin",
 		Context: config.Context{
-			Address: "foo/bar",
+			Address:    "foo/bar",
 			ClientCert: "/tmp/test/dir",
 		},
-	})
-	assert.NoError(t, err)
+	}))
 
-	os.Args = []string{"list"}
-	err = cmdList.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "list.golden")
+	result := test.Cmd(cmdList).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("list.golden")
 
-	contexts := config.GetContexts()
-	current := config.GetCurrentContext()
-	assert.Len(t, contexts, 2)
-	assert.Len(t, current, 1)
+	assert.Len(t, config.GetContexts(), 2)
+	assert.Len(t, config.GetCurrentContext(), 1)
 }

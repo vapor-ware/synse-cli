@@ -22,6 +22,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -45,12 +46,14 @@ var cmdMetadata = &cobra.Command{
 		see the data in its entirety, use the JSON or YAML output formats.
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		exitutil.Err(pluginMetadata(cmd.OutOrStdout()))
+		exiter.Err(pluginMetadata(cmd.OutOrStdout()))
 	},
 }
 

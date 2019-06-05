@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
 func init() {
@@ -45,7 +46,7 @@ var cmdInfo = &cobra.Command{
 	`),
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		exitutil.Err(serverInfo(cmd.OutOrStdout(), args[0]))
+		exit.FromCmd(cmd).Err(serverInfo(cmd.OutOrStdout(), args[0]))
 	},
 }
 

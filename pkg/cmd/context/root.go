@@ -31,12 +31,6 @@ var (
 	flagClientCert string
 )
 
-var exitutil utils.Exiter
-
-func init() {
-	exitutil = utils.NewDefaultExiter()
-}
-
 // resetFlags resets the flag values. This is useful for tests.
 func resetFlags() {
 	flagNoHeader = false

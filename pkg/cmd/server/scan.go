@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
 )
 
@@ -61,12 +62,14 @@ var cmdScan = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		exitutil.Err(serverScan(cmd.OutOrStdout()))
+		exiter.Err(serverScan(cmd.OutOrStdout()))
 	},
 }
 
@@ -86,7 +89,7 @@ func serverScan(out io.Writer) error {
 	}
 
 	if len(response) == 0 {
-		exitutil.Exitf(0, "No devices found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)

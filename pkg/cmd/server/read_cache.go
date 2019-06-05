@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
 )
 
@@ -55,7 +56,7 @@ var cmdReadCache = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
-		exitutil.Err(serverReadCache(cmd.OutOrStdout()))
+		exit.FromCmd(cmd).Err(serverReadCache(cmd.OutOrStdout()))
 	},
 }
 
@@ -74,7 +75,7 @@ func serverReadCache(out io.Writer) error {
 	}
 
 	if len(response) == 0 {
-		exitutil.Exitf(0, "No readings found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)

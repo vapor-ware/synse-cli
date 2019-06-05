@@ -22,6 +22,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -55,12 +56,14 @@ var cmdReadCache = &cobra.Command{
 		see the data in its entirety, use the JSON or YAML output formats.
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		exitutil.Err(pluginReadCache(cmd.OutOrStdout()))
+		exiter.Err(pluginReadCache(cmd.OutOrStdout()))
 	},
 }
 
@@ -95,7 +98,7 @@ func pluginReadCache(out io.Writer) error {
 	}
 
 	if len(readings) == 0 {
-		exitutil.Exitf(0, "No readings found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)

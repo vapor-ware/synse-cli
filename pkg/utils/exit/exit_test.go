@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package utils
+package exit
 
 import (
 	"bytes"
@@ -22,24 +22,20 @@ import (
 	"testing"
 
 	"bou.ke/monkey"
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewDefaultExiter(t *testing.T) {
-	exiter := NewDefaultExiter()
+func TestFromCmd(t *testing.T) {
+	cmd := &cobra.Command{
+		Use: "foo",
+	}
+
+	exiter := FromCmd(cmd)
 	assert.NotNil(t, exiter)
-	assert.Equal(t, exiter.writer, os.Stderr)
 }
 
-func TestDefaultExiter_SetWriter(t *testing.T) {
-	exiter := DefaultExiter{}
-	assert.Nil(t, exiter.writer)
-
-	exiter.SetWriter(os.Stdout)
-	assert.Equal(t, exiter.writer, os.Stdout)
-}
-
-func TestDefaultExiter_Err(t *testing.T) {
+func TestCommandExiter_Err(t *testing.T) {
 	var exitCalled bool
 	patch := monkey.Patch(os.Exit, func(code int) {
 		exitCalled = true
@@ -48,14 +44,14 @@ func TestDefaultExiter_Err(t *testing.T) {
 	defer patch.Unpatch()
 
 	out := bytes.Buffer{}
-	exiter := DefaultExiter{writer: &out}
+	exiter := commandExiter{out: &out}
 	exiter.Err("test error")
 
 	assert.True(t, exitCalled)
 	assert.Equal(t, out.String(), "Error: test error\n")
 }
 
-func TestDefaultExiter_Exit(t *testing.T) {
+func TestCommandExiter_Exit(t *testing.T) {
 	var exitCalled bool
 	patch := monkey.Patch(os.Exit, func(code int) {
 		exitCalled = true
@@ -64,14 +60,14 @@ func TestDefaultExiter_Exit(t *testing.T) {
 	defer patch.Unpatch()
 
 	out := bytes.Buffer{}
-	exiter := DefaultExiter{writer: &out}
+	exiter := commandExiter{out: &out}
 	exiter.Exit(2)
 
 	assert.True(t, exitCalled)
 	assert.Equal(t, out.String(), "")
 }
 
-func TestDefaultExiter_Exitf(t *testing.T) {
+func TestCommandExiter_Exitf(t *testing.T) {
 	var exitCalled bool
 	patch := monkey.Patch(os.Exit, func(code int) {
 		exitCalled = true
@@ -80,14 +76,14 @@ func TestDefaultExiter_Exitf(t *testing.T) {
 	defer patch.Unpatch()
 
 	out := bytes.Buffer{}
-	exiter := DefaultExiter{writer: &out}
+	exiter := commandExiter{out: &out}
 	exiter.Exitf(3, "test error")
 
 	assert.True(t, exitCalled)
 	assert.Equal(t, out.String(), "test error")
 }
 
-func TestDefaultExiter_Fatal(t *testing.T) {
+func TestCommandExiter_Fatal(t *testing.T) {
 	var exitCalled bool
 	patch := monkey.Patch(os.Exit, func(code int) {
 		exitCalled = true
@@ -96,7 +92,7 @@ func TestDefaultExiter_Fatal(t *testing.T) {
 	defer patch.Unpatch()
 
 	out := bytes.Buffer{}
-	exiter := DefaultExiter{writer: &out}
+	exiter := commandExiter{out: &out}
 	exiter.Fatal("test error")
 
 	assert.True(t, exitCalled)
