@@ -46,24 +46,24 @@ var config Config
 
 // Config specifies the persisted configuration for the CLI.
 type Config struct {
-	Contexts       []ContextRecord   `yaml:"contexts" mapstructure:"contexts"`
-	CurrentContext map[string]string `yaml:"current_context" mapstructure:"current_context"`
+	Contexts       []ContextRecord   `json:"contexts" yaml:"contexts" mapstructure:"contexts"`
+	CurrentContext map[string]string `json:"current_context" yaml:"current_context" mapstructure:"current_context"`
 }
 
 // ContextRecord describes the record for a Synse component
 // and how the CLI should connect to it.
 type ContextRecord struct {
-	Name    string  `yaml:"name" mapstructure:"name"`
-	Type    string  `yaml:"type" mapstructure:"type"`
-	Context Context `yaml:"context" mapstructure:"context"`
+	Name    string  `json:"name" yaml:"name" mapstructure:"name"`
+	Type    string  `json:"type" yaml:"type" mapstructure:"type"`
+	Context Context `json:"context" yaml:"context" mapstructure:"context"`
 }
 
 // Context specifies any contextual information associated
 // with a ContextRecord that can be used by the CLI to connect
 // to the Synse component.
 type Context struct {
-	Address    string `yaml:"address" mapstructure:"address"`
-	ClientCert string `yaml:"client_cert" mapstructure:"client_cert"`
+	Address    string `json:"address" yaml:"address" mapstructure:"address"`
+	ClientCert string `json:"client_cert" yaml:"client_cert" mapstructure:"client_cert"`
 }
 
 // Load loads the configuration for the CLI. If a configuration file

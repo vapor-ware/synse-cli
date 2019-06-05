@@ -37,6 +37,6 @@ func Check(t *testing.T, actual []byte, filename string) {
 	if actual == nil {
 		assert.Empty(t, expected)
 	} else {
-		assert.Equal(t, expected, actual)
+		assert.Equal(t, string(expected), string(actual))
 	}
 }

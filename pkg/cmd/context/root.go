@@ -37,6 +37,15 @@ func init() {
 	exitutil = utils.NewDefaultExiter()
 }
 
+// resetFlags resets the flag values. This is useful for tests.
+func resetFlags() {
+	flagNoHeader = false
+	flagSet = false
+	flagJSON = false
+	flagYaml = false
+	flagClientCert = ""
+}
+
 // New returns a new instance of the 'hosts' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{

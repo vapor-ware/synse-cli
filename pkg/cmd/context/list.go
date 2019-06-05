@@ -61,5 +61,9 @@ func listContexts(out io.Writer) error {
 	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
 	printer.SetRowFunc(contextRowFunc)
 
-	return printer.Write(contexts)
+	var ctxs = make([]*config.ContextRecord, len(contexts))
+	for i := 0; i < len(contexts); i++ {
+		ctxs[i] = &contexts[i]
+	}
+	return printer.Write(ctxs)
 }

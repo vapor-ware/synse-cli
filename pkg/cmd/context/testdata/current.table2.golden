@@ -1,0 +1,3 @@
+CURRENT   NAME         TYPE     ADDRESS
+*         server-ctx   server   0.0.0.0
+*         plugin-ctx   plugin   foo/bar
