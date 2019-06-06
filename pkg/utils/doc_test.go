@@ -63,21 +63,6 @@ func TestDoc(t *testing.T) {
 			`,
 			expected: "multiple levels of\n\tstring offset where\n\t\tthe levels should be normalized\n",
 		},
-		{
-			description: "string with console underscore marker",
-			raw:         `a string with <underscore>underscore</>`,
-			expected:    "a string with \x1b[4munderscore\x1b[0m",
-		},
-		{
-			description: "string with console bold marker",
-			raw:         `a string with <bold>bold</>`,
-			expected:    "a string with \x1b[1mbold\x1b[0m",
-		},
-		{
-			description: "string with console color marker",
-			raw:         `a string with <cyan>color</>`,
-			expected:    "a string with \x1b[0;36mcolor\x1b[0m",
-		},
 	}
 
 	for _, c := range cases {
@@ -91,7 +76,7 @@ func TestDoc2(t *testing.T) {
 	//   tests fail, presumably because console output formatting is not
 	//   enabled on the build machine. If we detect that we are running
 	//   in Jenkins, skip these tests.
-	if os.Getenv("USER") == "jenkins" {
+	if os.Getenv("JENKINS_URL") != "" {
 		t.Skip("Skipping output formatting tests on Jenkins CI")
 	}
 
