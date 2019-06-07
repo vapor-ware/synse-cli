@@ -22,7 +22,6 @@ import (
 	"testing"
 
 	"github.com/MakeNowJust/heredoc"
-
 	"github.com/stretchr/testify/assert"
 )
 

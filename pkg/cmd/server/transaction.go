@@ -81,22 +81,20 @@ func serverTransaction(out io.Writer, transactions []string) error {
 		return err
 	}
 
+	// If there are no transactions specified, get all of them.
 	if len(transactions) == 0 {
 		txns, err := client.Transactions()
 		if err != nil {
 			return err
 		}
-		for _, t := range txns {
-			_, err = out.Write([]byte(t))
-			if err != nil {
-				return err
-			}
-		}
-		return nil
+
+		printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+		printer.SetHeader("ID")
+		printer.SetRowFunc(serverTransactionsRowFunc)
+		return printer.Write(txns)
 	}
 
 	var txns []*scheme.Transaction
-
 	for _, t := range transactions {
 		response, err := client.Transaction(t)
 		if err != nil {

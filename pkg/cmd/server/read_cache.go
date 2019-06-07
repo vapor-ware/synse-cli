@@ -56,7 +56,14 @@ var cmdReadCache = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
-		exit.FromCmd(cmd).Err(serverReadCache(cmd.OutOrStdout()))
+		exiter := exit.FromCmd(cmd)
+
+		// Error out if multiple output formats are specified.
+		if flagJSON && flagYaml {
+			exiter.Err("cannot use multiple formatting flags at once")
+		}
+
+		exiter.Err(serverReadCache(cmd.OutOrStdout()))
 	},
 }
 

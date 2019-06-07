@@ -1,0 +1,40 @@
+{
+  "locale": "",
+  "logging": "debug",
+  "plugin": {
+    "tcp": [
+      "localhost:5001"
+    ],
+    "unix": null,
+    "discover": {
+      "kubernetes": {
+        "namespace": "",
+        "endpoints": {
+          "labels": null
+        }
+      }
+    }
+  },
+  "cache": {
+    "device": {
+      "ttl": 0
+    },
+    "transaction": {
+      "ttl": 0
+    }
+  },
+  "grpc": {
+    "timeout": 0,
+    "tls": {
+      "cert": ""
+    }
+  },
+  "transport": {
+    "http": false,
+    "websocket": false
+  },
+  "metrics": {
+    "enabled": false
+  },
+  "pretty_json": true
+}

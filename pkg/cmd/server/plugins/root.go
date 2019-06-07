@@ -32,6 +32,15 @@ var (
 	flagContext string
 )
 
+// resetFlags resets the flag values. This is useful for tests.
+func resetFlags() {
+	flagNoHeader = false
+	flagJSON = false
+	flagYaml = false
+	flagTLSCert = ""
+	flagContext = ""
+}
+
 // New returns a new instance of the 'server plugin' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{

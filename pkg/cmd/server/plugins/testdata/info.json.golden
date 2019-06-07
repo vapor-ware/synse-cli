@@ -1,0 +1,28 @@
+{
+  "active": true,
+  "id": "123-456-678",
+  "name": "fake-plugin",
+  "description": "a fake plugin",
+  "maintainer": "vaporio",
+  "tag": "vaporio/fake_plugin",
+  "vcs": "",
+  "version": {
+    "plugin_version": "0.0.1",
+    "sdk_version": "3.0.0",
+    "build_date": "",
+    "git_commit": "",
+    "git_tag": "",
+    "arch": "",
+    "os": ""
+  },
+  "network": {
+    "protocol": "tcp",
+    "address": "localhost:5001"
+  },
+  "health": {
+    "timestamp": "2019-04-22T13:30:00Z",
+    "status": "OK",
+    "message": "",
+    "checks": []
+  }
+}

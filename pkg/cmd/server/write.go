@@ -91,6 +91,9 @@ func serverWriteAsync(out io.Writer, device, action, data string) error {
 		Action: action,
 		Data:   data,
 	}})
+	if err != nil {
+		return err
+	}
 
 	if len(response) == 0 {
 		return fmt.Errorf("failed device write")
@@ -113,6 +116,9 @@ func serverWriteSync(out io.Writer, device, action, data string) error {
 		Action: action,
 		Data:   data,
 	}})
+	if err != nil {
+		return err
+	}
 
 	if len(response) == 0 {
 		return fmt.Errorf("failed device write")
