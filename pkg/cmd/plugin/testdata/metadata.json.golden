@@ -1,0 +1,7 @@
+{
+  "name": "test-plugin",
+  "maintainer": "vaporio",
+  "tag": "vaporio/test-plugin",
+  "description": "a plugin",
+  "id": "987654"
+}

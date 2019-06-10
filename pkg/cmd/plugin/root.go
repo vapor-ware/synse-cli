@@ -38,6 +38,21 @@ var (
 	flagContext string
 )
 
+// resetFlags resets the flag values. This is useful for tests.
+func resetFlags() {
+	flagNoHeader = false
+	flagJSON = false
+	flagYaml = false
+	flagIds = false
+	flagWait = false
+	flagNS = ""
+	flagStart = ""
+	flagEnd = ""
+	flagTags = []string{}
+	flagTLSCert = ""
+	flagContext = ""
+}
+
 // New returns a new instance of the 'plugin' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{

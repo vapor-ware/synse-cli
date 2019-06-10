@@ -94,6 +94,8 @@ func (b *Builder) Run(t *testing.T) (result *Result) {
 					exited: exitCalled,
 					out:    cmdOut.Bytes(),
 				}
+			} else {
+				panic(r)
 			}
 		}
 	}()

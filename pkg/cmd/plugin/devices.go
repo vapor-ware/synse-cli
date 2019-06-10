@@ -89,6 +89,7 @@ func pluginDevices(out io.Writer) error {
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "ALIAS", "TYPE", "INFO", "PLUGIN")
 	printer.SetRowFunc(pluginDeviceRowFunc)
 

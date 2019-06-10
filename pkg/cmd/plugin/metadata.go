@@ -73,6 +73,7 @@ func pluginMetadata(out io.Writer) error {
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "TAG", "DESCRIPTION")
 	printer.SetRowFunc(pluginMetadataRowFunc)
 

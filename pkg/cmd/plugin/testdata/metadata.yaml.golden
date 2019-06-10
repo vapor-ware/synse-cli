@@ -1,0 +1,5 @@
+description: a plugin
+id: "987654"
+maintainer: vaporio
+name: test-plugin
+tag: vaporio/test-plugin

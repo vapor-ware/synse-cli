@@ -116,6 +116,7 @@ func pluginRead(out io.Writer, devices []string) error {
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(pluginReadingRowFunc)
 

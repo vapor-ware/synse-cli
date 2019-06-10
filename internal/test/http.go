@@ -17,16 +17,8 @@
 package test
 
 import (
-	"errors"
-
 	"github.com/vapor-ware/synse-client-go/synse"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
-)
-
-var (
-	// ErrFakeClient is an error that is returned when the
-	// fake client is configured to return an error.
-	ErrFakeClient = errors.New("fake client err")
 )
 
 // FakeHTTPClientV3 implements the synse.Client interface to allow for

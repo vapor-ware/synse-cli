@@ -70,6 +70,7 @@ func pluginVersion(out io.Writer) error {
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("VERSION", "SDK", "BUILD DATE", "OS", "ARCH")
 	printer.SetRowFunc(pluginVersionRowFunc)
 

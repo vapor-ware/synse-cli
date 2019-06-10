@@ -120,6 +120,7 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
 

@@ -119,6 +119,7 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("TRANSACTION", "ACTION", "DATA", "DEVICE")
 	printer.SetRowFunc(pluginTransactionInfoRowFunc)
 
@@ -165,6 +166,7 @@ func pluginWriteSync(out io.Writer, device, action, data string) error {
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
 
