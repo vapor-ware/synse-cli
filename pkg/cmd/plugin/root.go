@@ -27,9 +27,7 @@ var (
 	flagNoHeader bool
 	flagJSON     bool
 	flagYaml     bool
-	flagIds      bool
 	flagWait     bool
-	flagNS       string
 	flagStart    string
 	flagEnd      string
 	flagTags     []string
@@ -43,9 +41,7 @@ func resetFlags() {
 	flagNoHeader = false
 	flagJSON = false
 	flagYaml = false
-	flagIds = false
 	flagWait = false
-	flagNS = ""
 	flagStart = ""
 	flagEnd = ""
 	flagTags = []string{}

@@ -125,8 +125,8 @@ func TestPrinter_toYAML(t *testing.T) {
 	assert.Equal(
 		t,
 		heredoc.Doc(`
-			foo: test
 			bar: 2
+			foo: test
 		`),
 		out.String(),
 	)

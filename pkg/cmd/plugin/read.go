@@ -30,6 +30,7 @@ func init() {
 	cmdRead.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
 	cmdRead.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdRead.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+	cmdRead.Flags().StringSliceVarP(&flagTags, "tag", "t", []string{}, "specify tags to use as device selectors")
 }
 
 var cmdRead = &cobra.Command{
@@ -47,6 +48,11 @@ var cmdRead = &cobra.Command{
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
 		exiter := exit.FromCmd(cmd)
+
+		// Error out if device IDs and tag selectors are both specified.
+		if len(args) != 0 && len(flagTags) != 0 {
+			exiter.Err("cannot specify device IDs and device tags together")
+		}
 
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
@@ -70,8 +76,19 @@ func pluginRead(out io.Writer, devices []string) error {
 	var readings []*synse.V3Reading
 
 	if len(devices) == 0 {
+		var tags []*synse.V3Tag
+		for _, t := range utils.NormalizeTags(flagTags) {
+			tag, err := utils.StringToTag(t)
+			if err != nil {
+				return err
+			}
+			tags = append(tags, tag)
+		}
+
 		stream, err := client.Read(ctx, &synse.V3ReadRequest{
-			Selector: &synse.V3DeviceSelector{},
+			Selector: &synse.V3DeviceSelector{
+				Tags: tags,
+			},
 		})
 		if err != nil {
 			return err

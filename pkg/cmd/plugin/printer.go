@@ -17,15 +17,28 @@
 package plugin
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
+)
+
+var (
+	// ErrInvalidRowData is a printer function error which indicates that the
+	// data type given to the printer is unexpected. This error should never be
+	// induced by a user error, but may occur if there are changes in modeling.
+	ErrInvalidRowData = errors.New("invalid row data")
+
+	// ErrNilData is a printer function error which indicates that the value
+	// passed to the printer is nil and can not be printed.
+	ErrNilData = errors.New("row handler got nil data")
 )
 
 func pluginTestRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3TestStatus)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	var s = "OK"
@@ -41,7 +54,10 @@ func pluginTestRowFunc(data interface{}) ([]interface{}, error) {
 func pluginVersionRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3Version)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	return []interface{}{
@@ -56,7 +72,10 @@ func pluginVersionRowFunc(data interface{}) ([]interface{}, error) {
 func pluginReadingRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3Reading)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	// Special casing for reading unit symbol. % is a formatting
@@ -78,7 +97,10 @@ func pluginReadingRowFunc(data interface{}) ([]interface{}, error) {
 func pluginTransactionStatusRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3TransactionStatus)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	return []interface{}{
@@ -93,13 +115,16 @@ func pluginTransactionStatusRowFunc(data interface{}) ([]interface{}, error) {
 func pluginTransactionInfoRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3WriteTransaction)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	return []interface{}{
 		i.Id,
 		i.Context.Action,
-		i.Context.Data,
+		string(i.Context.Data),
 		i.Device,
 	}, nil
 }
@@ -107,7 +132,10 @@ func pluginTransactionInfoRowFunc(data interface{}) ([]interface{}, error) {
 func pluginMetadataRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3Metadata)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	return []interface{}{
@@ -120,7 +148,10 @@ func pluginMetadataRowFunc(data interface{}) ([]interface{}, error) {
 func pluginDeviceRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3Device)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	return []interface{}{
@@ -135,7 +166,10 @@ func pluginDeviceRowFunc(data interface{}) ([]interface{}, error) {
 func pluginHealthRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*synse.V3Health)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	return []interface{}{

@@ -1,0 +1,13 @@
+- alias: faked
+  id: 111-222-333
+  info: foo bar
+  metadata:
+    "123": "456"
+    abc: def
+  plugin: "123345"
+  tags:
+  - annotation: test
+    label: device
+    namespace: fake
+  timestamp: "2019-04-22T13:30:00Z"
+  type: testdevice

@@ -19,6 +19,8 @@ package utils
 import (
 	"testing"
 
+	synse "github.com/vapor-ware/synse-server-grpc/go"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -63,5 +65,88 @@ func TestNormalizeTags(t *testing.T) {
 	for _, c := range cases {
 		actual := NormalizeTags(c.tags)
 		assert.Equal(t, c.expected, actual, c.description)
+	}
+}
+
+func TestStringToTag(t *testing.T) {
+	cases := []struct {
+		tag     string
+		message *synse.V3Tag
+	}{
+		{
+			tag:     "foo",
+			message: &synse.V3Tag{Label: "foo"},
+		},
+		{
+			tag:     "bar",
+			message: &synse.V3Tag{Label: "bar"},
+		},
+		{
+			tag:     "a/foo",
+			message: &synse.V3Tag{Namespace: "a", Label: "foo"},
+		},
+		{
+			tag:     "b/bar",
+			message: &synse.V3Tag{Namespace: "b", Label: "bar"},
+		},
+		{
+			tag:     "x:foo",
+			message: &synse.V3Tag{Annotation: "x", Label: "foo"},
+		},
+		{
+			tag:     "y:bar",
+			message: &synse.V3Tag{Annotation: "y", Label: "bar"},
+		},
+		{
+			tag:     "a/x:foo",
+			message: &synse.V3Tag{Namespace: "a", Annotation: "x", Label: "foo"},
+		},
+		{
+			tag:     "b/y:bar",
+			message: &synse.V3Tag{Namespace: "b", Annotation: "y", Label: "bar"},
+		},
+		{
+			tag:     "a-b/x-y:m-n",
+			message: &synse.V3Tag{Namespace: "a-b", Annotation: "x-y", Label: "m-n"},
+		}, {
+			tag:     "a.b/x.y:m.n",
+			message: &synse.V3Tag{Namespace: "a.b", Annotation: "x.y", Label: "m.n"},
+		},
+		{
+			tag:     "  yankee/hotel:foxtrot  ",
+			message: &synse.V3Tag{Namespace: "yankee", Annotation: "hotel", Label: "foxtrot"},
+		},
+	}
+
+	for i, c := range cases {
+		tag, err := StringToTag(c.tag)
+
+		assert.NoError(t, err, "case: %d", i)
+		assert.Equal(t, c.message.Namespace, tag.Namespace, "case: %d", i)
+		assert.Equal(t, c.message.Annotation, tag.Annotation, "case: %d", i)
+		assert.Equal(t, c.message.Label, tag.Label, "case: %d", i)
+	}
+}
+
+func TestStringToTag_Error(t *testing.T) {
+	cases := []struct {
+		tag string
+	}{
+		{tag: ""},
+		{tag: "a//b"},
+		{tag: "a::b"},
+		{tag: "a/b:"},
+		{tag: "/"},
+		{tag: "//"},
+		{tag: ":"},
+		{tag: "::"},
+		{tag: "vaporio/contains spaces:foo"},
+	}
+
+	for i, c := range cases {
+		tag, err := StringToTag(c.tag)
+
+		assert.Error(t, err, "case: %d", i)
+		assert.Nil(t, tag, "case: %d", i)
 	}
 }

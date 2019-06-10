@@ -30,6 +30,7 @@ func init() {
 	cmdDevices.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
 	cmdDevices.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdDevices.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+	cmdDevices.Flags().StringSliceVarP(&flagTags, "tag", "t", []string{}, "specify tags to use as device selectors")
 }
 
 var cmdDevices = &cobra.Command{
@@ -67,7 +68,18 @@ func pluginDevices(out io.Writer) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	stream, err := client.Devices(ctx, &synse.V3DeviceSelector{})
+	var tags []*synse.V3Tag
+	for _, t := range utils.NormalizeTags(flagTags) {
+		tag, err := utils.StringToTag(t)
+		if err != nil {
+			return err
+		}
+		tags = append(tags, tag)
+	}
+
+	stream, err := client.Devices(ctx, &synse.V3DeviceSelector{
+		Tags: tags,
+	})
 	if err != nil {
 		return err
 	}
