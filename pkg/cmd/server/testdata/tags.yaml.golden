@@ -1,0 +1,4 @@
+- system/id:111-222-333
+- system/type:faked
+- vapor/fake
+- default/foo

@@ -1,0 +1,7 @@
+Error: accepts 1 arg(s), received 2
+Usage:
+  set CONTEXT_NAME [flags]
+
+Flags:
+  -h, --help   help for set
+

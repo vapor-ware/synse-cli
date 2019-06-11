@@ -17,10 +17,13 @@
 package context
 
 import (
+	"fmt"
+
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
 func init() {
@@ -49,25 +52,29 @@ var cmdRemove = &cobra.Command{
 		"delete",
 		"del",
 	},
-	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		name := ""
-		if len(args) != 0 {
-			name = args[0]
-		}
-		removeContext(name)
+		exit.FromCmd(cmd).Err(
+			removeContexts(args),
+		)
 	},
 }
 
-func removeContext(name string) {
+func removeContexts(names []string) error {
 	if flagAll {
 		log.Debug("purging all contexts")
 		config.Purge()
-		return
+		return nil
 	}
 
-	log.WithFields(log.Fields{
-		"name": name,
-	}).Debug("removing context")
-	config.RemoveContext(name)
+	if len(names) == 0 {
+		return fmt.Errorf("no contexts specified for removal")
+	}
+
+	for _, name := range names {
+		log.WithFields(log.Fields{
+			"name": name,
+		}).Debug("removing context")
+		config.RemoveContext(name)
+	}
+	return nil
 }

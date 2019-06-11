@@ -31,10 +31,13 @@ var (
 	flagClientCert string
 )
 
-var exitutil utils.Exiter
-
-func init() {
-	exitutil = &utils.DefaultExiter{}
+// resetFlags resets the flag values. This is useful for tests.
+func resetFlags() {
+	flagNoHeader = false
+	flagSet = false
+	flagJSON = false
+	flagYaml = false
+	flagClientCert = ""
 }
 
 // New returns a new instance of the 'hosts' command.

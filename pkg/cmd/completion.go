@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
 var cmdCompletion = &cobra.Command{
@@ -40,6 +41,8 @@ var cmdCompletion = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
-		exitutil.Err(rootCmd.GenBashCompletion(os.Stdout))
+		exit.FromCmd(cmd).Err(
+			rootCmd.GenBashCompletion(os.Stdout),
+		)
 	},
 }

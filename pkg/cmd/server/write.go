@@ -17,10 +17,12 @@
 package server
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
 )
 
@@ -57,9 +59,11 @@ var cmdWrite = &cobra.Command{
 	`),
 	Args: cobra.RangeArgs(2, 3),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
 		device := args[0]
@@ -70,15 +74,15 @@ var cmdWrite = &cobra.Command{
 		}
 
 		if flagWait {
-			exitutil.Err(serverWriteSync(cmd.OutOrStdout(), device, action, data))
+			exiter.Err(serverWriteSync(cmd.OutOrStdout(), device, action, data))
 		} else {
-			exitutil.Err(serverWriteAsync(cmd.OutOrStdout(), device, action, data))
+			exiter.Err(serverWriteAsync(cmd.OutOrStdout(), device, action, data))
 		}
 	},
 }
 
 func serverWriteAsync(out io.Writer, device, action, data string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -87,9 +91,12 @@ func serverWriteAsync(out io.Writer, device, action, data string) error {
 		Action: action,
 		Data:   data,
 	}})
+	if err != nil {
+		return err
+	}
 
 	if len(response) == 0 {
-		exitutil.Fatal("failed device write")
+		return fmt.Errorf("failed device write")
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
@@ -100,7 +107,7 @@ func serverWriteAsync(out io.Writer, device, action, data string) error {
 }
 
 func serverWriteSync(out io.Writer, device, action, data string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -109,9 +116,12 @@ func serverWriteSync(out io.Writer, device, action, data string) error {
 		Action: action,
 		Data:   data,
 	}})
+	if err != nil {
+		return err
+	}
 
 	if len(response) == 0 {
-		exitutil.Fatal("failed device write")
+		return fmt.Errorf("failed device write")
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)

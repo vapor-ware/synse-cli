@@ -1,0 +1,10 @@
+[
+  {
+    "name": "test-ctx",
+    "type": "server",
+    "context": {
+      "address": "0.0.0.0",
+      "client_cert": "/tmp/test/dir"
+    }
+  }
+]

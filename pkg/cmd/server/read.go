@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
 )
 
@@ -62,22 +63,24 @@ var cmdRead = &cobra.Command{
 		<underscore>https://vapor-ware.github.io/synse-server/#read</>
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if device IDs and tag selectors are both specified.
 		if len(args) != 0 && len(flagTags) != 0 {
-			exitutil.Err("cannot specify device IDs and device tags together")
+			exiter.Err("cannot specify device IDs and device tags together")
 		}
 
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		exitutil.Err(serverRead(cmd.OutOrStdout(), args))
+		exiter.Err(serverRead(cmd.OutOrStdout(), args))
 	},
 }
 
 func serverRead(out io.Writer, devices []string) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -103,7 +106,7 @@ func serverRead(out io.Writer, devices []string) error {
 	}
 
 	if len(readings) == 0 {
-		exitutil.Exitf(0, "No readings found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)

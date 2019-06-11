@@ -1,0 +1,10 @@
+Error: accepts at most 1 arg(s), received 2
+Usage:
+  current [TYPE] [flags]
+
+Flags:
+  -h, --help        help for current
+      --json        print output as JSON
+  -n, --no-header   do not print out column headers
+      --yaml        print output as YAML
+

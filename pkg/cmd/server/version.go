@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
 func init() {
@@ -43,17 +44,19 @@ var cmdVersion = &cobra.Command{
 		<underscore>https://vapor-ware.github.io/synse-server/#version</>
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		utils.Err(serverVersion(cmd.OutOrStdout()))
+		exiter.Err(serverVersion(cmd.OutOrStdout()))
 	},
 }
 
 func serverVersion(out io.Writer) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

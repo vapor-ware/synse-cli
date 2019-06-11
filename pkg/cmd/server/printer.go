@@ -1,15 +1,44 @@
+// Synse CLI
+// Copyright (c) 2019 Vapor IO
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 package server
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
+)
+
+var (
+	// ErrInvalidRowData is a printer function error which indicates that the
+	// data type given to the printer is unexpected. This error should never be
+	// induced by a user error, but may occur if there are changes in modeling.
+	ErrInvalidRowData = errors.New("invalid row data")
+
+	// ErrNilData is a printer function error which indicates that the value
+	// passed to the printer is nil and can not be printed.
+	ErrNilData = errors.New("row handler got nil data")
 )
 
 func serverReadRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*scheme.Read)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	// Special casing for reading unit symbol. % is a formatting
@@ -31,7 +60,10 @@ func serverReadRowFunc(data interface{}) ([]interface{}, error) {
 func serverScanRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*scheme.Scan)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
+	}
+	if i == nil {
+		return nil, ErrNilData
 	}
 
 	return []interface{}{
@@ -44,8 +76,12 @@ func serverScanRowFunc(data interface{}) ([]interface{}, error) {
 func serverStatusRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*scheme.Status)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
 	}
+	if i == nil {
+		return nil, ErrNilData
+	}
+
 	return []interface{}{
 		i.Status,
 		i.Timestamp,
@@ -55,8 +91,9 @@ func serverStatusRowFunc(data interface{}) ([]interface{}, error) {
 func serverTagsRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(string)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
 	}
+
 	return []interface{}{
 		i,
 	}, nil
@@ -65,8 +102,12 @@ func serverTagsRowFunc(data interface{}) ([]interface{}, error) {
 func serverTransactionRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*scheme.Transaction)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
 	}
+	if i == nil {
+		return nil, ErrNilData
+	}
+
 	return []interface{}{
 		i.ID,
 		i.Status,
@@ -76,11 +117,25 @@ func serverTransactionRowFunc(data interface{}) ([]interface{}, error) {
 	}, nil
 }
 
+func serverTransactionsRowFunc(data interface{}) ([]interface{}, error) {
+	i, ok := data.(string)
+	if !ok {
+		return nil, ErrInvalidRowData
+	}
+	return []interface{}{
+		i,
+	}, nil
+}
+
 func serverTransactionSummaryRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*scheme.Write)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
 	}
+	if i == nil {
+		return nil, ErrNilData
+	}
+
 	return []interface{}{
 		i.ID,
 		i.Context.Action,
@@ -92,8 +147,12 @@ func serverTransactionSummaryRowFunc(data interface{}) ([]interface{}, error) {
 func serverVersionRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(*scheme.Version)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, ErrInvalidRowData
 	}
+	if i == nil {
+		return nil, ErrNilData
+	}
+
 	return []interface{}{
 		i.Version,
 		i.APIVersion,

@@ -17,21 +17,19 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
+	"io"
 	"text/template"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg"
 	"github.com/vapor-ware/synse-cli/pkg/templates"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
 func init() {
 	cmdVersion.Flags().BoolVarP(&flagSimple, "simple", "s", false, "display only the version number")
 }
-
-var flagSimple bool
 
 var cmdVersion = &cobra.Command{
 	Use:   "version",
@@ -67,17 +65,25 @@ var cmdVersion = &cobra.Command{
 	`),
 
 	Run: func(cmd *cobra.Command, args []string) {
-		v := pkg.GetVersion()
-
-		if flagSimple {
-			fmt.Println(v.Version)
-			return
-		}
-
-		tmpl, err := template.New("version").Parse(templates.CmdVersionTemplate)
-		exitutil.Err(err)
-
-		err = tmpl.ExecuteTemplate(os.Stdout, "version", v)
-		exitutil.Err(err)
+		exit.FromCmd(cmd).Err(
+			displayVersion(cmd.OutOrStdout()),
+		)
 	},
+}
+
+func displayVersion(out io.Writer) error {
+	v := pkg.GetVersion()
+
+	if flagSimple {
+		if _, err := out.Write([]byte(v.Version)); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	tmpl, err := template.New("version").Parse(templates.CmdVersionTemplate)
+	if err != nil {
+		return err
+	}
+	return tmpl.ExecuteTemplate(out, "version", v)
 }

@@ -17,8 +17,7 @@
 package utils
 
 import (
-	"fmt"
-
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
@@ -26,24 +25,33 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
+// Errors relating to gRPC client creation.
+var (
+	ErrNoCurrentPluginCtx = errors.New("failed creating plugin gRPC client: no current plugin context")
+	ErrInvalidPluginCtx   = errors.New("failed creating plugin gRPC client: specified context does not exist")
+	ErrNotAPluginCtx      = errors.New("failed creating plugin gRPC client: specified context is not a plugin context")
+)
+
 // NewSynseGrpcClient creates a new instance of a Synse gRPC client
 // for communicating with Synse plugins.
-func NewSynseGrpcClient(ctx string, certFile string) (*grpc.ClientConn, synse.V3PluginClient, error) {
+func NewSynseGrpcClient(ctx, certFile string) (*grpc.ClientConn, synse.V3PluginClient, error) {
 	var pluginContext *config.ContextRecord
 
 	if ctx == "" {
+		// If no specific context is specified, get the current context.
 		currentContexts := config.GetCurrentContext()
 		pluginContext = currentContexts["plugin"]
 		if pluginContext == nil {
-			return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: no current plugin context")
+			return nil, nil, ErrNoCurrentPluginCtx
 		}
 	} else {
+		// Get the named context.
 		pluginContext = config.GetContext(ctx)
 		if pluginContext == nil {
-			return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: specified context does not exist")
+			return nil, nil, ErrInvalidPluginCtx
 		}
 		if pluginContext.Type != "plugin" {
-			return nil, nil, fmt.Errorf("cannot create gRPC client for plugin: specified context is not a plugin context")
+			return nil, nil, ErrNotAPluginCtx
 		}
 	}
 

@@ -1,0 +1,7 @@
+checks:
+- name: test-check
+  status: 1
+  timestamp: "2019-04-22T13:30:00Z"
+  type: periodic
+status: 1
+timestamp: "2019-04-22T13:30:00Z"

@@ -22,6 +22,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -29,6 +30,7 @@ func init() {
 	cmdDevices.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
 	cmdDevices.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdDevices.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+	cmdDevices.Flags().StringSliceVarP(&flagTags, "tag", "t", []string{}, "specify tags to use as device selectors")
 }
 
 var cmdDevices = &cobra.Command{
@@ -45,12 +47,14 @@ var cmdDevices = &cobra.Command{
 		see the data in its entirety, use the JSON or YAML output formats.
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		exitutil.Err(pluginDevices(cmd.OutOrStdout()))
+		exiter.Err(pluginDevices(cmd.OutOrStdout()))
 	},
 }
 
@@ -64,7 +68,18 @@ func pluginDevices(out io.Writer) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	stream, err := client.Devices(ctx, &synse.V3DeviceSelector{})
+	var tags []*synse.V3Tag
+	for _, t := range utils.NormalizeTags(flagTags) {
+		tag, err := utils.StringToTag(t)
+		if err != nil {
+			return err
+		}
+		tags = append(tags, tag)
+	}
+
+	stream, err := client.Devices(ctx, &synse.V3DeviceSelector{
+		Tags: tags,
+	})
 	if err != nil {
 		return err
 	}
@@ -82,10 +97,11 @@ func pluginDevices(out io.Writer) error {
 	}
 
 	if len(devices) == 0 {
-		exitutil.Exitf(0, "No devices found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "ALIAS", "TYPE", "INFO", "PLUGIN")
 	printer.SetRowFunc(pluginDeviceRowFunc)
 
