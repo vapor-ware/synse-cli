@@ -27,9 +27,7 @@ var (
 	flagNoHeader bool
 	flagJSON     bool
 	flagYaml     bool
-	flagIds      bool
 	flagWait     bool
-	flagNS       string
 	flagStart    string
 	flagEnd      string
 	flagTags     []string
@@ -38,10 +36,17 @@ var (
 	flagContext string
 )
 
-var exitutil utils.Exiter
-
-func init() {
-	exitutil = &utils.DefaultExiter{}
+// resetFlags resets the flag values. This is useful for tests.
+func resetFlags() {
+	flagNoHeader = false
+	flagJSON = false
+	flagYaml = false
+	flagWait = false
+	flagStart = ""
+	flagEnd = ""
+	flagTags = []string{}
+	flagTLSCert = ""
+	flagContext = ""
 }
 
 // New returns a new instance of the 'plugin' command.
@@ -59,7 +64,7 @@ func New() *cobra.Command {
 
 	// Add flag options
 	cmd.PersistentFlags().StringVarP(&flagTLSCert, "tlscert", "", "", "path to TLS certificate file (e.g. ./plugin.pem)")
-	cmd.PersistentFlags().StringVarP(&flagTLSCert, "with-context", "", "", "the name of the plugin context to use")
+	cmd.PersistentFlags().StringVarP(&flagContext, "with-context", "", "", "the name of the plugin context to use")
 
 	// Add sub-commands
 	cmd.AddCommand(

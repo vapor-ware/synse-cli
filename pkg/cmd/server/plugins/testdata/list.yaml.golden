@@ -1,0 +1,30 @@
+- active: true
+  id: 123-456-789
+  name: fake-plugin
+  description: a fake plugin
+  maintainer: vaporio
+  tag: vaporio/fake_plugin
+  vcs: ""
+  version:
+    plugin_version: 0.0.1
+    sdk_version: 3.0.0
+    build_date: ""
+    git_commit: ""
+    git_tag: ""
+    arch: ""
+    os: ""
+- active: true
+  id: 987-654-321
+  name: fake-plugin2
+  description: a fake plugin
+  maintainer: vaporio
+  tag: vaporio/fake_plugin2
+  vcs: ""
+  version:
+    plugin_version: 0.0.1
+    sdk_version: 3.0.0
+    build_date: ""
+    git_commit: ""
+    git_tag: ""
+    arch: ""
+    os: ""

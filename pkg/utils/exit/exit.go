@@ -14,14 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package utils
+package exit
 
 import (
 	"fmt"
+	"io"
 	"os"
-)
 
-var defaultExiter DefaultExiter
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
+)
 
 // Exiter is an interface for exiting the CLI.
 //
@@ -33,36 +35,39 @@ type Exiter interface {
 	Fatal(msg interface{})
 }
 
-// TODO: could specify an IO Writer for the exiter.. makes it easier for testing.
-
-// DefaultExiter is the default Exiter implementation that the CLI uses.
-type DefaultExiter struct{}
+type commandExiter struct {
+	out io.Writer
+}
 
 // Exit terminates the application.
-func (exiter *DefaultExiter) Exit(code int) {
+func (exiter *commandExiter) Exit(code int) {
 	os.Exit(code)
 }
 
 // Exitf prints a message and terminates the application.
-func (exiter *DefaultExiter) Exitf(code int, format string, a ...interface{}) {
-	fmt.Printf(format, a...)
-	os.Exit(code)
+func (exiter *commandExiter) Exitf(code int, format string, a ...interface{}) {
+	if _, err := fmt.Fprintf(exiter.out, format, a...); err != nil {
+		log.Fatal(err)
+	}
+	exiter.Exit(code)
 }
 
 // Err checks if the input is nil; if not it will exit via Fatal.
-func (exiter *DefaultExiter) Err(err interface{}) {
+func (exiter *commandExiter) Err(err interface{}) {
 	if err != nil {
 		exiter.Fatal(err)
 	}
 }
 
 // Fatal prints a message to console and terminates the application.
-func (exiter *DefaultExiter) Fatal(msg interface{}) {
+func (exiter *commandExiter) Fatal(msg interface{}) {
 	exiter.Exitf(1, "Error: %s\n", msg)
 }
 
-// Err is a utility function which prints an error message and terminates
-// the application if it is passed an error.
-func Err(err interface{}) {
-	defaultExiter.Err(err)
+// FromCmd creates a command exiter from the specified command, using the
+// command's configured output as the exiter output writer.
+func FromCmd(cmd *cobra.Command) Exiter {
+	return &commandExiter{
+		cmd.OutOrStderr(),
+	}
 }

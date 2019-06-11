@@ -19,11 +19,14 @@ package context
 import (
 	"fmt"
 	"io"
+	"sort"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
+	"github.com/vapor-ware/synse-cli/pkg/utils/sortable"
 )
 
 func init() {
@@ -50,17 +53,18 @@ var cmdCurrent = &cobra.Command{
 	},
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
 		var ctxType string
 		if len(args) != 0 {
 			ctxType = args[0]
 		}
-
-		exitutil.Err(getCurrentContext(cmd.OutOrStdout(), ctxType))
+		exiter.Err(getCurrentContext(cmd.OutOrStdout(), ctxType))
 	},
 }
 
@@ -79,13 +83,24 @@ func getCurrentContext(out io.Writer, ctxType string) error {
 		return fmt.Errorf("no current context is set (see 'synse context set')")
 	}
 
-	if ctxType != "" && currentContexts[ctxType] == nil {
-		return fmt.Errorf("no current context is set for type '%s' (see 'synse context set')", ctxType)
+	var ctxs []config.ContextRecord
+
+	if ctxType != "" {
+		c, ok := currentContexts[ctxType]
+		if !ok {
+			return fmt.Errorf("no current context is set for type '%s' (see 'synse context set')", ctxType)
+		}
+		ctxs = append(ctxs, *c)
+	} else {
+		for _, v := range currentContexts {
+			ctxs = append(ctxs, *v)
+		}
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
 	printer.SetRowFunc(contextRowFunc)
 
-	return printer.Write(currentContexts)
+	sort.Sort(sortable.ContextRecords(ctxs))
+	return printer.Write(ctxs)
 }

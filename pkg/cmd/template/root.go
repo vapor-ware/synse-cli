@@ -21,12 +21,6 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 )
 
-var exitutil utils.Exiter
-
-func init() {
-	exitutil = &utils.DefaultExiter{}
-}
-
 // New returns a new instance of the 'template' command.
 func New() *cobra.Command {
 	cmd := &cobra.Command{

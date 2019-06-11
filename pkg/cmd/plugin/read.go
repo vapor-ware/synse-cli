@@ -22,6 +22,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -29,6 +30,7 @@ func init() {
 	cmdRead.Flags().BoolVarP(&flagNoHeader, "no-header", "n", false, "do not print out column headers")
 	cmdRead.Flags().BoolVarP(&flagJSON, "json", "", false, "print output as JSON")
 	cmdRead.Flags().BoolVarP(&flagYaml, "yaml", "", false, "print output as YAML")
+	cmdRead.Flags().StringSliceVarP(&flagTags, "tag", "t", []string{}, "specify tags to use as device selectors")
 }
 
 var cmdRead = &cobra.Command{
@@ -45,12 +47,19 @@ var cmdRead = &cobra.Command{
 		see the data in its entirety, use the JSON or YAML output formats.
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
-		// Error out if multiple output formats are specified.
-		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+		exiter := exit.FromCmd(cmd)
+
+		// Error out if device IDs and tag selectors are both specified.
+		if len(args) != 0 && len(flagTags) != 0 {
+			exiter.Err("cannot specify device IDs and device tags together")
 		}
 
-		exitutil.Err(pluginRead(cmd.OutOrStdout(), args))
+		// Error out if multiple output formats are specified.
+		if flagJSON && flagYaml {
+			exiter.Err("cannot use multiple formatting flags at once")
+		}
+
+		exiter.Err(pluginRead(cmd.OutOrStdout(), args))
 	},
 }
 
@@ -67,8 +76,19 @@ func pluginRead(out io.Writer, devices []string) error {
 	var readings []*synse.V3Reading
 
 	if len(devices) == 0 {
+		var tags []*synse.V3Tag
+		for _, t := range utils.NormalizeTags(flagTags) {
+			tag, err := utils.StringToTag(t)
+			if err != nil {
+				return err
+			}
+			tags = append(tags, tag)
+		}
+
 		stream, err := client.Read(ctx, &synse.V3ReadRequest{
-			Selector: &synse.V3DeviceSelector{},
+			Selector: &synse.V3DeviceSelector{
+				Tags: tags,
+			},
 		})
 		if err != nil {
 			return err
@@ -109,10 +129,11 @@ func pluginRead(out io.Writer, devices []string) error {
 	}
 
 	if len(readings) == 0 {
-		exitutil.Exitf(0, "No readings found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(pluginReadingRowFunc)
 

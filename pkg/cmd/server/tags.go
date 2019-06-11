@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	"github.com/vapor-ware/synse-client-go/synse/scheme"
 )
 
@@ -46,17 +47,19 @@ var cmdTags = &cobra.Command{
 		<underscore>https://vapor-ware.github.io/synse-server/#tags</>
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
-		exitutil.Err(serverTags(cmd.OutOrStdout()))
+		exiter.Err(serverTags(cmd.OutOrStdout()))
 	},
 }
 
 func serverTags(out io.Writer) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
@@ -70,7 +73,7 @@ func serverTags(out io.Writer) error {
 	}
 
 	if len(response) == 0 {
-		exitutil.Exitf(0, "No tags found.")
+		return nil
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)

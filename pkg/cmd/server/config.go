@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
 func init() {
@@ -40,12 +41,12 @@ var cmdConfig = &cobra.Command{
 		<underscore>https://vapor-ware.github.io/synse-server/#config</>
 	`),
 	Run: func(cmd *cobra.Command, args []string) {
-		exitutil.Err(serverConfig(cmd.OutOrStdout()))
+		exit.FromCmd(cmd).Err(serverConfig(cmd.OutOrStdout()))
 	},
 }
 
 func serverConfig(out io.Writer) error {
-	client, err := utils.NewSynseHTTPClient()
+	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}

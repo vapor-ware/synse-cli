@@ -1,0 +1,10 @@
+- name: plugin-ctx
+  type: plugin
+  context:
+    address: foo/bar
+    client_cert: /tmp/test/dir
+- name: server-ctx
+  type: server
+  context:
+    address: 0.0.0.0
+    client_cert: /tmp/test/dir

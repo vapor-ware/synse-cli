@@ -18,10 +18,12 @@ package plugin
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 )
 
@@ -55,9 +57,11 @@ var cmdWrite = &cobra.Command{
 	`),
 	Args: cobra.RangeArgs(2, 3),
 	Run: func(cmd *cobra.Command, args []string) {
+		exiter := exit.FromCmd(cmd)
+
 		// Error out if multiple output formats are specified.
 		if flagJSON && flagYaml {
-			exitutil.Err("cannot use multiple formatting flags at once")
+			exiter.Err("cannot use multiple formatting flags at once")
 		}
 
 		device := args[0]
@@ -68,9 +72,9 @@ var cmdWrite = &cobra.Command{
 		}
 
 		if flagWait {
-			exitutil.Err(pluginWriteSync(cmd.OutOrStdout(), device, action, data))
+			exiter.Err(pluginWriteSync(cmd.OutOrStdout(), device, action, data))
 		} else {
-			exitutil.Err(pluginWriteAsync(cmd.OutOrStdout(), device, action, data))
+			exiter.Err(pluginWriteAsync(cmd.OutOrStdout(), device, action, data))
 		}
 	},
 }
@@ -111,10 +115,11 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 	}
 
 	if len(txns) == 0 {
-		exitutil.Fatal("failed device write")
+		return fmt.Errorf("failed devie write")
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("TRANSACTION", "ACTION", "DATA", "DEVICE")
 	printer.SetRowFunc(pluginTransactionInfoRowFunc)
 
@@ -157,10 +162,11 @@ func pluginWriteSync(out io.Writer, device, action, data string) error {
 	}
 
 	if len(txns) == 0 {
-		exitutil.Fatal("failed device write")
+		return fmt.Errorf("failed device write")
 	}
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
+	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
 

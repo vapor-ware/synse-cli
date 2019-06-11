@@ -25,7 +25,10 @@ import (
 func contextRowFunc(data interface{}) ([]interface{}, error) {
 	i, ok := data.(config.ContextRecord)
 	if !ok {
-		return nil, fmt.Errorf("invalid row data")
+		return nil, fmt.Errorf("invalid row data: %T", data)
+	}
+	if i == (config.ContextRecord{}) {
+		return nil, fmt.Errorf("got empty context record")
 	}
 
 	isCurrent := " "

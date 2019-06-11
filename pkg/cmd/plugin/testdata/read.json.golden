@@ -1,0 +1,15 @@
+[
+  {
+    "id": "123",
+    "timestamp": "2019-04-22T13:30:00Z",
+    "type": "faked",
+    "deviceType": "faked",
+    "context": {
+      "foo": "bar"
+    },
+    "unit": {},
+    "Value": {
+      "Float64Value": 23
+    }
+  }
+]

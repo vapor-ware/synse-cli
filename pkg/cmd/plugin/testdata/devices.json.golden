@@ -1,0 +1,21 @@
+[
+  {
+    "timestamp": "2019-04-22T13:30:00Z",
+    "id": "111-222-333",
+    "type": "testdevice",
+    "plugin": "123345",
+    "info": "foo bar",
+    "alias": "faked",
+    "metadata": {
+      "123": "456",
+      "abc": "def"
+    },
+    "tags": [
+      {
+        "namespace": "fake",
+        "annotation": "test",
+        "label": "device"
+      }
+    ]
+  }
+]

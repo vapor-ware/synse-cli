@@ -25,13 +25,10 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/cmd/template"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
+	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
 )
 
-var exitutil utils.Exiter
-
 func init() {
-	exitutil = &utils.DefaultExiter{}
-
 	// Set the logging level to panic, which effectively disables logging.
 	// It can be enabled with the debug flag.
 	log.SetLevel(log.PanicLevel)
@@ -39,7 +36,16 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&flagDebug, "debug", "d", false, "enable debug logging")
 }
 
-var flagDebug bool
+var (
+	flagDebug  bool
+	flagSimple bool
+)
+
+// resetFlags resets the flag values. This is useful for tests.
+func resetFlags() {
+	flagDebug = false
+	flagSimple = false
+}
 
 // rootCmd is the root command for synse.
 var rootCmd = &cobra.Command{
@@ -63,12 +69,12 @@ var rootCmd = &cobra.Command{
 		}
 
 		// Load CLI config from file prior to running any command.
-		exitutil.Err(config.Load())
+		exit.FromCmd(cmd).Err(config.Load())
 	},
 
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
 		// Persist the CLI config to file after running any command.
-		exitutil.Err(config.Persist())
+		exit.FromCmd(cmd).Err(config.Persist())
 	},
 }
 
