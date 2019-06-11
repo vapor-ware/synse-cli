@@ -46,3 +46,88 @@ var cmdCompletion = &cobra.Command{
 		)
 	},
 }
+
+const bashCompletionFunc = `
+__synse_list_ctxs() {
+	local synse_output
+	if synse_output=$(synse context list --no-header 2>/dev/null); then
+		out=($(echo "$synse_output" | awk '{print $2}'))
+		COMPREPLY=( $( compgen -W "${out[*]}" -- "$cur" ) )
+	fi
+}
+
+__synse_server_list_devices() {
+	local synse_output
+	if synse_output=$(synse server scan --no-header 2>/dev/null); then
+		out=($(echo "$synse_output" | awk '{print $1}'))
+		COMPREPLY=( $( compgen -W "${out[*]}" -- "$cur" ) )
+	fi
+}
+
+__synse_server_list_txns() {
+	local synse_output
+	if synse_output=$(synse server transaction --no-header 2>/dev/null); then
+		out=($(echo "$synse_output" | awk '{print $1}'))
+		COMPREPLY=( $( compgen -W "${out[*]}" -- "$cur" ) )
+	fi
+}
+
+__synse_server_list_plugins() {
+	local synse_output
+	if synse_output=$(synse server plugins list --no-header 2>/dev/null); then
+		out=($(echo "$synse_output" | awk '{print $2}'))
+		COMPREPLY=( $( compgen -W "${out[*]}" -- "$cur" ) )
+	fi
+}
+
+__synse_plugin_list_devices() {
+	local synse_output
+	if synse_output=$(synse plugin devices --no-header 2>/dev/null); then
+		out=($(echo "$synse_output" | awk '{print $1}'))
+		COMPREPLY=( $( compgen -W "${out[*]}" -- "$cur" ) )
+	fi
+}
+
+__synse_plugin_list_txns() {
+	local synse_output
+	if synse_output=$(synse plugin transaction --no-header 2>/dev/null); then
+		out=($(echo "$synse_output" | awk '{print $1}'))
+		COMPREPLY=( $( compgen -W "${out[*]}" -- "$cur" ) )
+	fi
+}
+
+__custom_func() {
+	case ${last_command} in 
+		synse_server_read | \
+		synse_server_info | \
+		synse_server_write)
+			__synse_server_list_devices
+			return
+			;;
+		synse_server_transaction)
+			__synse_server_list_txns
+			return
+			;;
+		synse_server_plugins_info)
+			__synse_server_list_plugins
+			return
+			;;
+		synse_context_remove | \
+		synse_context_set)
+			__synse_list_ctxs
+			return
+			;;
+		synse_plugin_read | \
+		synse_plugin_write)
+			__synse_plugin_list_devices
+			return
+			;;
+		synse_plugin_transaction)
+			__synse_plugin_list_txns
+			return
+			;;
+		*)
+			;;
+	esac
+}
+`
