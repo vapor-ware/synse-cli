@@ -17,33 +17,22 @@
 package cmd
 
 import (
+	"bytes"
 	"testing"
 
-	"github.com/vapor-ware/synse-cli/internal/test"
+	"github.com/stretchr/testify/assert"
+	"github.com/vapor-ware/synse-cli/internal/golden"
 	"github.com/vapor-ware/synse-cli/pkg"
 )
 
-func TestCmdVersion_simple(t *testing.T) {
+func TestDisplayVersion_simple(t *testing.T) {
 	defer resetFlags()
 
 	pkg.Version = "3.0.0"
+	flagSimple = true
 
-	result := test.Cmd(cmdVersion).WithRoot("synse").Args(
-		"-s",
-	).Run(t)
-	result.AssertNoErr()
-	result.AssertGolden("version.simple.golden")
-
-}
-
-func TestCmdVersion_simple2(t *testing.T) {
-	defer resetFlags()
-
-	pkg.Version = "3.0.0"
-
-	result := test.Cmd(cmdVersion).WithRoot("synse").Args(
-		"--simple",
-	).Run(t)
-	result.AssertNoErr()
-	result.AssertGolden("version.simple.golden")
+	out := bytes.Buffer{}
+	err := displayVersion(&out)
+	assert.NoError(t, err)
+	golden.Check(t, out.Bytes(), "version.simple.golden")
 }
