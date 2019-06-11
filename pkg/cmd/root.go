@@ -36,7 +36,16 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&flagDebug, "debug", "d", false, "enable debug logging")
 }
 
-var flagDebug bool
+var (
+	flagDebug  bool
+	flagSimple bool
+)
+
+// resetFlags resets the flag values. This is useful for tests.
+func resetFlags() {
+	flagDebug = false
+	flagSimple = false
+}
 
 // rootCmd is the root command for synse.
 var rootCmd = &cobra.Command{

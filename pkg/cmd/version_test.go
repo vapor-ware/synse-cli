@@ -17,41 +17,33 @@
 package cmd
 
 import (
-	"bytes"
-	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/vapor-ware/synse-cli/internal/golden"
+	"github.com/vapor-ware/synse-cli/internal/test"
 	"github.com/vapor-ware/synse-cli/pkg"
 )
 
 func TestCmdVersion_simple(t *testing.T) {
-	assert.Equal(t, 1, 1)
-
-	out := bytes.Buffer{}
-	cmdVersion.SetOutput(&out)
+	defer resetFlags()
 
 	pkg.Version = "3.0.0"
 
-	os.Args = []string{"synse", "version", "-s"}
-	err := cmdVersion.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "version.simple.golden")
+	result := test.Cmd(cmdVersion).WithRoot("synse").Args(
+		"-s",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("version.simple.golden")
 
 }
 
 func TestCmdVersion_simple2(t *testing.T) {
-	assert.Equal(t, 1, 1)
-
-	out := bytes.Buffer{}
-	cmdVersion.SetOutput(&out)
+	defer resetFlags()
 
 	pkg.Version = "3.0.0"
 
-	os.Args = []string{"synse", "version", "--simple"}
-	err := cmdVersion.Execute()
-	assert.NoError(t, err)
-	golden.Check(t, out.Bytes(), "version.simple.golden")
-
+	result := test.Cmd(cmdVersion).WithRoot("synse").Args(
+		"--simple",
+	).Run(t)
+	result.AssertNoErr()
+	result.AssertGolden("version.simple.golden")
 }

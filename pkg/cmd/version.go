@@ -31,8 +31,6 @@ func init() {
 	cmdVersion.Flags().BoolVarP(&flagSimple, "simple", "s", false, "display only the version number")
 }
 
-var flagSimple bool
-
 var cmdVersion = &cobra.Command{
 	Use:   "version",
 	Short: "Display version information for synse",

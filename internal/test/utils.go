@@ -52,6 +52,7 @@ func (r *Result) AssertExited() {
 
 type Builder struct {
 	cmd  *cobra.Command
+	root string
 	name string
 	args []string
 	t    *testing.T
@@ -59,6 +60,11 @@ type Builder struct {
 
 func (b *Builder) Args(args ...string) *Builder {
 	b.args = append(b.args, args...)
+	return b
+}
+
+func (b *Builder) WithRoot(root string) *Builder {
+	b.root = root
 	return b
 }
 
@@ -100,7 +106,13 @@ func (b *Builder) Run(t *testing.T) (result *Result) {
 		}
 	}()
 
-	os.Args = b.args
+	var args []string
+	if b.root != "" {
+		args = append(args, b.root)
+	}
+	args = append(args, b.args...)
+
+	os.Args = args
 	err := b.cmd.Execute()
 	result = &Result{
 		t:      b.t,
