@@ -62,7 +62,7 @@ var rootCmd = &cobra.Command{
 
 		<underscore>https://github.com/vapor-ware/synse</>
 	`),
-
+	BashCompletionFunction: bashCompletionFunc,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if flagDebug {
 			log.SetLevel(log.DebugLevel)
