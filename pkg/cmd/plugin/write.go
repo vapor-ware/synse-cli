@@ -122,6 +122,7 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 	printer.SetIntermediateYaml()
 	printer.SetHeader("TRANSACTION", "ACTION", "DATA", "DEVICE")
 	printer.SetRowFunc(pluginTransactionInfoRowFunc)
+	printer.SetTransformFunc(pluginWriteDataTransformer)
 
 	return printer.Write(txns)
 }
@@ -169,6 +170,7 @@ func pluginWriteSync(out io.Writer, device, action, data string) error {
 	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
+	printer.SetTransformFunc(pluginWriteDataTransformer)
 
 	return printer.Write(txns)
 }

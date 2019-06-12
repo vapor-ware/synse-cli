@@ -85,9 +85,31 @@ func pluginReadingRowFunc(data interface{}) ([]interface{}, error) {
 		symbol = "%%"
 	}
 
+	var value interface{}
+	switch i.Value.(type) {
+	case *synse.V3Reading_StringValue:
+		value = i.GetStringValue()
+	case *synse.V3Reading_BoolValue:
+		value = i.GetBoolValue()
+	case *synse.V3Reading_Float32Value:
+		value = i.GetFloat32Value()
+	case *synse.V3Reading_Float64Value:
+		value = i.GetFloat64Value()
+	case *synse.V3Reading_Int32Value:
+		value = i.GetInt32Value()
+	case *synse.V3Reading_Int64Value:
+		value = i.GetInt64Value()
+	case *synse.V3Reading_BytesValue:
+		value = i.GetBytesValue()
+	case *synse.V3Reading_Uint32Value:
+		value = i.GetUint32Value()
+	case *synse.V3Reading_Uint64Value:
+		value = i.GetUint64Value()
+	}
+
 	return []interface{}{
 		i.Id,
-		i.Value,
+		value,
 		symbol,
 		i.Type,
 		i.Timestamp,

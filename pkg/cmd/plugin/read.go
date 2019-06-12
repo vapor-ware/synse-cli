@@ -136,6 +136,7 @@ func pluginRead(out io.Writer, devices []string) error {
 	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(pluginReadingRowFunc)
+	printer.SetTransformFunc(pluginReadTransformer)
 
 	return printer.Write(readings)
 }

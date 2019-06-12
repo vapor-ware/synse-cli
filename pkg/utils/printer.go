@@ -48,10 +48,19 @@ type Printer struct {
 	// otherwise be included in the YAML output.
 	nativeYaml bool
 
-	out io.Writer
-
+	// rowFunc is the function that is used to format data rows when
+	// printing out in tabular form.
 	rowFunc func(data interface{}) ([]interface{}, error)
-	header  []string
+
+	// transformFunc is an optional function which may be specified which
+	// causes an additional step in data marshalling, where the data is marshaled
+	// into a map[string]interface{} and is passed to this function. This function
+	// should transform the data map as seen fit. Afterwards, that data will be
+	// printed out. Note that this only applies to YAML and JSON outputs.
+	transformFunc func(data map[string]interface{}) error
+
+	header []string
+	out    io.Writer
 }
 
 // NewPrinter creates a new printer to use for output formatting.
@@ -71,12 +80,6 @@ func NewPrinter(out io.Writer, useJSON, useYaml, noHeader bool) *Printer {
 	}
 }
 
-// SetIntermediateYaml configures the printer to marshal to JSON prior to
-// marshalling to YAML. See comment on 'nativeYaml' field for details.
-func (p *Printer) SetIntermediateYaml() {
-	p.nativeYaml = false
-}
-
 // Write writes the data to the Printer's specified output.
 func (p *Printer) Write(data interface{}) error {
 	if p.table {
@@ -92,10 +95,22 @@ func (p *Printer) Write(data interface{}) error {
 	return ErrNoOutputMode
 }
 
+// SetIntermediateYaml configures the printer to marshal to JSON prior to
+// marshalling to YAML. See comment on 'nativeYaml' field for details.
+func (p *Printer) SetIntermediateYaml() {
+	p.nativeYaml = false
+}
+
 // SetRowFunc sets the table row printer function, which specifies which
 // data gets printed in a row of the table.
 func (p *Printer) SetRowFunc(f func(data interface{}) ([]interface{}, error)) {
 	p.rowFunc = f
+}
+
+// SetTransformFunc sets the YAML/JSON data transform function. This is optional
+// and can be used to get data into the proper output format.
+func (p *Printer) SetTransformFunc(f func(data map[string]interface{}) error) {
+	p.transformFunc = f
 }
 
 // SetHeader sets the column header row for tabular formatting.
@@ -146,8 +161,55 @@ func (p *Printer) toTable(data interface{}) error {
 	return nil
 }
 
+// transform takes the data to output, converts it to a map, and passes it to
+// the printer's transform function. This is process is a bit obtuse/hacky, but
+// there are not many other options for rectifying yaml/json output easily.
+func (p *Printer) transform(data interface{}) (interface{}, error) {
+
+	// If the interface data is a slice of data, transform each element
+	// within the slice.
+	if reflect.TypeOf(data).Kind() == reflect.Slice {
+		s := reflect.ValueOf(data)
+		var res []interface{}
+		for i := 0; i < s.Len(); i++ {
+			t, err := p.transform(s.Index(i).Interface())
+			if err != nil {
+				return nil, err
+			}
+			res = append(res, t)
+		}
+		return res, nil
+	}
+
+	// Otherwise, just transform the data as-is.
+	j, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	var transformed map[string]interface{}
+	if err := json.Unmarshal(j, &transformed); err != nil {
+		return nil, err
+	}
+
+	if err = p.transformFunc(transformed); err != nil {
+		return nil, err
+	}
+
+	return transformed, nil
+}
+
 // toJSON prints the data out in JSON format.
 func (p *Printer) toJSON(data interface{}) error {
+	var err error
+
+	if p.transformFunc != nil {
+		data, err = p.transform(data)
+		if err != nil {
+			return err
+		}
+	}
+
 	output, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err
@@ -162,6 +224,13 @@ func (p *Printer) toYAML(data interface{}) error {
 		output []byte
 		err    error
 	)
+
+	if p.transformFunc != nil {
+		data, err = p.transform(data)
+		if err != nil {
+			return err
+		}
+	}
 
 	if p.nativeYaml {
 		output, err = yaml.Marshal(data)

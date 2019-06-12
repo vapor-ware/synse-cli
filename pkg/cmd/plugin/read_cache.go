@@ -105,6 +105,7 @@ func pluginReadCache(out io.Writer) error {
 	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(pluginReadingRowFunc)
+	printer.SetTransformFunc(pluginReadTransformer)
 
 	return printer.Write(readings)
 }
