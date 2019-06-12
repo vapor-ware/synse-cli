@@ -1,6 +1,6 @@
 - context:
     action: foo
-    data: Zm9v
+    data: bar
   device: "987654"
   id: "123456"
   timeout: 30s

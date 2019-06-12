@@ -131,7 +131,7 @@ func TestReadingRowFunc_ok(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, res, 5)
 	assert.Equal(t, res[0], "123")
-	assert.Equal(t, res[1], &synse.V3Reading_Float64Value{Float64Value: 34})
+	assert.Equal(t, res[1], float64(34))
 	assert.Equal(t, res[2], "%%")
 	assert.Equal(t, res[3], "test-type")
 	assert.Equal(t, res[4], "2019-04-22T13:30:00Z")

@@ -1,2 +1,2 @@
 ID    VALUE   UNIT   TYPE    TIMESTAMP
-123   &{23}          faked   2019-04-22T13:30:00Z
+123   23             faked   2019-04-22T13:30:00Z

@@ -123,6 +123,7 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 	printer.SetIntermediateYaml()
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
+	printer.SetTransformFunc(pluginWriteDataTransformer)
 
 	return printer.Write(txns)
 }
