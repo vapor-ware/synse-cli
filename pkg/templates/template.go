@@ -23,13 +23,13 @@ import (
 var (
 	// CmdVersionTemplate is the template string for the version command response.
 	CmdVersionTemplate = heredoc.Doc(`
-	synse:
-	 version     : {{.Version}}
-	 build date  : {{.BuildDate}}
-	 git commit  : {{.Commit}}
-	 git tag     : {{.Tag}}
-	 go version  : {{.GoVersion}}
-	 go compiler : {{.GoCompiler}}
-	 platform    : {{.OS}}/{{.Arch}}
+		synse:
+		 version     : {{.Version}}
+		 build date  : {{.BuildDate}}
+		 git commit  : {{.Commit}}
+		 git tag     : {{.Tag}}
+		 go version  : {{.GoVersion}}
+		 go compiler : {{.GoCompiler}}
+		 platform    : {{.OS}}/{{.Arch}}
 	`)
 )

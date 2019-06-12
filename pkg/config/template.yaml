@@ -1,0 +1,13 @@
+
+metadata:
+  name: some plugin
+  maintainer: vapor io
+  description: An example plugin generated from template.
+  vcs: "https://www.github.com/vapor-ware/some-plugin"
+
+# Is this necessary if we are given the VCS?
+repo:
+  github:
+    org: vapor-ware
+    repo: some-plugin
+
