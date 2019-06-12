@@ -245,6 +245,10 @@ func (f *FakeTransactionsClient) Recv() (*synse.V3TransactionStatus, error) {
 		Updated: "2019-04-22T13:30:00Z",
 		Timeout: "30s",
 		Status:  synse.WriteStatus_DONE,
+		Context: &synse.V3WriteData{
+			Action: "foo",
+			Data:   []byte("bar"),
+		},
 	}, nil
 }
 
@@ -285,7 +289,7 @@ func (f *FakeWriteClient) Recv() (*synse.V3WriteTransaction, error) {
 		Timeout: "30s",
 		Context: &synse.V3WriteData{
 			Action: "foo",
-			Data:   []byte("foo"),
+			Data:   []byte("bar"),
 		},
 	}, nil
 }
