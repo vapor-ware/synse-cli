@@ -14,7 +14,7 @@ builds:
       - -X github.com/vapor-ware/synse-cli/pkg.BuildDate={{ .Date }}
       - -X github.com/vapor-ware/synse-cli/pkg.Commit={{ .ShortCommit }}
       - -X github.com/vapor-ware/synse-cli/pkg.Tag={{ .Tag }}
-      - -X github.com/vapor-ware/synse-cli/pkg.GoVersion={{ .Env.GOVERSION }}
+      - -X github.com/vapor-ware/synse-cli/pkg.GoVersion={{ .Env.GOLANG_VERSION }}
       - -X github.com/vapor-ware/synse-cli/pkg.Version={{ .Version }}
     goos:
       - linux
