@@ -26,7 +26,6 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
-	"github.com/vapor-ware/synse-cli/pkg/utils/sortable"
 )
 
 func init() {
@@ -101,6 +100,6 @@ func getCurrentContext(out io.Writer, ctxType string) error {
 	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
 	printer.SetRowFunc(contextRowFunc)
 
-	sort.Sort(sortable.ContextRecords(ctxs))
+	sort.Sort(Records(ctxs))
 	return printer.Write(ctxs)
 }

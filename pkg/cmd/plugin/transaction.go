@@ -19,6 +19,7 @@ package plugin
 import (
 	"context"
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -125,5 +126,6 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 	printer.SetRowFunc(pluginTransactionStatusRowFunc)
 	printer.SetTransformFunc(pluginWriteDataTransformer)
 
+	sort.Sort(Transactions(txns))
 	return printer.Write(txns)
 }

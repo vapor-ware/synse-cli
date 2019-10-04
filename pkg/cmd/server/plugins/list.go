@@ -18,6 +18,7 @@ package plugins
 
 import (
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -74,5 +75,6 @@ func serverPluginList(out io.Writer) error {
 	printer.SetHeader("ACTIVE", "ID", "VERSION", "TAG", "DESCRIPTION")
 	printer.SetRowFunc(serverPluginSummaryRowFunc)
 
+	sort.Sort(PluginSummaries(response))
 	return printer.Write(response)
 }
