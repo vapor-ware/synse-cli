@@ -18,6 +18,7 @@ package server
 
 import (
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -89,5 +90,6 @@ func serverReadCache(out io.Writer) error {
 	printer.SetHeader("ID", "VALUE", "UNIT", "TYPE", "TIMESTAMP")
 	printer.SetRowFunc(serverReadRowFunc)
 
+	sort.Sort(Readings(response))
 	return printer.Write(response)
 }

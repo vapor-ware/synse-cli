@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package sortable
+package context
 
 import (
 	"sort"
@@ -24,7 +24,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/config"
 )
 
-func TestContextRecords_Sort(t *testing.T) {
+func TestRecords_Sort(t *testing.T) {
 	cases := []struct {
 		in  []config.ContextRecord
 		out []config.ContextRecord
@@ -106,7 +106,7 @@ func TestContextRecords_Sort(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		sort.Sort(ContextRecords(c.in))
+		sort.Sort(Records(c.in))
 		assert.Equal(t, c.in, c.out)
 	}
 }

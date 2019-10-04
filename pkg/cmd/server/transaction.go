@@ -18,6 +18,7 @@ package server
 
 import (
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -91,6 +92,8 @@ func serverTransaction(out io.Writer, transactions []string) error {
 		printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 		printer.SetHeader("ID")
 		printer.SetRowFunc(serverTransactionsRowFunc)
+
+		sort.Strings(txns)
 		return printer.Write(txns)
 	}
 
@@ -111,5 +114,6 @@ func serverTransaction(out io.Writer, transactions []string) error {
 	printer.SetHeader("ID", "STATUS", "MESSAGE", "CREATED", "UPDATED")
 	printer.SetRowFunc(serverTransactionRowFunc)
 
+	sort.Sort(Transactions(txns))
 	return printer.Write(txns)
 }

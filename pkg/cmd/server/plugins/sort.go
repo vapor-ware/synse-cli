@@ -14,34 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-package sortable
+package plugins
 
-import "github.com/vapor-ware/synse-cli/pkg/config"
+import "github.com/vapor-ware/synse-client-go/synse/scheme"
 
-// ContextRecords implements sort.Interface based on the default
-// of the Type, Name, and Address fields.
-type ContextRecords []config.ContextRecord
+// PluginSummaries implements sort.Interface for PluginMeta responses
+// from the Synse Server client. It sorts based on plugin ID.
+type PluginSummaries []*scheme.PluginMeta
 
-func (r ContextRecords) Len() int {
-	return len(r)
+func (s PluginSummaries) Len() int {
+	return len(s)
 }
 
-func (r ContextRecords) Less(i, j int) bool {
-	if r[i].Type < r[j].Type {
-		return true
-	}
-	if r[i].Type > r[j].Type {
-		return false
-	}
-	if r[i].Name < r[j].Name {
-		return true
-	}
-	if r[i].Name > r[j].Name {
-		return false
-	}
-	return r[i].Context.Address < r[j].Context.Address
+func (s PluginSummaries) Less(i, j int) bool {
+	return s[i].ID < s[j].ID
 }
 
-func (r ContextRecords) Swap(i, j int) {
-	r[i], r[j] = r[j], r[i]
+func (s PluginSummaries) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
