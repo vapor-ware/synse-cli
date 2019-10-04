@@ -19,6 +19,7 @@ package plugin
 import (
 	"context"
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -105,5 +106,6 @@ func pluginDevices(out io.Writer) error {
 	printer.SetHeader("ID", "ALIAS", "TYPE", "INFO", "PLUGIN")
 	printer.SetRowFunc(pluginDeviceRowFunc)
 
+	sort.Sort(Devices(devices))
 	return printer.Write(devices)
 }

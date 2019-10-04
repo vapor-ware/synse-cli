@@ -18,6 +18,7 @@ package server
 
 import (
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -96,5 +97,6 @@ func serverScan(out io.Writer) error {
 	printer.SetHeader("DEVICE_ID", "TYPE", "INFO")
 	printer.SetRowFunc(serverScanRowFunc)
 
+	sort.Sort(DeviceSummaries(response))
 	return printer.Write(response)
 }

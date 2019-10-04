@@ -19,6 +19,7 @@ package plugin
 import (
 	"context"
 	"io"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -107,5 +108,6 @@ func pluginReadCache(out io.Writer) error {
 	printer.SetRowFunc(pluginReadingRowFunc)
 	printer.SetTransformFunc(pluginReadTransformer)
 
+	sort.Sort(Readings(readings))
 	return printer.Write(readings)
 }

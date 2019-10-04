@@ -24,7 +24,6 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
-	"github.com/vapor-ware/synse-cli/pkg/utils/sortable"
 )
 
 func init() {
@@ -66,6 +65,6 @@ func listContexts(out io.Writer) error {
 	printer.SetHeader("CURRENT", "NAME", "TYPE", "ADDRESS")
 	printer.SetRowFunc(contextRowFunc)
 
-	sort.Sort(sortable.ContextRecords(contexts))
+	sort.Sort(Records(contexts))
 	return printer.Write(contexts)
 }
