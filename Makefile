@@ -3,7 +3,7 @@
 #
 
 BIN_NAME    := synse
-BIN_VERSION := 3.0.0-alpha.1
+BIN_VERSION := 3.0.0-alpha.2
 
 GIT_COMMIT  ?= $(shell git rev-parse --short HEAD 2> /dev/null || true)
 GIT_TAG     ?= $(shell git describe --tags 2> /dev/null || true)
