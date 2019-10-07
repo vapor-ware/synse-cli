@@ -1,5 +1,7 @@
 module github.com/vapor-ware/synse-cli
 
+go 1.13
+
 require (
 	bou.ke/monkey v1.0.1
 	github.com/MakeNowJust/heredoc v0.0.0-20171113091838-e9091a26100e
