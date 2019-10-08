@@ -15,20 +15,34 @@ with Synse easy, and enabled rapid debugging and development against various Syn
 
 ## Installing
 
-The Synse CLI can be installed in a number of ways, choose whichever is most convenient for you.
+### Homebrew
+
+The Synse CLI may be install via [Homebrew](https://brew.sh/). First, add the vapor-ware tap
+
+```
+brew tap vapor-ware/formula
+```
+
+Then, you can install the CLI
+
+```
+brew install vapor-ware/formula/synse
+```
 
 ### Precompiled Binaries
 
-A set of precompiled binaries can be obtained as artifacts on GitHub [releases](https://github.com/vapor-ware/synse-cli/releases)
-for the project. Download the binary and place it on you PATH, e.g. if running on macOS:
+Precompiled binaries are available as artifacts on GitHub [releases](https://github.com/vapor-ware/synse-cli/releases).
+To download the binary and place it on your $PATH:
 
 ```shell
-# The version of the CLI to download.
-export SYNSE_CLI_VERSION="3.0.0"
+# Set variables for download
+export CLI_VERSION="3.0.0"
+export CLI_OS="darwin"
+export CLI_ARCH="amd64"
 
-# Download via wget and install onto your PATH
+# Download and install the CLI
 wget \
-  https://github.com/vapor-ware/synse-cli/releases/download/${SYNSE_CLI_VERSION}/synse_darwin_amd64 \
+  https://github.com/vapor-ware/synse-cli/releases/download/${CLI_VERSION}/synse-cli_${CLI_VERSION}_${CLI_OS}_${CLI_ARCH}.tar.gz \
   -O /usr/local/bin/synse
 
 # Make the binary executable
