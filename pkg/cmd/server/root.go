@@ -25,16 +25,17 @@ import (
 // Define variables which hold values passed in via flags. These are
 // defined here because they are used by multiple commands in the package.
 var (
-	flagNoHeader bool
-	flagJSON     bool
-	flagYaml     bool
-	flagForce    bool
-	flagIds      bool
-	flagWait     bool
-	flagNS       string
-	flagStart    string
-	flagEnd      string
-	flagTags     []string
+	flagNoHeader  bool
+	flagJSON      bool
+	flagYaml      bool
+	flagForce     bool
+	flagIds       bool
+	flagWait      bool
+	flagNS        string
+	flagStart     string
+	flagEnd       string
+	flagTags      []string
+	flagDeviceIds []string
 
 	flagTLSCert string
 	flagContext string
@@ -82,6 +83,7 @@ func New() *cobra.Command {
 		cmdReadCache,
 		cmdScan,
 		cmdStatus,
+		cmdStream,
 		cmdTags,
 		cmdTransaction,
 		cmdVersion,

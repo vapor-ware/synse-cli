@@ -89,7 +89,7 @@ func serverRead(out io.Writer, devices []string) error {
 	var readings []*scheme.Read
 	if len(devices) != 0 {
 		for _, device := range devices {
-			response, err := client.ReadDevice(device, scheme.ReadOptions{})
+			response, err := client.ReadDevice(device)
 			if err != nil {
 				return err
 			}

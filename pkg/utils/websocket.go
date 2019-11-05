@@ -22,37 +22,38 @@ import (
 	"github.com/vapor-ware/synse-client-go/synse"
 )
 
-// Errors relating to HTTP client creation.
+// Errors relating to WebSocket client creation.
 var (
-	ErrNoCurrentServerCtx = errors.New("failed creating server HTTP client: no current server context")
-	ErrInvalidServerCtx   = errors.New("failed creating server HTTP client: specified context does not exist")
-	ErrNotAServerCtx      = errors.New("failed creating server HTTP client: specified context is not a server context")
+	ErrWSNoCurrentServerCtx = errors.New("failed to create server WebSocket client: no current server context")
+	ErrWSInvalidServerCtx   = errors.New("failed to create server WebSocket client: specified context does not exist")
+	ErrWSNotAServerCtx      = errors.New("failed to create server WebSocket client: specified context is not a server context")
 )
 
-// NewSynseHTTPClient creates a new Synse HTTP client for communicating with
-// Synse Server instances.
-func NewSynseHTTPClient(ctx string, certFile string) (synse.Client, error) {
+// NewSynseWebsocketClient creates a new Synse WebSocket client for communicating with
+// Synse Server over its WebSocket API. The CLI only uses this client for WebSocket-only
+// features, such as streaming live readings.
+func NewSynseWebsocketClient(ctx string, certFile string) (synse.Client, error) {
 	var serverContext *config.ContextRecord
 
 	if ctx == "" {
-		// If no specific context is specified, get the current context.
+		// If no specific context is given, get the current context.
 		currentContexts := config.GetCurrentContext()
 		serverContext = currentContexts["server"]
 		if serverContext == nil {
-			return nil, ErrNoCurrentServerCtx
+			return nil, ErrWSNoCurrentServerCtx
 		}
 	} else {
-		// Get the named context.
+		// Get the names context.
 		serverContext = config.GetContext(ctx)
 		if serverContext == nil {
-			return nil, ErrInvalidServerCtx
+			return nil, ErrWSInvalidServerCtx
 		}
 		if serverContext.Type != "server" {
-			return nil, ErrNotAServerCtx
+			return nil, ErrWSNotAServerCtx
 		}
 	}
 
-	return synse.NewHTTPClientV3(&synse.Options{
+	return synse.NewWebSocketClientV3(&synse.Options{
 		Address: serverContext.Context.Address,
 		TLS: synse.TLSOptions{
 			CertFile: certFile,
