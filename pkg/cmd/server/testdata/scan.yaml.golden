@@ -7,6 +7,7 @@
   - system/id:111-222-333
   - system/type:faked
   - vapor/fake
+  metadata: {}
 - id: 444-555-666
   alias: fake-device2
   info: a fake device
@@ -16,3 +17,4 @@
   - system/id:444-555-666
   - system/type:faked
   - vapor/fake
+  metadata: {}

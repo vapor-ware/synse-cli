@@ -3,7 +3,6 @@
     "id": "abc-def",
     "device": "111-222-333",
     "context": {
-      "transaction": "",
       "action": "foo",
       "data": "bar"
     },
@@ -13,7 +12,6 @@
     "id": "fed-cba",
     "device": "111-222-333",
     "context": {
-      "transaction": "",
       "action": "foo",
       "data": "baz"
     },

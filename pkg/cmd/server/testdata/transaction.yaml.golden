@@ -2,7 +2,6 @@
   timeout: 10s
   device: 111-222-333
   context:
-    transaction: ""
     action: foo
     data: bar
   status: DONE
