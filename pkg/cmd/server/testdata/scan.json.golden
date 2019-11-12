@@ -9,7 +9,8 @@
       "system/id:111-222-333",
       "system/type:faked",
       "vapor/fake"
-    ]
+    ],
+    "metadata": null
   },
   {
     "id": "444-555-666",
@@ -21,6 +22,7 @@
       "system/id:444-555-666",
       "system/type:faked",
       "vapor/fake"
-    ]
+    ],
+    "metadata": null
   }
 ]

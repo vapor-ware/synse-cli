@@ -74,12 +74,21 @@ func serverReadCache(out io.Writer) error {
 		return err
 	}
 
-	response, err := client.ReadCache(scheme.ReadCacheOptions{
-		Start: flagStart,
-		End:   flagEnd,
-	})
+	readings := make(chan *scheme.Read, 5)
+	err = client.ReadCache(
+		scheme.ReadCacheOptions{
+			Start: flagStart,
+			End:   flagEnd,
+		},
+		readings,
+	)
 	if err != nil {
 		return err
+	}
+
+	var response []*scheme.Read
+	for reading := range readings {
+		response = append(response, reading)
 	}
 
 	if len(response) == 0 {

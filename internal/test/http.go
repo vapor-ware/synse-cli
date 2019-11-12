@@ -226,7 +226,7 @@ func (c *FakeHTTPClientV3) Info(string) (*scheme.Info, error) {
 				},
 			},
 		},
-		Output: []scheme.OutputOptions{},
+		Outputs: []scheme.OutputOptions{},
 	}, nil
 }
 
@@ -266,7 +266,7 @@ func (c *FakeHTTPClientV3) Read(scheme.ReadOptions) ([]*scheme.Read, error) {
 	}, nil
 }
 
-func (c *FakeHTTPClientV3) ReadDevice(string, scheme.ReadOptions) ([]*scheme.Read, error) {
+func (c *FakeHTTPClientV3) ReadDevice(string) ([]*scheme.Read, error) {
 	if c.cmdError {
 		return nil, ErrFakeClient
 	}
@@ -302,11 +302,13 @@ func (c *FakeHTTPClientV3) ReadDevice(string, scheme.ReadOptions) ([]*scheme.Rea
 	}, nil
 }
 
-func (c *FakeHTTPClientV3) ReadCache(scheme.ReadCacheOptions) ([]*scheme.Read, error) {
+func (c *FakeHTTPClientV3) ReadCache(opts scheme.ReadCacheOptions, readings chan<- *scheme.Read) error {
 	if c.cmdError {
-		return nil, ErrFakeClient
+		return ErrFakeClient
 	}
-	return []*scheme.Read{
+	defer close(readings)
+
+	vals := []*scheme.Read{
 		{
 			Device:     "111-222-333",
 			DeviceType: "faked",
@@ -335,7 +337,44 @@ func (c *FakeHTTPClientV3) ReadCache(scheme.ReadCacheOptions) ([]*scheme.Read, e
 				"some": "value",
 			},
 		},
-	}, nil
+	}
+
+	for _, r := range vals {
+		readings <- r
+	}
+	return nil
+}
+
+func (c *FakeHTTPClientV3) ReadStream(options scheme.ReadStreamOptions, readings chan<- *scheme.Read, quit chan struct{}) error {
+	if c.cmdError {
+		return ErrFakeClient
+	}
+
+	for {
+		select {
+		case _, open := <-quit:
+			if !open {
+				return nil
+			}
+		default:
+			// do nothing
+		}
+
+		readings <- &scheme.Read{
+			Device:     "111-222-333",
+			DeviceType: "faked",
+			Type:       "fake",
+			Value:      7,
+			Timestamp:  "2019-04-22T13:30:00Z",
+			Unit: scheme.UnitOptions{
+				Name:   "fake unit",
+				Symbol: "fu",
+			},
+			Context: map[string]interface{}{
+				"some": "value",
+			},
+		}
+	}
 }
 
 func (c *FakeHTTPClientV3) WriteAsync(string, []scheme.WriteData) ([]*scheme.Write, error) {

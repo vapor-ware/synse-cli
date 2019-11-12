@@ -12,6 +12,7 @@ plugin:
 cache:
   device:
     ttl: 0
+    rebuild_every: 0
   transaction:
     ttl: 0
 grpc:

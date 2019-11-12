@@ -5,6 +5,7 @@ type: faked
 metadata: {}
 plugin: 123-456-789
 info: some device
+sort_index: 0
 tags:
 - system/id:111-222-333
 - system/type:faked
@@ -15,4 +16,4 @@ capabilities:
   write:
     actions:
     - foo
-output: []
+outputs: []
