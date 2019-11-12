@@ -20,6 +20,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -57,17 +58,20 @@ var cmdList = &cobra.Command{
 }
 
 func serverPluginList(out io.Writer) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.Debug("issuing HTTP plugins request")
 	response, err := client.Plugins()
 	if err != nil {
 		return err
 	}
 
 	if len(response) == 0 {
+		log.Debug("no plugins reported from server")
 		return nil
 	}
 

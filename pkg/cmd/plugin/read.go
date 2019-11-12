@@ -21,6 +21,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -65,6 +66,7 @@ var cmdRead = &cobra.Command{
 }
 
 func pluginRead(out io.Writer, devices []string) error {
+	log.Debug("creating new gRPC client")
 	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -77,6 +79,7 @@ func pluginRead(out io.Writer, devices []string) error {
 	var readings []*synse.V3Reading
 
 	if len(devices) == 0 {
+		log.Debug("no devices specified, reading based on tags")
 		var tags []*synse.V3Tag
 		for _, t := range utils.NormalizeTags(flagTags) {
 			tag, err := utils.StringToTag(t)
@@ -86,6 +89,7 @@ func pluginRead(out io.Writer, devices []string) error {
 			tags = append(tags, tag)
 		}
 
+		log.WithField("tags", tags).Debug("issuing gRPC read request")
 		stream, err := client.Read(ctx, &synse.V3ReadRequest{
 			Selector: &synse.V3DeviceSelector{
 				Tags: tags,
@@ -107,6 +111,7 @@ func pluginRead(out io.Writer, devices []string) error {
 		}
 	} else {
 		for _, device := range devices {
+			log.WithField("id", device).Debug("issuing gRPC read request")
 			stream, err := client.Read(ctx, &synse.V3ReadRequest{
 				Selector: &synse.V3DeviceSelector{
 					Id: device,
@@ -130,6 +135,7 @@ func pluginRead(out io.Writer, devices []string) error {
 	}
 
 	if len(readings) == 0 {
+		log.Debug("no readings reported by plugin")
 		return nil
 	}
 

@@ -69,6 +69,7 @@ type Context struct {
 // Load loads the configuration for the CLI. If a configuration file
 // cannot be found, this will load a new empty Config instance.
 func Load() error {
+	log.Debug("loading cli configuration")
 	v := readConfigFromFile()
 
 	// Use mapstructure.Decode here instead of Viper's built-in Unmarshal
@@ -87,6 +88,7 @@ func Load() error {
 func Persist() error {
 	var configPath = filepath.Join(".", configFile)
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		log.Debug("persisting cli config to HOME directory")
 		configPath = filepath.Join(os.Getenv("HOME"), configFile)
 	} else {
 		return err
@@ -95,12 +97,13 @@ func Persist() error {
 	log.WithFields(log.Fields{
 		"path":   configPath,
 		"config": fmt.Sprintf("%+v", config),
-	}).Debug("Persisting config")
+	}).Debug("persisting config")
 
 	data, err := yaml.Marshal(config)
 	if err != nil {
 		return err
 	}
+	log.Debug("cli configuration persisted")
 	return ioutil.WriteFile(configPath, data, 0644)
 }
 
@@ -140,6 +143,7 @@ func (c *Config) AddContext(ctx *ContextRecord) error {
 	}
 
 	config.Contexts = append(config.Contexts, *ctx)
+	log.WithField("context", ctx.Name).Debug("added context")
 	return nil
 }
 
@@ -155,6 +159,7 @@ func AddContext(ctx *ContextRecord) error {
 // will be cleared.
 func (c *Config) RemoveContext(name string) {
 	if name == "" {
+		log.Debug("no context to remove")
 		return
 	}
 
@@ -174,6 +179,7 @@ func (c *Config) RemoveContext(name string) {
 			delete(c.CurrentContext, context.Type)
 		}
 	}
+	log.WithField("context", name).Debug("removed context")
 }
 
 // RemoveContext removes a context from the default configuration.
@@ -186,6 +192,7 @@ func RemoveContext(name string) {
 func (c *Config) Purge() {
 	c.CurrentContext = map[string]string{}
 	c.Contexts = []ContextRecord{}
+	log.Debug("cli contexts purged")
 }
 
 // Purge removes all contexts from the default configuration.
@@ -223,6 +230,7 @@ func (c *Config) SetCurrentContext(name string) error {
 	}
 
 	c.CurrentContext[context.Type] = context.Name
+	log.WithField("context", name).Debug("set current context")
 	return nil
 }
 
@@ -281,6 +289,6 @@ func readConfigFromFile() *viper.Viper {
 	log.WithFields(log.Fields{
 		"file":     v.ConfigFileUsed(),
 		"settings": v.AllSettings(),
-	}).Debug("loading config")
+	}).Debug("loaded cli configuration")
 	return v
 }

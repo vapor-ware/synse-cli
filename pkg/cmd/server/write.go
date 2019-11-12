@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -74,19 +75,27 @@ var cmdWrite = &cobra.Command{
 		}
 
 		if flagWait {
+			log.Debug("writing synchronously")
 			exiter.Err(serverWriteSync(cmd.OutOrStdout(), device, action, data))
 		} else {
+			log.Debug("writing asynchronously")
 			exiter.Err(serverWriteAsync(cmd.OutOrStdout(), device, action, data))
 		}
 	},
 }
 
 func serverWriteAsync(out io.Writer, device, action, data string) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.WithFields(log.Fields{
+		"device": device,
+		"action": action,
+		"data":   data,
+	}).Debug("issuing HTTP write async request")
 	response, err := client.WriteAsync(device, []scheme.WriteData{{
 		Action: action,
 		Data:   data,
@@ -107,11 +116,17 @@ func serverWriteAsync(out io.Writer, device, action, data string) error {
 }
 
 func serverWriteSync(out io.Writer, device, action, data string) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.WithFields(log.Fields{
+		"device": device,
+		"action": action,
+		"data":   data,
+	}).Debug("issuing HTTP write sync request")
 	response, err := client.WriteSync(device, []scheme.WriteData{{
 		Action: action,
 		Data:   data,

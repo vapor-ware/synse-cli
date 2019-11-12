@@ -20,6 +20,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -77,6 +78,7 @@ var cmdTransaction = &cobra.Command{
 }
 
 func serverTransaction(out io.Writer, transactions []string) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -84,6 +86,7 @@ func serverTransaction(out io.Writer, transactions []string) error {
 
 	// If there are no transactions specified, get all of them.
 	if len(transactions) == 0 {
+		log.Debug("no transactions specified -- getting all transactions")
 		txns, err := client.Transactions()
 		if err != nil {
 			return err
@@ -99,6 +102,7 @@ func serverTransaction(out io.Writer, transactions []string) error {
 
 	var txns []*scheme.Transaction
 	for _, t := range transactions {
+		log.WithField("txn", t).Debug("issuing HTTP transaction request")
 		response, err := client.Transaction(t)
 		if err != nil {
 			return err
@@ -107,6 +111,7 @@ func serverTransaction(out io.Writer, transactions []string) error {
 	}
 
 	if len(txns) == 0 {
+		log.Debug("no transactions reported by server")
 		return nil
 	}
 

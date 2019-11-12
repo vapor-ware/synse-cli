@@ -28,6 +28,7 @@ import (
 	"time"
 
 	"github.com/gosuri/uilive"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -82,6 +83,7 @@ var cmdStream = &cobra.Command{
 }
 
 func serverStream(out io.Writer) error {
+	log.Debug("creating new WebSocket client")
 	client, err := utils.NewSynseWebsocketClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -109,6 +111,10 @@ func serverStream(out io.Writer) error {
 
 	var g errgroup.Group
 	g.Go(func() error {
+		log.WithFields(log.Fields{
+			"ids":  flagDeviceIds,
+			"tags": flagTags,
+		}).Debug("issuing WebSocket stream readings request")
 		return client.ReadStream(
 			scheme.ReadStreamOptions{
 				Ids:  flagDeviceIds,

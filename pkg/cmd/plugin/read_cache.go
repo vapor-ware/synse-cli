@@ -21,6 +21,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -69,6 +70,7 @@ var cmdReadCache = &cobra.Command{
 }
 
 func pluginReadCache(out io.Writer) error {
+	log.Debug("creating new gRPC client")
 	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -78,6 +80,10 @@ func pluginReadCache(out io.Writer) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	log.WithFields(log.Fields{
+		"start": flagStart,
+		"end":   flagEnd,
+	}).Debug("issuing gRPC read cache request")
 	stream, err := client.ReadCache(ctx, &synse.V3Bounds{
 		Start: flagStart,
 		End:   flagEnd,
@@ -99,6 +105,7 @@ func pluginReadCache(out io.Writer) error {
 	}
 
 	if len(readings) == 0 {
+		log.Debug("no cached readings reported by plugin")
 		return nil
 	}
 

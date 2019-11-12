@@ -20,6 +20,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -75,11 +76,17 @@ var cmdScan = &cobra.Command{
 }
 
 func serverScan(out io.Writer) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.WithFields(log.Fields{
+		"tags":  flagTags,
+		"force": flagForce,
+		"ns":    flagNS,
+	}).Debug("issuing HTTP scan request")
 	response, err := client.Scan(scheme.ScanOptions{
 		Tags:  utils.NormalizeTags(flagTags),
 		Force: flagForce,
@@ -90,6 +97,7 @@ func serverScan(out io.Writer) error {
 	}
 
 	if len(response) == 0 {
+		log.Debug("no devices reported by server")
 		return nil
 	}
 

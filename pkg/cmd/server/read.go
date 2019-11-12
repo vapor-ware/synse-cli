@@ -20,6 +20,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -81,6 +82,7 @@ var cmdRead = &cobra.Command{
 }
 
 func serverRead(out io.Writer, devices []string) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -89,6 +91,7 @@ func serverRead(out io.Writer, devices []string) error {
 	var readings []*scheme.Read
 	if len(devices) != 0 {
 		for _, device := range devices {
+			log.WithField("device", device).Debug("issuing HTTP read device request")
 			response, err := client.ReadDevice(device)
 			if err != nil {
 				return err
@@ -96,6 +99,10 @@ func serverRead(out io.Writer, devices []string) error {
 			readings = append(readings, response...)
 		}
 	} else {
+		log.WithFields(log.Fields{
+			"tags": flagTags,
+			"ns":   flagNS,
+		}).Debug("issuing HTTP read request")
 		response, err := client.Read(scheme.ReadOptions{
 			Tags: utils.NormalizeTags(flagTags),
 			NS:   flagNS,
@@ -107,6 +114,7 @@ func serverRead(out io.Writer, devices []string) error {
 	}
 
 	if len(readings) == 0 {
+		log.Debug("no readings reported from server")
 		return nil
 	}
 

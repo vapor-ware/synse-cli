@@ -20,6 +20,7 @@ import (
 	"context"
 	"io"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -58,6 +59,7 @@ var cmdTest = &cobra.Command{
 }
 
 func pluginTest(out io.Writer) error {
+	log.Debug("creating new gRPC client")
 	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -67,6 +69,7 @@ func pluginTest(out io.Writer) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	log.Debug("issuing gRPC test request")
 	response, err := client.Test(ctx, &synse.Empty{})
 	if err != nil {
 		return err

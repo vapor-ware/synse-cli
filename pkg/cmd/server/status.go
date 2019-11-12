@@ -19,6 +19,7 @@ package server
 import (
 	"io"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -56,11 +57,13 @@ var cmdStatus = &cobra.Command{
 }
 
 func serverStatus(out io.Writer) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.Debug("issuing HTTP status request")
 	response, err := client.Status()
 	if err != nil {
 		return err
