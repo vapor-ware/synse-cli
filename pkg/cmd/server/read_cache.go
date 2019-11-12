@@ -75,8 +75,6 @@ func serverReadCache(out io.Writer) error {
 	}
 
 	readings := make(chan *scheme.Read, 5)
-	defer close(readings)
-
 	err = client.ReadCache(
 		scheme.ReadCacheOptions{
 			Start: flagStart,

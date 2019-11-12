@@ -20,8 +20,11 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
 	"sort"
 	"strings"
+	"sync"
+	"syscall"
 	"time"
 
 	"github.com/gosuri/uilive"
@@ -93,6 +96,7 @@ func serverStream(out io.Writer) error {
 	stop := make(chan struct{}, 1)
 
 	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGINT)
 
 	go func() {
 		<-c
@@ -115,11 +119,12 @@ func serverStream(out io.Writer) error {
 		)
 	})
 
+	// Create a terminal writer which refreshes output.
 	writer := uilive.New()
+	writer.Out = out
 	writer.Start()
 
-	err = writer.Flush()
-	if err != nil {
+	if err := writer.Flush(); err != nil {
 		return err
 	}
 
@@ -129,6 +134,7 @@ func serverStream(out io.Writer) error {
 
 	header := []string{"ID", "TYPE", "VALUE", "UNIT", "TIMESTAMP"}
 	rows := map[string]string{}
+	var lock = sync.RWMutex{}
 
 	go func() {
 		for {
@@ -141,34 +147,33 @@ func serverStream(out io.Writer) error {
 				// do nothing
 			}
 
-			str := fmt.Sprintf("%s\n", strings.Join(header, "\t"))
+			str := fmt.Sprintf("\n%s\n", strings.Join(header, "\t"))
 			var data []string
+			lock.RLock()
 			for _, r := range rows {
 				data = append(data, r)
 			}
+			lock.RUnlock()
 			sort.Strings(data)
 			str += strings.Join(data, "\n")
 
 			err := writer.Flush()
 			if err != nil {
-				fmt.Printf("error: %s", err)
+				fmt.Printf("\nerror: %s\n", err)
 				close(stop)
 				return
 			}
 
 			err = tw.Flush()
 			if err != nil {
-				fmt.Printf("error: %s", err)
+				fmt.Printf("\nerror: %s\n", err)
 				close(stop)
 				return
 			}
 
-			fmt.Fprint(out, "\033[2J")
-			fmt.Fprint(out, "\033[H")
-
 			_, err = fmt.Fprint(tw, str)
 			if err != nil {
-				fmt.Printf("error: %s", err)
+				fmt.Printf("\nerror: %s\n", err)
 				close(stop)
 				return
 			}
@@ -201,8 +206,9 @@ readLoop:
 			symbol,
 			reading.Timestamp,
 		}, "\t")
+		lock.Lock()
 		rows[fmt.Sprintf("%s-%s", reading.Device, reading.Type)] = row
+		lock.Unlock()
 	}
-
 	return g.Wait()
 }
