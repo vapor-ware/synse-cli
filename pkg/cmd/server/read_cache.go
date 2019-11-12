@@ -20,6 +20,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -69,12 +70,17 @@ var cmdReadCache = &cobra.Command{
 }
 
 func serverReadCache(out io.Writer) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
 	readings := make(chan *scheme.Read, 5)
+	log.WithFields(log.Fields{
+		"start": flagStart,
+		"end":   flagEnd,
+	}).Debug("issuing HTTP read cache request")
 	err = client.ReadCache(
 		scheme.ReadCacheOptions{
 			Start: flagStart,
@@ -92,6 +98,7 @@ func serverReadCache(out io.Writer) error {
 	}
 
 	if len(response) == 0 {
+		log.Debug("no readings reported from server")
 		return nil
 	}
 

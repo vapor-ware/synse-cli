@@ -20,6 +20,7 @@ import (
 	"io"
 	"text/template"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg"
 	"github.com/vapor-ware/synse-cli/pkg/templates"
@@ -73,6 +74,7 @@ var cmdVersion = &cobra.Command{
 
 func displayVersion(out io.Writer) error {
 	v := pkg.GetVersion()
+	log.Debugf("got version info: %+v", v)
 
 	if flagSimple {
 		if _, err := out.Write([]byte(v.Version)); err != nil {

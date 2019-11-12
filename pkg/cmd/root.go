@@ -70,6 +70,11 @@ var rootCmd = &cobra.Command{
 
 		// Load CLI config from file prior to running any command.
 		exit.FromCmd(cmd).Err(config.Load())
+
+		log.WithFields(log.Fields{
+			"command": cmd.Name(),
+			"args":    args,
+		}).Debug("running command")
 	},
 
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {

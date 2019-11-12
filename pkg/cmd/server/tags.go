@@ -19,6 +19,7 @@ package server
 import (
 	"io"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -59,11 +60,16 @@ var cmdTags = &cobra.Command{
 }
 
 func serverTags(out io.Writer) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.WithFields(log.Fields{
+		"ns":  flagNS,
+		"ids": flagIds,
+	}).Debug("issuing HTTP tags request")
 	response, err := client.Tags(scheme.TagsOptions{
 		NS:  []string{flagNS},
 		IDs: flagIds,
@@ -73,6 +79,7 @@ func serverTags(out io.Writer) error {
 	}
 
 	if len(response) == 0 {
+		log.Debug("no tags reported by server")
 		return nil
 	}
 
