@@ -20,6 +20,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
@@ -58,6 +59,7 @@ var cmdList = &cobra.Command{
 func listContexts(out io.Writer) error {
 	contexts := config.GetContexts()
 	if len(contexts) == 0 {
+		log.Debug("no contexts found")
 		return nil
 	}
 

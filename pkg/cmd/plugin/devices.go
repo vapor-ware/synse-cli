@@ -21,6 +21,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -60,6 +61,7 @@ var cmdDevices = &cobra.Command{
 }
 
 func pluginDevices(out io.Writer) error {
+	log.Debug("creating new gRPC client")
 	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -78,6 +80,7 @@ func pluginDevices(out io.Writer) error {
 		tags = append(tags, tag)
 	}
 
+	log.WithField("tags", tags).Debug("issuing gRPC devices request")
 	stream, err := client.Devices(ctx, &synse.V3DeviceSelector{
 		Tags: tags,
 	})
@@ -98,8 +101,10 @@ func pluginDevices(out io.Writer) error {
 	}
 
 	if len(devices) == 0 {
+		log.Debug("no devices reported from plugin")
 		return nil
 	}
+	log.WithField("total", len(devices)).Debug("got devices from plugin")
 
 	printer := utils.NewPrinter(out, flagJSON, flagYaml, flagNoHeader)
 	printer.SetIntermediateYaml()

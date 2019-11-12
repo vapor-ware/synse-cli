@@ -21,6 +21,7 @@ import (
 	"io"
 	"sort"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -75,6 +76,7 @@ var cmdTransaction = &cobra.Command{
 }
 
 func pluginTransaction(out io.Writer, transactions []string) error {
+	log.Debug("creating new gRPC client")
 	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
@@ -88,6 +90,7 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 
 	// If no transactions are specified, get all transactions.
 	if len(transactions) == 0 {
+		log.Debug("no transaction specified - getting all transactions")
 		stream, err := client.Transactions(ctx, &synse.Empty{})
 		if err != nil {
 			return err
@@ -106,6 +109,7 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 	} else {
 		// Otherwise, get all specified transactions.
 		for _, transaction := range transactions {
+			log.WithField("txn", transaction).Debug("issuing gRPC transaction request")
 			response, err := client.Transaction(ctx, &synse.V3TransactionSelector{
 				Id: transaction,
 			})
@@ -117,6 +121,7 @@ func pluginTransaction(out io.Writer, transactions []string) error {
 	}
 
 	if len(txns) == 0 {
+		log.Debug("no transactions reported by plugin")
 		return nil
 	}
 

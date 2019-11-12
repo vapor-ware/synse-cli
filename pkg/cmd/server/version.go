@@ -19,6 +19,7 @@ package server
 import (
 	"io"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -56,11 +57,13 @@ var cmdVersion = &cobra.Command{
 }
 
 func serverVersion(out io.Writer) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.Debug("issuing HTTP version request")
 	response, err := client.Version()
 	if err != nil {
 		return err

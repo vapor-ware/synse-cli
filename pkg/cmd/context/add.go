@@ -88,6 +88,7 @@ func addContext(ctxType, ctxName, ctxAddress string) error {
 	}
 
 	if flagSet {
+		log.Debug("setting new context as current context")
 		return config.SetCurrentContext(ctxName)
 	}
 	return nil

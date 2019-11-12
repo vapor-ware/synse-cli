@@ -19,6 +19,7 @@ package server
 import (
 	"io"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
@@ -51,11 +52,13 @@ var cmdInfo = &cobra.Command{
 }
 
 func serverInfo(out io.Writer, device string) error {
+	log.Debug("creating new HTTP client")
 	client, err := utils.NewSynseHTTPClient(flagContext, flagTLSCert)
 	if err != nil {
 		return err
 	}
 
+	log.WithField("device", device).Debug("issuing HTTP device info request")
 	response, err := client.Info(device)
 	if err != nil {
 		return err
