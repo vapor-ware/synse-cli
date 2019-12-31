@@ -1,5 +1,5 @@
 # For details, see the GoReleaser documentation at http://goreleaser.com
-project_name: synse-cli
+project_name: synse
 before:
   hooks:
     - go mod download
@@ -23,6 +23,18 @@ builds:
       - amd64
 archives:
   - format: tar.gz
+brews:
+  -
+    github:
+      owner: vapor-ware
+      name: homebrew-formula
+    commit_author:
+      name: vio-bot
+      email: 'marco+viogh@vapor.io'
+    homepage: 'https://github.com/vapor-ware/synse-cli'
+    description: "Unified CLI for Vapor IO's Synse platform."
+    test: |
+      system "#{bin}/synse version"
 checksum:
   name_template: 'checksums-{{ .Tag }}.txt'
 release:
