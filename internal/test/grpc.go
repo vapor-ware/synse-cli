@@ -207,6 +207,17 @@ func (f *FakeGRPCClientV3) ReadCache(ctx context.Context, in *synse.V3Bounds, op
 	}, nil
 }
 
+func (f *FakeGRPCClientV3) ReadStream(ctx context.Context, in *synse.V3StreamRequest, opts ...grpc.CallOption) (synse.V3Plugin_ReadStreamClient, error) {
+	if f.cmdErr {
+		return nil, ErrFakeClient
+	}
+	return &FakeReadClient{
+		FakeClientStream: FakeClientStream{
+			md: metadata.MD{},
+		},
+	}, nil
+}
+
 func (f *FakeGRPCClientV3) Test(ctx context.Context, in *synse.Empty, opts ...grpc.CallOption) (*synse.V3TestStatus, error) {
 	if f.cmdErr {
 		return nil, ErrFakeClient
