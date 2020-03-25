@@ -77,7 +77,7 @@ There are three primary commands to be aware of:
 ### Contexts
 
 Prior to interacting with a server or plugin instance, a new context for it needs to be created.
-If running the [example deployment](synse.yaml) found in this repo (which runs Synse Server at
+If running the [example deployment](docker-compose.yaml) found in this repo (which runs Synse Server at
 localhost:5000 and the emulator plugin at localhost:5001), this can be done with:
 
 ```bash
