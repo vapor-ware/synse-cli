@@ -81,10 +81,10 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
-github.com/vapor-ware/synse-client-go v0.0.0-20191105191827-de884876aeb1 h1:DACQ01pyTMhID6mznrKt1HH1My0QV+tAn9JU1IaEOXY=
-github.com/vapor-ware/synse-client-go v0.0.0-20191105191827-de884876aeb1/go.mod h1:/sRQL8tV6dEFD1lZwCkIj9/HGh3jrWxY3i7fYV6mCP8=
-github.com/vapor-ware/synse-server-grpc v0.0.2-0.20190603152926-74d87001fc21 h1:zJEyUSIxxbvCYEFh57cjAasZ7HIujjuSlXoAGD8yoWY=
-github.com/vapor-ware/synse-server-grpc v0.0.2-0.20190603152926-74d87001fc21/go.mod h1:66oRQ1KV/ZevAiiXbSUjRbx/h91xG/ArE/V39Jh872I=
+github.com/vapor-ware/synse-client-go v0.0.0-20191107114805-c857886d0cb0 h1:a/YpkR9XWRwWzYmj09evYHElB1dBUW++b+pGyPthE3o=
+github.com/vapor-ware/synse-client-go v0.0.0-20191107114805-c857886d0cb0/go.mod h1:/sRQL8tV6dEFD1lZwCkIj9/HGh3jrWxY3i7fYV6mCP8=
+github.com/vapor-ware/synse-server-grpc v0.0.2-0.20191025142202-08a97862f9ab h1:rNURpGyDtya4nMWkxxdFTJNRe67fcYv2e56lalI6rns=
+github.com/vapor-ware/synse-server-grpc v0.0.2-0.20191025142202-08a97862f9ab/go.mod h1:66oRQ1KV/ZevAiiXbSUjRbx/h91xG/ArE/V39Jh872I=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
