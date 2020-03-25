@@ -22,8 +22,8 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.3.2
 	github.com/stretchr/testify v1.4.0
-	github.com/vapor-ware/synse-client-go v0.0.0-20191105191827-de884876aeb1
-	github.com/vapor-ware/synse-server-grpc v0.0.2-0.20190603152926-74d87001fc21
+	github.com/vapor-ware/synse-client-go v0.0.0-20191107114805-c857886d0cb0
+	github.com/vapor-ware/synse-server-grpc v0.0.2-0.20191025142202-08a97862f9ab
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20190508193815-b515fa19cec8 // indirect
