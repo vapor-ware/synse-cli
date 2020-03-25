@@ -1,5 +1,5 @@
 #
-# synse.yml
+# docker-compose.yml
 #
 # A simple docker compose configuration to run Synse Server
 # with the emulator plugin. This setup can be useful for exploring
