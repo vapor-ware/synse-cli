@@ -1,4 +1,3 @@
-locale: ""
 logging: debug
 plugin:
   tcp:
