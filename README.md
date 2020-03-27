@@ -47,7 +47,7 @@ wget \
 
 # Make the binary executable
 chmod +x /usr/local/bin/synse
-``` 
+```
 
 ### From Source
 
@@ -61,7 +61,6 @@ make build
 Which will create the `synse` binary in the project directory. If you wish, you can add it to
 your PATH.
 
-
 ## Getting Started
 
 With the CLI installed, you can run `synse --help` to get usage info. You can get additional
@@ -72,7 +71,6 @@ There are three primary commands to be aware of:
 - `context`: Configuration management for server/plugin instances.
 - `server`: Interact with a Synse Server instance via HTTP.
 - `plugin`: Interact with a plugin instance via gRPC.
-
 
 ### Contexts
 
@@ -86,7 +84,7 @@ synse context add server local localhost:5000 --set
 
 # Add a plugin context and set it as the current plugin.
 synse context add plugin emulator localhost:5001 --set
-``` 
+```
 
 You can then list the contexts and see that those are both present and marked as active.
 Now when you run a `synse server ...` or `synse plugin ...` command, it knows which instance
@@ -98,7 +96,6 @@ CURRENT   NAME       TYPE     ADDRESS
 *         emulator   plugin   localhost:5001
 *         local      server   localhost:5000
 ```
-
 
 ## License
 
