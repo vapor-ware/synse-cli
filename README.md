@@ -97,6 +97,16 @@ CURRENT   NAME       TYPE     ADDRESS
 *         local      server   localhost:5000
 ```
 
+## Compatibility
+
+Below is a table describing the compatibility of Synse CLI versions with Synse platform versions.
+
+|          | Synse v2 | Synse v3 |
+| -------- | -------- | -------- |
+| CLI v1.x | ✗        | ✗        |
+| CLI v2.x | ✓        | ✗        |
+| CLI v3.x | ✗        | ✓        |
+
 ## License
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli?ref=badge_large)
