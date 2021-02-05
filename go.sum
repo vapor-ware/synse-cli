@@ -167,8 +167,8 @@ github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
 github.com/vapor-ware/synse-client-go v0.0.0-20200327150857-a8726f53089e h1:odhrv3eNaXPu2bEPKK/9kQDmiVXGQTCXetLjlOLW3tU=
 github.com/vapor-ware/synse-client-go v0.0.0-20200327150857-a8726f53089e/go.mod h1:aCTBPYi3NRdSSCEbiIshrHp76JnmqR0vdqn0JIw63I8=
-github.com/vapor-ware/synse-server-grpc v0.0.2-0.20200327135045-e8fab4d340ea h1:3IenfSpSRcMEmdMMixiKZ2S16X0YvPFNEUvESvHwyAc=
-github.com/vapor-ware/synse-server-grpc v0.0.2-0.20200327135045-e8fab4d340ea/go.mod h1:66oRQ1KV/ZevAiiXbSUjRbx/h91xG/ArE/V39Jh872I=
+github.com/vapor-ware/synse-server-grpc v0.0.2-0.20210119154353-cd9e4e05bb31 h1:frnpaZ5Ys3NjhcWydKow9NCI093bR59y9GExF4qzR2E=
+github.com/vapor-ware/synse-server-grpc v0.0.2-0.20210119154353-cd9e4e05bb31/go.mod h1:66oRQ1KV/ZevAiiXbSUjRbx/h91xG/ArE/V39Jh872I=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

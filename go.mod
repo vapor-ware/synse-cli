@@ -24,7 +24,7 @@ require (
 	github.com/spf13/viper v1.6.2
 	github.com/stretchr/testify v1.5.1
 	github.com/vapor-ware/synse-client-go v0.0.0-20200327150857-a8726f53089e
-	github.com/vapor-ware/synse-server-grpc v0.0.2-0.20200327135045-e8fab4d340ea
+	github.com/vapor-ware/synse-server-grpc v0.0.2-0.20210119154353-cd9e4e05bb31
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20200326112834-f447254575fd // indirect

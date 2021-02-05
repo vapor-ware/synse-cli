@@ -22,6 +22,10 @@ LDFLAGS := -w \
 build:  ## Build the executable binary
 	CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "${LDFLAGS}" -o ${BIN_NAME} cmd/synse.go
 
+.PHONY: build-linux
+build-linux:  ## Build the executable binary for linux
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "${LDFLAGS}" -o ${BIN_NAME} cmd/synse.go
+
 .PHONY: clean
 clean:  ## Remove temporary files and build artifacts
 	go clean -v
