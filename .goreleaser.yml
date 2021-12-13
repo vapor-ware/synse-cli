@@ -6,7 +6,6 @@ before:
 builds:
   -
     main: ./cmd/synse.go
-    binary: synse
     env:
       - CGO_ENABLED=0
     ldflags:
