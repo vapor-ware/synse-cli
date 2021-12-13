@@ -6,7 +6,6 @@ before:
 builds:
   -
     main: ./cmd/synse.go
-    binary: synse
     env:
       - CGO_ENABLED=0
     ldflags:
@@ -25,7 +24,7 @@ archives:
   - format: tar.gz
 brews:
   -
-    github:
+    tap:
       owner: vapor-ware
       name: homebrew-formula
     commit_author:
