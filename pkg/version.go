@@ -30,7 +30,7 @@ var (
 	// Tag is the tag name at which the binary was built.
 	Tag string
 
-	// GoVersion is is the version of Go used to build the binary.
+	// GoVersion is the version of Go used to build the binary.
 	GoVersion string
 
 	// Version is the canonical version string for the binary.

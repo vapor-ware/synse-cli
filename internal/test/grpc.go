@@ -18,6 +18,7 @@ package test
 
 import (
 	"context"
+	"google.golang.org/grpc/credentials/insecure"
 	"io"
 
 	synse "github.com/vapor-ware/synse-server-grpc/go"
@@ -28,7 +29,7 @@ import (
 // NewFakeConn returns a gRPC client connection that can be used for testing,
 // since the mock will need to return a connection that gets closed.
 func NewFakeConn() *grpc.ClientConn {
-	conn, err := grpc.Dial("localhost:5555", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:5555", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}

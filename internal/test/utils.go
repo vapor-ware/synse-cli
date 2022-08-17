@@ -72,7 +72,8 @@ func (b *Builder) Run(t *testing.T) (result *Result) {
 	b.t = t
 
 	cmdOut := bytes.Buffer{}
-	b.cmd.SetOutput(&cmdOut)
+	b.cmd.SetErr(&cmdOut)
+	b.cmd.SetOut(&cmdOut)
 
 	var exitCalled bool
 	patch := monkey.Patch(os.Exit, func(code int) {

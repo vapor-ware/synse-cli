@@ -18,7 +18,7 @@ package golden
 
 import (
 	"flag"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -33,12 +33,12 @@ var update = flag.Bool("update", false, "update .golden files")
 func Get(t *testing.T, actual []byte, filename string) []byte {
 	golden := filepath.Join("testdata", filename)
 	if *update {
-		if err := ioutil.WriteFile(golden, actual, 0644); err != nil {
+		if err := os.WriteFile(golden, actual, 0644); err != nil {
 			t.Fatal(err)
 		}
 	}
 
-	expected, err := ioutil.ReadFile(golden)
+	expected, err := os.ReadFile(golden)
 	if err != nil {
 		t.Fatal(err)
 	}

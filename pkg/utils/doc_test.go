@@ -17,7 +17,7 @@
 package utils
 
 import (
-	"os"
+	"github.com/gookit/color"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -72,12 +72,8 @@ func TestDoc(t *testing.T) {
 }
 
 func TestDoc2(t *testing.T) {
-	// FIXME (etd): When tests are run in Jenkins CI, some of the formatting
-	//   tests fail, presumably because console output formatting is not
-	//   enabled on the build machine. If we detect that we are running
-	//   in Jenkins, skip these tests.
-	if os.Getenv("JENKINS_URL") != "" {
-		t.Skip("Skipping output formatting tests on Jenkins CI")
+	if !color.SupportColor() {
+		t.Skip("Skipping output formatting tests on unsupported systed")
 	}
 
 	cases := []struct {
