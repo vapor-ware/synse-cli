@@ -3,7 +3,7 @@
 #
 
 BIN_NAME    := synse
-BIN_VERSION := 3.0.0
+BIN_VERSION := v3.0.0
 
 GIT_COMMIT  ?= $(shell git rev-parse --short HEAD 2> /dev/null || true)
 GIT_TAG     ?= $(shell git describe --tags 2> /dev/null || true)
@@ -63,10 +63,3 @@ help:  ## Print usage information
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) | sort
 
 .DEFAULT_GOAL := help
-
-
-# Jenkins CI Targets
-
-.PHONY: unit-test
-
-unit-test: test

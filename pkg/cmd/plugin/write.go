@@ -129,10 +129,10 @@ func pluginWriteAsync(out io.Writer, device, action, data string) error {
 
 func pluginWriteSync(out io.Writer, device, action, data string) error {
 	conn, client, err := utils.NewSynseGrpcClient(flagContext, flagTLSCert)
-	defer conn.Close()
 	if err != nil {
 		return err
 	}
+	defer conn.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

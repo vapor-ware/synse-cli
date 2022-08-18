@@ -23,6 +23,7 @@ import (
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 // Errors relating to gRPC client creation.
@@ -64,7 +65,7 @@ func NewSynseGrpcClient(ctx, certFile string) (*grpc.ClientConn, synse.V3PluginC
 	var dialOptions []grpc.DialOption
 	if pluginContext.Context.ClientCert == "" {
 		log.Debug("grpc client: with insecure")
-		dialOptions = append(dialOptions, grpc.WithInsecure())
+		dialOptions = append(dialOptions, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	} else {
 		creds, err := credentials.NewClientTLSFromFile(pluginContext.Context.ClientCert, "")
 		if err != nil {
