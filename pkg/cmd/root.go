@@ -17,8 +17,11 @@
 package cmd
 
 import (
+	ctx "context"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/vapor-ware/synse-cli/pkg/client"
 	"github.com/vapor-ware/synse-cli/pkg/cmd/context"
 	"github.com/vapor-ware/synse-cli/pkg/cmd/plugin"
 	"github.com/vapor-ware/synse-cli/pkg/cmd/server"
@@ -26,6 +29,7 @@ import (
 	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-cli/pkg/utils/exit"
+	"github.com/vapor-ware/synse-cli/pkg/view"
 )
 
 func init() {
@@ -76,6 +80,7 @@ var rootCmd = &cobra.Command{
 			"args":    args,
 		}).Debug("running command")
 	},
+	Run: run,
 
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
 		// Persist the CLI config to file after running any command.
@@ -100,5 +105,26 @@ func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
 		log.WithField("error", err).Error("error running root command")
+	}
+}
+
+func run(_ *cobra.Command, _ []string) {
+	cx, cancel := ctx.WithCancel(ctx.Background())
+	defer cancel()
+
+	c, err := client.NewAPIClient(cx, "", "")
+	if err != nil {
+		panic(err)
+	}
+	defer c.Close()
+
+	i := view.NewInstance()
+	i.APIClient = c
+
+	if err := i.Init(); err != nil {
+		panic(fmt.Sprintf("failed to init synse-cli: %v", err))
+	}
+	if err := i.Run(); err != nil {
+		panic(fmt.Sprintf("failed to start synse-cli: %v", err))
 	}
 }

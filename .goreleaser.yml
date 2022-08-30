@@ -40,7 +40,7 @@ release:
   github:
     owner: vapor-ware
     name: synse-cli
-  draft: false
+  draft: true
   prerelease: auto
   name_template: "{{ .Version }}"
 snapshot:

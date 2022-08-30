@@ -3,7 +3,7 @@
 #
 
 BIN_NAME    := synse
-BIN_VERSION := v3.0.0
+BIN_VERSION := v4.0.0
 
 GIT_COMMIT  ?= $(shell git rev-parse --short HEAD 2> /dev/null || true)
 GIT_TAG     ?= $(shell git describe --tags 2> /dev/null || true)
@@ -51,7 +51,6 @@ lint:  ## Lint project source files
 
 .PHONY: test
 test:  ## Run unit tests
-	@ # Note: this requires go1.10+ in order to do multi-package coverage reports
 	go test -race -coverprofile=coverage.out -covermode=atomic ./...
 
 .PHONY: version
