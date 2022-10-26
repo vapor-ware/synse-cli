@@ -3,6 +3,7 @@ package view
 import (
 	"fmt"
 	"github.com/rivo/tview"
+	"strings"
 )
 
 type Actions struct {
@@ -27,12 +28,16 @@ func (a *Actions) Init() {
 }
 
 func (a *Actions) layout() {
-	for i := 0; i < 3; i++ {
-		c := tview.NewTableCell(fmt.Sprintf("<%d>  %s", i, "plugin"))
+	for i, pluginName := range strings.Split(a.data["Plugins"], ",") {
+		c := tview.NewTableCell(fmt.Sprintf("<%d>  %s", i, pluginName))
 		a.SetCell(i, 0, c)
 	}
 }
 
 func (a *Actions) loadData() {
-
+	plugins := make([]string, 0)
+	for _, c := range a.instance.APIClient.Context() {
+		plugins = append(plugins, c.Name)
+	}
+	a.data["Plugins"] = strings.Join(plugins, ",")
 }

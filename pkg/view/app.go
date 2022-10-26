@@ -2,24 +2,23 @@ package view
 
 import (
 	"context"
-	"fmt"
 	"github.com/rivo/tview"
 	"github.com/vapor-ware/synse-cli/pkg/client"
-	"github.com/vapor-ware/synse-cli/pkg/cmd/plugin"
 	"github.com/vapor-ware/synse-cli/pkg/ui"
-	synse "github.com/vapor-ware/synse-server-grpc/go"
-	"sort"
 	"time"
 )
 
 const (
-	splashDelay = 0 * time.Second
+	splashDelay     = 1 * time.Second
+	refreshInterval = 5 * time.Second
 )
 
 type Instance struct {
 	*ui.App
 	Content   *ui.Pages
 	APIClient *client.APIClient
+
+	cancelFunc context.CancelFunc
 }
 
 func NewInstance() *Instance {
@@ -45,6 +44,8 @@ func (i *Instance) Init() error {
 }
 
 func (i *Instance) Run() error {
+	i.Resume()
+
 	go func() {
 		<-time.After(splashDelay)
 		i.QueueUpdateDraw(func() {
@@ -60,47 +61,18 @@ func (i *Instance) Run() error {
 	return nil
 }
 
-func (i *Instance) layout(_ context.Context) {
+func (i *Instance) layout(ctx context.Context) {
 	main := tview.NewFlex().SetDirection(tview.FlexRow)
 
 	main.AddItem(i.header(), 0, 1, false)
-	//main.AddItem(tview.NewBox().SetBorder(true).SetTitle("Devices"), 0, 2, false)
 
-	t := tview.NewTable()
-	headers := []string{"ID", "Value", "Unit", "Type", "Timestamp"}
-	for n, header := range headers {
-		c := tview.NewTableCell(header)
-		c.NotSelectable = true
-		c.SetExpansion(1)
-		t.SetCell(0, n, c)
-		t.SetFixed(1, 0)
-	}
-
-	readings, _ := i.APIClient.Readings()
-	sort.Sort(plugin.Readings(readings))
-	for j, r := range readings {
-		for k, _ := range headers {
-			var id *tview.TableCell
-			switch k {
-			case 0:
-				id = tview.NewTableCell(r.Id)
-			case 1:
-				id = tview.NewTableCell(convertToString(r))
-			case 2:
-				id = tview.NewTableCell(r.Unit.Symbol)
-			case 3:
-				id = tview.NewTableCell(r.Type)
-			case 4:
-				id = tview.NewTableCell(r.Timestamp)
-			}
-			t.SetCell(j+1, k, id)
+	t := ui.NewTable(i.APIClient)
+	go i.QueueUpdateDraw(func() {
+		err := t.Watch(ctx)
+		if err != nil {
+			return
 		}
-	}
-
-	t.SetBorder(true)
-	t.SetTitle(fmt.Sprintf(" Readings [%d] ", len(readings)))
-	t.SetSelectable(true, false)
-	t.Select(1, 0)
+	})
 
 	main.AddItem(t, 0, 2, false)
 
@@ -130,31 +102,18 @@ func (i *Instance) actions() *Actions {
 	return i.Views()["actions"].(*Actions)
 }
 
-func convertToString(data interface{}) string {
-	i, ok := data.(*synse.V3Reading)
-	if !ok {
-		return ""
+func (i *Instance) Stop() {
+	if i.cancelFunc != nil {
+		i.cancelFunc()
+		i.cancelFunc = nil
 	}
-	var value interface{}
-	switch i.Value.(type) {
-	case *synse.V3Reading_StringValue:
-		value = i.GetStringValue()
-	case *synse.V3Reading_BoolValue:
-		value = i.GetBoolValue()
-	case *synse.V3Reading_Float32Value:
-		value = i.GetFloat32Value()
-	case *synse.V3Reading_Float64Value:
-		value = i.GetFloat64Value()
-	case *synse.V3Reading_Int32Value:
-		value = i.GetInt32Value()
-	case *synse.V3Reading_Int64Value:
-		value = i.GetInt64Value()
-	case *synse.V3Reading_BytesValue:
-		value = i.GetBytesValue()
-	case *synse.V3Reading_Uint32Value:
-		value = i.GetUint32Value()
-	case *synse.V3Reading_Uint64Value:
-		value = i.GetUint64Value()
-	}
-	return fmt.Sprintf("%v", value)
+}
+
+func (i *Instance) Resume() {
+	// var ctx context.Context
+	// ctx, i.cancelFunc = context.WithCancel(context.Background())
+
+	//poller := NewSynsePoller(ctx, i.APIClient, refreshInterval)
+	//go poller.Update()
+	// TODO: Config Watcher
 }

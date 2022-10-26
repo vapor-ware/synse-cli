@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"github.com/vapor-ware/synse-cli/pkg/config"
 	"github.com/vapor-ware/synse-cli/pkg/utils"
 	"github.com/vapor-ware/synse-client-go/synse"
 	sgrpc "github.com/vapor-ware/synse-server-grpc/go"
@@ -98,7 +99,9 @@ func (a *APIClient) Readings() ([]*sgrpc.V3Reading, error) {
 	return readings, nil
 }
 
-func (a *APIClient) Context() {}
+func (a *APIClient) Context() []config.ContextRecord {
+	return config.GetContexts()
+}
 
 func (a *APIClient) PluginVersion() string {
 	version, err := a.pluginClient.Version(a.ctx, &sgrpc.Empty{})

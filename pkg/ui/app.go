@@ -46,6 +46,24 @@ func (a *App) Views() map[string]tview.Primitive {
 	return a.views
 }
 
+func (a *App) QueueUpdate(f func()) {
+	if a.Application == nil {
+		return
+	}
+	go func() {
+		a.Application.QueueUpdate(f)
+	}()
+}
+
+func (a *App) QueueUpdateDraw(f func()) {
+	if a.Application == nil {
+		return
+	}
+	go func() {
+		a.Application.QueueUpdateDraw(f)
+	}()
+}
+
 func (a *App) Logo() *Logo {
 	return a.views["logo"].(*Logo)
 }
