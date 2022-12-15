@@ -18,6 +18,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"os"
 	"path/filepath"
 
@@ -85,11 +86,20 @@ func Load() error {
 // Persist saves the CLI configuration to disk, writing back the
 // in-memory config to the configuration YAML file.
 func Persist() error {
-	var configPath = filepath.Join(".", configFile)
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	wd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	var configPath = filepath.Join(wd, configFile)
+	if _, err := os.Stat(configPath); errors.Is(err, os.ErrNotExist) {
 		log.Debug("persisting cli config to HOME directory")
-		configPath = filepath.Join(os.Getenv("HOME"), configFile)
-	} else {
+		configPath = filepath.Join(home, configFile)
+	} else if err != nil {
+		log.Debug(fmt.Sprintf("stat cli config: %v", err))
 		return err
 	}
 
