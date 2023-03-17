@@ -30,13 +30,29 @@ func TestNewSynseHTTPClient_noContext(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestNewSynseHTTPClient_noCurrentCtx(t *testing.T) {
+func TestNewSynseHTTPClient_invalidURI(t *testing.T) {
 	defer config.Purge()
 	err := config.AddContext(&config.ContextRecord{
 		Name: "testctx",
 		Type: "server",
 		Context: config.Context{
 			Address: "foo",
+		},
+	})
+	assert.NoError(t, err)
+
+	client, err := NewSynseHTTPClient("", "")
+	assert.Nil(t, client)
+	assert.Error(t, err)
+}
+
+func TestNewSynseHTTPClient_noCurrentCtx(t *testing.T) {
+	defer config.Purge()
+	err := config.AddContext(&config.ContextRecord{
+		Name: "testctx",
+		Type: "server",
+		Context: config.Context{
+			Address: "localhost:5000",
 		},
 	})
 	assert.NoError(t, err)
@@ -55,7 +71,7 @@ func TestNewSynseHTTPClient_namedContext(t *testing.T) {
 		Name: "testctx",
 		Type: "server",
 		Context: config.Context{
-			Address: "foo",
+			Address: "localhost:5000",
 		},
 	})
 	assert.NoError(t, err)

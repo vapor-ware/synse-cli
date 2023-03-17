@@ -1,6 +1,6 @@
 # Synse CLI
 
-[![Build Status](https://build.vio.sh/buildStatus/icon?job=vapor-ware/synse-cli/master)](https://build.vio.sh/blue/organizations/jenkins/vapor-ware%2Fsynse-cli/activity)
+[![Build Status](https://github.com/vapor-ware/synse-cli/workflows/build/badge.svg)](https://github.com/vapor-ware/synse-cli/actions)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fvapor-ware%2Fsynse-cli?ref=badge_shield)
 [![Go ReportCard](https://goreportcard.com/badge/github.com/vapor-ware/synse-cli)](https://goreportcard.com/report/github.com/vapor-ware/synse-cli)
 
