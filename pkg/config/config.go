@@ -148,7 +148,7 @@ func (c *Config) AddContext(ctx *ContextRecord) error {
 			break
 		} else if context.Context.Address == ctx.Context.Address {
 			if context.Type == ctx.Type {
-				log.Warnf("existing context '%s' with type '%s' already available on the address '%s'", ctx.Name, ctx.Type, ctx.Context.Address)
+				log.Warnf("existing context '%s' with type '%s' already available on the address '%s'", context.Name, context.Type, context.Context.Address)
 			}
 		}
 
