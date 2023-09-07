@@ -18,9 +18,10 @@ package config
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"os"
 	"path/filepath"
+
+	"github.com/pkg/errors"
 
 	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
@@ -145,7 +146,12 @@ func (c *Config) AddContext(ctx *ContextRecord) error {
 		if context.Name == ctx.Name {
 			contextExists = true
 			break
+		} else if context.Context.Address == ctx.Context.Address {
+			if context.Type == ctx.Type {
+				log.Warnf("existing context '%s' with type '%s' already available on the address '%s'", ctx.Name, ctx.Type, ctx.Context.Address)
+			}
 		}
+
 	}
 	if contextExists {
 		return fmt.Errorf("cannot add context '%s': name already exists", ctx.Name)
