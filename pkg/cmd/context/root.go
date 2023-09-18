@@ -59,6 +59,7 @@ func New() *cobra.Command {
 		cmdList,
 		cmdRemove,
 		cmdSet,
+		cmdUnset,
 	)
 
 	return cmd
