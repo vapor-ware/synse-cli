@@ -24,7 +24,7 @@ archives:
   - format: tar.gz
 brews:
   -
-    tap:
+    repository:
       owner: vapor-ware
       name: homebrew-formula
     commit_author:
