@@ -145,7 +145,10 @@ func (c *Config) AddContext(ctx *ContextRecord) error {
 		if context.Name == ctx.Name {
 			contextExists = true
 			break
+		} else if (context.Context.Address == ctx.Context.Address) && (context.Type == ctx.Type) {
+			log.Warnf("context '%s' with type '%s' already available on the address '%s'", context.Name, context.Type, context.Context.Address)
 		}
+
 	}
 	if contextExists {
 		return fmt.Errorf("cannot add context '%s': name already exists", ctx.Name)
