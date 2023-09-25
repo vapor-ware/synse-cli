@@ -1,6 +1,6 @@
 module github.com/vapor-ware/synse-cli
 
-go 1.19
+go 1.21
 
 require (
 	bou.ke/monkey v1.0.2
@@ -14,7 +14,7 @@ require (
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.7.2
-	github.com/vapor-ware/synse-client-go v0.0.0-20200327150857-a8726f53089e
+	github.com/vapor-ware/synse-client-go v1.1.0
 	github.com/vapor-ware/synse-server-grpc v0.0.2-0.20210119154353-cd9e4e05bb31
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 	google.golang.org/grpc v1.46.2
@@ -25,6 +25,7 @@ require (
 	github.com/creasty/defaults v1.6.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

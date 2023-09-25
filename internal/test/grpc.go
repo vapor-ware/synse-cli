@@ -18,11 +18,11 @@ package test
 
 import (
 	"context"
-	"google.golang.org/grpc/credentials/insecure"
 	"io"
 
 	synse "github.com/vapor-ware/synse-server-grpc/go"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 )
 
