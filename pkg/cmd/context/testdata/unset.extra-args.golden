@@ -1,0 +1,7 @@
+Error: accepts 1 arg(s), received 2
+Usage:
+  unset CONTEXT_NAME [flags]
+
+Flags:
+  -h, --help   help for unset
+

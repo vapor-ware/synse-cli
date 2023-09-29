@@ -21,6 +21,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/pkg/errors"
+
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
@@ -249,6 +251,32 @@ func (c *Config) SetCurrentContext(name string) error {
 // SetCurrentContext sets the current context for the default configuration.
 func SetCurrentContext(name string) error {
 	return config.SetCurrentContext(name)
+}
+
+// UnsetCurrentContext unsets the named context from the current active context. If
+// the given name does not correspond to a ContextRecord, an error is returned.
+func (c *Config) UnsetCurrentContext(name string) error {
+	var context *ContextRecord
+	for _, ctx := range c.Contexts {
+		if ctx.Name == name {
+			context = &ctx
+			break
+		}
+	}
+	if context == nil {
+		return fmt.Errorf("cannot unset '%s' from current context: no such context", name)
+	}
+
+	if c.CurrentContext[context.Type] == context.Name {
+		delete(c.CurrentContext, context.Type)
+	}
+	log.WithField("context", name).Debug("unset current context")
+	return nil
+}
+
+// UnsetCurrentContext unsets the current context from the default configuration.
+func UnsetCurrentContext(name string) error {
+	return config.UnsetCurrentContext(name)
 }
 
 // GetCurrentContext gets the ContextRecords for the current context, if set.
